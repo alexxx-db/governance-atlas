@@ -864,33 +864,22 @@ class RuntimeApiContractsTests(unittest.TestCase):
         ):
             client = runtime_app._uc_for_request(request)
 
-        # When an OBO token is present, the runtime wraps the actor-scoped
-        # client in _UCWithFallback so missing-sql-scope failures can
-        # transparently retry via the app-principal client. The primary
-        # (_primary) slot on that wrapper holds the actor-scoped client.
-        self.assertIsInstance(client, runtime_app._UCWithFallback)
-        self.assertIs(client._primary, actor_scoped_sentinel)
-        self.assertIs(client._fallback, app_principal_sentinel)
+        # With an OBO token the runtime serves the actor-scoped client only;
+        # it never falls back to the app principal.
+        self.assertIsInstance(client, runtime_app._UserScopedUC)
+        self.assertIs(client._client, actor_scoped_sentinel)
         self.assertEqual(observed_tokens, ["obo-token-42"])
 
-    def test_uc_for_request_falls_back_to_app_principal_if_actor_scoped_build_fails(
-        self,
-    ) -> None:
+    def test_uc_for_request_refuses_if_actor_scoped_build_fails(self) -> None:
         runtime_app = snapshot_script.runtime_app
-        app_principal_sentinel = object()
         request = SimpleNamespace(headers={"x-forwarded-access-token": "obo-token-99"})
 
         def _actor_scoped(_token: str) -> object:
             raise RuntimeError("boom")
 
-        with patch.multiple(
-            runtime_app,
-            _uc=lambda: app_principal_sentinel,
-            _uc_for_token=_actor_scoped,
-        ):
-            client = runtime_app._uc_for_request(request)
-
-        self.assertIs(client, app_principal_sentinel)
+        with patch.multiple(runtime_app, _uc=lambda: object(), _uc_for_token=_actor_scoped):
+            with self.assertRaises(runtime_app.HTTPException):
+                runtime_app._uc_for_request(request)
 
     def test_request_cache_scope_partitions_obo_and_app_principal_buckets(self) -> None:
         runtime_app = snapshot_script.runtime_app

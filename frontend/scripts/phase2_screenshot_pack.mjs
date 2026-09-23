@@ -21,7 +21,7 @@
  * Then run (from the repo root):
  *
  *   node frontend/scripts/phase2_screenshot_pack.mjs \
- *     https://atlas-2543889327043640.aws.databricksapps.com
+ *     https://<your-atlas-app>.databricksapps.com
  *
  * Environment overrides:
  *   GOVAT_BASE_URL             base URL of the deployed app

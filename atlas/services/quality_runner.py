@@ -25,13 +25,14 @@ Phase 10 /api/assets/:fqn/quality surface picks them up.
 
 from __future__ import annotations
 
+import time
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any, Callable, Dict, List, Optional
 
 from atlas.services import quality as quality_service
-from atlas.util import quote_ident, quote_uc_3part
+from atlas.util import quote_ident, quote_uc_3part, sql_literal
 
 
 def _safe_table(entity_fqn: str) -> str:
@@ -179,7 +180,7 @@ def _eval_accepted_values(uc, spec: TestCaseSpec) -> CaseOutcome:
     accepted = spec.parameters.get("accepted") or []
     if not accepted:
         return CaseOutcome(spec.case_id, "errored", detail="accepted list required")
-    literals = ", ".join(f"'{str(v).replace(chr(39), chr(39) * 2)}'" for v in accepted)
+    literals = ", ".join(sql_literal(str(v)) for v in accepted)
     try:
         frame = uc.query_df(
             f"""SELECT count(*) AS violating FROM {_safe_table(spec.entity_fqn)}
@@ -205,11 +206,13 @@ def _eval_regex(uc, spec: TestCaseSpec) -> CaseOutcome:
     pattern = spec.parameters.get("pattern")
     if not pattern:
         return CaseOutcome(spec.case_id, "errored", detail="pattern required")
-    safe_pattern = str(pattern).replace("'", "''")
+    # sql_literal also escapes backslashes, so a pattern like `\d` reaches the
+    # regex engine intact instead of being unescaped to `d` by the SQL parser.
+    safe_pattern = sql_literal(str(pattern))
     try:
         frame = uc.query_df(
             f"""SELECT count(*) AS violating FROM {_safe_table(spec.entity_fqn)}
-WHERE {_safe_col(spec.column_name)} IS NOT NULL AND NOT rlike(cast({_safe_col(spec.column_name)} AS STRING), '{safe_pattern}')"""
+WHERE {_safe_col(spec.column_name)} IS NOT NULL AND NOT rlike(cast({_safe_col(spec.column_name)} AS STRING), {safe_pattern})"""
         )
     except Exception as exc:
         return CaseOutcome(spec.case_id, "errored", detail=str(exc))
@@ -303,8 +306,12 @@ def _eval_custom_sql(uc, spec: TestCaseSpec) -> CaseOutcome:
     )
     if not budget.ok:
         return CaseOutcome(spec.case_id, "errored", detail=f"budget: {budget.reason}")
+    time_budget_ms = spec.parameters.get("timeBudgetMs")
     try:
-        frame = uc.query_df(validation.normalized)
+        frame = uc.query_df(
+            validation.normalized,
+            timeout_s=max(5, int(time_budget_ms) // 1000) if time_budget_ms else 30,
+        )
     except Exception as exc:
         return CaseOutcome(spec.case_id, "errored", detail=str(exc))
     value = _scalar(frame)
@@ -384,6 +391,29 @@ class QualityRunResult:
     skipped: int = 0
 
 
+# The suite runs inside an HTTP request behind the ~60s Apps proxy timeout.
+SUITE_TIME_CAP_S = 45
+
+
+class _BudgetedUC:
+    """Gives every evaluator query only the suite's remaining time, so the
+    statement is cancelled (uc.query_df) instead of running past the request."""
+
+    def __init__(self, uc, deadline: float) -> None:
+        self._uc = uc
+        self._deadline = deadline
+
+    def query_df(self, statement: str, **kwargs):
+        remaining = self._deadline - time.monotonic()
+        if remaining < 5:
+            raise TimeoutError("quality suite time budget exhausted")
+        kwargs["timeout_s"] = int(min(remaining, kwargs.get("timeout_s") or remaining))
+        return self._uc.query_df(statement, **kwargs)
+
+    def __getattr__(self, name: str):
+        return getattr(self._uc, name)
+
+
 def run_quality_suite(
     *,
     store,
@@ -415,13 +445,15 @@ def run_quality_suite(
     except Exception as exc:
         return QualityRunResult(run_id=run_id, status="failed")
 
+    budget_s = min(max(1, int(time_budget_ms or 0)) / 1000.0, SUITE_TIME_CAP_S)
+    budgeted_uc = _BudgetedUC(uc_client, time.monotonic() + budget_s)
     for spec in cases:
         evaluator = EVALUATORS.get(spec.test_key)
         if not evaluator:
             outcome = CaseOutcome(spec.case_id, "skipped", detail=f"unknown test key {spec.test_key}")
         else:
             try:
-                outcome = evaluator(uc_client, spec)
+                outcome = evaluator(budgeted_uc, spec)
             except Exception as exc:
                 outcome = CaseOutcome(spec.case_id, "errored", detail=str(exc))
         summary[outcome.outcome] = summary.get(outcome.outcome, 0) + 1

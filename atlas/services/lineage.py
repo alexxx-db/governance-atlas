@@ -8,6 +8,8 @@ from typing import Any, Callable, Deque, Dict, List, Optional, Sequence, Set, Tu
 
 import pandas as pd
 
+from atlas.util import lineage_window_predicate
+
 from atlas.uc import UCSQLClient, sql_literal
 
 from atlas.services import assets as asset_service
@@ -861,7 +863,8 @@ WITH lineage_assets AS (
     0 AS upstream_count,
     COUNT(DISTINCT CAST(target_table_full_name AS STRING)) AS downstream_count
   FROM system.access.table_lineage
-  WHERE source_table_full_name IS NOT NULL
+  WHERE {lineage_window_predicate()}
+    AND source_table_full_name IS NOT NULL
     AND target_table_full_name IS NOT NULL
     AND source_table_full_name <> target_table_full_name
   GROUP BY CAST(source_table_full_name AS STRING)
@@ -871,7 +874,8 @@ WITH lineage_assets AS (
     COUNT(DISTINCT CAST(source_table_full_name AS STRING)) AS upstream_count,
     0 AS downstream_count
   FROM system.access.table_lineage
-  WHERE source_table_full_name IS NOT NULL
+  WHERE {lineage_window_predicate()}
+    AND source_table_full_name IS NOT NULL
     AND target_table_full_name IS NOT NULL
     AND source_table_full_name <> target_table_full_name
   GROUP BY CAST(target_table_full_name AS STRING)

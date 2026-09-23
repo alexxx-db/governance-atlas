@@ -1195,20 +1195,25 @@ def _lineage_covered_fqns(system_uc: Any, catalogs: Sequence[str]) -> set[str] |
     cached = _LINEAGE_FQN_CACHE.get(cache_key)
     if cached and _time.time() - cached[0] < _LINEAGE_FQN_CACHE_TTL_S:
         return cached[1]
-    from atlas.util import sql_literal
+    from atlas.util import lineage_window_predicate, sql_literal
 
     catalog_list = ", ".join(sql_literal(catalog) for catalog in catalogs)
+    # Filter on the catalog columns + event_date inside each branch so the
+    # scan can prune, instead of split()-ing every FQN after a full scan.
     query = f"""
 SELECT DISTINCT asset_fqn FROM (
   SELECT CAST(source_table_full_name AS STRING) AS asset_fqn
   FROM system.access.table_lineage
-  WHERE source_table_full_name IS NOT NULL
+  WHERE {lineage_window_predicate()}
+    AND source_table_full_name IS NOT NULL
+    AND source_table_catalog IN ({catalog_list})
   UNION ALL
   SELECT CAST(target_table_full_name AS STRING) AS asset_fqn
   FROM system.access.table_lineage
-  WHERE target_table_full_name IS NOT NULL
+  WHERE {lineage_window_predicate()}
+    AND target_table_full_name IS NOT NULL
+    AND target_table_catalog IN ({catalog_list})
 )
-WHERE asset_fqn IS NOT NULL AND split(asset_fqn, '[.]')[0] IN ({catalog_list})
 LIMIT 50000
 """
     try:

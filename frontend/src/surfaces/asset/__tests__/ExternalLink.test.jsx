@@ -1,16 +1,12 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import {
-  DATABRICKS_WORKSPACE_HOST,
-  ExternalLink,
-  catalogExplorerUrl,
-} from "../ExternalLink";
+import { ExternalLink, catalogExplorerUrl } from "../ExternalLink";
 
-const HOST = DATABRICKS_WORKSPACE_HOST;
+const HOST = "https://example.cloud.databricks.com";
 
 describe("catalogExplorerUrl — deepLink-first, constructed fallback", () => {
   it("prefers a relative access deepLink, made absolute against the workspace host", () => {
-    expect(catalogExplorerUrl("main.sales.orders", "/explore/data/main/sales/orders")).toBe(
+    expect(catalogExplorerUrl("main.sales.orders", "/explore/data/main/sales/orders", HOST)).toBe(
       `${HOST}/explore/data/main/sales/orders`,
     );
   });
@@ -21,21 +17,28 @@ describe("catalogExplorerUrl — deepLink-first, constructed fallback", () => {
   });
 
   it("constructs the Catalog Explorer URL from a real three-part FQN when no deepLink", () => {
-    expect(catalogExplorerUrl("main.sales.orders", "")).toBe(
+    expect(catalogExplorerUrl("main.sales.orders", "", HOST)).toBe(
       `${HOST}/explore/data/main/sales/orders`,
     );
   });
 
   it("joins remaining name segments like the backend does (dotted object names)", () => {
-    expect(catalogExplorerUrl("cat.sch.part.name", "")).toBe(
+    expect(catalogExplorerUrl("cat.sch.part.name", "", HOST)).toBe(
       `${HOST}/explore/data/cat/sch/part/name`,
     );
   });
 
   it("returns '' for anything that is not an addressable three-part object", () => {
-    expect(catalogExplorerUrl("main.sales", "")).toBe("");
+    expect(catalogExplorerUrl("main.sales", "", HOST)).toBe("");
     expect(catalogExplorerUrl("", "")).toBe("");
     expect(catalogExplorerUrl(undefined, undefined)).toBe("");
+  });
+});
+
+describe("catalogExplorerUrl without a workspace host", () => {
+  it("renders no link for relative targets instead of one that 404s on the app origin", () => {
+    expect(catalogExplorerUrl("main.sales.orders", "/explore/data/main/sales/orders")).toBe("");
+    expect(catalogExplorerUrl("main.sales.orders", "")).toBe("");
   });
 });
 

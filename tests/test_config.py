@@ -137,15 +137,24 @@ class AppConfigTests(unittest.TestCase):
         self.assertNotIn("01f1406a11221afa985d3fe64c9fbea1", content)
         self.assertNotIn("projects/governance-atlas-state/branches/production", content)
 
-    def test_dev_bundle_target_documents_internal_optional_resource_bindings(self) -> None:
+    def test_bundle_commits_no_workspace_specific_values(self) -> None:
         content = open(os.path.join(ROOT, "databricks.yml"), encoding="utf-8").read()
 
-        self.assertIn("Entrada internal dev target", content)
+        # dev still binds the optional resources, fed only by BUNDLE_VAR_*.
         self.assertIn("atlas-genie-space", content)
         self.assertIn("atlas-lakebase", content)
-        self.assertIn('atlas_ai_provider: "genie"', content)
-        self.assertIn('lakebase_enabled: "true"', content)
-
+        self.assertIn("space_id: ${var.genie_space_id}", content)
+        self.assertIn("name: ${var.ai_generation_endpoint}", content)
+        self.assertNotIn("profile: DEFAULT", content)
+        for literal in (
+            "@entrada.ai",
+            "01f1406a11221afa985d3fe64c9fbea1",
+            "governance-atlas-state",
+            "da02d15a9490650b",
+            "finance_prod",
+            "gov_catalog: datapact",
+        ):
+            self.assertNotIn(literal, content)
 
 if __name__ == "__main__":
     unittest.main()

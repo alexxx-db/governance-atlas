@@ -19,16 +19,29 @@ on:
 
 permissions:
   contents: read
-  id-token: write
+  id-token: write # GitHub OIDC token for Databricks workload identity federation
 
+# Auth: GitHub OIDC -> Databricks service principal (no stored PAT).
+# One-time setup per workspace:
+#   1. Create a service principal; note its application (client) ID.
+#   2. Add a federation policy on it: issuer https://token.actions.githubusercontent.com,
+#      audience = the Databricks account ID, subject per job:
+#        validate (PR):   repo:<org>/<repo>:pull_request
+#        validate (main): repo:<org>/<repo>:ref:refs/heads/main
+#        deploy:          repo:<org>/<repo>:environment:<dev|staging|prod>
+#   3. GitHub variables DATABRICKS_HOST + DATABRICKS_CLIENT_ID (repo-level for
+#      validate; per Environment for deploy if targets use other workspaces).
 env:
-  DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-  DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+  DATABRICKS_AUTH_TYPE: github-oidc
+  DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST }}
+  DATABRICKS_CLIENT_ID: ${{ vars.DATABRICKS_CLIENT_ID }}
 
 jobs:
   validate:
     name: Validate bundle
     runs-on: ubuntu-latest
+    env:
+      BUNDLE_VAR_warehouse_id: ${{ vars.DATABRICKS_WAREHOUSE_ID }}
     steps:
       - uses: actions/checkout@v4
 
@@ -80,47 +93,48 @@ jobs:
         run: python3 scripts/prepare_bundle.py --output "${RUNNER_TEMP}/atlas_bundle"
 
       - name: Install Databricks CLI
-        uses: databricks/setup-cli@main
-
-      - name: Configure DEFAULT Databricks profile
-        run: |
-          mkdir -p "$HOME/.databricks"
-          {
-            echo "[DEFAULT]"
-            echo "host = ${DATABRICKS_HOST}"
-            echo "token = ${DATABRICKS_TOKEN}"
-          } > "$HOME/.databrickscfg"
+        uses: databricks/setup-cli@602f285bac0c85e5985bf4c16d5a2befed0578d9 # v1.14.1
 
       - name: Validate packaged bundle
         working-directory: ${{ runner.temp }}/atlas_bundle
-        run: |
-          databricks bundle validate \
-            --profile DEFAULT \
-            -t dev \
-            --var="warehouse_id=${{ secrets.DATABRICKS_WAREHOUSE_ID }}"
+        run: databricks bundle validate -t dev
 
       - name: Summarize packaged bundle
         working-directory: ${{ runner.temp }}/atlas_bundle
-        run: |
-          databricks bundle summary \
-            --profile DEFAULT \
-            -t dev \
-            --var="warehouse_id=${{ secrets.DATABRICKS_WAREHOUSE_ID }}"
+        run: databricks bundle summary -t dev
 
   deploy:
     name: Deploy (${{ github.event.inputs.target || 'dev' }})
     needs: validate
     runs-on: ubuntu-latest
-    # Manual dispatch ONLY — never auto-deploy on push to main. The Activate
-    # step here injects only a partial env (warehouse/catalog/schema/admin) and
-    # would strip the rest of the dev environment (GOVAT_ATLAS_AI_PROVIDER +
-    # GENIE_SPACE_ID, GOVAT_LAKEBASE_*, GOVAT_DISCOVERY_CATALOGS) that the
-    # canonical deploy bakes into app.yaml via `prepare_bundle --target dev`.
-    # An auto-deploy on every main merge silently degraded the live app (Atlas
-    # AI / Genie + Lakebase went offline). Deploys go through the documented
-    # `--target dev` procedure (CLAUDE.md) or an explicit workflow_dispatch.
+    # Manual dispatch only: a deploy changes the live app for everyone.
+    # Workspace-specific values come from the GitHub Environment named after
+    # the target (Settings -> Environments -> <target> -> variables), exposed
+    # to the CLI as BUNDLE_VAR_<name>. The deploy runs as the federated
+    # service principal, so staging/prod (mode: production) land under the
+    # SP's workspace folder, never a person's.
     if: github.event_name == 'workflow_dispatch'
-    environment: ${{ github.event.inputs.target || 'dev' }}
+    environment: ${{ github.event.inputs.target }}
+    env:
+      TARGET: ${{ github.event.inputs.target }}
+      BUNDLE_VAR_app_name: ${{ vars.APP_NAME || 'atlas' }}
+      BUNDLE_VAR_warehouse_id: ${{ vars.DATABRICKS_WAREHOUSE_ID }}
+      BUNDLE_VAR_gov_catalog: ${{ vars.GOV_CATALOG }}
+      BUNDLE_VAR_gov_schema: ${{ vars.GOV_SCHEMA }}
+      BUNDLE_VAR_admin_emails: ${{ vars.ADMIN_EMAILS }}
+      BUNDLE_VAR_discovery_catalogs: ${{ vars.DISCOVERY_CATALOGS }}
+      BUNDLE_VAR_environment_label: ${{ vars.ENVIRONMENT_LABEL }}
+      BUNDLE_VAR_datapact_catalog: ${{ vars.DATAPACT_CATALOG || 'not-configured' }}
+      BUNDLE_VAR_ai_generation_endpoint: ${{ vars.AI_GENERATION_ENDPOINT || 'databricks-claude-opus-4-8' }}
+      BUNDLE_VAR_lineage_lookback_days: ${{ vars.LINEAGE_LOOKBACK_DAYS || '365' }}
+      BUNDLE_VAR_atlas_ai_provider: ${{ vars.ATLAS_AI_PROVIDER || 'local' }}
+      BUNDLE_VAR_genie_space_id: ${{ vars.GENIE_SPACE_ID || 'not-configured' }}
+      BUNDLE_VAR_atlas_ai_require_benchmark: ${{ vars.ATLAS_AI_REQUIRE_BENCHMARK || 'false' }}
+      BUNDLE_VAR_lakebase_enabled: ${{ vars.LAKEBASE_ENABLED || 'false' }}
+      BUNDLE_VAR_lakebase_endpoint_name: ${{ vars.LAKEBASE_ENDPOINT_NAME || 'not-configured' }}
+      BUNDLE_VAR_lakebase_branch: ${{ vars.LAKEBASE_BRANCH || 'not-configured' }}
+      BUNDLE_VAR_lakebase_database_resource: ${{ vars.LAKEBASE_DATABASE_RESOURCE || 'not-configured' }}
+      BUNDLE_VAR_lakebase_schema: ${{ vars.LAKEBASE_SCHEMA || 'atlas_app' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -144,84 +158,23 @@ jobs:
         working-directory: frontend
         run: npm run build
 
-      - name: Prepare clean bundle directory
-        run: python3 scripts/prepare_bundle.py --output "${RUNNER_TEMP}/atlas_bundle"
-
       - name: Install Databricks CLI
-        uses: databricks/setup-cli@main
+        uses: databricks/setup-cli@602f285bac0c85e5985bf4c16d5a2befed0578d9 # v1.14.1
 
-      - name: Configure DEFAULT Databricks profile
-        run: |
-          mkdir -p "$HOME/.databricks"
-          {
-            echo "[DEFAULT]"
-            echo "host = ${DATABRICKS_HOST}"
-            echo "token = ${DATABRICKS_TOKEN}"
-          } > "$HOME/.databrickscfg"
-
-      - name: Set target
-        id: target
-        run: |
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            echo "target=${{ github.event.inputs.target }}" >> "$GITHUB_OUTPUT"
-          else
-            echo "target=dev" >> "$GITHUB_OUTPUT"
-          fi
+      - name: Prepare packaged bundle for target
+        run: python3 scripts/prepare_bundle.py --output "${RUNNER_TEMP}/atlas_bundle" --target "$TARGET"
 
       - name: Deploy packaged bundle
         working-directory: ${{ runner.temp }}/atlas_bundle
-        run: |
-          databricks bundle deploy \
-            --profile DEFAULT \
-            -t "${{ steps.target.outputs.target }}" \
-            --var="warehouse_id=${{ secrets.DATABRICKS_WAREHOUSE_ID }}"
+        run: databricks bundle deploy -t "$TARGET"
 
-      - name: Activate Databricks App from bundle root
-        working-directory: ${{ runner.temp }}/atlas_bundle
+      - name: Deploy Databricks App snapshot
         run: |
-          user_name="$(databricks current-user me --profile DEFAULT -o json | python3 -c 'import json,sys; print(json.load(sys.stdin)["userName"])')"
-          source_code_path="/Workspace/Users/${user_name}/.bundle/atlas/${{ steps.target.outputs.target }}/files"
-          case "${{ steps.target.outputs.target }}" in
-            dev)
-              gov_catalog="datapact"
-              gov_schema="atlas"
-              ;;
-            staging)
-              gov_catalog="staging"
-              gov_schema="atlas"
-              ;;
-            prod)
-              gov_catalog="prod"
-              gov_schema="atlas"
-              ;;
-            *)
-              echo "Unsupported target: ${{ steps.target.outputs.target }}" >&2
-              exit 1
-              ;;
-          esac
-          python3 - <<PY > /tmp/atlas-app-deploy.json
-          import json
-          payload = {
-              "source_code_path": "${source_code_path}",
-              "mode": "SNAPSHOT",
-              "env_vars": [
-                  {"name": "DATABRICKS_WAREHOUSE_ID", "value_from": "sql-warehouse"},
-                  {"name": "GOVAT_CATALOG", "value": "${gov_catalog}"},
-                  {"name": "GOVAT_SCHEMA", "value": "${gov_schema}"},
-                  {"name": "GOVAT_ADMIN_EMAILS", "value": "${{ secrets.GOVAT_ADMIN_EMAILS }}"},
-              ],
-          }
-          print(json.dumps(payload))
-          PY
-          databricks apps start atlas --profile DEFAULT --timeout 20m
-          databricks apps deploy atlas \
-            --profile DEFAULT \
-            --json @/tmp/atlas-app-deploy.json \
+          user_name="$(databricks current-user me -o json | python3 -c 'import json,sys; print(json.load(sys.stdin)["userName"])')"
+          databricks apps start "$BUNDLE_VAR_app_name" --timeout 20m
+          databricks apps deploy "$BUNDLE_VAR_app_name" \
+            --source-code-path "/Workspace/Users/${user_name}/.bundle/atlas/${TARGET}/files" \
             --timeout 20m
 
       - name: Summary
-        run: |
-          echo "### ✅ Deployed to **${{ steps.target.outputs.target }}**" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "Bundle: atlas" >> "$GITHUB_STEP_SUMMARY"
-          echo "Workspace: ${{ secrets.DATABRICKS_HOST }}" >> "$GITHUB_STEP_SUMMARY"
+        run: echo "### Deployed ${BUNDLE_VAR_app_name} to **${TARGET}**" >> "$GITHUB_STEP_SUMMARY"

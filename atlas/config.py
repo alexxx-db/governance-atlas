@@ -72,8 +72,9 @@ class AppConfig:
     atlas_ai_provider: str = "local"
     atlas_ai_require_benchmark: bool = False
     # Foundation-model serving endpoint for generative/agentic features (AI
-    # autofill, draft copy). A reasoning model by default; empty disables it.
-    ai_generation_endpoint: str = "databricks-claude-opus-4-8"
+    # autofill, draft copy). Set via GOVAT_AI_GENERATION_ENDPOINT (default lives
+    # in databricks.yml / app.yaml, not here); empty disables it.
+    ai_generation_endpoint: str = ""
     lakebase_enabled: bool = False
     lakebase_endpoint_name: str = ""
     lakebase_schema: str = ""
@@ -129,7 +130,7 @@ class AppConfig:
             ),
             atlas_ai_require_benchmark=_env_bool("GOVAT_ATLAS_AI_REQUIRE_BENCHMARK", False),
             ai_generation_endpoint=(
-                _env_optional("GOVAT_AI_GENERATION_ENDPOINT") or "databricks-claude-opus-4-8"
+                _env_optional("GOVAT_AI_GENERATION_ENDPOINT") or ""
             ),
             lakebase_enabled=_env_bool("GOVAT_LAKEBASE_ENABLED", False),
             lakebase_endpoint_name=_env_optional("GOVAT_LAKEBASE_ENDPOINT_NAME")

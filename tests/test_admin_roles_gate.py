@@ -15,7 +15,7 @@ from types import ModuleType, SimpleNamespace
 
 import pandas as pd
 
-from tests.test_admin_branding_gate import _find_route, _load_admin_module
+from test_admin_branding_gate import _find_route, _load_admin_module
 
 admin = _load_admin_module()
 

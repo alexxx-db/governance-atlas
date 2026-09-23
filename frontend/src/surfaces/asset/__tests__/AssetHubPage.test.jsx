@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { atlasQueryClient } from "../../../lib/queryClient";
 import { toast, ToastHost } from "../../../components/system";
 import AssetHubPage from "../AssetHubPage";
+import { ShellProvider } from "../../../app-shell/ShellContext";
 
 /* ------------------------------------------------------------------ mocks */
 
@@ -185,13 +186,15 @@ function LocationProbe() {
 function renderPage(initialEntry = `/assets/${encodeURIComponent(FQN)}`) {
   return render(
     <QueryClientProvider client={atlasQueryClient}>
-      <MemoryRouter initialEntries={[initialEntry]}>
-        <Routes>
-          <Route path="/assets/:fqn" element={<AssetHubPage />} />
-        </Routes>
-        <LocationProbe />
-        <ToastHost />
-      </MemoryRouter>
+      <ShellProvider value={{ shell: { workspaceHost: "https://example.cloud.databricks.com" } }}>
+        <MemoryRouter initialEntries={[initialEntry]}>
+          <Routes>
+            <Route path="/assets/:fqn" element={<AssetHubPage />} />
+          </Routes>
+          <LocationProbe />
+          <ToastHost />
+        </MemoryRouter>
+      </ShellProvider>
     </QueryClientProvider>,
   );
 }
@@ -476,7 +479,7 @@ describe("AssetHubPage — header actions", () => {
     await waitFor(() => expect(screen.getByRole("heading", { level: 1 }).textContent).toContain("orders"));
     const button = screen.getByRole("link", { name: "Open in Databricks" });
     expect(button.getAttribute("href")).toBe(
-      "https://dbc-3aa503a9-4fa8.cloud.databricks.com/explore/data/main/sales/orders",
+      "https://example.cloud.databricks.com/explore/data/main/sales/orders",
     );
     expect(button.getAttribute("target")).toBe("_blank");
     expect(button.getAttribute("rel")).toBe("noopener noreferrer");
@@ -498,7 +501,7 @@ describe("AssetHubPage — header actions", () => {
 
     const explorer = within(menu).getByText("Open in Catalog Explorer");
     expect(explorer.closest("a").getAttribute("href")).toBe(
-      "https://dbc-3aa503a9-4fa8.cloud.databricks.com/explore/data/main/sales/orders",
+      "https://example.cloud.databricks.com/explore/data/main/sales/orders",
     );
     expect(explorer.closest("a").getAttribute("rel")).toBe("noopener noreferrer");
 

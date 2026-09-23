@@ -18,10 +18,20 @@
  *      remaining name segments, exactly as system.information_schema names them.
  */
 
-// The bound Databricks workspace host for this deployment. A relative deepLink
-// or a constructed path is meaningless without it — a bare /explore/... href
-// would resolve against the Atlas app origin and 404.
-export const DATABRICKS_WORKSPACE_HOST = "https://dbc-3aa503a9-4fa8.cloud.databricks.com";
+import { useContext } from "react";
+import ShellContext from "../../app-shell/ShellContext";
+import { workspaceHostFromBootstrap } from "../lineage/lineagePresentation";
+
+/**
+ * The Databricks workspace host this deployment is bound to, from the backend
+ * bootstrap (DATABRICKS_HOST, injected by Databricks Apps). Never hard-code
+ * it: a baked-in host sends every other install's links to the wrong
+ * workspace. "" outside the shell or before bootstrap resolves.
+ */
+export function useWorkspaceHost() {
+  const ctx = useContext(ShellContext);
+  return String(ctx?.shell?.workspaceHost || workspaceHostFromBootstrap(ctx?.bootstrap) || "").trim();
+}
 
 /** Trim trailing slashes so host + path never double up. */
 function trimHost(host) {
@@ -36,13 +46,16 @@ function trimHost(host) {
  * @param {string} fqn        three-part Unity Catalog name (catalog.schema.table)
  * @param {string} [deepLink] live access.deepLinks.catalogExplorer (may be
  *                            relative "/explore/..." or already absolute)
- * @param {string} [host]     workspace host (defaults to the bound deployment)
+ * @param {string} [host]     workspace host (useWorkspaceHost())
  */
-export function catalogExplorerUrl(fqn, deepLink, host = DATABRICKS_WORKSPACE_HOST) {
+export function catalogExplorerUrl(fqn, deepLink, host = "") {
   const base = trimHost(host);
   const dl = String(deepLink || "").trim();
+  if (dl && /^https?:\/\//i.test(dl)) return dl; // already absolute — trust it
+  // A relative path without a host would resolve against the Atlas app origin
+  // and 404, so render no link rather than a broken one.
+  if (!base) return "";
   if (dl) {
-    if (/^https?:\/\//i.test(dl)) return dl; // already absolute — trust it
     return `${base}/${dl.replace(/^\/+/, "")}`;
   }
   const parts = String(fqn || "")

@@ -8,7 +8,7 @@ const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..
 const BASE_URL =
   process.env.GOVAT_BASE_URL ||
   process.argv[2] ||
-  "https://atlas-2543889327043640.aws.databricksapps.com";
+  (() => { throw new Error("Set GOVAT_BASE_URL to the deployed Atlas app URL"); })();
 const APP_ORIGIN = new URL(BASE_URL).origin;
 const CDP_URL = process.env.GOVAT_CDP_URL || "http://127.0.0.1:9223";
 const ALLOW_PROFILE_FALLBACK = process.env.GOVAT_ALLOW_CHROME_PROFILE_FALLBACK === "1";

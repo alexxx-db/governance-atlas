@@ -5,7 +5,7 @@ import { copyChromeProfileToTemp, resolveChromeProfileName } from "./chrome_prof
 
 const BASE_URL =
   process.env.GOVAT_BASE_URL ||
-  "https://atlas-2543889327043640.aws.databricksapps.com";
+  (() => { throw new Error("Set GOVAT_BASE_URL to the deployed Atlas app URL"); })();
 const APP_ORIGIN = new URL(BASE_URL).origin;
 const CDP_URL = process.env.GOVAT_CDP_URL || "http://127.0.0.1:9223";
 const ALLOW_CHROME_PROFILE_FALLBACK =
@@ -38,9 +38,12 @@ const rejectRequestNote = `Codex QA reject request note ${suffix}`;
 const glossaryName = `Codex QA Term ${suffix}`;
 const glossaryDefinition = `Codex QA definition ${suffix}`;
 const glossaryDefinitionUpdated = `Codex QA definition updated ${suffix}`;
-const glossaryOwner = "skyler@entrada.ai";
-const glossaryReviewerInitial = "skyler@entrada.ai:reviewer";
-const glossaryReviewerUpdated = "skyler@entrada.ai:approver";
+// A real workspace member the QA run may assign as glossary owner/reviewer.
+const glossaryOwner =
+  process.env.GOVAT_QA_USER_EMAIL ||
+  (() => { throw new Error("Set GOVAT_QA_USER_EMAIL to a workspace member email for glossary QA"); })();
+const glossaryReviewerInitial = `${glossaryOwner}:reviewer`;
+const glossaryReviewerUpdated = `${glossaryOwner}:approver`;
 
 const report = {
   generatedAt: new Date().toISOString(),

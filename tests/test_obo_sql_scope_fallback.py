@@ -8,10 +8,9 @@ scopes: sql``. It happens when a user signed into the app before the
 ``sql`` OBO scope was granted — their token lacks the scope, the warehouse
 rejects it, and the SDK surfaces the rejection as an opaque parse error.
 
-The app-principal client (M2M OAuth with ``sql`` scope) can serve the same
-read, so :class:`runtime_app._UCWithFallback` transparently retries on the
-app principal when it recognizes the scope error. This test exercises that
-retry loop directly so a well-meaning refactor can't strip it out.
+Retrying on the app principal would serve one principal's view of Unity
+Catalog to every user, so :class:`runtime_app._UserScopedUC` turns the scope
+error into an explicit re-authorize 403 and never touches the app principal.
 """
 
 from __future__ import annotations
@@ -48,62 +47,51 @@ class MissingSqlScopeDetectorTests(unittest.TestCase):
         self.assertFalse(uc_module.is_missing_sql_scope_error(None))
 
 
-class UCWithFallbackRetryTests(unittest.TestCase):
+class UserScopedClientTests(unittest.TestCase):
     def setUp(self) -> None:
-        # Import here so monkeypatching in the test module doesn't leak.
-        from runtime_app import _UCWithFallback  # noqa: WPS433
+        import runtime_app  # noqa: WPS433
 
-        self.wrapper_cls = _UCWithFallback
+        self.runtime_app = runtime_app
 
-    def test_latches_to_fallback_after_scope_error(self) -> None:
-        scope_error = RuntimeError(
-            "POST /api/2.0/sql/statements — 403 Forbidden — "
-            "Invalid scope, required scopes: sql"
-        )
+    def test_scope_error_becomes_reauth_403_without_app_principal(self) -> None:
         primary = MagicMock(name="obo-client")
-        primary.list_tables.side_effect = scope_error
-        primary.runtime_context.return_value = {"authMode": "obo-forwarded-token"}
+        primary.list_tables.side_effect = RuntimeError(
+            "POST /api/2.0/sql/statements — 403 Forbidden — Invalid scope, required scopes: sql"
+        )
+        primary.set_table_comment.side_effect = primary.list_tables.side_effect
+        wrapper = self.runtime_app._UserScopedUC(primary)
 
-        fallback = MagicMock(name="app-principal-client")
-        fallback.list_tables.side_effect = [["cat.schema.t1", "cat.schema.t2"], ["cat.schema.t1", "cat.schema.t2"]]
-        fallback.runtime_context.return_value = {"authMode": "oauth-m2m-env"}
+        for call in (lambda: wrapper.list_tables("cat"), lambda: wrapper.set_table_comment("c", "s", "t", "d")):
+            with self.assertRaises(self.runtime_app.HTTPException) as ctx:
+                call()
+            self.assertEqual(ctx.exception.status_code, 403)
+            self.assertIn("sign back in", ctx.exception.detail)
 
-        wrapper = self.wrapper_cls(primary, fallback)
-
-        # First call: primary raises the scope error → wrapper retries on fallback.
-        result = wrapper.list_tables("cat")
-        self.assertEqual(result, ["cat.schema.t1", "cat.schema.t2"])
-        primary.list_tables.assert_called_once_with("cat")
-        fallback.list_tables.assert_called_once_with("cat")
-
-        # Second call: wrapper is latched → primary never touched again.
-        wrapper.list_tables("cat")
-        self.assertEqual(primary.list_tables.call_count, 1)
-        self.assertEqual(fallback.list_tables.call_count, 2)
-
-        # Runtime context reflects the fallback with a scope_fallback marker.
-        context = wrapper.runtime_context()
-        self.assertTrue(context.get("obo_scope_fallback"))
-        self.assertEqual(context.get("authMode"), "oauth-m2m-env")
-
-    def test_unrelated_errors_propagate_without_latching(self) -> None:
+    def test_unrelated_errors_propagate_unchanged(self) -> None:
         primary = MagicMock(name="obo-client")
         primary.list_tables.side_effect = RuntimeError("TABLE_OR_VIEW_NOT_FOUND: foo")
-        primary.runtime_context.return_value = {"authMode": "obo-forwarded-token"}
-        fallback = MagicMock(name="app-principal-client")
-        fallback.runtime_context.return_value = {"authMode": "oauth-m2m-env"}
-
-        wrapper = self.wrapper_cls(primary, fallback)
-
+        wrapper = self.runtime_app._UserScopedUC(primary)
         with self.assertRaisesRegex(RuntimeError, "TABLE_OR_VIEW_NOT_FOUND"):
             wrapper.list_tables("cat")
 
-        # Fallback was never consulted — the wrapper should only intercept
-        # the sql-scope shape, not mask unrelated UC errors.
-        fallback.list_tables.assert_not_called()
-        # And the wrapper did not latch.
-        context = wrapper.runtime_context()
-        self.assertFalse(context.get("obo_scope_fallback"))
+    def test_success_passes_through(self) -> None:
+        primary = MagicMock(name="obo-client")
+        primary.list_tables.return_value = ["t"]
+        primary.cache_scope = "obo-abc"
+        wrapper = self.runtime_app._UserScopedUC(primary)
+        self.assertEqual(wrapper.list_tables("cat"), ["t"])
+        self.assertEqual(wrapper.cache_scope, "obo-abc")
+
+
+class SqlLiteralEscapingTests(unittest.TestCase):
+    def test_backslash_cannot_break_out_of_literal(self) -> None:
+        from atlas.util import sql_literal
+
+        # `\'` must not become an escaped quote that lets `''` close the literal.
+        self.assertEqual(sql_literal("x\\' OR 1=1 --"), "'x\\\\'' OR 1=1 --'")
+        self.assertEqual(sql_literal("a\\d+"), "'a\\\\d+'")
+        self.assertEqual(sql_literal("it's"), "'it''s'")
+        self.assertEqual(sql_literal(None), "NULL")
 
 
 if __name__ == "__main__":

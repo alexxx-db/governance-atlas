@@ -2266,8 +2266,8 @@ def _lineage_grounding(question: str, context_fqn: str, uc: Any) -> dict | None:
     if wants_down and not any(tok in text for tok in _LINEAGE_Q_UP):
         wants_up = False
     catalog, schema, table = fqn.split(".", 2)
-    # Try each client (OBO carries the actor's system.access grant; the app SP
-    # is the fallback). Track whether the read SUCCEEDED so we never assert
+    # Read as the requesting user only: an app-SP fallback would reveal lineage
+    # neighbours the user cannot see. Track whether the read SUCCEEDED so we never assert
     # "no lineage" off a permission failure — that would contradict the graph.
     read_ok = False
     up = down = None
@@ -2349,7 +2349,7 @@ def _finalize_genie_payload(raw_payload, *, question, request, ai_context, genie
     _ctx_fqn = _normalize_str(getattr(ai_context, "assetFqn", "")) if ai_context else ""
     if _ctx_fqn:
         try:
-            lineage_ground = _lineage_grounding(question, _ctx_fqn, [_uc_for_request(request), _uc()])
+            lineage_ground = _lineage_grounding(question, _ctx_fqn, [_uc_for_request(request)])
         except Exception:
             lineage_ground = None
     grounding = lineage_ground or _canonical_estate_grounding(
@@ -2423,7 +2423,7 @@ def api_atlas_ai_recommendations(
     _early_ground = None
     if _early_ctx_fqn:
         try:
-            _early_ground = _lineage_grounding(question, _early_ctx_fqn, [_uc_for_request(request), _uc()])
+            _early_ground = _lineage_grounding(question, _early_ctx_fqn, [_uc_for_request(request)])
         except Exception:
             _early_ground = None
     # Ownership grounding (per-asset owner, domain ownerless counts, superlatives)

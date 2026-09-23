@@ -6,7 +6,7 @@ import { chromium } from "playwright";
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const BASE_URL =
   process.env.GOVAT_BASE_URL ||
-  "https://atlas-2543889327043640.aws.databricksapps.com";
+  (() => { throw new Error("Set GOVAT_BASE_URL to the deployed Atlas app URL"); })();
 const TOKEN = process.env.GOVAT_DATABRICKS_TOKEN || "";
 const FORWARDED_EMAIL = (process.env.GOVAT_CAPTURE_FORWARDED_EMAIL || "").trim();
 const FORWARDED_USERNAME = (process.env.GOVAT_CAPTURE_FORWARDED_USERNAME || FORWARDED_EMAIL).trim();

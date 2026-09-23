@@ -497,39 +497,30 @@ def _uc_for_token(user_access_token: str) -> UCSQLClient:
     return client
 
 
-class _UCWithFallback:
-    """Thin wrapper that delegates to an OBO-scoped UC client and transparently
-    retries on the app-principal client when the OBO token is missing the
-    ``sql`` scope.
+_REAUTH_DETAIL = (
+    "Your Databricks sign-in for this app predates a permission it now needs. "
+    "Sign out of the app and sign back in, then retry."
+)
 
-    Background: when Databricks Apps adds a new OBO scope (e.g. ``sql``),
-    users who signed in before the scope was granted carry tokens that
-    don't include it. The warehouse rejects those with
-    ``403 Forbidden — Invalid scope, required scopes: sql``. The SDK
-    can't decode that envelope and surfaces it as a generic parse error.
-    Prior to this wrapper the error propagated all the way to the UI as
-    a 503 "Discovery search is unavailable" banner — even though the
-    app-principal client on the same warehouse would have succeeded.
 
-    Behavior: the first ``sql`` scope failure latches the wrapper to
-    the fallback client for the rest of the request lifecycle. Per-user
-    metadata that would be filtered by OBO is still honored where
-    available (we only take this path for the read operations that
-    are scoped at the warehouse — catalogs/schemas/tables/info_schema).
+class _UserScopedUC:
+    """Per-user (OBO) UC client that never falls back to the app principal.
+
+    Users who signed in before an OBO scope (e.g. ``sql``) was granted carry
+    tokens without it; the warehouse rejects them with ``403 Invalid scope,
+    required scopes: sql`` and the SDK surfaces that as an opaque parse error.
+    We used to retry such calls on the app service principal, which served
+    one principal's view of Unity Catalog to every user (confused deputy).
+    Now the error becomes an explicit re-authorize 403 instead.
     """
 
-    __slots__ = ("_primary", "_fallback", "_latched")
+    __slots__ = ("_client",)
 
-    def __init__(self, primary: UCSQLClient, fallback: UCSQLClient) -> None:
-        self._primary = primary
-        self._fallback = fallback
-        self._latched = primary is fallback
-
-    def _active(self) -> UCSQLClient:
-        return self._fallback if self._latched else self._primary
+    def __init__(self, client: UCSQLClient) -> None:
+        self._client = client
 
     def __getattr__(self, name: str) -> Any:
-        attr = getattr(self._active(), name)
+        attr = getattr(self._client, name)
         if not callable(attr):
             return attr
 
@@ -537,38 +528,25 @@ class _UCWithFallback:
             try:
                 return attr(*args, **kwargs)
             except Exception as exc:
-                if not self._latched and is_missing_sql_scope_error(exc):
-                    logging.getLogger(__name__).info(
-                        "OBO client missing sql scope; retrying %s via app-principal fallback",
-                        name,
-                    )
-                    self._latched = True
-                    fallback_attr = getattr(self._fallback, name)
-                    return fallback_attr(*args, **kwargs)
+                if is_missing_sql_scope_error(exc):
+                    raise HTTPException(status_code=403, detail=_REAUTH_DETAIL) from exc
                 raise
 
         return _wrapped
 
-    # Surface the underlying runtime_context of whichever client is active
-    # so diagnostics reflect which path served the request.
-    def runtime_context(self) -> Dict[str, Any]:
-        context = dict(self._active().runtime_context())
-        if self._latched and self._primary is not self._fallback:
-            context.setdefault("obo_scope_fallback", True)
-        return context
-
 
 def _uc_for_request(request: Optional[Request]) -> UCSQLClient:
+    """UC client for this request: the signed-in user's when a forwarded
+    token is present, else the app principal (apps deployed without OBO)."""
     token = _request_obo_token(request)
-    if token:
-        try:
-            obo_client = _uc_for_token(token)
-        except Exception:
-            # Per-user client construction failed; fall back to the app-principal
-            # client so the read path stays available.
-            return _uc()
-        return _UCWithFallback(obo_client, _uc())  # type: ignore[return-value]
-    return _uc()
+    if not token:
+        return _uc()
+    try:
+        obo_client = _uc_for_token(token)
+    except Exception as exc:
+        logging.getLogger(__name__).warning("OBO client construction failed: %s", type(exc).__name__)
+        raise HTTPException(status_code=403, detail=_REAUTH_DETAIL) from exc
+    return _UserScopedUC(obo_client)  # type: ignore[return-value]
 
 
 @lru_cache(maxsize=1)
@@ -2529,7 +2507,15 @@ def _warmup_live_runtime() -> None:
 
 
 _BACKGROUND_DRAINER_STOPPED = False
-_BACKGROUND_DRAINER_INTERVAL_S = 30
+# The drainer sleeps until woken (enqueue or shutdown) instead of polling:
+# a SELECT every 30s kept the SQL warehouse from ever auto-stopping, billing
+# it 24x7 on every target for a queue that is almost always empty.
+_BACKGROUND_DRAINER_WAKE = threading.Event()
+
+
+def _wake_background_drainer() -> None:
+    """Ask the drainer to run one drain pass now (called after enqueue)."""
+    _BACKGROUND_DRAINER_WAKE.set()
 # Minimal truth snapshot for the background drainer so operators can see
 # whether it is alive, how many items it has drained, when it last ran,
 # and any latched error without having to read app logs. Updated in
@@ -2553,10 +2539,10 @@ def _background_drainer_snapshot() -> Dict[str, Any]:
 
 
 def _start_background_drainer() -> None:
-    """Phase 12 — continuous background work runner.
+    """Phase 12 — background work runner.
 
-    Polls the governance store on a fixed interval and drains up to 5
-    queued work items per tick. Same drain_queued_batch contract as
+    Drains once at startup (items left by a restart), then only when
+    woken by _wake_background_drainer(). Same drain_queued_batch contract as
     the admin-triggered batch endpoint; running inside the app lets
     async exports complete without any external cron wiring.
 
@@ -2568,13 +2554,17 @@ def _start_background_drainer() -> None:
 
     _BACKGROUND_DRAINER_STOPPED = False
 
-    import time
     from atlas.services.background_runner import drain_queued_batch
     from atlas.api.export import _handle_export_work
 
     def _drain_loop() -> None:
         _DRAINER_STATE["running"] = True
+        _BACKGROUND_DRAINER_WAKE.set()  # one startup pass
         while not _BACKGROUND_DRAINER_STOPPED:
+            _BACKGROUND_DRAINER_WAKE.wait()
+            _BACKGROUND_DRAINER_WAKE.clear()
+            if _BACKGROUND_DRAINER_STOPPED:
+                break
             try:
                 _ensure_governance_store()
                 store = _store()
@@ -2594,13 +2584,6 @@ def _start_background_drainer() -> None:
                 # Don't let a transient store failure kill the drainer —
                 # we want it to keep retrying on the next tick.
                 _DRAINER_STATE["lastError"] = _format_runtime_message(exc)
-            # Sleep in short chunks so shutdown doesn't wait a full
-            # interval to observe the stop flag.
-            for _ in range(_BACKGROUND_DRAINER_INTERVAL_S):
-                if _BACKGROUND_DRAINER_STOPPED:
-                    _DRAINER_STATE["running"] = False
-                    return
-                time.sleep(1)
         _DRAINER_STATE["running"] = False
 
     thread = threading.Thread(target=_drain_loop, name="atlas-bg-drainer", daemon=True)
@@ -2610,6 +2593,7 @@ def _start_background_drainer() -> None:
 def _stop_background_drainer() -> None:
     global _BACKGROUND_DRAINER_STOPPED
     _BACKGROUND_DRAINER_STOPPED = True
+    _BACKGROUND_DRAINER_WAKE.set()
 
 
 from atlas.api.assets import (  # noqa: E402

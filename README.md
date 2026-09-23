@@ -138,8 +138,11 @@ Real installs should override `GOVAT_CATALOG`, `GOVAT_SCHEMA`, and
 `GOVAT_ADMIN_EMAILS` per workspace. Genie and Lakebase are optional resources:
 leave `GOVAT_ATLAS_AI_PROVIDER=local` and `GOVAT_LAKEBASE_ENABLED=false` for a
 minimal install, or bind a curated Genie space plus Lakebase branch/database in
-the bundle target. The `dev` target in `databricks.yml` is Entrada's internal
-validation target and is not a portable default for customer workspaces.
+the bundle target. No workspace-specific value is committed: every target reads
+its values from `BUNDLE_VAR_<name>` environment variables. Copy `.env.example` to
+`.env.<target>` (gitignored), fill it in, and `set -a; . ./.env.<target>; set +a`
+before `prepare_bundle.py` / `bundle deploy`. The `dev` target also binds Genie,
+model serving and Lakebase, so those variables are required there.
 
 ## Governance Tables
 

@@ -1,8 +1,12 @@
 bundle:
   name: atlas
 
+# No workspace profile/host here: pick it with `--profile` (or
+# DATABRICKS_CONFIG_PROFILE) so any operator can deploy to their own workspace.
+# Workspace-specific values (warehouse, catalogs, admins, Genie, Lakebase) are
+# never committed: supply them as BUNDLE_VAR_<name> env vars, e.g. by sourcing
+# a gitignored .env.<target> copied from .env.example.
 workspace:
-  profile: DEFAULT
   root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
 
 # ── Sync overrides ─────────────────────────────────────────
@@ -28,6 +32,9 @@ sync:
 # Override per-target or via CLI:
 # databricks bundle deploy --profile DEFAULT -t prod --var="warehouse_id=<warehouse-id>"
 variables:
+  app_name:
+    description: "Databricks App name; must be unique per workspace, so give staging/prod distinct names if they share one"
+    default: "atlas"
   warehouse_id:
     description: "SQL Warehouse ID the app uses for UC queries"
   gov_catalog:
@@ -78,6 +85,12 @@ variables:
   lakebase_uc_catalog:
     description: "Optional UC catalog registered for Lakebase synced/foreign tables"
     default: "not-configured"
+  lineage_lookback_days:
+    description: "event_date window (days) for system.access lineage reads; lower = cheaper scans but hides older edges"
+    default: "365"
+  ai_generation_endpoint:
+    description: "Foundation-model serving endpoint for AI autofill; empty disables it"
+    default: "databricks-claude-opus-4-8"
   datapact_catalog:
     description: "UC catalog hosting the DataPact control plane (<catalog>.datapact). Empty/not-configured = auto-discover from DataPact's /Shared/DataPact pointer file."
     default: "not-configured"
@@ -86,7 +99,7 @@ variables:
 resources:
   apps:
     atlas:
-      name: atlas
+      name: ${var.app_name}
       description: >
         Governance Atlas - a Databricks-native enterprise metadata workspace
         extending Unity Catalog, deployable to any Databricks workspace.
@@ -128,6 +141,10 @@ resources:
             value: ${var.lakebase_uc_catalog}
           - name: GOVAT_DATAPACT_CATALOG
             value: ${var.datapact_catalog}
+          - name: GOVAT_AI_GENERATION_ENDPOINT
+            value: ${var.ai_generation_endpoint}
+          - name: GOVAT_LINEAGE_LOOKBACK_DAYS
+            value: ${var.lineage_lookback_days}
       # OBO (on-behalf-of-user) scopes. Without these declared here, every
       # `bundle deploy` wipes scopes the operator set in the Databricks UI,
       # which silently demotes user reads to app-principal fallback and makes
@@ -163,26 +180,11 @@ targets:
   dev:
     mode: development
     default: true
-    # Entrada internal dev target: binds the current managed Genie/Lakebase
-    # resources used for live validation. Portable installs should override
-    # these variables or use targets without these optional resource bindings.
+    # Binds Genie + model serving + Lakebase, so BUNDLE_VAR_genie_space_id,
+    # BUNDLE_VAR_lakebase_branch and BUNDLE_VAR_lakebase_database_resource must
+    # be set (see .env.example); all other values also come from BUNDLE_VAR_*.
     variables:
-      gov_catalog: datapact
-      gov_schema: atlas
-      discovery_catalogs: "datapact,finance_prod,customer_360,sales_prod,product_events,hr_secure,marketing_mart"
-      admin_emails: "skyler@entrada.ai"
-      environment_label: "Dev - DEFAULT"
       deploy_target: "Dev"
-      atlas_ai_provider: "genie"
-      genie_space_id: "01f1406a11221afa985d3fe64c9fbea1"
-      atlas_ai_require_benchmark: "true"
-      lakebase_enabled: "true"
-      lakebase_endpoint_name: "projects/governance-atlas-state/branches/production/endpoints/primary"
-      lakebase_branch: "projects/governance-atlas-state/branches/production"
-      lakebase_database_resource: "projects/governance-atlas-state/branches/production/databases/db-y68x-6gpq0zhrl4"
-      lakebase_schema: "atlas_app"
-      # DataPact control plane lives in main.datapact on this workspace.
-      datapact_catalog: "main"
     resources:
       apps:
         atlas:
@@ -200,7 +202,7 @@ targets:
             # used by AI autofill (drafts glossary definitions, etc.).
             - name: atlas-ai-generation
               serving_endpoint:
-                name: databricks-claude-opus-4-8
+                name: ${var.ai_generation_endpoint}
                 permission: CAN_QUERY
             - name: atlas-lakebase
               postgres:
@@ -208,16 +210,20 @@ targets:
                 database: ${var.lakebase_database_resource}
                 permission: CAN_CONNECT_AND_CREATE
 
+  # staging/prod: deploy ONLY from CI as a service principal (see
+  # .github/workflows/deploy.yml). Production mode blocks development-mode
+  # shortcuts, and because root_path is the deploying identity's home, a
+  # service-principal deploy lands under that SP, not a person's folder.
   staging:
+    mode: production
+    workspace:
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
     variables:
-      gov_catalog: staging
-      gov_schema: atlas
-      environment_label: "Stage - DEFAULT"
       deploy_target: "Stage"
 
   prod:
+    mode: production
+    workspace:
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
     variables:
-      gov_catalog: prod
-      gov_schema: atlas
-      environment_label: "Prod - DEFAULT"
       deploy_target: "Prod"

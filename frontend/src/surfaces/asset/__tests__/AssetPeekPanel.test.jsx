@@ -4,6 +4,7 @@ import { MemoryRouter, useLocation } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { atlasQueryClient } from "../../../lib/queryClient";
 import { AssetPeekPanel } from "../AssetPeekPanel";
+import { ShellProvider } from "../../../app-shell/ShellContext";
 
 const api = vi.hoisted(() => ({
   fetchAssetDetail: vi.fn(),
@@ -25,10 +26,12 @@ function renderPanel(props = {}) {
   const onClose = vi.fn();
   const view = render(
     <QueryClientProvider client={atlasQueryClient}>
-      <MemoryRouter initialEntries={[`/discovery?peek=${encodeURIComponent(FQN)}`]}>
-        <AssetPeekPanel fqn={FQN} open onClose={onClose} {...props} />
-        <LocationProbe />
-      </MemoryRouter>
+      <ShellProvider value={{ shell: { workspaceHost: "https://example.cloud.databricks.com" } }}>
+        <MemoryRouter initialEntries={[`/discovery?peek=${encodeURIComponent(FQN)}`]}>
+          <AssetPeekPanel fqn={FQN} open onClose={onClose} {...props} />
+          <LocationProbe />
+        </MemoryRouter>
+      </ShellProvider>
     </QueryClientProvider>,
   );
   return { ...view, onClose };
@@ -118,7 +121,7 @@ describe("AssetPeekPanel", () => {
     const dialog = await screen.findByRole("dialog");
     const link = await within(dialog).findByRole("link", { name: "Open in Databricks" });
     expect(link.getAttribute("href")).toBe(
-      "https://dbc-3aa503a9-4fa8.cloud.databricks.com/explore/data/main/sales/orders",
+      "https://example.cloud.databricks.com/explore/data/main/sales/orders",
     );
     expect(link.getAttribute("target")).toBe("_blank");
     expect(link.getAttribute("rel")).toBe("noopener noreferrer");
