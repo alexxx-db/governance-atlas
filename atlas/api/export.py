@@ -754,6 +754,9 @@ def api_export_enqueue(payload: EnqueueExportRequest, request: Request) -> JSONR
         )
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"Failed to enqueue export work: {exc}") from exc
+    from runtime_app import _wake_background_drainer
+
+    _wake_background_drainer()
     return JSONResponse(
         status_code=202,
         content={

@@ -702,7 +702,7 @@ export function DiscoveryPage({
           <input
             aria-label="Search discovery assets"
             onChange={(event) => setQueryDraft(event.target.value)}
-            placeholder='Try: revenue, customer_id, owner:"skyler@entrada.ai", tag:CDE…'
+            placeholder='Try: revenue, customer_id, owner:"name@company.com", tag:CDE…'
             type="search"
             value={queryDraft}
           />

@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 import time
@@ -20,8 +21,8 @@ from datetime import datetime, timedelta, timezone
 from typing import Any, Iterable
 
 
-DEFAULT_PROFILE = "DEFAULT"
-DEFAULT_WAREHOUSE_ID = "da02d15a9490650b"  # cotality_dais
+DEFAULT_PROFILE = os.getenv("ATLAS_PROFILE", "DEFAULT")
+DEFAULT_WAREHOUSE_ID = os.getenv("BUNDLE_VAR_warehouse_id") or os.getenv("DATABRICKS_WAREHOUSE_ID") or ""
 DEFAULT_CATALOG = "datapact"
 DEFAULT_DEMO_SCHEMA = "enterprise_metadata_ops"
 DEFAULT_STORE_SCHEMA = "atlas"
@@ -30,7 +31,7 @@ SEED_PREFIX = "GOV-HOME-EVIDENCE"
 LEGACY_SEED_PREFIX = "ga-home-evidence"
 SEED_SOURCE = "home-evidence-plane"
 LEGACY_SEED_SOURCE = "home-northstar-seed"
-SEED_ACTOR = "skyler@entrada.ai"
+SEED_ACTOR = os.getenv("GOVAT_SEED_ACTOR", "atlas.seed@example.com")
 
 
 @dataclass(frozen=True)
@@ -721,7 +722,7 @@ def verify(args: argparse.Namespace) -> dict[str, int]:
 def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--profile", default=DEFAULT_PROFILE)
-    parser.add_argument("--warehouse-id", default=DEFAULT_WAREHOUSE_ID)
+    parser.add_argument("--warehouse-id", default=DEFAULT_WAREHOUSE_ID, required=not DEFAULT_WAREHOUSE_ID)
     parser.add_argument("--catalog", default=DEFAULT_CATALOG)
     parser.add_argument("--demo-schema", default=DEFAULT_DEMO_SCHEMA)
     parser.add_argument("--store-catalog", default=DEFAULT_CATALOG)

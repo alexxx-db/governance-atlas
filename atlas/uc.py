@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Tuple
 
 import pandas as pd
 
-from .util import quote_ident, quote_uc_3part, sql_literal
+from .util import lineage_window_predicate, quote_ident, quote_uc_3part, sql_literal
 
 if TYPE_CHECKING:
     from databricks.sdk import WorkspaceClient
@@ -79,9 +79,9 @@ def is_missing_sql_scope_error(exc: Exception | None) -> bool:
     surfaced text so the signal is resilient across SDK versions.
 
     Detection matters because this error is recoverable: the user simply
-    hasn't re-authorized the app since the ``sql`` scope was added, so the
-    request succeeds if we retry on the app-principal client instead. See
-    runtime_app.py :class:`_UCWithFallback` for the retry loop.
+    hasn't re-authorized the app since the ``sql`` scope was added. See
+    runtime_app.py :class:`_UserScopedUC`, which turns it into a re-authorize
+    403 (never an app-principal retry).
     """
     if exc is None:
         return False
@@ -224,9 +224,13 @@ class UCSQLClient:
                 self._client_context["authType"] = "pat"
                 return client
             except Exception as exc:
-                explicit_error = exc
-                self._client_context["authMode"] = "obo-fallback"
+                # Never fall through to app-principal credentials while claiming
+                # to be a per-user client: cache_scope would still say obo-*, and
+                # UC writes would silently run with the SP's grants. Callers
+                # (runtime_app._uc_for_request) decide the degraded read path.
+                self._client_context["authMode"] = "obo-init-failed"
                 self._client_context["clientInitError"] = _safe_error_text(exc)
+                raise
         if host and client_id and client_secret:
             try:
                 client = workspace_client(
@@ -382,32 +386,38 @@ class UCSQLClient:
         schema: str | None = None,
         timeout_s: int = 30,
     ) -> pd.DataFrame:
+        # One deadline for the whole call (server wait + client polling);
+        # previously the poll restarted the clock, so the real limit was ~2x.
+        deadline = time.monotonic() + timeout_s
         resp = self.w.statement_execution.execute_statement(
             warehouse_id=self.warehouse_id,
             statement=statement,
             catalog=catalog,
             schema=schema,
-            wait_timeout=f"{timeout_s}s",
+            # The API accepts 5-50s; longer budgets continue via polling.
+            wait_timeout=f"{min(max(int(timeout_s), 5), 50)}s",
         )
 
         statement_id = _get(resp, "statement_id")
         state = _state_str(_get(resp, "status", "state"))
 
-        # Server-side wait_timeout usually returns SUCCEEDED already, but
-        # poll as a safety net for long-running DDL statements.
-        poll_deadline = time.time() + timeout_s
-        while (
-            state in {"PENDING", "RUNNING"}
-            and statement_id
-            and time.time() < poll_deadline
-        ):
-            time.sleep(0.5)
+        delay = 0.25
+        while state in {"PENDING", "RUNNING"} and statement_id and time.monotonic() < deadline:
+            time.sleep(min(delay, max(0.0, deadline - time.monotonic())))
+            delay = min(delay * 2, 2.0)
             resp = self.w.statement_execution.get_statement(statement_id)
             state = _state_str(_get(resp, "status", "state"))
 
         if state in {"PENDING", "RUNNING"}:
+            # Cancel so an abandoned statement stops burning warehouse compute
+            # (and a timed-out write can't commit after the caller saw an error).
+            if statement_id:
+                try:
+                    self.w.statement_execution.cancel_execution(statement_id)
+                except Exception:
+                    _LOGGER.warning("cancel_execution failed for statement %s", statement_id)
             raise TimeoutError(
-                f"Statement timed out after {timeout_s}s"
+                f"Statement timed out after {timeout_s}s and was cancelled"
                 + (f" (statement_id={statement_id})" if statement_id else "")
             )
         if state == "FAILED":
@@ -449,16 +459,18 @@ class UCSQLClient:
         return self.query_df("SHOW CATALOGS")
 
     def list_lineage_catalogs(self) -> pd.DataFrame:
-        query = """
+        query = f"""
 SELECT DISTINCT catalog
 FROM (
     SELECT CAST(source_table_catalog AS STRING) AS catalog
     FROM system.access.table_lineage
-    WHERE source_table_catalog IS NOT NULL
+    WHERE {lineage_window_predicate()}
+      AND source_table_catalog IS NOT NULL
     UNION ALL
     SELECT CAST(target_table_catalog AS STRING) AS catalog
     FROM system.access.table_lineage
-    WHERE target_table_catalog IS NOT NULL
+    WHERE {lineage_window_predicate()}
+      AND target_table_catalog IS NOT NULL
 )
 WHERE catalog IS NOT NULL
 ORDER BY catalog
@@ -1091,7 +1103,8 @@ SELECT
     source_table_name,
     source_type
 FROM system.access.table_lineage
-WHERE target_table_catalog = {sql_literal(catalog)}
+WHERE {lineage_window_predicate()}
+  AND target_table_catalog = {sql_literal(catalog)}
   AND target_table_schema  = {sql_literal(schema)}
   AND target_table_name    = {sql_literal(table)}
   AND source_table_name IS NOT NULL
@@ -1113,7 +1126,8 @@ SELECT
     target_table_name,
     target_type
 FROM system.access.table_lineage
-WHERE source_table_catalog = {sql_literal(catalog)}
+WHERE {lineage_window_predicate()}
+  AND source_table_catalog = {sql_literal(catalog)}
   AND source_table_schema  = {sql_literal(schema)}
   AND source_table_name    = {sql_literal(table)}
   AND target_table_name IS NOT NULL
@@ -1242,7 +1256,8 @@ WITH deduped AS (
         MAX(target_type) AS target_type,
         COUNT(*) AS edge_event_count
     FROM system.access.table_lineage
-    WHERE {where_clause}
+    WHERE {lineage_window_predicate()}
+      AND ({where_clause})
     GROUP BY ALL
 ),
 ranked AS (
@@ -1301,7 +1316,8 @@ SELECT
     source_column_name,
     target_column_name
 FROM system.access.column_lineage
-WHERE target_table_catalog = {sql_literal(catalog)}
+WHERE {lineage_window_predicate()}
+  AND target_table_catalog = {sql_literal(catalog)}
   AND target_table_schema  = {sql_literal(schema)}
   AND target_table_name    = {sql_literal(table)}
   AND source_table_full_name IS NOT NULL
@@ -1325,7 +1341,8 @@ SELECT
     target_table_full_name,
     target_column_name
 FROM system.access.column_lineage
-WHERE source_table_catalog = {sql_literal(catalog)}
+WHERE {lineage_window_predicate()}
+  AND source_table_catalog = {sql_literal(catalog)}
   AND source_table_schema  = {sql_literal(schema)}
   AND source_table_name    = {sql_literal(table)}
   AND target_table_full_name IS NOT NULL
@@ -1378,7 +1395,8 @@ SELECT
     CAST(statement_id AS STRING)     AS statement_id,
     CAST(entity_metadata AS STRING)  AS entity_metadata
 FROM system.access.table_lineage
-WHERE target_table_catalog = {sql_literal(catalog)}
+WHERE {lineage_window_predicate()}
+  AND target_table_catalog = {sql_literal(catalog)}
   AND target_table_schema  = {sql_literal(schema)}
   AND target_table_name    = {sql_literal(table)}
   AND source_table_name IS NOT NULL
@@ -1400,7 +1418,8 @@ SELECT
     CAST(statement_id AS STRING)     AS statement_id,
     '' AS entity_metadata
 FROM system.access.table_lineage
-WHERE target_table_catalog = {sql_literal(catalog)}
+WHERE {lineage_window_predicate()}
+  AND target_table_catalog = {sql_literal(catalog)}
   AND target_table_schema  = {sql_literal(schema)}
   AND target_table_name    = {sql_literal(table)}
   AND source_table_name IS NOT NULL
@@ -1435,7 +1454,8 @@ SELECT
     CAST(statement_id AS STRING)     AS statement_id,
     CAST(entity_metadata AS STRING)  AS entity_metadata
 FROM system.access.table_lineage
-WHERE source_table_catalog = {sql_literal(catalog)}
+WHERE {lineage_window_predicate()}
+  AND source_table_catalog = {sql_literal(catalog)}
   AND source_table_schema  = {sql_literal(schema)}
   AND source_table_name    = {sql_literal(table)}
   AND target_table_name IS NOT NULL
@@ -1457,7 +1477,8 @@ SELECT
     CAST(statement_id AS STRING)     AS statement_id,
     '' AS entity_metadata
 FROM system.access.table_lineage
-WHERE source_table_catalog = {sql_literal(catalog)}
+WHERE {lineage_window_predicate()}
+  AND source_table_catalog = {sql_literal(catalog)}
   AND source_table_schema  = {sql_literal(schema)}
   AND source_table_name    = {sql_literal(table)}
   AND target_table_name IS NOT NULL

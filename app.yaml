@@ -45,3 +45,7 @@ env:
     value: "atlas_app"
   - name: GOVAT_LAKEBASE_UC_CATALOG
     value: "not-configured"
+  - name: GOVAT_AI_GENERATION_ENDPOINT
+    value: "databricks-claude-opus-4-8"
+  - name: GOVAT_LINEAGE_LOOKBACK_DAYS
+    value: "365"

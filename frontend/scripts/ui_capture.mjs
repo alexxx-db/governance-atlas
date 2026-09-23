@@ -7,7 +7,7 @@ import { mkdirSync } from "fs";
 
 // ATLAS_CAPTURE_BASE overrides the target (e.g. http://localhost:3100 for the
 // vite dev server with the /api live proxy — token can be "none" there).
-const BASE = process.env.ATLAS_CAPTURE_BASE || "https://atlas-2543889327043640.aws.databricksapps.com";
+const BASE = process.env.ATLAS_CAPTURE_BASE || (() => { throw new Error("Set ATLAS_CAPTURE_BASE to the deployed Atlas app URL"); })();
 const token = process.argv[2];
 const outdir = process.argv[3] || "./shots";
 const only = process.argv.slice(4);

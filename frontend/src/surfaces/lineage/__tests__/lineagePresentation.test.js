@@ -11,7 +11,7 @@ import {
  * dead or wrong link) when it can't stand behind one.
  */
 describe("catalogExplorerUrl", () => {
-  const host = "https://dbc-3aa503a9-4fa8.cloud.databricks.com";
+  const host = "https://example.cloud.databricks.com";
 
   it("constructs /explore/data/<catalog>/<schema>/<table> from host + fqn", () => {
     expect(catalogExplorerUrl("cat.sch.tbl", host)).toBe(

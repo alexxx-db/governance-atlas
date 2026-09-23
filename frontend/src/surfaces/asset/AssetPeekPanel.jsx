@@ -5,7 +5,7 @@ import { useAsset360 } from "../../hooks/useAsset360";
 import { useAssetDetail } from "../../hooks/useAssetDetail";
 import { useAtlasNavigate } from "../../nav/useAtlasNavigate";
 import { AssetTrustHero } from "./AssetTrustHero";
-import { ExternalLink, catalogExplorerUrl } from "./ExternalLink";
+import { ExternalLink, catalogExplorerUrl, useWorkspaceHost } from "./ExternalLink";
 
 /*
  * AssetPeekPanel — the ?peek=<fqn> quick preview (teardown item 11 / P3-15).
@@ -61,7 +61,8 @@ export function AssetPeekPanel({ fqn = "", open = true, onClose = null }) {
   // Owner directive 2: the peek drawer gets the SAME first-class "Open in
   // Databricks" affordance as the hub header — deepLink preferred, constructed
   // Catalog Explorer URL as the fallback for any real FQN.
-  const explorerHref = catalogExplorerUrl(fqn, a360.data?.access?.deepLinks?.catalogExplorer);
+  const workspaceHost = useWorkspaceHost();
+  const explorerHref = catalogExplorerUrl(fqn, a360.data?.access?.deepLinks?.catalogExplorer, workspaceHost);
 
   const openFullRecord = () => {
     onClose?.();

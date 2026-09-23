@@ -66,9 +66,13 @@ class RunProfileTests(unittest.TestCase):
         uc = FakeUC(
             {
                 "select count(*) as row_count": [{"row_count": 1000}],
-                "approx_count_distinct": [{"nulls": 50, "distinct_count": 200}],
-                "min(`amount`)": [{"min_v": 1.5, "max_v": 99.5, "mean_v": 42.7, "std_v": 5.0}],
-                "min(`customer_id`)": [{"min_v": 1, "max_v": 999, "mean_v": 500, "std_v": 100}],
+                # One aggregate row for all columns, aliased by column index.
+                "approx_count_distinct": [{
+                    "sampled_rows": 1000,
+                    "n0": 0, "d0": 999, "mn0": 1, "mx0": 999, "av0": 500, "sd0": 100,
+                    "n1": 50, "d1": 200, "mn1": 1.5, "mx1": 99.5, "av1": 42.7, "sd1": 5.0,
+                    "n2": 0, "d2": 4,
+                }],
             }
         )
         store = FakeStore()
@@ -92,6 +96,7 @@ class RunProfileTests(unittest.TestCase):
         self.assertEqual(len(store.col_metrics), 3)
         amount = next(m for m in store.col_metrics if m["column_name"] == "amount")
         self.assertAlmostEqual(amount["mean_value"], 42.7)
+        self.assertAlmostEqual(amount["null_fraction"], 0.05)
         region = next(m for m in store.col_metrics if m["column_name"] == "region")
         self.assertIsNone(region["mean_value"])  # no numeric metric for string
         self.assertEqual(len(store.finalized), 1)
@@ -123,6 +128,30 @@ class RunProfileTests(unittest.TestCase):
         # metric sub-queries fail.
         self.assertEqual(result.column_metrics_written, 2)
         self.assertEqual(result.status, "succeeded")
+
+    def test_single_bounded_query_with_quoted_identifiers(self) -> None:
+        from atlas.services import profile_runner
+
+        seen: List[str] = []
+
+        class RecordingUC:
+            def query_df(self, sql: str):
+                seen.append(sql)
+                if "as row_count" in sql.lower():
+                    return FakeFrame([{"row_count": profile_runner.PROFILE_SAMPLE_ROWS * 10}])
+                return FakeFrame([{"sampled_rows": 1}])
+
+        profile_runner.run_profile(
+            store=FakeStore(),
+            uc_client=RecordingUC(),
+            asset_fqn="main.sales.orders",
+            columns=[{"name": "a`b", "type": "int"}, {"name": "c", "type": "string"}],
+        )
+        # count(*) + one aggregate for all columns (was up to 3 per column).
+        self.assertEqual(len(seen), 2)
+        self.assertIn("`main`.`sales`.`orders`", seen[0])
+        self.assertIn(f"LIMIT {profile_runner.PROFILE_SAMPLE_ROWS}", seen[1])
+        self.assertIn("`a``b`", seen[1])
 
     def test_respects_max_columns_cap(self) -> None:
         from atlas.services.profile_runner import run_profile

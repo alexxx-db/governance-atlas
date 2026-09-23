@@ -30,6 +30,8 @@ from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
+from atlas.util import sql_literal
+
 
 class BrandingPatch(BaseModel):
     primaryColor: str = ""
@@ -135,7 +137,7 @@ def _now_iso() -> str:
 
 
 def _sql_literal(value: str) -> str:
-    return "'" + str(value).replace("'", "''") + "'"
+    return sql_literal(str(value))
 
 
 def _discovery_catalogs() -> List[str]:

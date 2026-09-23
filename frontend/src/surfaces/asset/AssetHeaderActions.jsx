@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { createGovernanceRequest } from "../../lib/api";
 import { Button, Drawer, toast } from "../../components/system";
 import { useAtlasNavigate } from "../../nav/useAtlasNavigate";
-import { ExternalLink, catalogExplorerUrl } from "./ExternalLink";
+import { ExternalLink, catalogExplorerUrl, useWorkspaceHost } from "./ExternalLink";
 import { certifyGate, lineageGate, requestChangeGate } from "./gates";
 
 /*
@@ -92,7 +92,8 @@ export function AssetHeaderActions({
   // button that always renders for a real FQN. Prefer the live access deepLink;
   // fall back to the constructed Catalog Explorer URL. The workspace host is
   // prepended so the anchor opens Databricks, not the app origin.
-  const explorerHref = catalogExplorerUrl(fqn, access?.deepLinks?.catalogExplorer);
+  const workspaceHost = useWorkspaceHost();
+  const explorerHref = catalogExplorerUrl(fqn, access?.deepLinks?.catalogExplorer, workspaceHost);
 
   const handleCertify = async (option) => {
     certifyMenu.setOpen(false);

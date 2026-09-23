@@ -29,7 +29,7 @@ class ScriptedUC:
         # table: list of (substring, rows) in registration order.
         self._table = table
 
-    def query_df(self, sql: str):
+    def query_df(self, sql: str, **_kwargs):
         lower = " ".join(sql.split()).lower()
         for needle, rows in self._table:
             if needle.lower() in lower:
@@ -249,7 +249,7 @@ class IdentifierEscapingTests(unittest.TestCase):
         captured = {}
 
         class CapturingUC:
-            def query_df(self, sql: str):
+            def query_df(self, sql: str, **_kwargs):
                 captured["sql"] = sql
                 return FakeFrame([{"nulls": 0, "total": 10}])
 

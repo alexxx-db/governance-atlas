@@ -13,8 +13,8 @@ silently demote every user to app-principal without a test failing:
 
 - ``_request_obo_token`` still reads the ``x-forwarded-access-token``
   header (the only header Databricks Apps forwards the user token on).
-- ``_uc_for_request`` with a token returns a ``_UCWithFallback``
-  whose *primary* slot is the actor-scoped client.
+- ``_uc_for_request`` with a token returns a ``_UserScopedUC`` wrapping
+  the actor-scoped client, and never the app principal.
 - ``_uc_for_request`` without a token returns the raw app-principal
   client — no wrapper (so no accidental silent fallback when the
   request is genuinely unauthenticated).
@@ -23,9 +23,8 @@ silently demote every user to app-principal without a test failing:
   ``APP_PRINCIPAL_ONLY_MODE`` when only ``authenticated`` is.
 - ``runtime_visibility_scope`` mapping stays wired: OBO → actor-scoped,
   app-principal → workspace-app-principal, anonymous → anonymous.
-- The ``_UCWithFallback.runtime_context()`` exposes an
-  ``obo_scope_fallback: True`` flag AFTER a latch event, so diagnostics
-  can tell whether a given request was silently demoted.
+- A per-user client that cannot be built, or a token missing the
+  ``sql`` scope, yields a re-authorize 403 instead of app-principal reads.
 - Capability payloads for discovery / governance surfaces flip
   ``actorScoped`` from False → True the moment an OBO token arrives.
 
@@ -87,7 +86,7 @@ class RequestObOTokenExtractionTests(unittest.TestCase):
 
 
 class UcForRequestRoutingTests(unittest.TestCase):
-    def test_returns_fallback_wrapper_when_token_present(self) -> None:
+    def test_returns_user_scoped_client_when_token_present(self) -> None:
         runtime_app = _load_runtime_app()
         actor_client = object()
         app_principal_client = object()
@@ -100,14 +99,8 @@ class UcForRequestRoutingTests(unittest.TestCase):
         ):
             result = runtime_app._uc_for_request(request)
 
-        self.assertIsInstance(result, runtime_app._UCWithFallback)
-        self.assertIs(result._primary, actor_client)
-        self.assertIs(result._fallback, app_principal_client)
-        self.assertFalse(
-            result._latched,
-            "a fresh wrapper must not be latched yet — latching only happens "
-            "after the first sql-scope failure",
-        )
+        self.assertIsInstance(result, runtime_app._UserScopedUC)
+        self.assertIs(result._client, actor_client)
 
     def test_returns_raw_app_principal_when_no_token(self) -> None:
         runtime_app = _load_runtime_app()
@@ -118,25 +111,17 @@ class UcForRequestRoutingTests(unittest.TestCase):
 
         self.assertIs(result, app_principal_client)
 
-    def test_actor_client_build_failure_falls_back_to_app_principal(self) -> None:
+    def test_actor_client_build_failure_refuses_instead_of_app_principal(self) -> None:
         runtime_app = _load_runtime_app()
-        app_principal_client = object()
 
         def _raise(_tok: str) -> object:
             raise RuntimeError("simulated per-user client construction failure")
 
         request = SimpleNamespace(headers={"x-forwarded-access-token": "tok"})
-        with patch.multiple(
-            runtime_app,
-            _uc=lambda: app_principal_client,
-            _uc_for_token=_raise,
-        ):
-            result = runtime_app._uc_for_request(request)
-
-        # Graceful fallback so the app stays readable even when OBO
-        # client construction fails — but callers downstream should see
-        # the raw app-principal so the auth-mode gate stays honest.
-        self.assertIs(result, app_principal_client)
+        with patch.multiple(runtime_app, _uc=lambda: object(), _uc_for_token=_raise):
+            with self.assertRaises(runtime_app.HTTPException) as ctx:
+                runtime_app._uc_for_request(request)
+        self.assertEqual(ctx.exception.status_code, 403)
 
 
 class AuthModeMappingTests(unittest.TestCase):
@@ -201,48 +186,6 @@ class VisibilityScopeMappingTests(unittest.TestCase):
                 capability_service.NO_IDENTITY_MODE,
             ),
             capability_service.ANONYMOUS_APP_PRINCIPAL_VISIBILITY,
-        )
-
-
-class UcWithFallbackContextTests(unittest.TestCase):
-    def test_runtime_context_exposes_obo_scope_fallback_after_latch(self) -> None:
-        runtime_app = _load_runtime_app()
-
-        class _Stub:
-            def runtime_context(self) -> dict:
-                return {"authType": "oauth-m2m", "hostPresent": True}
-
-        primary = _Stub()
-        fallback = _Stub()
-        wrapper = runtime_app._UCWithFallback(primary, fallback)
-        wrapper._latched = True
-
-        ctx = wrapper.runtime_context()
-        self.assertTrue(
-            ctx.get("obo_scope_fallback"),
-            "after a latch, diagnostics MUST surface obo_scope_fallback so "
-            "the UI / server logs can tell OBO silently demoted to app-"
-            "principal. Otherwise users see stale workspace data without a "
-            "warning (exactly the 2026-04-19 round-3 operator complaint).",
-        )
-
-    def test_runtime_context_is_clean_when_not_latched(self) -> None:
-        runtime_app = _load_runtime_app()
-
-        class _Stub:
-            def runtime_context(self) -> dict:
-                return {"authType": "oauth-m2m"}
-
-        primary = _Stub()
-        fallback = _Stub()
-        wrapper = runtime_app._UCWithFallback(primary, fallback)
-        self.assertFalse(wrapper._latched)
-
-        ctx = wrapper.runtime_context()
-        self.assertNotIn(
-            "obo_scope_fallback",
-            ctx,
-            "fresh wrapper must NOT claim a fallback has occurred",
         )
 
 

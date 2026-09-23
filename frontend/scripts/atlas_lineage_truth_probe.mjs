@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const BASE_URL =
   process.env.GOVAT_BASE_URL ||
-  "https://atlas-2543889327043640.aws.databricksapps.com";
+  (() => { throw new Error("Set GOVAT_BASE_URL to the deployed Atlas app URL"); })();
 const APP_ORIGIN = new URL(BASE_URL).origin;
 const DATABRICKS_TOKEN = process.env.GOVAT_DATABRICKS_TOKEN || "";
 const DEPLOYMENT_ID =

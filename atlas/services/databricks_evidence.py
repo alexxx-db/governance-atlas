@@ -8,7 +8,7 @@ from typing import Any, Dict, Iterable, List, Sequence
 import pandas as pd
 
 from atlas.services import assets as asset_service
-from atlas.util import sql_literal
+from atlas.util import lineage_window_predicate, sql_literal
 
 
 QUALITY_MONITORING_SOURCE = "system.data_quality_monitoring.table_results"
@@ -310,7 +310,8 @@ SELECT
   max(event_time) AS last_lineage_event,
   count(*) AS lineage_event_count
 FROM system.access.table_lineage
-WHERE ({relation_predicate})
+WHERE {lineage_window_predicate()}
+  AND ({relation_predicate})
   AND lower(CAST(entity_type AS STRING)) IN ('job', 'workflow', 'pipeline', 'dlt_pipeline', 'lakeflow_pipeline')
   AND entity_id IS NOT NULL
 GROUP BY ALL
