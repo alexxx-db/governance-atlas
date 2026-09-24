@@ -45,8 +45,7 @@ def synthetic_observations(run_id: str, sample_run_id: str) -> List[models.Obser
     out.append(models.Observation(entity_kind=models.MCP_SERVER, source_entity_id=sample.SCENARIO.mcp_connection,
                                   display_name=sample.SCENARIO.mcp_connection, platform="databricks", **common))
     fn = f"main.{sample.SCHEMA}.{sample.SCENARIO.function_tool}"
-    out.append(models.Observation(entity_kind=models.UC_FUNCTION_TOOL, source_entity_id=fn, display_name=fn, platform="databricks",
-                                  tags={sample.INTAKE_TAG_KEY: sample.SCENARIO.function_intake_id, sample.TIER_TAG_KEY: "low"}, **common))
+    out.append(models.Observation(entity_kind=models.UC_FUNCTION_TOOL, source_entity_id=fn, display_name=fn, platform="databricks", **common))
     model = f"main.{sample.SCHEMA}.{sample.SCENARIO.registered_model}"
     out.append(models.Observation(entity_kind=models.AI_MODEL, source_entity_id=model, display_name=model, platform="databricks", **common))
     return out

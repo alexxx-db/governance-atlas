@@ -32,6 +32,7 @@ def parse_args(argv: Optional[Sequence[str]] = None, description: str = "") -> a
     parser.add_argument("--env", action="append", default=[], help="KEY=VALUE applied to os.environ before config loads")
     parser.add_argument("--run-id", default="", help="Reconciliation run id; defaults to dbx-<job-run-id>")
     parser.add_argument("--job-run-id", default="", help="Databricks job run id ({{job.run_id}})")
+    parser.add_argument("--repo-root", default="", help="Bundle files path (serverless tasks have no __file__)")
     return parser.parse_args(argv)
 
 

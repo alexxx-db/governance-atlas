@@ -75,7 +75,9 @@ def aic_03(asset: AssetContext, cfg: Mapping[str, Any]) -> Optional[Outcome]:
         return Outcome("unknown", "registered_models", {"reason": "registered model tags are not observable in databricks-sdk 0.95"})
     if asset.entity_kind == models.MCP_SERVER:
         return Outcome("unknown", "mcp_connections", {"reason": "connection tags are not observed"})
-    if asset.entity_kind not in {models.SERVING_ENDPOINT, models.AGENT, models.UC_FUNCTION_TOOL}:
+    if asset.entity_kind == models.UC_FUNCTION_TOOL:
+        return Outcome("unknown", "uc_function_tools", {"reason": "function tags are not observable (information_schema.routine_tags is unsupported)"})
+    if asset.entity_kind not in {models.SERVING_ENDPOINT, models.AGENT}:
         return None
     key = str(cfg.get("tier_tag_key") or "ai_risk_tier")
     tier = (asset.tags or {}).get(key)

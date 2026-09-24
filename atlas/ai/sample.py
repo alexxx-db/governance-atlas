@@ -9,7 +9,8 @@ Cases (intake -> platform object -> expected outcome):
 - AI-SAMPLE-001 approved, provider openai; endpoint tagged 001 serves an
   Anthropic model: matched by tag (M1), found_different (provider), high.
 - AI-SAMPLE-003 rejected; endpoint tagged 003 is running: rejected_but_running.
-- AI-SAMPLE-004 approved; UC function tool tagged 004: matched, no finding.
+- AI-SAMPLE-004 approved, titled after the UC function tool, same owner: M3
+  exact-name match, no finding (function tags are not observable).
 - AI-SAMPLE-005 approved, title close to the MCP connection name, same owner:
   M3 ambiguous_match (steward confirms in the walk-through).
 - AI-SAMPLE-006 approved 90 days ago, nothing on the platform:
@@ -77,7 +78,9 @@ SCENARIO = Scenario(
     intakes=[
         SampleIntake("AI-SAMPLE-001", "Claims assistant", "approved", provider="openai", model_family="gpt-4o", risk_tier="high"),
         SampleIntake("AI-SAMPLE-003", "Unvetted support bot", "rejected", provider="openai"),
-        SampleIntake("AI-SAMPLE-004", "Claim policy lookup tool", "approved", risk_tier="low"),
+        # Titled after the function name: tool tags are unobservable, so this
+        # case demonstrates an M3 match (same owner, platform, exact name).
+        SampleIntake("AI-SAMPLE-004", "Lookup claim policy", "approved", risk_tier="low"),
         SampleIntake("AI-SAMPLE-005", "Atlas sample docs MCP server", "approved"),
         SampleIntake("AI-SAMPLE-006", "Fraud scoring model", "approved", approved_days_ago=90),
     ],

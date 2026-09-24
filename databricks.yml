@@ -141,9 +141,14 @@ resources:
       tasks:
         - task_key: collect_databricks
           environment_key: ai_jobs
+          # A retry would re-run a failed task under the same run id; the
+          # collector is idempotent, but a real failure should fail once, loudly.
+          max_retries: 0
           spark_python_task:
             python_file: ./atlas/ai/jobs/collect_databricks.py
             parameters: &ai_job_params
+              - "--repo-root"
+              - "${workspace.file_path}"
               - "--job-run-id"
               - "{{job.run_id}}"
               - "--env"
@@ -171,9 +176,13 @@ resources:
               - "--env"
               - "GOVAT_LAKEBASE_SCHEMA=${var.lakebase_schema}"
         - task_key: reconcile
+          max_retries: 0
           depends_on:
             - task_key: collect_databricks
           environment_key: ai_jobs
+          # A retry would re-run a failed task under the same run id; the
+          # collector is idempotent, but a real failure should fail once, loudly.
+          max_retries: 0
           spark_python_task:
             python_file: ./atlas/ai/jobs/reconcile.py
             parameters: *ai_job_params

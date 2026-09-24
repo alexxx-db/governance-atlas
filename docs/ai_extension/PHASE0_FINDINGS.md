@@ -291,3 +291,27 @@ Applied in `DESIGN.md` under "Verified against SDK 0.95 (2026-09-24)":
   `ai_collector_sp` (deployed only from CI). Because a dev run is attributed to
   a person, dev collector audit rows carry that user as actor with
   `source='system'`.
+
+## Phase 1 corrections from live job runs (2026-09-24)
+
+The first live collector runs surfaced two facts the Phase 0 probes missed:
+
+- **V1:** `registered_models.list(catalog_name=...)` without `schema_name` is
+  rejected ("Cannot have an empty schema if the catalog is set"). The
+  collector now enumerates `schemas.list(catalog)` and lists models per
+  schema. Phase 0 only listed models with no arguments.
+- **V7:** `information_schema.routine_tags` is listed in the schema, but a
+  query is rejected ("ROUTINE_TAGS is not supported by Information Schema"),
+  at both `system.` and catalog level. **UC function tags are not
+  observable.** Tools carry no tags, AIC-03 reports `unknown` for them, and
+  tools match by M3 or steward confirmation. The sample scenario's tool
+  intake is titled after the function so it demonstrates an M3 match.
+
+Operational fixes from the same runs:
+
+- Serverless tasks run under IPython, which reports `SystemExit(0)` and a
+  missing `__file__` as failures. The entry points now take `--repo-root`
+  and return normally on success.
+- A retried task reused the run ID and appended duplicate observations. Run
+  starts are now a MERGE, the collector clears the run's observations before
+  appending (audited), and tasks set `max_retries: 0`.

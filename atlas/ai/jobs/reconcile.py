@@ -10,11 +10,24 @@ shows partial derived state, and re-running the same run converges.
 from __future__ import annotations
 
 import logging
+import os
 import sys
 from pathlib import Path
 from typing import Any, Dict, Optional, Sequence
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
+def _repo_root() -> str:
+    """Serverless spark_python_task runs this file without __file__, so the
+    bundle passes --repo-root ${workspace.file_path}; __file__ is the local
+    fallback."""
+    if "--repo-root" in sys.argv:
+        return sys.argv[sys.argv.index("--repo-root") + 1]
+    try:
+        return str(Path(__file__).resolve().parents[3])
+    except NameError:
+        return os.getcwd()
+
+
+sys.path.insert(0, _repo_root())
 
 from atlas.ai.jobs import common  # noqa: E402
 
@@ -182,4 +195,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    # Serverless tasks run under IPython, which reports even SystemExit(0) as
+    # a failed workload: return normally on success, raise only on failure.
+    exit_code = main()
+    if exit_code:
+        raise RuntimeError(f"{__doc__.splitlines()[0] if __doc__ else 'AI job task'} failed (exit {exit_code}); see the reconciliation run record.")

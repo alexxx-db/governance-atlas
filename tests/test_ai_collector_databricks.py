@@ -103,9 +103,17 @@ class FakeWorkspace:
                 ws.calls.append(("endpoint.get", name))
                 return detail
 
+        class _Schemas:
+            def list(self, catalog_name):
+                ws.calls.append(("schemas.list", catalog_name))
+                return [SimpleNamespace(name="ml"), SimpleNamespace(name="information_schema")]
+
         class _Models:
-            def list(self, catalog_name=None):
-                ws.calls.append(("models.list", catalog_name))
+            def list(self, catalog_name=None, schema_name=None):
+                # Mirrors the live API: catalog_name without schema_name is rejected.
+                if catalog_name and not schema_name:
+                    raise ValueError("Cannot have an empty schema if the catalog is set")
+                ws.calls.append(("models.list", catalog_name, schema_name))
                 return list((models_by_catalog or {}).get(catalog_name, []))
 
             def get(self, full_name, include_aliases=None):
@@ -128,6 +136,7 @@ class FakeWorkspace:
                 return {"connections": list(connections or [])}
 
         self.serving_endpoints = _Endpoints()
+        self.schemas = _Schemas()
         self.registered_models = _Models()
         self.model_versions = _Versions()
         self.functions = _Functions()
@@ -211,7 +220,8 @@ class OtherAdapterTests(unittest.TestCase):
             versions={"main.ml.fraud": versions},
         )
         obs = dbx.collect_registered_models(w, _ctx(), catalogs=["main"])
-        self.assertEqual([c for c in w.calls if c[0] == "models.list"], [("models.list", "main")])
+        # Per schema, skipping information_schema; the "other" catalog is not listed.
+        self.assertEqual([c for c in w.calls if c[0] == "models.list"], [("models.list", "main", "ml")])
         kinds = sorted((o.entity_kind, o.source_entity_id) for o in obs)
         self.assertEqual(kinds, [("ai_model", "main.ml.fraud"), ("ai_model_version", "main.ml.fraud@1"), ("ai_model_version", "main.ml.fraud@2")])
         v2 = next(o for o in obs if o.source_entity_id == "main.ml.fraud@2")
@@ -243,11 +253,9 @@ class OtherAdapterTests(unittest.TestCase):
     def test_functions_only_in_allowlisted_schemas(self) -> None:
         fn = catalog.FunctionInfo(full_name="main.tools.lookup", name="lookup", owner="a@b.c", routine_definition=f"'{SECRET_VALUE}'")
         w = FakeWorkspace(functions={("main", "tools"): [fn]})
-        obs = dbx.collect_uc_function_tools(
-            w, _ctx(), schemas=["main.tools", "bad-entry"], routine_tags=lambda c, s: {"lookup": {"ai_risk_tier": "low"}}
-        )
+        obs = dbx.collect_uc_function_tools(w, _ctx(), schemas=["main.tools", "bad-entry"])
         self.assertEqual([c for c in w.calls if c[0] == "functions.list"], [("functions.list", "main", "tools")])
-        self.assertEqual(obs[0].tags, {"ai_risk_tier": "low"})
+        self.assertEqual(obs[0].tags, {})  # function tags are not observable
         self.assertNotIn(SECRET_VALUE, json.dumps(obs[0].config))
 
 

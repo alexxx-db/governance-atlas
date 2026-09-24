@@ -310,6 +310,20 @@ class AiStore:
 
         return self.audited([entry], _insert)
 
+    def clear_run_observations(self, *, run_id: str, actor_email: str) -> None:
+        entry = AuditEntry(
+            event_type="ai.observation.cleared",
+            entity_kind="ai_observation_batch",
+            entity_id=run_id,
+            actor_email=actor_email,
+            actor_role=SYSTEM_ACTOR_ROLE,
+            detail="cleared before (re)appending this run's observations",
+        )
+        self.audited(
+            [entry],
+            lambda: self.uc.execute(f"DELETE FROM {self._fq('ai_asset_observations')} WHERE run_id = {_lit(run_id)}"),
+        )
+
     _OBS_COLUMNS = """observation_id, run_id, source_system, collector, collector_version,
        entity_kind, source_entity_id, parent_source_entity_id, display_name,
        platform, provider, model_family, owner, tags_json, config_json,
@@ -498,12 +512,18 @@ WHEN NOT MATCHED THEN INSERT *"""
         )
         self.audited(
             [entry],
+            # MERGE, not INSERT: a retried task restarts the same run id.
             lambda: self.uc.execute(
-                f"""INSERT INTO {self._fq("reconciliation_runs")} (
-    run_id, job_run_id, status, rule_set_version, sources_json, counts_json,
-    failure_reason, triggered_by, started_at, finished_at
-) VALUES ({_lit(run_id)}, {_lit(job_run_id)}, 'collecting', {_lit(rule_set_version)},
-  NULL, NULL, NULL, {_lit(triggered_by)}, {_ts(_now())}, NULL)"""
+                f"""MERGE INTO {self._fq("reconciliation_runs")} t
+USING (SELECT {_s(run_id)} AS run_id, {_s(job_run_id)} AS job_run_id, 'collecting' AS status,
+              {_s(rule_set_version)} AS rule_set_version, CAST(NULL AS STRING) AS sources_json,
+              CAST(NULL AS STRING) AS counts_json, CAST(NULL AS STRING) AS failure_reason,
+              {_s(triggered_by)} AS triggered_by, {_ts(_now())} AS started_at,
+              CAST(NULL AS TIMESTAMP) AS finished_at) s
+ON t.run_id = s.run_id
+WHEN MATCHED THEN UPDATE SET status = 'collecting', sources_json = NULL, counts_json = NULL,
+    failure_reason = NULL, finished_at = NULL, started_at = s.started_at
+WHEN NOT MATCHED THEN INSERT *"""
             ),
         )
 

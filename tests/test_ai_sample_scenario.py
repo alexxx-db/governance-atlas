@@ -32,8 +32,7 @@ def seeded_observations():
                          provider=ep.provider, model_family=ep.model, tags_json=tags))
     rows.append(_obs("mcp_server", f"{sample.SCENARIO.mcp_connection}", display_name=sample.SCENARIO.mcp_connection))
     rows.append(_obs("uc_function_tool", f"main.{sample.SCHEMA}.{sample.SCENARIO.function_tool}",
-                     display_name=f"main.{sample.SCHEMA}.{sample.SCENARIO.function_tool}",
-                     tags_json={sample.INTAKE_TAG_KEY: sample.SCENARIO.function_intake_id, sample.TIER_TAG_KEY: "low"}))
+                     display_name=f"main.{sample.SCHEMA}.{sample.SCENARIO.function_tool}"))
     rows.append(_obs("ai_model", f"main.{sample.SCHEMA}.{sample.SCENARIO.registered_model}",
                      display_name=f"main.{sample.SCHEMA}.{sample.SCENARIO.registered_model}"))
     return rows

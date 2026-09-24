@@ -170,14 +170,9 @@ def seed(args: argparse.Namespace, run_id: str) -> Dict[str, Any]:
         f"COMMENT {sql_literal(sample.sample_comment(run_id, 'Sample AI tool: claim policy lookup'))} "
         "RETURN concat('policy:', claim_type)",
     )
-    tags = f"({sql_literal(sample.INTAKE_TAG_KEY)} = {sql_literal(sample.SCENARIO.function_intake_id)}, {sql_literal(sample.TIER_TAG_KEY)} = 'low')"
-    try:
-        _sql(w, args.warehouse_id, f"ALTER FUNCTION {fn} SET TAGS {tags}")
-    except RuntimeError:
-        # Older SQL surfaces only accept the SET TAG ON form.
-        for key, value in ((sample.INTAKE_TAG_KEY, sample.SCENARIO.function_intake_id), (sample.TIER_TAG_KEY, "low")):
-            _sql(w, args.warehouse_id, f"SET TAG ON FUNCTION {fn} {quote_ident(key)} = {sql_literal(value)}")
-    created["steps"].append(f"function {sample.SCENARIO.function_tool} (tagged {sample.SCENARIO.function_intake_id})")
+    # No tags: function tags are unobservable (routine_tags unsupported), so the
+    # scenario matches this tool by M3 on its name instead.
+    created["steps"].append(f"function {sample.SCENARIO.function_tool}")
 
     w.registered_models.create(
         catalog_name=args.catalog,

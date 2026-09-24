@@ -209,8 +209,13 @@ def collect_registered_models(w: Any, ctx: RunContext, *, catalogs: Sequence[str
     instead of vanishing. Model tags are not observable in SDK 0.95."""
     listings: List[Any] = []
     if catalogs:
+        # The API rejects catalog_name without schema_name ("Cannot have an
+        # empty schema if the catalog is set"), so enumerate schemas.
         for catalog in catalogs:
-            listings.extend(w.registered_models.list(catalog_name=catalog))
+            for schema in w.schemas.list(catalog_name=catalog):
+                name = getattr(schema, "name", None)
+                if name and name != "information_schema":
+                    listings.extend(w.registered_models.list(catalog_name=catalog, schema_name=name))
     else:
         listings.extend(w.registered_models.list())
     observations: List[Observation] = []
@@ -306,55 +311,35 @@ def collect_mcp_connections(w: Any, ctx: RunContext) -> List[Observation]:
 
 
 # --------------------------------------------------------------- functions
-def collect_uc_function_tools(
-    w: Any, ctx: RunContext, *, schemas: Sequence[str], routine_tags: Callable[[str, str], Dict[str, Dict[str, str]]] | None = None
-) -> List[Observation]:
-    """UC functions in allowlisted ``catalog.schema`` entries (V7). Tags come
-    from information_schema.routine_tags when a lookup is supplied."""
+def collect_uc_function_tools(w: Any, ctx: RunContext, *, schemas: Sequence[str]) -> List[Observation]:
+    """UC functions in allowlisted ``catalog.schema`` entries (V7). Function
+    tags are not observable: information_schema.routine_tags is rejected as
+    unsupported (verified live, Phase 1), so tools carry no tags and match by
+    M3 or a steward confirmation."""
     observations = []
     for entry in schemas:
         parts = [p for p in str(entry).split(".") if p]
         if len(parts) != 2:
             continue
         catalog, schema = parts
-        tags_by_name = routine_tags(catalog, schema) if routine_tags else {}
         for function in w.functions.list(catalog, schema):
             raw = _as_dict(function)
             full_name = str(raw.get("full_name") or "")
             if not full_name:
                 continue
-            tags = tags_by_name.get(str(raw.get("name") or ""), {})
             observations.append(
                 _observation(
                     ctx,
                     kind=models.UC_FUNCTION_TOOL,
                     source_entity_id=full_name,
-                    sample_run_id=sample_marker(tags, raw.get("comment")),
+                    sample_run_id=sample_marker(comment=raw.get("comment")),
                     display_name=full_name,
                     platform="databricks",
                     owner=raw.get("owner"),
-                    tags=tags,
                     config=redact("uc_function", raw),
                 )
             )
     return observations
-
-
-def routine_tag_lookup(uc: Any) -> Callable[[str, str], Dict[str, Dict[str, str]]]:
-    from atlas.util import sql_literal
-
-    def _lookup(catalog: str, schema: str) -> Dict[str, Dict[str, str]]:
-        frame = uc.query_df(
-            f"""SELECT routine_name, tag_name, tag_value FROM system.information_schema.routine_tags
-WHERE catalog_name = {sql_literal(catalog)} AND schema_name = {sql_literal(schema)}"""
-        )
-        out: Dict[str, Dict[str, str]] = {}
-        if frame is not None and not frame.empty:
-            for row in frame.to_dict(orient="records"):
-                out.setdefault(str(row["routine_name"]), {})[str(row["tag_name"])] = str(row.get("tag_value") or "")
-        return out
-
-    return _lookup
 
 
 # --------------------------------------------------------------- orchestrate
@@ -364,7 +349,6 @@ def collect(
     *,
     catalogs: Sequence[str],
     tool_schemas: Sequence[str],
-    routine_tags: Callable[[str, str], Dict[str, Dict[str, str]]] | None = None,
 ) -> Tuple[List[Observation], Dict[str, ProbeResult]]:
     """Run every adapter behind a probe. Returns observations plus one
     ProbeResult per source for reconciliation_runs.sources_json."""
@@ -380,7 +364,7 @@ def collect(
     run("registered_models", lambda: collect_registered_models(w, ctx, catalogs=catalogs))
     run("mcp_connections", lambda: collect_mcp_connections(w, ctx))
     if tool_schemas:
-        run("uc_function_tools", lambda: collect_uc_function_tools(w, ctx, schemas=tool_schemas, routine_tags=routine_tags))
+        run("uc_function_tools", lambda: collect_uc_function_tools(w, ctx, schemas=tool_schemas))
     else:
         results["uc_function_tools"] = unavailable("uc_function_tools", "No tool schemas configured (ai_tool_schema_allowlist is empty).")
     results["ai_asset_registry"] = unavailable(
