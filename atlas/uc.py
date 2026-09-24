@@ -443,6 +443,17 @@ class UCSQLClient:
         if not columns or data_array is None:
             return pd.DataFrame()
 
+        # Large results arrive in chunks; reading only the first silently
+        # truncated them (e.g. AI observations for a run, which would then
+        # look "gone" and be auto-resolved). Follow next_chunk_index.
+        rows = list(data_array)
+        next_index = _get(resp, "result", "next_chunk_index")
+        while next_index is not None and statement_id:
+            chunk = self.w.statement_execution.get_statement_result_chunk_n(statement_id, int(next_index))
+            rows.extend(_get(chunk, "data_array") or [])
+            next_index = _get(chunk, "next_chunk_index")
+        data_array = rows
+
         col_names = [_get(c, "name") or f"col_{i}" for i, c in enumerate(columns)]
         return pd.DataFrame(data_array, columns=col_names)
 

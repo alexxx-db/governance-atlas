@@ -52,7 +52,31 @@ Validation evidence:
   function tags are unobservable. Serverless IPython exit and `__file__`
   handling, and duplicate observations on task retry, were also fixed.
 
+Branch review fixes (after the checkpoint above, not yet redeployed):
+- Finding state guard: closed findings only reopen, and active ones can't
+  reopen. confirm-match returns 409 unless the finding is open or
+  acknowledged. The drawer offers only Reopen on closed findings.
+- M1 intake-tag aliases are now audited (`ai.registry.alias_upserted`).
+  Stale `declares` links are superseded unless they are steward overrides or
+  their source kind was blind this run.
+- Registered-but-not-found now skips intakes previously linked to a kind
+  whose source was blind, and its evidence names the sources not searched.
+  Intake link status reads open RNF findings directly.
+- Redaction catches keys embedded anywhere in a value and strips userinfo
+  from connection hosts. Endpoint tags are scrubbed.
+- The model listing cap degrades the source instead of truncating silently.
+- `query_df` follows statement result chunks, so large reads are no longer
+  cut at the first chunk.
+- Readers get `findings: null` (not `[]`) on Asset 360, and the UI says
+  findings are steward-visible instead of "none".
+- The UI shows "Showing X of N" when results are truncated, and a notice
+  when a deep-linked finding is filtered out. The import drawer resets on
+  close, and file read errors surface.
+- Sample purge deletes the Lakebase mirror rows too.
+- Backend 859 unittest OK. Frontend 727 vitest OK, and the build succeeds.
+
 Remaining before sign-off:
+- Redeploy `atlas-alex` and re-run the job with the review fixes.
 - The `CLAUDE.md` browser walk-through and independent subagent sign-off have
   **not** run. They need an authenticated Chrome session on CDP `:9223`.
   - The walk-through covers inventory, Asset 360, the findings confirm,

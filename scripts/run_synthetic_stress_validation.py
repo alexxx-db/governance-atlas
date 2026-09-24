@@ -1497,6 +1497,34 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
+def _organic_rows_counter(uc: Any, run_id: str):
+    """Count this run's marker in the app's real governance schema (the
+    catalog/schema the app reads, from BUNDLE_VAR_* or GOVAT_* env). Anything
+    above zero means synthetic rows leaked into organic evidence."""
+    import os
+
+    catalog = os.environ.get("BUNDLE_VAR_gov_catalog") or os.environ.get("GOVAT_CATALOG") or ""
+    schema = os.environ.get("BUNDLE_VAR_gov_schema") or os.environ.get("GOVAT_SCHEMA") or ""
+    if not (catalog and schema):
+        return None
+
+    def _count() -> int:
+        total = 0
+        for table in ("ai_asset_observations", "intake_records", "reconciliation_findings", "ai_control_results"):
+            try:
+                frame = uc.query_df(
+                    f"SELECT COUNT(*) AS n FROM {_fq_name(catalog, schema, table)} WHERE sample_run_id = {_sql_string(run_id)}"
+                )
+            except Exception as exc:  # noqa: BLE001 - a missing table has no leaked rows
+                if "TABLE_OR_VIEW_NOT_FOUND" in str(exc).upper():
+                    continue
+                raise
+            total += int(frame.iloc[0, 0]) if frame is not None and not frame.empty else 0
+        return total
+
+    return _count
+
+
 def run_ai_validation(args: argparse.Namespace) -> Dict[str, Any]:
     """AI governance scenarios (atlas/ai/stress.py) in a run-scoped schema.
 
@@ -1539,7 +1567,9 @@ def run_ai_validation(args: argparse.Namespace) -> Dict[str, Any]:
     store = GovernanceStore(uc=uc, catalog=args.catalog, schema=schema)
     try:
         store.ensure_tables()
-        payload["evaluation"] = run_ai_scenarios(AiStore(store), run_id=run_id)
+        payload["evaluation"] = run_ai_scenarios(
+            AiStore(store), run_id=run_id, organic_check=_organic_rows_counter(uc, run_id)
+        )
         payload["passed"] = bool(payload["evaluation"]["passed"])
     finally:
         if not args.keep_resources:

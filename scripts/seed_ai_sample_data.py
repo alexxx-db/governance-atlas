@@ -80,12 +80,14 @@ def _ai_store(args: argparse.Namespace) -> Any:
     if not (args.warehouse_id and args.gov_catalog and args.gov_schema):
         raise SystemExit("--warehouse-id, --gov-catalog, and --gov-schema are required (or source .env.dev).")
     os.environ.setdefault("DATABRICKS_CONFIG_PROFILE", args.profile)
+    os.environ.update({"DATABRICKS_WAREHOUSE_ID": args.warehouse_id, "GOVAT_CATALOG": args.gov_catalog, "GOVAT_SCHEMA": args.gov_schema})
+    # Same construction as the app and jobs (Lakebase dual-write included when
+    # enabled), so registry deletes in --cleanup reach the mirror too.
+    from atlas.ai.jobs import common
     from atlas.ai.store import AiStore
-    from atlas.store import GovernanceStore
-    from atlas.uc import UCSQLClient
+    from atlas.config import AppConfig
 
-    store = GovernanceStore(uc=UCSQLClient(warehouse_id=args.warehouse_id), catalog=args.gov_catalog, schema=args.gov_schema)
-    store.ensure_tables()
+    store, _ = common.build_store(AppConfig.from_env())
     return AiStore(store)
 
 

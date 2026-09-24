@@ -177,6 +177,22 @@ describe("AiGovernancePage", () => {
     );
   });
 
+  it("offers only Reopen on a closed finding", async () => {
+    api.fetchAiFindings.mockResolvedValue({ items: [{ ...FINDING, state: "suppressed" }], total: 1, meta: meta() });
+    renderPage(`/ai?tab=findings&findingState=suppressed&finding=${FINDING.findingId}`);
+    const drawer = await screen.findByRole("dialog");
+    expect(within(drawer).queryByText("Resolve")).toBeNull();
+    fireEvent.click(within(drawer).getByRole("button", { name: "Reopen" }));
+    await waitFor(() => expect(api.patchAiFinding).toHaveBeenCalledWith(FINDING.findingId, { action: "reopen", note: "", reason: "", assigneeEmail: "" }));
+  });
+
+  it("says when findings are truncated or a deep link is filtered out", async () => {
+    api.fetchAiFindings.mockResolvedValue({ items: [FINDING], total: 450, meta: meta() });
+    renderPage("/ai?tab=findings&finding=" + "a".repeat(64));
+    expect(await screen.findByText(/Showing 1 of 450/)).toBeTruthy();
+    expect(screen.getByText(/The linked finding is not in this view/)).toBeTruthy();
+  });
+
   it("confirms a match to the chosen intake", async () => {
     renderPage(`/ai?tab=findings&finding=${FINDING.findingId}`);
     const drawer = await screen.findByRole("dialog");

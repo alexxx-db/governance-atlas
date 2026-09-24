@@ -122,6 +122,17 @@ class RedactionTests(unittest.TestCase):
         )
         self.assertEqual(out, {"name": "mcp1", "connection_type": "HTTP", "options": {"host": "mcp.example.com", "is_mcp_connection": "true"}})
 
+    def test_embedded_keys_and_host_userinfo_removed(self) -> None:
+        out = redaction.redact(
+            "registered_model",
+            {"full_name": "m.s.x", "comment": "rotate key sk-proj-abcdefghijklmnopqrstuv soon", "owner": "a@b.c"},
+        )
+        self.assertNotIn("comment", out)
+        self.assertEqual(redaction.redact("registered_model", {"full_name": "a.b.c", "comment": "ask-the-team about tasks"})["comment"], "ask-the-team about tasks")
+        conn = redaction.redact("connection", {"name": "c", "options": {"host": "https://user:pass@h.example.com/mcp"}})
+        self.assertEqual(conn["options"]["host"], "https://h.example.com/mcp")
+        self.assertEqual(redaction.strip_userinfo("admin:pw@db.internal"), "db.internal")
+
     def test_function_body_never_serialized(self) -> None:
         out = redaction.redact("uc_function", {"full_name": "a.b.f", "routine_definition": f"return '{SECRETS[0]}'"})
         self.assertEqual(out, {"full_name": "a.b.f"})

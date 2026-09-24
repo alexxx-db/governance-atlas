@@ -26,7 +26,7 @@ from typing import Any, Callable, Dict, Iterable, List, Mapping, Optional, Seque
 from atlas.ai import models
 from atlas.ai.models import Observation, ProbeResult, RunContext
 from atlas.ai.probes import Degraded, not_configured, not_supported, probe
-from atlas.ai.redaction import redact, summarize_credentials
+from atlas.ai.redaction import redact, scrub, summarize_credentials
 
 COLLECTOR = "dbx_ai_collector"
 COLLECTOR_VERSION = "1.0.0"
@@ -121,7 +121,9 @@ def collect_serving_endpoints(
         endpoint_id = str(raw.get("id") or raw.get("name") or "")
         if not endpoint_id:
             continue
-        tags = {str(t.get("key")): str(t.get("value") or "") for t in raw.get("tags") or [] if t.get("key")}
+        # Tags are free text returned to readers: scrub credential-shaped
+        # keys/values like any other config.
+        tags = scrub({str(t.get("key")): str(t.get("value") or "") for t in raw.get("tags") or [] if t.get("key")}) or {}
         task = str(raw.get("task") or "")
         kind = models.AGENT if task.startswith(AGENT_TASK_PREFIX) else models.SERVING_ENDPOINT
         marker = sample_marker(tags)
@@ -263,8 +265,15 @@ def collect_registered_models(w: Any, ctx: RunContext, *, catalogs: Sequence[str
                     relationships=[{"kind": "version_of", "target_kind": models.AI_MODEL, "target_source_entity_id": full_name}],
                 )
             )
+    problems = []
     if denied:
-        raise Degraded(f"{len(denied)} model(s) unreadable: {', '.join(denied[:5])}", value=observations)
+        problems.append(f"{len(denied)} model(s) unreadable: {', '.join(denied[:5])}")
+    if len(listings) > MAX_MODELS:
+        # A silent cap would read as "the rest are gone" and auto-resolve
+        # their findings; report the source as degraded instead.
+        problems.append(f"only the first {MAX_MODELS} of {len(listings)} models were collected; narrow ai_catalog_allowlist")
+    if problems:
+        raise Degraded("; ".join(problems), value=observations)
     return observations
 
 

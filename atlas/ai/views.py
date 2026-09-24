@@ -106,7 +106,7 @@ def _asset_row(obs: Mapping[str, Any], registry: Mapping[str, Mapping[str, Any]]
         "owner": obs.get("owner"),
         "tier": tags.get(tier_key),
         "reconciliationState": reg.get("reconciliation_state"),
-        "confidence": reg.get("reconciliation_confidence"),
+        "confidence": _num(reg.get("reconciliation_confidence")),
         "openFindings": int(open_counts.get(entity_id, 0)),
         "posture": postures.get(entity_id),
         "provenance": {
@@ -208,7 +208,17 @@ def _declared_intake(ai: Any, entity_id: str, parent_entity_id: Optional[str], i
     return None
 
 
+def _num(value: Any) -> Optional[float]:
+    """Warehouse rows are strings; send numbers as numbers."""
+    try:
+        return None if value is None or value == "" else float(value)
+    except (TypeError, ValueError):
+        return None
+
+
 def asset_detail(ai: Any, avail: Mapping[str, Any], entity_id: str, *, tier_key: str, include_config: bool) -> Optional[Dict[str, Any]]:
+    """``include_config`` marks a steward/admin caller: only they receive
+    config, findings, and finding history (findings are steward-only, DESIGN 9)."""
     run = avail.get("run")
     if not run:
         return None
@@ -244,7 +254,7 @@ def asset_detail(ai: Any, avail: Mapping[str, Any], entity_id: str, *, tier_key:
         observed_value = observed_values.get(obs_field)
         differs = bool(declared_value and observed_value and str(declared_value).strip().lower() != str(observed_value).strip().lower())
         diff.append({"field": obs_field, "declared": declared_value, "observed": observed_value, "differs": differs})
-    findings = ai.list_findings(entity_id=entity_id, limit=100)
+    findings = ai.list_findings(entity_id=entity_id, limit=100) if include_config else []
     events = ai.list_entity_events([entity_id, *[f["finding_id"] for f in findings]], limit=100)
     detail = {
         **row,
@@ -276,7 +286,7 @@ def asset_detail(ai: Any, avail: Mapping[str, Any], entity_id: str, *, tier_key:
             for rel in ai.list_relationships(entity_id=entity_id)
         ],
         "controls": [control_view(r) for r in control_rows],
-        "findings": [finding_view(f) for f in findings],
+        "findings": [finding_view(f) for f in findings] if include_config else None,
         "history": [
             {
                 "eventId": e.get("event_id"),
@@ -320,7 +330,7 @@ def finding_view(row: Mapping[str, Any]) -> Dict[str, Any]:
         "entityKind": row.get("entity_kind"),
         "intakeId": row.get("intake_id"),
         "matchRule": row.get("match_rule"),
-        "matchScore": row.get("match_score"),
+        "matchScore": _num(row.get("match_score")),
         "evidence": row.get("evidence_json") or {},
         "firstSeenAt": _iso(row.get("first_seen_at")),
         "lastSeenAt": _iso(row.get("last_seen_at")),
@@ -343,7 +353,7 @@ def intake_rows(ai: Any) -> List[Dict[str, Any]]:
     for rel in declares:
         intake_id = str(rel.get("source_entity_id") or "").removeprefix("intake:")
         linked.setdefault(intake_id, []).append(str(rel.get("target_entity_id")))
-    rnf = {str(f.get("intake_id")) for f in ai.list_findings(states=OPEN_STATES, finding_types=("registered_not_found",), limit=500)}
+    rnf = ai.not_found_intake_ids()
     out = []
     for row in ai.list_intake_records():
         intake_id = str(row["intake_id"])

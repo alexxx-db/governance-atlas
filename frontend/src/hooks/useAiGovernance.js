@@ -63,6 +63,8 @@ export function useAiAsset(entityId, options = {}) {
     enabled: Boolean(id) && options.enabled !== false,
     fetch: (signal) => fetchAiAsset(id, { signal }),
     ...READ_OPTIONS,
+    // No placeholder: navigating between assets must not show the previous asset's data.
+    placeholderData: undefined,
   });
 }
 

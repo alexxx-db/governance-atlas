@@ -59,7 +59,21 @@ def write_result(ai: Any, result: Any, *, run_id: str, actor: str, prior_states:
         registry_writes += 1
 
     # Relationships and informational M1 aliases: write only what is missing.
-    existing_rel = {r["relationship_id"] for r in ai.list_relationships(kinds=("declares", "serves"))}
+    active_rels = ai.list_relationships(kinds=("declares", "serves"))
+    existing_rel = {r["relationship_id"] for r in active_rels}
+    # Retire derived declares links this run no longer supports (tag removed
+    # or moved). Steward overrides stand; kinds this run couldn't see are left.
+    wanted = {relationship_id_for("declares", f"intake:{i}", u.entity_id) for i, u, _ in result.declares}
+    stale = [
+        r["relationship_id"]
+        for r in active_rels
+        if r.get("relationship_kind") == "declares"
+        and r.get("authority_source") != "override"
+        and r["relationship_id"] not in wanted
+        and str(r.get("target_entity_kind") or "") not in set(result.blind_kinds)
+    ]
+    ai.supersede_relationships(stale, actor_email=actor, run_id=run_id)
+    existing_rel -= set(stale)
     for intake_id, unit, rule in result.declares:
         source_id = f"intake:{intake_id}"
         if relationship_id_for("declares", source_id, unit.entity_id) in existing_rel:
@@ -96,10 +110,7 @@ def write_result(ai: Any, result: Any, *, run_id: str, actor: str, prior_states:
             # source 'intake_tag' is informational: M2 only trusts steward
             # confirmations (source intake_id / servicenow_sys_id), so
             # removing the tag later still un-matches the asset.
-            ai.store.upsert_entity_alias(
-                entity_id=unit.entity_id, alias_value=intake_id, alias_type="external_id",
-                source="intake_tag", updated_by=actor, actor_role="system",
-            )
+            ai.upsert_alias(entity_id=unit.entity_id, intake_id=intake_id, source="intake_tag", actor_email=actor)
 
     finding_counts = ai.upsert_findings(result.findings, run_id=run_id, actor_email=actor)
     resolved = ai.auto_resolve_findings(result.resolve_ids, run_id=run_id, actor_email=actor)
@@ -134,10 +145,20 @@ def write_result(ai: Any, result: Any, *, run_id: str, actor: str, prior_states:
     return {
         **result.counts,
         "findings": {**finding_counts, "resolved": resolved},
+        "declaresSuperseded": len(stale),
         "registryWrites": registry_writes,
         "controls": len(result.controls),
         "postureChanges": len(posture_events),
     }
+
+
+def _prior_declares(ai: Any) -> Dict[str, set]:
+    """intake_id -> kinds of assets it is currently linked to."""
+    out: Dict[str, set] = {}
+    for rel in ai.list_relationships(kinds=("declares",)):
+        intake_id = str(rel.get("source_entity_id") or "").removeprefix("intake:")
+        out.setdefault(intake_id, set()).add(str(rel.get("target_entity_kind") or ""))
+    return out
 
 
 def common_ts(value: Any):
@@ -169,7 +190,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     store, _ = common.build_store(cfg)
     ai = AiStore(store)
     run = ai.get_run(run_id)
-    if not run or run.get("status") != "reconciling":
+    # A failed reconcile is repairable: re-running it converges (DESIGN 3.4),
+    # as long as collection finished (sources recorded).
+    ready = run and (run.get("status") == "reconciling" or (run.get("status") == "failed" and run.get("sources_json")))
+    if not ready:
         LOG.error("run %s is not ready to reconcile (status=%s)", run_id, (run or {}).get("status"))
         return 1
     try:
@@ -182,6 +206,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             intake_tag_key=cfg.ai_intake_tag_key,
             tier_tag_key=cfg.ai_tier_tag_key,
             grace_days=cfg.ai_intake_grace_days,
+            prior_declares=_prior_declares(ai),
         )
         counts = write_result(ai, result, run_id=run_id, actor=actor, prior_states=ai.ai_registry_states())
         counts["observations"] = (run.get("counts_json") or {}).get("observations")

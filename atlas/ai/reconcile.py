@@ -301,6 +301,7 @@ class ReconcileResult:
     declares: List[Tuple[str, Asset, str]]  # (intake_id, unit, match rule)
     serves: List[Tuple[Asset, str, str]]  # (source asset, target kind, target entity id)
     counts: Dict[str, Any]
+    blind_kinds: Tuple[str, ...] = ()  # kinds whose source was not fully available
 
 
 def _registry_state(match: Match, intake: Optional[Mapping[str, Any]]) -> str:
@@ -332,6 +333,7 @@ def reconcile(
     tier_tag_key: str,
     grace_days: int,
     now: Optional[datetime] = None,
+    prior_declares: Optional[Mapping[str, Iterable[str]]] = None,
 ) -> ReconcileResult:
     now = now or datetime.now(timezone.utc)
     intakes = {str(r["intake_id"]): r for r in intake_rows}
@@ -388,6 +390,15 @@ def reconcile(
                 intake_ref = match.intake_id if match.state in ("matched", "ambiguous") else None
                 add_finding(rule_obj, severity, evidence, unit, match, intake_ref)
 
+    # Kinds this run could not fully see (unavailable, degraded, not
+    # configured, not supported). Nothing is concluded about them.
+    blind_kinds = set()
+    for source, kinds in SOURCE_KINDS.items():
+        if str((sources.get(source) or {}).get("state")) != models.PROBE_AVAILABLE:
+            blind_kinds.update(kinds)
+    not_searched = sorted(
+        name for name in SOURCE_KINDS if str((sources.get(name) or {}).get("state")) != models.PROBE_AVAILABLE
+    )
     core_available = all(
         str((sources.get(name) or {}).get("state")) == models.PROBE_AVAILABLE for name in CORE_SOURCES
     )
@@ -396,8 +407,12 @@ def reconcile(
         grace = timedelta(days=max(0, int(grace_days)))
         for intake_id, intake in intakes.items():
             # An intake that is the best candidate of an ambiguous asset is
-            # awaiting steward confirmation, not missing.
+            # awaiting steward confirmation, not missing. One previously
+            # linked to an asset of a kind this run couldn't see isn't
+            # "not found" either.
             if intake.get("state") != "approved" or intake_id in matched_intakes or intake_id in ambiguous_intakes:
+                continue
+            if set((prior_declares or {}).get(intake_id, ())) & blind_kinds:
                 continue
             since = _as_utc(intake.get("approved_at")) or _as_utc(intake.get("created_at"))
             if since is None or now - since < grace:
@@ -405,17 +420,19 @@ def reconcile(
             add_finding(
                 rnf,
                 "medium",
-                {"reason": f"Approved intake has no observed asset after {grace.days} days.", "approvedAt": str(since), "title": intake.get("title")},
+                {
+                    "reason": f"Approved intake has no observed asset after {grace.days} days.",
+                    "approvedAt": str(since),
+                    "title": intake.get("title"),
+                    # Disclose what was not searched this run.
+                    "sourcesNotSearched": not_searched,
+                },
                 None,
                 None,
                 intake_id,
             )
 
     # Auto-resolve only what this run could actually see.
-    blind_kinds = set()
-    for source, kinds in SOURCE_KINDS.items():
-        if str((sources.get(source) or {}).get("state")) != models.PROBE_AVAILABLE:
-            blind_kinds.update(kinds)
     resolve_ids = []
     for prior in active_findings:
         fid = str(prior.get("finding_id"))
@@ -478,7 +495,10 @@ def reconcile(
         "coreSourcesAvailable": core_available,
         "ruleSetVersion": RULE_SET_VERSION,
     }
-    return ReconcileResult(unit_states, registry, list(findings.values()), resolve_ids, control_results, postures, declares, serves, counts)
+    return ReconcileResult(
+        unit_states, registry, list(findings.values()), resolve_ids, control_results, postures, declares, serves, counts,
+        blind_kinds=tuple(sorted(blind_kinds)),
+    )
 
 
 def _count(values: Iterable[str]) -> Dict[str, int]:

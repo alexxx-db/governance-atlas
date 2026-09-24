@@ -39,6 +39,8 @@ SYSTEM_ACTOR_ROLE = "system"
 
 # Steward actions on a finding (DESIGN.md 5.4).
 FINDING_ACTIONS = ("acknowledge", "assign", "resolve", "suppress", "reopen")
+ACTIVE_STATES = ("open", "acknowledged")
+CLOSED_STATES = ("resolved", "suppressed")
 
 
 def _ts(value: Optional[datetime]) -> str:
@@ -457,7 +459,7 @@ WHERE intake_id IN ({", ".join(_lit(i) for i in chunk)})"""
                     f"""MERGE INTO {self._fq("intake_records")} t
 USING ({source_rows}) s
 ON t.intake_id = s.intake_id
-WHEN MATCHED AND t.content_hash <> s.content_hash THEN UPDATE SET
+WHEN MATCHED AND (t.content_hash <> s.content_hash OR t.provenance_class <> s.provenance_class) THEN UPDATE SET
     title=s.title, state=s.state, owner_email=s.owner_email,
     business_unit=s.business_unit, risk_tier=s.risk_tier, platform=s.platform,
     provider=s.provider, model_family=s.model_family, intended_use=s.intended_use,
@@ -878,6 +880,11 @@ LIMIT {max(1, min(int(limit), 200))}"""
         prior = self.findings_by_id([finding_id]).get(finding_id)
         if prior is None:
             raise LookupError("Finding not found.")
+        current = str(prior.get("state") or "")
+        allowed_from = ACTIVE_STATES if action != "reopen" else CLOSED_STATES
+        if current not in allowed_from:
+            # Closed findings only reopen; active findings can't be "reopened".
+            raise ValueError(f"Cannot {action} a finding that is {current or 'in an unknown state'}.")
         now = _now()
         sets = [f"state_changed_by = {_lit(actor_email)}", f"state_changed_at = {_ts(now)}"]
         new_state = prior.get("state")
@@ -1041,6 +1048,75 @@ WHEN NOT MATCHED THEN INSERT *"""
         )
         return relationship_id
 
+    def upsert_alias(
+        self,
+        *,
+        entity_id: str,
+        intake_id: str,
+        source: str,
+        actor_email: str,
+        actor_role: str = SYSTEM_ACTOR_ROLE,
+        request_id: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        """GovernanceStore.upsert_entity_alias writes first and audits after
+        (with no change event); wrap it so the AI paths stay fail-closed.
+        Goes through the wrapped store so the Lakebase mirror runs."""
+        entry = AuditEntry(
+            event_type="ai.registry.alias_upserted",
+            entity_kind="entity_alias",
+            entity_id=entity_id,
+            actor_email=actor_email,
+            actor_role=actor_role,
+            after={"aliasType": "external_id", "aliasValue": intake_id, "source": source},
+            source="api" if request_id else "system",
+            request_id=request_id,
+        )
+        return self.audited(
+            [entry],
+            lambda: self.store.upsert_entity_alias(
+                entity_id=entity_id, alias_value=intake_id, alias_type="external_id",
+                source=source, updated_by=actor_email, actor_role=actor_role,
+            ),
+        )
+
+    def supersede_relationships(self, relationship_ids: Sequence[str], *, actor_email: str, run_id: str) -> int:
+        """Retire declared links the latest run no longer supports (for example
+        a removed or moved intake tag), so views stop showing a stale intake."""
+        if not relationship_ids:
+            return 0
+        now = _now()
+        entries = [
+            AuditEntry(
+                event_type="ai.registry.relationship_superseded",
+                entity_kind="entity_relationship",
+                entity_id=rid,
+                actor_email=actor_email,
+                actor_role=SYSTEM_ACTOR_ROLE,
+                after={"state": "superseded", "runId": run_id},
+            )
+            for rid in relationship_ids
+        ]
+
+        def _supersede() -> int:
+            for chunk in _chunks(list(relationship_ids)):
+                self.uc.execute(
+                    f"""UPDATE {self._fq("entity_relationships")}
+SET state = 'superseded', superseded_at = {_ts(now)}, superseded_by = {_lit(actor_email)},
+    updated_at = {_ts(now)}, updated_by = {_lit(actor_email)}
+WHERE relationship_id IN ({", ".join(_lit(i) for i in chunk)}) AND state = 'active'"""
+                )
+            return len(relationship_ids)
+
+        return self.audited(entries, _supersede)
+
+    def not_found_intake_ids(self) -> set:
+        """Open/acknowledged registered_not_found intakes, uncapped."""
+        frame = self.uc.query_df(
+            f"""SELECT DISTINCT intake_id FROM {self._fq("reconciliation_findings")}
+WHERE finding_type = 'registered_not_found' AND state IN ('open', 'acknowledged') AND intake_id IS NOT NULL"""
+        )
+        return {str(r["intake_id"]) for r in _records(frame)}
+
     def list_relationships(self, entity_id: Optional[str] = None, kinds: Sequence[str] = ()) -> List[Dict[str, Any]]:
         clauses = ["state = 'active'"]
         if entity_id:
@@ -1102,13 +1178,9 @@ WHERE lower(alias_type) = 'external_id' AND lower(source) IN ('intake_id', 'serv
             request_id=request_id,
             source="api",
         )
-        self.store.upsert_entity_alias(
-            entity_id=entity_id,
-            alias_value=intake_id,
-            alias_type="external_id",
-            source="intake_id",
-            updated_by=actor_email,
-            actor_role=actor_role,
+        self.upsert_alias(
+            entity_id=entity_id, intake_id=intake_id, source="intake_id",
+            actor_email=actor_email, actor_role=actor_role, request_id=request_id,
         )
         return self.update_finding_state(
             finding_id=finding_id,
@@ -1225,6 +1297,13 @@ WHERE provenance_class = 'sample' AND sample_run_id = {_lit(run)}"""
                 self.uc.execute(
                     f"DELETE FROM {self._fq('entity_relationships')} WHERE source_entity_id IN ({ids}) OR target_entity_id IN ({ids})"
                 )
+            # Registry and aliases are mirrored to Lakebase; delete there too
+            # so purged sample entities don't linger in the mirror.
+            mirror = getattr(self.store, "_mirror", None)
+            if mirror is not None:
+                for entity_id in entity_ids:
+                    mirror.delete_row("ai_sample_purge", "entity_registry", {"entity_id": entity_id})
+                    mirror.delete_row("ai_sample_purge", "entity_aliases", {"entity_id": entity_id})
             return {"entities": len(entity_ids), "intakes": len(intake_ids)}
 
         return self.audited([entry], _purge)

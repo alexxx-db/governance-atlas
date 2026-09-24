@@ -88,6 +88,9 @@ class FakeAi:
         rel = {"relationship_kind": "declares", "source_entity_id": "intake:INT-1", "target_entity_id": EP_ID, "authority_source": "registry"}
         return [rel] if entity_id in (None, EP_ID) else []
 
+    def not_found_intake_ids(self):
+        return set()
+
     def list_entity_events(self, ids, limit=50):
         return [{"event_id": "e1", "event_type": "ai.registry.state_changed", "actor_email": "collector", "source": "system", "status": "emitted", "request_id": None, "occurred_at": "2026-09-24", "before_json": {}, "after_json": {"reconciliationState": "matched"}}]
 
@@ -209,6 +212,20 @@ class ReadRouteTests(unittest.TestCase):
         self.assertEqual(provider["declared"], "openai")
         self.assertEqual(reader["history"][0]["eventType"], "ai.registry.state_changed")
         self.assertEqual(reader["controls"][0]["title"], "AI Gateway usage tracking enabled")
+
+    def test_readers_never_receive_findings_on_asset_360(self) -> None:
+        fake = FakeAi(runs=[SUCCEEDED], succeeded=SUCCEEDED)
+        fake.list_findings = lambda **kw: [{"finding_id": "f" * 64, "finding_type": "found_different", "assignee_email": "x@y.z", "suppression_reason": "secret reason", "match_score": "0.9"}]
+        a, b = self._with(fake, role="reader")
+        with a, b:
+            reader = _body(ai_api.api_ai_asset(EP_ID, _request()))["asset"]
+        a, b = self._with(fake, role="steward")
+        with a, b:
+            steward = _body(ai_api.api_ai_asset(EP_ID, _request()))["asset"]
+        self.assertIsNone(reader["findings"])
+        self.assertNotIn("secret reason", json.dumps(reader))
+        self.assertEqual(steward["findings"][0]["matchScore"], 0.9)  # number, not "0.9"
+        self.assertIsInstance(steward["confidence"], float)
 
     def test_external_model_controls_show_unknown_with_reason(self) -> None:
         a, b = self._with(FakeAi(runs=[SUCCEEDED], succeeded=SUCCEEDED))

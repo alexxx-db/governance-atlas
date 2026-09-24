@@ -109,17 +109,19 @@ _CREDENTIAL_SEGMENTS = frozenset(
 )
 
 _SECRET_REF_RE = re.compile(r"^\{\{\s*secrets/([A-Za-z0-9_.\-]+)/([A-Za-z0-9_.\-]+)\s*\}\}$")
+# Searched anywhere in a value (not anchored): a key pasted into a comment or
+# description must not survive. Boundaries keep ordinary words ("task-...")
+# from matching.
 _CREDENTIAL_VALUE_RES = (
-    re.compile(r"^sk-[A-Za-z0-9_\-]{8,}"),  # OpenAI/Anthropic-style keys
-    re.compile(r"^sk-ant-"),
-    re.compile(r"^dapi[0-9a-f]{16,}", re.IGNORECASE),  # Databricks PAT
-    re.compile(r"^dose[0-9a-f]{16,}", re.IGNORECASE),  # Databricks OAuth secret
-    re.compile(r"^eyJ[A-Za-z0-9_\-]+\.[A-Za-z0-9_\-]+\.[A-Za-z0-9_\-]*$"),  # JWT
-    re.compile(r"^bearer\s+\S+", re.IGNORECASE),
-    re.compile(r"^basic\s+[A-Za-z0-9+/=]{8,}$", re.IGNORECASE),
+    re.compile(r"(?<![A-Za-z0-9])sk-[A-Za-z0-9_\-]{16,}"),  # OpenAI/Anthropic-style keys
+    re.compile(r"(?<![A-Za-z0-9])dapi[0-9a-f]{20,}", re.IGNORECASE),  # Databricks PAT
+    re.compile(r"(?<![A-Za-z0-9])dose[0-9a-f]{20,}", re.IGNORECASE),  # Databricks OAuth secret
+    re.compile(r"eyJ[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]*"),  # JWT
+    re.compile(r"(?i)\bbearer\s+[A-Za-z0-9._~+/=\-]{8,}"),
+    re.compile(r"(?i)\bbasic\s+[A-Za-z0-9+/=]{8,}"),
     re.compile(r"(^|[^A-Z0-9])(AKIA|ASIA)[0-9A-Z]{16}([^A-Z0-9]|$)"),  # AWS access key id
-    re.compile(r"^(ghp|gho|ghs|ghu|github_pat)_[A-Za-z0-9_]{10,}"),
-    re.compile(r"^xox[abprs]-[A-Za-z0-9\-]{10,}"),
+    re.compile(r"\b(ghp|gho|ghs|ghu|github_pat)_[A-Za-z0-9_]{10,}"),
+    re.compile(r"\bxox[abprs]-[A-Za-z0-9\-]{10,}"),
     re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----"),
 )
 
@@ -206,12 +208,24 @@ def _apply(spec: Any, value: Any) -> Any:
     return None
 
 
+_USERINFO_RE = re.compile(r"^((?:[A-Za-z][A-Za-z0-9+.\-]*:)?//)?[^/@\s]*@")
+
+
+def strip_userinfo(host: Any) -> Any:
+    """Drop ``user:password@`` from a host or URL value."""
+    return _USERINFO_RE.sub(lambda m: m.group(1) or "", host) if isinstance(host, str) else host
+
+
 def redact(object_type: str, data: Mapping[str, Any]) -> Dict[str, Any]:
     """Allowlist, then scrub. Unknown object types yield ``{}`` (fail closed)."""
     spec = ALLOWLISTS.get(object_type)
     if spec is None or not isinstance(data, Mapping):
         return {}
-    return scrub(_apply(spec, data)) or {}
+    out = scrub(_apply(spec, data)) or {}
+    options = out.get("options")
+    if object_type == "connection" and isinstance(options, dict) and "host" in options:
+        options["host"] = strip_userinfo(options["host"])
+    return out
 
 
 def summarize_credentials(provider_config: Optional[Mapping[str, Any]]) -> Dict[str, Any]:
