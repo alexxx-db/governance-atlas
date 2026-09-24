@@ -136,7 +136,7 @@ def seed(args: argparse.Namespace, run_id: str) -> Dict[str, Any]:
         )
         w.serving_endpoints.create(
             name=ep.name,
-            config=serving.EndpointCoreConfigInput(served_entities=[serving.ServedEntityInput(name="model", external_model=external)]),
+            config=serving.EndpointCoreConfigInput(name=ep.name, served_entities=[serving.ServedEntityInput(name="model", external_model=external)]),
             tags=[
                 serving.EndpointTag(key=sample.INTAKE_TAG_KEY, value=ep.intake_id),
                 serving.EndpointTag(key=sample.TIER_TAG_KEY, value=ep.tier),
