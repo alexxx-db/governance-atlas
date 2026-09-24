@@ -1488,12 +1488,76 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--rows-per-scenario", type=int, default=3)
     parser.add_argument("--keep-resources", action="store_true", help="Leave the run-scoped schema in place.")
     parser.add_argument("--output", default="", help="Optional JSON artifact path.")
+    parser.add_argument(
+        "--scenario",
+        choices=("workflow", "ai"),
+        default="workflow",
+        help="workflow (default): governance workflow stress. ai: AI governance collect/reconcile scenarios.",
+    )
     return parser.parse_args(argv)
+
+
+def run_ai_validation(args: argparse.Namespace) -> Dict[str, Any]:
+    """AI governance scenarios (atlas/ai/stress.py) in a run-scoped schema.
+
+    The whole governance schema (migrations 1-22) is created inside
+    <schema-prefix>_<run suffix>, exercised with synthetic sample rows, and
+    dropped afterwards; the schema name is re-checked before the DROP."""
+    validate_runtime_safety(args)
+    run_id = args.run_id or build_run_id()
+    schema = schema_name_for_run(args.schema_prefix, run_id)
+    payload: Dict[str, Any] = {
+        "scenario": "ai",
+        "mode": "live" if args.live else "dry-run",
+        "runId": run_id,
+        "catalog": args.catalog,
+        "schema": schema,
+        "syntheticProvenance": synthetic_provenance(run_id),
+        "passed": True,
+    }
+    if not args.live:
+        payload["plan"] = [
+            "create run-scoped schema and apply migrations 1-22",
+            "import synthetic sample intake; collector append; reconcile run 1",
+            "reconcile run 2: no duplicate findings, last_seen advanced",
+            "suppress one finding, confirm the ambiguous match; reconcile run 3",
+            "verify suppression persists and confirmation became an M2 match",
+            "verify ai.* audit rows pair 1:1 with change events; no organic leaks",
+            "drop the run-scoped schema and verify zero leftovers",
+        ]
+        return payload
+
+    from atlas.ai.store import AiStore
+    from atlas.ai.stress import run_ai_scenarios
+    from atlas.store import GovernanceStore
+    from atlas.uc import UCSQLClient
+
+    import os
+
+    os.environ.setdefault("DATABRICKS_CONFIG_PROFILE", args.profile)
+    uc = UCSQLClient(warehouse_id=args.warehouse_id)
+    store = GovernanceStore(uc=uc, catalog=args.catalog, schema=schema)
+    try:
+        store.ensure_tables()
+        payload["evaluation"] = run_ai_scenarios(AiStore(store), run_id=run_id)
+        payload["passed"] = bool(payload["evaluation"]["passed"])
+    finally:
+        if not args.keep_resources:
+            assert_run_scoped_schema(schema, schema_prefix=args.schema_prefix, run_id=run_id)
+            uc.execute(f"DROP SCHEMA IF EXISTS {_fq_name(args.catalog, schema)} CASCADE")
+            remaining = uc.query_df(
+                f"SELECT COUNT(*) AS n FROM system.information_schema.schemata "
+                f"WHERE catalog_name = {_sql_string(args.catalog)} AND schema_name = {_sql_string(schema)}"
+            )
+            leftover = int(remaining.iloc[0, 0]) if remaining is not None and not remaining.empty else -1
+            payload["cleanup"] = {"passed": leftover == 0, "leftoverSchemas": leftover}
+            payload["passed"] = payload["passed"] and leftover == 0
+    return payload
 
 
 def main(argv: Sequence[str] | None = None) -> None:
     args = parse_args(argv)
-    payload = run_validation(args)
+    payload = run_ai_validation(args) if args.scenario == "ai" else run_validation(args)
     if args.output:
         output_path = Path(args.output)
         output_path.parent.mkdir(parents=True, exist_ok=True)

@@ -454,6 +454,9 @@ def reconcile(
                 intake=state.intake,
             )
             results = control_registry.evaluate(ctx, cfg)
+            for result in results:
+                result.provenance_class = asset.provenance_class
+                result.sample_run_id = asset.sample_run_id
             control_results.extend(results)
             if results:
                 postures[asset.entity_id] = control_registry.posture(results)

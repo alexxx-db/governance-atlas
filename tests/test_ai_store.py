@@ -268,3 +268,25 @@ class RegistryAndControlsTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ProvenanceRegressionTests(unittest.TestCase):
+    def test_rerun_with_new_provenance_only_is_unchanged(self) -> None:
+        existing = pd.DataFrame([{
+            "finding_id": "f1", "state": "open", "severity": "high", "resolved_by": None,
+            "evidence_json": '{"reason":"no intake match","provenance":{"runId":"run-1","observedAt":"t1"}}',
+        }])
+        store, uc, _ = _store(frames={"WHERE finding_id IN": existing})
+        finding = _finding(evidence={"reason": "no intake match", "provenance": {"runId": "run-2", "observedAt": "t2"}})
+        counts = store.upsert_findings([finding], run_id="run-2", actor_email="collector")
+        self.assertEqual(counts.get("unchanged"), 1)
+        self.assertFalse(any("'ai.finding.updated'" in sql for sql in uc.executed))
+
+    def test_control_results_keep_sample_provenance(self) -> None:
+        store, uc, _ = _store()
+        store.replace_control_results_for_run(
+            [models.ControlResult("e1", "serving_endpoint", "AIC-04", "1", "pass", "s", provenance_class="sample", sample_run_id="ga-ai-1")],
+            run_id="run-1", actor_email="collector",
+        )
+        insert = next(sql for sql in uc.executed if sql.startswith("INSERT INTO `main`.`atlas`.`ai_control_results`"))
+        self.assertIn("'sample', 'ga-ai-1'", insert)

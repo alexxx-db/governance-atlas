@@ -110,6 +110,15 @@ def relationship_id_for(relationship_kind: str, source_entity_id: str, target_en
     return hashlib.sha256(f"{relationship_kind}|{source_entity_id}|{target_entity_id}".encode("utf-8")).hexdigest()[:32]
 
 
+def _stable_evidence(evidence: Any) -> str:
+    """Evidence minus its provenance block, whose run id and observed-at change
+    every run: otherwise every re-run would emit an ai.finding.updated event
+    for every unchanged finding."""
+    body = dict(evidence) if isinstance(evidence, Mapping) else {}
+    body.pop("provenance", None)
+    return canonical_json(body)
+
+
 def _chunks(items: Sequence[Any], size: int = BATCH_SIZE) -> Iterable[Sequence[Any]]:
     for start in range(0, len(items), size):
         yield items[start : start + size]
@@ -631,7 +640,7 @@ WHERE state IN ('open', 'acknowledged')"""
                 # suppress is for, and suppression is never overridden.
                 counts["reopened"] += 1
                 event = "ai.finding.opened"
-            elif prior.get("severity") != finding.severity or canonical_json(prior.get("evidence_json")) != canonical_json(finding.evidence):
+            elif prior.get("severity") != finding.severity or _stable_evidence(prior.get("evidence_json")) != _stable_evidence(finding.evidence):
                 counts["updated"] += 1
                 event = "ai.finding.updated"
             else:
@@ -1091,10 +1100,7 @@ WHERE lower(alias_type) = 'external_id' AND lower(source) IN ('intake_id', 'serv
         )
 
     # --------------------------------------------------------------- controls
-    def replace_control_results_for_run(
-        self, results: Sequence[ControlResult], *, run_id: str, actor_email: str, provenance_class: str = "organic",
-        sample_run_id: Optional[str] = None,
-    ) -> int:
+    def replace_control_results_for_run(self, results: Sequence[ControlResult], *, run_id: str, actor_email: str) -> int:
         """Idempotent per run: re-running a failed run replaces its rows."""
         now = _now()
         entry = AuditEntry(
@@ -1123,8 +1129,8 @@ WHERE lower(alias_type) = 'external_id' AND lower(source) IN ('intake_id', 'serv
                             _lit(r.signal_source),
                             _lit(r.evidence),
                             _ts(now),
-                            _lit(provenance_class),
-                            _lit(sample_run_id),
+                            _lit(r.provenance_class),
+                            _lit(r.sample_run_id),
                         ]
                     )
                     + ")"
@@ -1152,6 +1158,56 @@ WHERE {' AND '.join(clauses)}
 ORDER BY entity_id, control_id"""
         )
         return _records(frame, ("evidence_json",))
+
+    def purge_sample(self, sample_run_id: str, *, actor_email: str) -> Dict[str, int]:
+        """Remove one sample run's rows (seed --cleanup). Scoped strictly by
+        sample_run_id; registry, relationship, and alias rows are removed only
+        for entities that sample run observed. Audited before deleting."""
+        run = str(sample_run_id or "").strip()
+        if not run:
+            raise ValueError("sample_run_id is required")
+        frame = self.uc.query_df(
+            f"""SELECT DISTINCT entity_kind, source_system, source_entity_id FROM {self._fq("ai_asset_observations")}
+WHERE provenance_class = 'sample' AND sample_run_id = {_lit(run)}"""
+        )
+        from atlas.ai.models import ai_entity_id
+
+        entity_ids = sorted(
+            {ai_entity_id(str(r["entity_kind"]), str(r["source_system"]), str(r["source_entity_id"])) for r in _records(frame)}
+        )
+        intake_frame = self.uc.query_df(
+            f"""SELECT intake_id FROM {self._fq("intake_records")}
+WHERE provenance_class = 'sample' AND sample_run_id = {_lit(run)}"""
+        )
+        intake_ids = sorted({str(r["intake_id"]) for r in _records(intake_frame)})
+        entry = AuditEntry(
+            event_type="ai.sample.purged",
+            entity_kind="ai_sample_run",
+            entity_id=run,
+            actor_email=actor_email,
+            actor_role=SYSTEM_ACTOR_ROLE,
+            after={"entities": len(entity_ids), "intakes": len(intake_ids)},
+        )
+
+        def _purge() -> Dict[str, int]:
+            scoped = f"provenance_class = 'sample' AND sample_run_id = {_lit(run)}"
+            for table in ("ai_control_results", "reconciliation_findings", "ai_asset_observations", "intake_records"):
+                self.uc.execute(f"DELETE FROM {self._fq(table)} WHERE {scoped}")
+            for chunk in _chunks(intake_ids):
+                ids = ", ".join(_lit(i) for i in chunk)
+                self.uc.execute(f"DELETE FROM {self._fq('intake_records_history')} WHERE intake_id IN ({ids})")
+                sources = ", ".join(_lit(f"intake:{i}") for i in chunk)
+                self.uc.execute(f"DELETE FROM {self._fq('entity_relationships')} WHERE source_entity_id IN ({sources})")
+            for chunk in _chunks(entity_ids):
+                ids = ", ".join(_lit(i) for i in chunk)
+                self.uc.execute(f"DELETE FROM {self._fq('entity_registry')} WHERE entity_id IN ({ids})")
+                self.uc.execute(f"DELETE FROM {self._fq('entity_aliases')} WHERE entity_id IN ({ids})")
+                self.uc.execute(
+                    f"DELETE FROM {self._fq('entity_relationships')} WHERE source_entity_id IN ({ids}) OR target_entity_id IN ({ids})"
+                )
+            return {"entities": len(entity_ids), "intakes": len(intake_ids)}
+
+        return self.audited([entry], _purge)
 
     def emit_events(self, entries: Sequence[AuditEntry]) -> None:
         """Audit-only events that accompany no single-table mutation (for

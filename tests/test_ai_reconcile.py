@@ -295,3 +295,11 @@ class JobWriteTests(unittest.TestCase):
         self.assertEqual(counts2["registryWrites"], 0)
         self.assertFalse([sql for sql in uc2.executed if sql.startswith("MERGE INTO `main`.`atlas`.`entity_relationships`")])
         self.assertTrue(any(sql.startswith("MERGE INTO `main`.`atlas`.`reconciliation_findings`") for sql in uc2.executed))
+
+
+class SampleProvenanceTests(unittest.TestCase):
+    def test_controls_inherit_asset_provenance(self) -> None:
+        o = obs("serving_endpoint", "ep1", provenance_class="sample", sample_run_id="ga-ai-1")
+        res = run([o], [])
+        self.assertTrue(res.controls)
+        self.assertTrue(all(c.provenance_class == "sample" and c.sample_run_id == "ga-ai-1" for c in res.controls))

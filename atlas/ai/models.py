@@ -223,3 +223,7 @@ class ControlResult:
     status: str
     signal_source: str
     evidence: Dict[str, Any] = field(default_factory=dict)
+    # Carried from the observed asset so a sample asset's control results are
+    # never recorded as organic evidence.
+    provenance_class: str = PROVENANCE_ORGANIC
+    sample_run_id: Optional[str] = None
