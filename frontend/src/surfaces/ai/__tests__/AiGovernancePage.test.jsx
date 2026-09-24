@@ -136,6 +136,16 @@ describe("AiGovernancePage", () => {
     expect(screen.getByText(new RegExp("registered_models was degraded"))).toBeTruthy();
   });
 
+  it("discloses known gaps without a degraded banner", async () => {
+    api.fetchAiSummary.mockResolvedValue({
+      ...SUMMARY,
+      availability: { ...SUMMARY.availability, notes: ["ai_asset_registry (not supported): No AI asset registry API"] },
+    });
+    renderPage();
+    expect(await screen.findByText(/Not collected: ai_asset_registry \(not supported\)/)).toBeTruthy();
+    expect(screen.queryByText("Data availability is limited")).toBeNull();
+  });
+
   it("distinguishes an observed-empty inventory from a failed one", async () => {
     api.fetchAiInventory.mockResolvedValue({ items: [], total: 0, meta: meta() });
     renderPage();

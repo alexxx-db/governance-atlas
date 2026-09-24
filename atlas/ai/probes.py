@@ -10,7 +10,15 @@ from __future__ import annotations
 
 from typing import Callable, Optional, Tuple, TypeVar
 
-from atlas.ai.models import PROBE_AVAILABLE, PROBE_DEGRADED, PROBE_UNAVAILABLE, ProbeResult, utc_now
+from atlas.ai.models import (
+    PROBE_AVAILABLE,
+    PROBE_DEGRADED,
+    PROBE_NOT_CONFIGURED,
+    PROBE_NOT_SUPPORTED,
+    PROBE_UNAVAILABLE,
+    ProbeResult,
+    utc_now,
+)
 from atlas.util import error_text, redact_error_text
 
 T = TypeVar("T")
@@ -36,6 +44,16 @@ def probe(source: str, fn: Callable[[], T]) -> Tuple[ProbeResult, Optional[T]]:
     except Exception as exc:  # noqa: BLE001 - the contract is "never raises"
         return ProbeResult(source, False, PROBE_UNAVAILABLE, error_text(exc)[:500], sampled_at), None
     return ProbeResult(source, True, PROBE_AVAILABLE, "", sampled_at), value
+
+
+def not_supported(source: str, reason: str) -> ProbeResult:
+    """No API exists for this source in the pinned SDK (a permanent gap)."""
+    return ProbeResult(source, False, PROBE_NOT_SUPPORTED, reason, utc_now().isoformat())
+
+
+def not_configured(source: str, reason: str) -> ProbeResult:
+    """The operator has not enabled this source (for example an empty allowlist)."""
+    return ProbeResult(source, False, PROBE_NOT_CONFIGURED, reason, utc_now().isoformat())
 
 
 def unavailable(source: str, reason: str) -> ProbeResult:

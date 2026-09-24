@@ -266,9 +266,9 @@ class CollectOrchestrationTests(unittest.TestCase):
         self.assertEqual(sources["serving_endpoints"].state, "unavailable")
         self.assertNotIn("client_id", sources["serving_endpoints"].reason)
         self.assertEqual(sources["mcp_connections"].state, "available")
-        self.assertEqual(sources["uc_function_tools"].state, "unavailable")
+        self.assertEqual(sources["uc_function_tools"].state, "not_configured")
         self.assertIn("no tool schemas configured", sources["uc_function_tools"].reason.lower())
-        self.assertEqual(sources["ai_asset_registry"].state, "unavailable")
+        self.assertEqual(sources["ai_asset_registry"].state, "not_supported")
         self.assertEqual([o.entity_kind for o in observations], [models.MCP_SERVER])
 
 

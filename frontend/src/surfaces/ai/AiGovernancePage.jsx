@@ -627,6 +627,9 @@ export function AiGovernancePage({ shell = null }) {
   const summary = useAiSummary();
   const data = summary.data?.summary || {};
   const run = summary.data?.availability?.run || null;
+  // Known permanent gaps (no API in the SDK, source not configured): disclosed,
+  // but not an outage, so they are not in the degraded banner.
+  const notes = summary.data?.availability?.notes || [];
   const requested = TAB_KEYS.includes(params.tab) ? params.tab : "inventory";
   // Findings are steward-only on the API; readers never see a tab that 403s.
   const tab = requested === "findings" && !steward ? "inventory" : requested;
@@ -667,6 +670,9 @@ export function AiGovernancePage({ shell = null }) {
           value={percentOrDash(data.posture?.coverage)}
         />
       </div>
+      {notes.length ? (
+        <p className="ga-ai-muted ga-ai-notes">Not collected: {notes.join(" · ")}</p>
+      ) : null}
       {tab === "inventory" ? <InventoryTab params={params} setParams={setParams} /> : null}
       {tab === "findings" ? <FindingsTab params={params} setParams={setParams} /> : null}
       {tab === "intake" ? <IntakeTab steward={steward} /> : null}

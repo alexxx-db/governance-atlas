@@ -219,3 +219,8 @@
   clip: rect(0 0 0 0);
   white-space: nowrap;
 }
+
+.ga-ai-notes {
+  margin: 0 0 var(--ga-space-3);
+  font-size: 0.85em;
+}
