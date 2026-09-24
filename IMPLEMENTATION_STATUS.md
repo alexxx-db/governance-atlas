@@ -1,6 +1,70 @@
 # Implementation Status
 
-Last updated: 2026-07-20 during the full-audit remediation pass on `main`.
+Last updated: 2026-09-24 during the AI governance extension Phase 1 build on `feat/ai-governance-extension`.
+
+## Checkpoint - 2026-09-24 AI Governance Extension, Phases 0 and 1 (NOT signed off)
+
+Scope: `docs/ai_extension/DESIGN.md` (v0.2, verified against databricks-sdk
+0.95), with Phase 0 evidence in `docs/ai_extension/PHASE0_FINDINGS.md` and
+operations in `docs/ai_extension/RUNBOOK.md`. Everything sits behind
+`ai_features_enabled` (default `false`).
+
+Built:
+- Config and flag. `/api/ai` registers only when the flag is on; bootstrap
+  exposes `shell.aiGovernance.enabled`.
+- Migrations 19 to 22: observations, intake plus history, runs plus findings,
+  and control results. 23 and 24 are reserved.
+- `atlas/ai`:
+  - models, allowlist redaction, and never-raise probes;
+  - `AiStore`, which audits before mutating and goes through the store wrapper
+    so writes reach the Lakebase mirror;
+  - the Databricks collector;
+  - intake CSV with the YAML field map;
+  - reconciliation (M1 to M3, five finding rules);
+  - controls AIC-01, 03, 04, 06 and 09;
+  - job entry points, sample scenario, and stress scenarios.
+- Bundle job `atlas-ai-collect-and-reconcile`: two serverless tasks, paused
+  schedule, `run_as` the collector SP in staging/prod.
+- `/api/ai` routes: summary, inventory, asset, controls, findings,
+  finding actions, confirm-match, intake, import, and runs.
+- `/ai` frontend surface: Inventory, Findings, Intake, and AI Asset 360.
+  The rail, route and command palette are gated by the flag.
+- Dev seed of real, labeled sample objects (decision D1), plus `--cleanup`.
+
+Validation evidence:
+- Backend: 849 unittest OK (up from 742 at baseline).
+- Frontend: 724 vitest OK (up from 706). Typecheck is clean, check-css passes,
+  and the build succeeds.
+- Live stress, `run_synthetic_stress_validation.py --scenario ai` in
+  run-scoped schema `atlas_ga_stress_20260924175926_dc3ccfe4`: 9 of 9 checks
+  pass. Audit and event rows pair 53 to 53, with 0 organic leaks and 0
+  leftovers. An earlier run caught sample control results stored as organic;
+  that is fixed.
+- Dev app `atlas-alex` is deployed with the flag on. The job ran live:
+  - `dbx-879840517064763`: 99 findings opened.
+  - `dbx-835023281092064`: 99 unchanged, 99 distinct IDs, `last_seen`
+    advanced, 0 registry writes.
+  - `dbx-94212139478758`: 99 unchanged.
+  - Observed: 85 endpoints, 8 agents, 3 external models, 4 MCP servers,
+    1 tool, and 1 model in `main`.
+  - The sample scenario produced exactly its five intended findings.
+- The live runs corrected Phase 0: models must be listed per schema, and UC
+  function tags are unobservable. Serverless IPython exit and `__file__`
+  handling, and duplicate observations on task retry, were also fixed.
+
+Remaining before sign-off:
+- The `CLAUDE.md` browser walk-through and independent subagent sign-off have
+  **not** run. They need an authenticated Chrome session on CDP `:9223`.
+  - The walk-through covers inventory, Asset 360, the findings confirm,
+    suppress and resolve actions with job re-runs, the intake dry run and
+    commit, and the Evidence page.
+- The Lakebase mirror is inactive inside the job (`RuntimeError`), so AI
+  registry rows written by the job are Delta-only. App reads use Delta.
+- Finding assignment does not create tasks: `create_workflow_request` models
+  asset change requests.
+- The run `dbx-104603715079527` has two rows from a pre-fix task retry. Both
+  are marked failed.
+
 
 ## Checkpoint - 2026-07-20 Full Audit Remediation
 
