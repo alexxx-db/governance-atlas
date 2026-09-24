@@ -2380,6 +2380,9 @@ def _shell_payload(
             "integrations": {
                 "datapact": datapact_status,
             },
+            # AI governance surface flag (DESIGN.md 10): the rail entry and the
+            # /ai route render only when the backend registered /api/ai.
+            "aiGovernance": {"enabled": bool(getattr(cfg, "ai_features_enabled", False))},
             "workspaceHost": cfg.workspace_host,
             "product": {
                 "companyName": "Entrada",
@@ -2656,7 +2659,9 @@ def _register_ai_router(target: FastAPI, enabled: bool) -> bool:
     return True
 
 
-_register_ai_router(app, ai_features_enabled_from_env())
+if _register_ai_router(app, ai_features_enabled_from_env()):
+    # Deep links to /ai/... must return the SPA shell, not the 404 fallthrough.
+    CLIENT_ROUTE_PREFIXES.add("ai")
 
 
 @app.get("/{client_path:path}", response_class=HTMLResponse, include_in_schema=False)

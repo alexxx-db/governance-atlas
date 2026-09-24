@@ -64,14 +64,17 @@ class AiRouteGateTests(unittest.TestCase):
 
         target = FastAPI()
         self.assertFalse(runtime_app._register_ai_router(target, False))
-        self.assertFalse([r for r in target.routes if getattr(r, "path", "").startswith("/api/ai")])
+        self.assertFalse([p for p in target.openapi().get("paths", {}) if p.startswith("/api/ai")])
 
     def test_default_app_has_no_ai_routes(self) -> None:
         import runtime_app
 
         if ai_features_enabled_from_env():
             self.skipTest("GOVAT_AI_FEATURES_ENABLED is set in this environment")
-        paths = [getattr(r, "path", "") for r in runtime_app.app.routes]
+        # OpenAPI paths, not app.routes: newer FastAPI nests included routers
+        # as _IncludedRouter entries without a .path attribute.
+        paths = list(runtime_app.app.openapi().get("paths", {}))
+        self.assertTrue(paths)  # sanity: the schema really lists the app's routes
         self.assertFalse([p for p in paths if p.startswith("/api/ai")])
 
 

@@ -779,6 +779,57 @@ LIMIT {max(1, min(int(limit), 500))} OFFSET {max(0, int(offset))}"""
         )
         return _records(frame, ("evidence_json",))
 
+    def finding_counts(self) -> List[Dict[str, Any]]:
+        """Counts by (finding_type, severity, state) across all findings."""
+        frame = self.uc.query_df(
+            f"""SELECT finding_type, severity, state, COUNT(*) AS n
+FROM {self._fq("reconciliation_findings")}
+GROUP BY finding_type, severity, state"""
+        )
+        return _records(frame)
+
+    def open_findings_by_entity(self) -> Dict[str, int]:
+        frame = self.uc.query_df(
+            f"""SELECT entity_id, COUNT(*) AS n FROM {self._fq("reconciliation_findings")}
+WHERE state IN ('open', 'acknowledged') AND entity_id IS NOT NULL
+GROUP BY entity_id"""
+        )
+        return {str(r["entity_id"]): int(r["n"]) for r in _records(frame)}
+
+    def count_findings(self, *, states: Sequence[str] = (), finding_types: Sequence[str] = (), severities: Sequence[str] = ()) -> int:
+        clauses = []
+        if states:
+            clauses.append(f"state IN ({', '.join(_lit(s) for s in states)})")
+        if finding_types:
+            clauses.append(f"finding_type IN ({', '.join(_lit(t) for t in finding_types)})")
+        if severities:
+            clauses.append(f"severity IN ({', '.join(_lit(s) for s in severities)})")
+        where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
+        frame = self.uc.query_df(f"SELECT COUNT(*) AS n FROM {self._fq('reconciliation_findings')} {where}")
+        rows = _records(frame)
+        return int(rows[0]["n"]) if rows else 0
+
+    def ai_registry_rows(self) -> Dict[str, Dict[str, Any]]:
+        frame = self.uc.query_df(
+            f"""SELECT entity_id, entity_kind, reconciliation_state, reconciliation_confidence, observed_at, updated_at
+FROM {self._fq("entity_registry")}
+WHERE entity_kind IN ('ai_model', 'ai_model_version', 'serving_endpoint', 'external_model', 'agent', 'mcp_server', 'uc_function_tool')"""
+        )
+        return {str(r["entity_id"]): r for r in _records(frame)}
+
+    def list_entity_events(self, entity_ids: Sequence[str], limit: int = 50) -> List[Dict[str, Any]]:
+        if not entity_ids:
+            return []
+        frame = self.uc.query_df(
+            f"""SELECT event_id, event_type, entity_kind, entity_id, actor_email, actor_role,
+       before_json, after_json, detail, source, status, request_id, occurred_at
+FROM {self._fq("change_events")}
+WHERE entity_id IN ({", ".join(_lit(i) for i in entity_ids)})
+ORDER BY occurred_at DESC, event_id DESC
+LIMIT {max(1, min(int(limit), 200))}"""
+        )
+        return _records(frame, ("before_json", "after_json"))
+
     def update_finding_state(
         self,
         *,

@@ -537,6 +537,18 @@ envelope (provenance, availability, `authoritative`).
 Reads come only from the governance tables. An unavailable source yields a
 `degraded` envelope, never an empty authoritative one.
 
+Implemented (Phase 1 Step 8): envelopes use source `governance-store:ai`, a
+trusted live source for the frontend provenance filter, so degraded views
+render as degraded rather than hidden. Every view reflects the latest
+**succeeded** run. With no succeeded run, counts are `null` and the state is
+`unavailable`; a failed later run or a non-available source makes the state
+`degraded` with one warning per cause. Assigning a finding sets
+`assignee_email` only: the existing task creation
+(`create_workflow_request`) models asset description and tag change requests,
+not AI findings, so `task_id` stays reserved until a finding task type exists.
+The OpenAPI snapshot is generated with the flag off (the default contract),
+so it does not list `/api/ai`.
+
 ## 10. UI (`/ai` surface)
 
 Rail entry "AI Governance", hidden when the flag is off. Built from the
