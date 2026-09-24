@@ -99,7 +99,7 @@ atlas/ai/collectors/databricks.py
 atlas/ai/intake.py            CSV parsing + YAML field map (shared with Phase 2 ServiceNow)
 atlas/ai/reconcile.py         matching, finding rule registry, idempotent keys
 atlas/ai/controls.py          control registry keyed by control ID
-atlas/ai/store.py             store methods for the new tables (mixin on GovernanceStore)
+atlas/ai/store.py             AiStore: wraps the governance store (Delta or Lakebase dual-write)
 atlas/ai/jobs/collect_databricks.py
 atlas/ai/jobs/reconcile.py
 atlas/ai/field_maps/intake_csv.yaml
@@ -109,9 +109,16 @@ scripts/seed_ai_sample_data.py
 tests/test_ai_*.py            (flat, matching the existing tests/ convention)
 ```
 
-`atlas/ai/store.py` is a mixin rather than more code in `atlas/store.py`
-(already 4,000+ lines) so the extension stays reviewable as a unit.
-**[Proposed]**
+`atlas/ai/store.py` holds `AiStore`, which wraps whichever governance store
+the caller holds rather than being a mixin on `GovernanceStore`. Registry and
+alias writes reach the Lakebase mirror only through `DualWriteGovernanceStore`,
+so a mixin calling `self.upsert_entity_registry` on the Delta store would skip
+the mirror. (Revised in Phase 1 Step 4; was a mixin proposal.)
+
+Fail-closed ordering: every `AiStore` mutation writes its audit row and change
+event **before** the mutation. If they fail, the mutation never runs. If the
+mutation then fails, a second audit and event pair with status `failed`
+records it.
 
 ### 3.3 Write ownership
 
@@ -387,7 +394,10 @@ Reserved for Phase 2: `stale_observation` (`R-STL-01`).
 - A condition that no longer holds auto-resolves (`state='resolved'`,
   `resolved_by='system'`), **except** suppressed findings, which stay
   suppressed.
-- A resolved finding whose condition returns reopens (`state='open'`).
+- A **system**-resolved finding whose condition returns reopens
+  (`state='open'`). A steward resolution stands even if the condition still
+  holds; accepting a known condition is what suppress is for. (Clarified in
+  Phase 1 Step 4.)
 - Steward actions: acknowledge, assign, resolve (note required), suppress
   (reason required), confirm match (writes a `declares` relationship with
   `authority_source='override'` plus the alias; M2 on the next run).
@@ -640,7 +650,11 @@ Reserved now; Phase 1 emits the first seven.
 | `ai.finding.resolved` | Steward or system resolution |
 | `ai.finding.match_confirmed` | Steward confirm-match |
 | `ai.controls.posture_changed` | Asset posture band changes |
-| `ai.observation.appended` | Reserved (volume too high to event per row in Phase 1) |
+| `ai.observation.appended` | One per collector append batch (not per row) |
+| `ai.findings.merged` | One per reconciliation MERGE batch (keeps last_seen updates audited) |
+| `ai.registry.relationship_upserted` | `serves` / `declares` relationship written |
+| `ai.controls.results_recorded` | Control results written for a run |
+| `ai.run.started`, `ai.run.updated`, `ai.run.finished` | Reconciliation run lifecycle |
 | `ai.usage.aggregated` | Reserved, Phase 2 |
 | `ai.mcp_review.updated` | Reserved, Phase 2 |
 | `ai.writeback.sent` | Reserved, Phase 2 ServiceNow |
@@ -667,7 +681,7 @@ System actors use the collector service principal identity with
 | ID | Question | Recommendation |
 |---|---|---|
 | D1 | Synthetic observations for objects that can't be created in dev (10.1) | **Decided 2026-09-24:** real labeled sample objects only |
-| D2 | `atlas/ai/store.py` mixin vs extending `atlas/store.py` | Mixin |
+| D2 | `atlas/ai/store.py` mixin vs extending `atlas/store.py` | **Revised (Phase 1):** composition wrapper, so the Lakebase mirror runs |
 | D3 | M3 scoring function and severity table (5.1, 5.3) | As proposed, then review with stewards |
 | D4 | AIC definitions beyond the Phase 1 subset (6) | Treat as placeholders until Phase 2 scoping |
 | D5 | Collector writes through the SQL warehouse (shared store) vs Spark | Warehouse, for shared escaping and audit code |
