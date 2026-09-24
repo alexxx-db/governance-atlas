@@ -67,7 +67,7 @@ from atlas.api.response import (
     _response_meta,
     _with_meta,
 )
-from atlas.config import AppConfig
+from atlas.config import AppConfig, ai_features_enabled_from_env
 from atlas.runtime_contract import validate_frontend_bundle
 from atlas.services import approvals as approval_service
 from atlas.services import assets as asset_service
@@ -2642,6 +2642,21 @@ app.include_router(build_atlas_router())
 app.include_router(build_atlas_ai_router())
 app.include_router(build_cde_router())
 app.include_router(build_datapact_router())
+
+
+def _register_ai_router(target: FastAPI, enabled: bool) -> bool:
+    """Mount /api/ai/* only when the AI governance flag is on (DESIGN.md 12).
+    Must run before the SPA catch-all route below. The import is lazy so a
+    disabled deployment never loads the extension's API module."""
+    if not enabled:
+        return False
+    from atlas.api.ai import build_ai_router
+
+    target.include_router(build_ai_router())
+    return True
+
+
+_register_ai_router(app, ai_features_enabled_from_env())
 
 
 @app.get("/{client_path:path}", response_class=HTMLResponse, include_in_schema=False)

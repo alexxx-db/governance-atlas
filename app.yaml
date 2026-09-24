@@ -49,3 +49,15 @@ env:
     value: "databricks-claude-opus-4-8"
   - name: GOVAT_LINEAGE_LOOKBACK_DAYS
     value: "365"
+  - name: GOVAT_AI_FEATURES_ENABLED
+    value: "false"
+  - name: GOVAT_AI_INTAKE_TAG_KEY
+    value: "edw_intake_id"
+  - name: GOVAT_AI_TIER_TAG_KEY
+    value: "ai_risk_tier"
+  - name: GOVAT_AI_CATALOG_ALLOWLIST
+    value: ""
+  - name: GOVAT_AI_TOOL_SCHEMA_ALLOWLIST
+    value: ""
+  - name: GOVAT_AI_INTAKE_GRACE_DAYS
+    value: "30"

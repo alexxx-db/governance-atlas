@@ -52,6 +52,12 @@ def _env_int(name: str, default: int) -> int:
         return default
 
 
+def ai_features_enabled_from_env() -> bool:
+    """The AI extension flag, readable before AppConfig exists: routers are
+    registered at import time, when the full config may not load yet."""
+    return _env_bool("GOVAT_AI_FEATURES_ENABLED", False)
+
+
 @dataclass(frozen=True)
 class AppConfig:
     # Databricks / Unity Catalog
@@ -88,6 +94,16 @@ class AppConfig:
     datapact_enabled: bool = True
     datapact_catalog: str = ""
     datapact_schema: str = "datapact"
+    # AI governance extension (docs/ai_extension/DESIGN.md section 12). Off by
+    # default: when false no /api/ai routes register and the rail entry hides.
+    ai_features_enabled: bool = False
+    ai_intake_tag_key: str = "edw_intake_id"
+    ai_tier_tag_key: str = "ai_risk_tier"
+    # Empty catalog allowlist means "use discovery catalogs" (resolved by the
+    # collector, not here, so config stays a plain reflection of env).
+    ai_catalog_allowlist: List[str] = field(default_factory=list)
+    ai_tool_schema_allowlist: List[str] = field(default_factory=list)
+    ai_intake_grace_days: int = 30
 
     @staticmethod
     def from_env() -> "AppConfig":
@@ -141,4 +157,10 @@ class AppConfig:
             datapact_enabled=_env_bool("GOVAT_DATAPACT_ENABLED", True),
             datapact_catalog=_env_optional("GOVAT_DATAPACT_CATALOG"),
             datapact_schema=_env_optional("GOVAT_DATAPACT_SCHEMA") or "datapact",
+            ai_features_enabled=ai_features_enabled_from_env(),
+            ai_intake_tag_key=_env_optional("GOVAT_AI_INTAKE_TAG_KEY") or "edw_intake_id",
+            ai_tier_tag_key=_env_optional("GOVAT_AI_TIER_TAG_KEY") or "ai_risk_tier",
+            ai_catalog_allowlist=_split_csv(_env_optional("GOVAT_AI_CATALOG_ALLOWLIST")),
+            ai_tool_schema_allowlist=_split_csv(_env_optional("GOVAT_AI_TOOL_SCHEMA_ALLOWLIST")),
+            ai_intake_grace_days=max(0, _env_int("GOVAT_AI_INTAKE_GRACE_DAYS", 30)),
         )

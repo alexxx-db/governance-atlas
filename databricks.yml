@@ -91,6 +91,28 @@ variables:
   ai_generation_endpoint:
     description: "Foundation-model serving endpoint for AI autofill; empty disables it"
     default: "databricks-claude-opus-4-8"
+  # AI governance extension (docs/ai_extension/DESIGN.md section 12).
+  ai_features_enabled:
+    description: "Show the AI governance surface and /api/ai routes (true | false)"
+    default: "false"
+  ai_intake_tag_key:
+    description: "Tag key on AI assets whose value is the intake ID (match rule M1)"
+    default: "edw_intake_id"
+  ai_tier_tag_key:
+    description: "Tag key on AI assets holding the risk tier (control AIC-03)"
+    default: "ai_risk_tier"
+  ai_catalog_allowlist:
+    description: "Comma-separated catalogs the AI collector reads models from; empty means discovery_catalogs"
+    default: ""
+  ai_tool_schema_allowlist:
+    description: "Comma-separated catalog.schema list whose UC functions count as AI tools"
+    default: ""
+  ai_intake_grace_days:
+    description: "Days an approved intake may go unobserved before registered_not_found"
+    default: "30"
+  ai_collector_sp:
+    description: "Service principal application ID the AI collector job runs as; empty means the deploying identity (dev only)"
+    default: ""
   datapact_catalog:
     description: "UC catalog hosting the DataPact control plane (<catalog>.datapact). Empty/not-configured = auto-discover from DataPact's /Shared/DataPact pointer file."
     default: "not-configured"
@@ -145,6 +167,18 @@ resources:
             value: ${var.ai_generation_endpoint}
           - name: GOVAT_LINEAGE_LOOKBACK_DAYS
             value: ${var.lineage_lookback_days}
+          - name: GOVAT_AI_FEATURES_ENABLED
+            value: ${var.ai_features_enabled}
+          - name: GOVAT_AI_INTAKE_TAG_KEY
+            value: ${var.ai_intake_tag_key}
+          - name: GOVAT_AI_TIER_TAG_KEY
+            value: ${var.ai_tier_tag_key}
+          - name: GOVAT_AI_CATALOG_ALLOWLIST
+            value: ${var.ai_catalog_allowlist}
+          - name: GOVAT_AI_TOOL_SCHEMA_ALLOWLIST
+            value: ${var.ai_tool_schema_allowlist}
+          - name: GOVAT_AI_INTAKE_GRACE_DAYS
+            value: ${var.ai_intake_grace_days}
       # OBO (on-behalf-of-user) scopes. Without these declared here, every
       # `bundle deploy` wipes scopes the operator set in the Databricks UI,
       # which silently demotes user reads to app-principal fallback and makes
