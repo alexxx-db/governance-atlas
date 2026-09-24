@@ -32,7 +32,9 @@
   overflow-wrap: break-word;
 }
 
-/* Keep visited links on-palette (the browser default is lavender). */
+/* One on-palette link color in both states; unstyled links otherwise fall
+   back to the browser's dark-scheme lavender. */
+.ga-ai-page a,
 .ga-ai-page a:visited {
   color: var(--ga-bright-blue);
 }

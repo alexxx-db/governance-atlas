@@ -245,7 +245,7 @@ export function OverviewTab({ fqn, asset, a360, graph, detailLoading }) {
 
       <SectionCard
         title="Usage"
-        subtitle="Lifetime totals per source — no time window exists for these counts."
+        subtitle="Lifetime totals per source. No time window exists for these counts."
       >
         {a360Ready ? <UsageSources usage={a360.usage} fqn={fqn} /> : <LoadingState variant="card" lines={3} />}
       </SectionCard>

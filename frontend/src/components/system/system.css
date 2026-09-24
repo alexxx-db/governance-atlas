@@ -1008,6 +1008,19 @@
   font-size: 0.78rem;
 }
 
+/* Without this, breadcrumb links fall back to the browser's dark-scheme
+   lavender (unvisited) and purple (visited). */
+.ga-sys-page-breadcrumbs a,
+.ga-sys-page-breadcrumbs a:visited {
+  color: var(--ga-bright-blue);
+  text-decoration: none;
+}
+
+.ga-sys-page-breadcrumbs a:hover,
+.ga-sys-page-breadcrumbs a:focus-visible {
+  text-decoration: underline;
+}
+
 .ga-sys-page-hero-row {
   display: flex;
   align-items: flex-start;
