@@ -1,0 +1,55 @@
+# Intake record field map (docs/ai_extension/DESIGN.md 7.3).
+# Shared by the CSV import (Phase 1) and the ServiceNow collector (Phase 2):
+# each target field lists the source column names it accepts. Matching is
+# case-insensitive and treats spaces and hyphens as underscores.
+version: 1
+fields:
+  intake_id:
+    sources: [intake_id, intake, number, request_id]
+    required: true
+    max_length: 128
+  title:
+    sources: [title, name, short_description]
+    required: true
+    max_length: 256
+  state:
+    sources: [state, status, approval_state]
+    required: true
+    type: state
+  owner_email:
+    sources: [owner, owner_email, requested_by, accountable_owner]
+    required: true
+    type: email
+  business_unit:
+    sources: [business_unit, department, bu]
+  risk_tier:
+    sources: [risk_tier, tier, ai_risk_tier]
+    max_length: 64
+  platform:
+    sources: [platform, hosting]
+    max_length: 64
+  provider:
+    sources: [provider, vendor, model_provider]
+    max_length: 128
+  model_family:
+    sources: [model_family, model, model_name]
+    max_length: 128
+  intended_use:
+    sources: [intended_use, use_case, description]
+    max_length: 2000
+  approved_at:
+    sources: [approved_at, approval_date, approved_on]
+    type: date
+  review_due_at:
+    sources: [review_due_at, next_review, review_due]
+    type: date
+  source_record_id:
+    sources: [sys_id, source_record_id]
+    max_length: 128
+# Raw state values (case-insensitive) mapped to the normalized intake states.
+state_map:
+  draft: [draft, new]
+  submitted: [submitted, in review, in_review, pending, under review, pending approval]
+  approved: [approved, active, in production, live]
+  rejected: [rejected, denied, declined]
+  retired: [retired, decommissioned, closed, sunset]
