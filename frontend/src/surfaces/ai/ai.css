@@ -22,10 +22,19 @@
   flex-wrap: wrap;
 }
 
+.ga-ai-name-cell {
+  min-width: 18ch;
+}
+
 .ga-ai-name-cell a {
   color: var(--ga-bright-blue);
   text-decoration: none;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
+}
+
+/* Keep visited links on-palette (the browser default is lavender). */
+.ga-ai-page a:visited {
+  color: var(--ga-bright-blue);
 }
 
 .ga-ai-name-cell a:hover,

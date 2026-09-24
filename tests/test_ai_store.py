@@ -19,12 +19,16 @@ class FakeUC:
         self.frames = frames or {}
         self.fail_on = fail_on
 
-    def execute(self, sql: str) -> None:
+    def execute(self, sql: str, **_kw: Any) -> None:
         if self.fail_on and self.fail_on in sql:
             raise RuntimeError("simulated statement failure")
         self.executed.append(sql)
 
-    def query_df(self, sql: str) -> pd.DataFrame:
+    def query_df(self, sql: str, **_kw: Any) -> pd.DataFrame:
+        # DML sent through query_df (to read num_affected_rows) is recorded
+        # like execute().
+        if sql.lstrip().split(None, 1)[0].upper() in {"UPDATE", "MERGE", "INSERT", "DELETE"}:
+            self.execute(sql)
         for needle, frame in self.frames.items():
             if needle in sql:
                 return frame
@@ -323,3 +327,46 @@ class AliasAuditTests(unittest.TestCase):
         store.upsert_alias(entity_id="e1", intake_id="INT-1", source="intake_tag", actor_email="collector")
         self.assertTrue(any("'ai.registry.alias_upserted'" in sql for sql in uc.executed))
         self.assertEqual(gov.alias_calls[0]["source"], "intake_tag")
+
+
+class ConcurrencyAndAtomicityTests(unittest.TestCase):
+    def _store_with(self, state: str, affected: int):
+        return _store(frames={
+            "WHERE finding_id IN": pd.DataFrame([{"finding_id": "f1", "state": state, "entity_id": "e1"}]),
+            "SET state_changed_by": pd.DataFrame([{"num_affected_rows": affected}]),
+        })
+
+    def test_update_is_guarded_on_the_validated_state(self) -> None:
+        store, uc, _ = self._store_with("open", 1)
+        store.update_finding_state(finding_id="f1", action="acknowledge", actor_email="s@b.co", actor_role="steward")
+        update = next(sql for sql in uc.executed if sql.startswith("UPDATE"))
+        self.assertIn("AND state = 'open'", update)
+
+    def test_concurrent_change_raises_conflict_and_audits_failure(self) -> None:
+        from atlas.ai.store import FindingConflict
+
+        store, uc, _ = self._store_with("open", 0)
+        with self.assertRaises(FindingConflict):
+            store.update_finding_state(finding_id="f1", action="resolve", note="n", actor_email="s@b.co", actor_role="steward")
+        self.assertTrue(any("'failed'" in sql and "metadata_audit_log" in sql for sql in uc.executed))
+
+    def test_confirm_match_conflict_writes_no_link_or_alias(self) -> None:
+        from atlas.ai.store import FindingConflict
+
+        store, uc, gov = self._store_with("open", 0)
+        with self.assertRaises(FindingConflict):
+            store.confirm_match(finding_id="f1", entity_id="e1", entity_kind="external_model", intake_id="INT-1", actor_email="s@b.co", actor_role="steward")
+        self.assertFalse(any(sql.startswith("MERGE INTO") and "entity_relationships" in sql for sql in uc.executed))
+        self.assertEqual(gov.alias_calls, [])
+
+    def test_intake_import_is_one_merge_and_failures_audit_every_row(self) -> None:
+        records = [_intake(intake_id=f"INT-{i}") for i in range(450)]
+        store, uc, _ = _store()
+        store.upsert_intake_records(records, actor_email="s@b.com", actor_role="steward")
+        self.assertEqual(sum(1 for sql in uc.executed if sql.startswith("MERGE INTO") and "intake_records" in sql), 1)
+
+        store, uc, _ = _store(fail_on="intake_records_history")
+        with self.assertRaises(RuntimeError):
+            store.upsert_intake_records(records, actor_email="s@b.com", actor_role="steward")
+        failed = sum(sql.count("'failed'") for sql in uc.executed if "metadata_audit_log" in sql)
+        self.assertEqual(failed, 450)

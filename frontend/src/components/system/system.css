@@ -1084,6 +1084,13 @@
   background: var(--ga-bg);
 }
 
+/* Inside the shell, .ga-shell-main is the scroll container and already starts
+   below the header; offsetting again left a header-height band where rows
+   scrolled visibly above the tabs. */
+.ga-shell-main .ga-sys-page-tabs {
+  top: 0;
+}
+
 .ga-sys-page-body {
   display: block;
 }

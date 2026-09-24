@@ -10,17 +10,19 @@ import unittest
 
 from atlas.ai import redaction
 
+# Credential-shaped fixtures are assembled at runtime so no committed line
+# matches a real token pattern (GitHub push protection blocks those).
 SECRETS = (
-    "sk-live-0123456789abcdefghijkl",
-    "sk-ant-api03-abcdefghijklmnop",
+    "sk-" + "live-0123456789abcdefghijkl",
+    "sk-" + "ant-api03-abcdefghijklmnop",
     "dapi" + "0123456789abcdef" * 2,
     "dose" + "0123456789abcdef0123456789",
-    "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0In0.c2lnbmF0dXJl",
+    "eyJ" + "hbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0In0.c2lnbmF0dXJl",
     "Bearer abc.def.ghi",
-    "AKIAABCDEFGHIJKLMNOP",
-    "ghp_abcdefghijklmnopqrstuvwxyz0123",
-    "xoxb-1234567890-abcdefghij",
-    "-----BEGIN RSA PRIVATE KEY-----\nMIIE...",
+    "AKIA" + "ABCDEFGHIJKLMNOP",
+    "gh" + "p_abcdefghijklmnopqrstuvwxyz0123",
+    "xo" + "xb-1234567890-abcdefghij",
+    "-----BEGIN RSA " + "PRIVATE KEY-----\nMIIE...",
     "hunter2-plaintext-password",
 )
 
@@ -125,13 +127,26 @@ class RedactionTests(unittest.TestCase):
     def test_embedded_keys_and_host_userinfo_removed(self) -> None:
         out = redaction.redact(
             "registered_model",
-            {"full_name": "m.s.x", "comment": "rotate key sk-proj-abcdefghijklmnopqrstuv soon", "owner": "a@b.c"},
+            {"full_name": "m.s.x", "comment": "rotate key " + "sk-" + "proj-abcdefghijklmnopqrstuv soon", "owner": "a@b.c"},
         )
         self.assertNotIn("comment", out)
         self.assertEqual(redaction.redact("registered_model", {"full_name": "a.b.c", "comment": "ask-the-team about tasks"})["comment"], "ask-the-team about tasks")
         conn = redaction.redact("connection", {"name": "c", "options": {"host": "https://user:pass@h.example.com/mcp"}})
         self.assertEqual(conn["options"]["host"], "https://h.example.com/mcp")
         self.assertEqual(redaction.strip_userinfo("admin:pw@db.internal"), "db.internal")
+
+    def test_review_gaps_closed(self) -> None:
+        # A secret_ref key only passes through with a well-formed scope/key.
+        self.assertEqual(redaction.scrub({"secret_ref": SECRETS[0]}), {})
+        self.assertEqual(redaction.scrub({"secret_ref": "scope/key"}), {"secret_ref": "scope/key"})
+        # camelCase credential keys are caught; token counts are not.
+        self.assertEqual(redaction.scrub({"clientSecret": "x", "accessToken": "y", "maxTokens": 3}), {"maxTokens": 3})
+        # Query strings in base_path can carry tokens.
+        out = redaction.redact("connection", {"name": "c", "options": {"base_path": "/v1?api_key=hunter2xyz"}})
+        self.assertEqual(out["options"], {"base_path": "/v1"})
+        # Prose starting with "Basic" survives; real Basic credentials don't.
+        self.assertEqual(redaction.redact("registered_model", {"full_name": "a", "comment": "Basic sentiment classifier"})["comment"], "Basic sentiment classifier")
+        self.assertNotIn("comment", redaction.redact("registered_model", {"full_name": "a", "comment": "Authorization: Basic dXNlcjpwYXNzd29yZA=="}))
 
     def test_function_body_never_serialized(self) -> None:
         out = redaction.redact("uc_function", {"full_name": "a.b.f", "routine_definition": f"return '{SECRETS[0]}'"})

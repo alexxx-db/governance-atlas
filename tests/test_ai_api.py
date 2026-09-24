@@ -212,6 +212,9 @@ class ReadRouteTests(unittest.TestCase):
         self.assertEqual(provider["declared"], "openai")
         self.assertEqual(reader["history"][0]["eventType"], "ai.registry.state_changed")
         self.assertEqual(reader["controls"][0]["title"], "AI Gateway usage tracking enabled")
+        # The endpoint's model family comes from its served model.
+        family = next(d for d in reader["diff"] if d["field"] == "model_family")
+        self.assertEqual(family["observed"], "claude")
 
     def test_readers_never_receive_findings_on_asset_360(self) -> None:
         fake = FakeAi(runs=[SUCCEEDED], succeeded=SUCCEEDED)
@@ -323,6 +326,19 @@ class MutationRouteTests(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             self._call(lambda: ai_api.api_ai_finding_confirm_match(FINDING_ID, ai_api.ConfirmMatchRequest(intakeId="INT-1"), _request()), store)
         self.assertFalse([sql for sql in uc.executed if "entity_relationships" in sql or sql.startswith("UPDATE")])
+
+    def test_concurrent_change_returns_409_and_confirm_writes_no_link(self) -> None:
+        conflict = {"SET state_changed_by": pd.DataFrame([{"num_affected_rows": 0}])}
+        for call in (
+            lambda: ai_api.api_ai_finding_patch(FINDING_ID, ai_api.FindingPatch(action="acknowledge"), _request()),
+            lambda: ai_api.api_ai_finding_confirm_match(FINDING_ID, ai_api.ConfirmMatchRequest(intakeId="INT-1"), _request()),
+        ):
+            uc, store = self._real_store()
+            uc.frames.update(conflict)
+            with self.assertRaises(HTTPException) as ctx:
+                self._call(call, store)
+            self.assertEqual(ctx.exception.status_code, 409)
+            self.assertFalse([sql for sql in uc.executed if "entity_relationships" in sql and sql.startswith("MERGE")])
 
     def test_confirm_only_for_matchable_findings(self) -> None:
         finding = pd.DataFrame([{"finding_id": FINDING_ID, "finding_type": "rejected_but_running", "state": "open", "entity_id": EP_ID}])

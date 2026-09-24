@@ -142,7 +142,8 @@ jobs:
       BUNDLE_VAR_ai_tool_schema_allowlist: ${{ vars.AI_TOOL_SCHEMA_ALLOWLIST }}
       BUNDLE_VAR_ai_intake_grace_days: ${{ vars.AI_INTAKE_GRACE_DAYS || '30' }}
       # Required for staging/prod (run_as of the AI collector job).
-      BUNDLE_VAR_ai_collector_sp: ${{ vars.AI_COLLECTOR_SP }}
+      # Unset falls back to the deploying SP; an empty string would yield run_as: {}.
+      BUNDLE_VAR_ai_collector_sp: ${{ vars.AI_COLLECTOR_SP || vars.DATABRICKS_CLIENT_ID }}
       BUNDLE_VAR_ai_job_schedule_pause_status: ${{ vars.AI_JOB_SCHEDULE_PAUSE_STATUS || 'PAUSED' }}
     steps:
       - uses: actions/checkout@v4

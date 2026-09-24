@@ -343,3 +343,20 @@ class ReviewFixTests(unittest.TestCase):
         update = next(sql for sql in uc.executed if "SET state = 'superseded'" in sql)
         self.assertIn("'r-old'", update)
         self.assertNotIn("'r-steward'", update)
+
+
+class RepairGuardTests(unittest.TestCase):
+    def test_refuses_to_repair_a_run_older_than_the_latest_success(self) -> None:
+        import os
+        from unittest.mock import MagicMock, patch
+
+        from atlas.ai.jobs import reconcile as job
+
+        ai = MagicMock()
+        ai.get_run.return_value = {"run_id": "dbx-1", "status": "failed", "sources_json": {"x": 1}, "started_at": "2026-09-20T00:00:00"}
+        ai.latest_succeeded_run.return_value = {"run_id": "dbx-2", "started_at": "2026-09-21T00:00:00"}
+        with patch.object(job.common, "workspace_client"), patch.object(job.common, "job_actor", return_value="c"), \
+                patch.object(job.common, "build_store", return_value=(object(), None)), patch("atlas.ai.store.AiStore", return_value=ai), \
+                patch.dict(os.environ, {"DATABRICKS_WAREHOUSE_ID": "wh", "GOVAT_CATALOG": "main", "GOVAT_SCHEMA": "atlas"}):
+            self.assertEqual(job.main(["--run-id", "dbx-1"]), 1)
+        ai.observations_for_run.assert_not_called()

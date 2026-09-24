@@ -20,6 +20,7 @@ tags are not observable). Such observations get ``provenance_class='sample'``.
 
 from __future__ import annotations
 
+import itertools
 import re
 from typing import Any, Callable, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
 
@@ -222,13 +223,16 @@ def collect_registered_models(w: Any, ctx: RunContext, *, catalogs: Sequence[str
         listings.extend(w.registered_models.list())
     observations: List[Observation] = []
     denied: List[str] = []
+    version_capped: List[str] = []
     for listed in listings[:MAX_MODELS]:
         full_name = str(getattr(listed, "full_name", "") or "")
         if not full_name or getattr(listed, "browse_only", False):
             continue
         try:
             model = _as_dict(w.registered_models.get(full_name, include_aliases=True))
-            versions = [_as_dict(v) for v in list(w.model_versions.list(full_name, max_results=MAX_VERSIONS_PER_MODEL))]
+            # max_results is only the page size; the iterator pages through
+            # everything, so stop after one past the cap and say so.
+            versions = [_as_dict(v) for v in itertools.islice(w.model_versions.list(full_name, max_results=MAX_VERSIONS_PER_MODEL), MAX_VERSIONS_PER_MODEL + 1)]
         except Exception as exc:  # noqa: BLE001 - per-model permission failures degrade
             denied.append(f"{full_name}: {type(exc).__name__}")
             continue
@@ -246,6 +250,8 @@ def collect_registered_models(w: Any, ctx: RunContext, *, catalogs: Sequence[str
                 config=redact("registered_model", model),
             )
         )
+        if len(versions) > MAX_VERSIONS_PER_MODEL:
+            version_capped.append(full_name)
         for version in versions[:MAX_VERSIONS_PER_MODEL]:
             number = version.get("version")
             if number is None:
@@ -272,6 +278,10 @@ def collect_registered_models(w: Any, ctx: RunContext, *, catalogs: Sequence[str
         # A silent cap would read as "the rest are gone" and auto-resolve
         # their findings; report the source as degraded instead.
         problems.append(f"only the first {MAX_MODELS} of {len(listings)} models were collected; narrow ai_catalog_allowlist")
+    if version_capped:
+        problems.append(
+            f"only {MAX_VERSIONS_PER_MODEL} versions collected for {len(version_capped)} model(s): {', '.join(version_capped[:5])}"
+        )
     if problems:
         raise Degraded("; ".join(problems), value=observations)
     return observations

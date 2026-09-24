@@ -111,8 +111,8 @@ variables:
     description: "Days an approved intake may go unobserved before registered_not_found"
     default: "30"
   ai_collector_sp:
-    description: "Service principal application ID the AI collector job runs as in staging/prod (dev runs as the deploying user, PHASE0 D7)"
-    default: ""
+    description: "Service principal application ID the AI collector job runs as in staging/prod (dev runs as the deploying user, PHASE0 D7). Defaults to the deploying identity (the CI SP)."
+    default: ${workspace.current_user.userName}
   ai_job_schedule_pause_status:
     description: "PAUSED or UNPAUSED for the AI collect-and-reconcile schedule (development mode pauses it regardless)"
     default: "PAUSED"
@@ -130,6 +130,8 @@ resources:
     atlas_ai_collect_and_reconcile:
       name: atlas-ai-collect-and-reconcile
       max_concurrent_runs: 1
+      # A hung SDK or warehouse call must not hold the single run slot forever.
+      timeout_seconds: 3600
       environments:
         - environment_key: ai_jobs
           spec:
@@ -319,9 +321,14 @@ targets:
   # service-principal deploy lands under that SP, not a person's folder.
   staging:
     mode: production
-    # The AI collector job runs as a dedicated service principal outside dev.
-    run_as:
-      service_principal_name: ${var.ai_collector_sp}
+    # run_as is scoped to the AI job, not the target: a target-level run_as
+    # also applies to the app, and apps reject a run_as that differs from the
+    # owner. Empty ai_collector_sp falls back to the deploying SP (see var).
+    resources:
+      jobs:
+        atlas_ai_collect_and_reconcile:
+          run_as:
+            service_principal_name: ${var.ai_collector_sp}
     workspace:
       root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
     variables:
@@ -329,9 +336,14 @@ targets:
 
   prod:
     mode: production
-    # The AI collector job runs as a dedicated service principal outside dev.
-    run_as:
-      service_principal_name: ${var.ai_collector_sp}
+    # run_as is scoped to the AI job, not the target: a target-level run_as
+    # also applies to the app, and apps reject a run_as that differs from the
+    # owner. Empty ai_collector_sp falls back to the deploying SP (see var).
+    resources:
+      jobs:
+        atlas_ai_collect_and_reconcile:
+          run_as:
+            service_principal_name: ${var.ai_collector_sp}
     workspace:
       root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
     variables:

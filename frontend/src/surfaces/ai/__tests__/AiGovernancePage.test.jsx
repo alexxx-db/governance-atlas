@@ -177,6 +177,14 @@ describe("AiGovernancePage", () => {
     );
   });
 
+  it("labels the default state filter honestly and can request every state", async () => {
+    renderPage("/ai?tab=findings");
+    const select = await screen.findByLabelText("State");
+    expect(select.options[select.selectedIndex].textContent).toBe("Open and acknowledged");
+    fireEvent.change(select, { target: { value: "open,acknowledged,suppressed,resolved" } });
+    await waitFor(() => expect(api.fetchAiFindings).toHaveBeenLastCalledWith(expect.objectContaining({ state: "open,acknowledged,suppressed,resolved" }), expect.anything()));
+  });
+
   it("offers only Reopen on a closed finding", async () => {
     api.fetchAiFindings.mockResolvedValue({ items: [{ ...FINDING, state: "suppressed" }], total: 1, meta: meta() });
     renderPage(`/ai?tab=findings&findingState=suppressed&finding=${FINDING.findingId}`);
@@ -218,7 +226,7 @@ describe("AiGovernancePage", () => {
     fireEvent.click(within(drawer).getByText("Validate (dry run)"));
     await within(drawer).findByText("1 valid, 0 invalid of 1 rows");
     fireEvent.click(within(drawer).getByRole("button", { name: "Commit" }));
-    fireEvent.click(within(drawer).getByRole("button", { name: /Confirm import of 1 rows/ }));
+    fireEvent.click(within(drawer).getByRole("button", { name: /Confirm import of 1 row$/ }));
     await waitFor(() => expect(api.importAiIntake).toHaveBeenLastCalledWith(expect.stringContaining("I1"), "commit"));
   });
 });

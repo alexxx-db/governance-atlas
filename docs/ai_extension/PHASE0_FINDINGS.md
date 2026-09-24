@@ -12,7 +12,7 @@ Environment:
 - Loose pins in `requirements.txt` resolved to `pandas==3.0.6`,
   `fastapi==0.141.1`, `uvicorn==0.53.0`, `psycopg==3.3.6`.
 - Live checks: read-only calls against the dev workspace with profile
-  `DEFAULT` (identity `alex.barreto@entrada.ai`). Outputs below are counts and
+  `DEFAULT` (identity: the deploying user). Outputs below are counts and
   field shapes only; no config values or secrets were printed.
 
 ## Summary

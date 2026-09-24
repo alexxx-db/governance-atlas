@@ -12,7 +12,7 @@
  *    same gate and audits before writing.
  */
 import "./ai.css";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
 import {
@@ -102,21 +102,32 @@ function Provenance({ provenance, showSample = true }) {
 /* ------------------------------------------------------------------ */
 
 function InventoryTab({ params, setParams, pageFailed }) {
+  // The URL tracks every keystroke; the API only sees the search after a
+  // pause (each inventory request fans out to several warehouse queries).
+  const [q, setQ] = useState(params.q || "");
+  useEffect(() => {
+    const timer = setTimeout(() => setQ(params.q || ""), 300);
+    return () => clearTimeout(timer);
+  }, [params.q]);
   const inventory = useAiInventory({
     kind: params.kind,
     state: params.state,
     provider: params.provider,
-    q: params.q,
+    q,
     sort: "findings",
   });
   const rows = useMemo(() => inventory.data?.items || [], [inventory.data]);
   const total = inventory.data?.total;
   const unavailable = inventory.status === "unavailable" || inventory.status === "error";
-  const providerOptions = useMemo(() => {
-    const providers = new Set(rows.map((row) => row.provider).filter(Boolean));
-    if (params.provider) providers.add(params.provider);
-    return [...providers].sort().map((value) => ({ value, label: value }));
+  // Accumulate providers seen this session so selecting one doesn't hide
+  // the others (the filtered rows only contain the selected provider).
+  const [seenProviders, setSeenProviders] = useState(() => new Set());
+  useEffect(() => {
+    const found = rows.map((row) => row.provider).filter(Boolean);
+    if (params.provider) found.push(params.provider);
+    setSeenProviders((prev) => (found.every((p) => prev.has(p)) ? prev : new Set([...prev, ...found])));
   }, [rows, params.provider]);
+  const providerOptions = useMemo(() => [...seenProviders].sort().map((value) => ({ value, label: value })), [seenProviders]);
 
   const columns = [
     {
@@ -167,7 +178,13 @@ function InventoryTab({ params, setParams, pageFailed }) {
   return (
     <SectionCard
       title="AI inventory"
-      subtitle={typeof total === "number" ? `${total.toLocaleString()} asset${total === 1 ? "" : "s"} in the last completed run` : "No completed run"}
+      subtitle={
+        inventory.refreshing && inventory.status !== "loading"
+          ? "Updating…"
+          : typeof total === "number"
+            ? `${total.toLocaleString()} asset${total === 1 ? "" : "s"} ${params.q || params.kind || params.state || params.provider ? "match these filters" : "in the last completed run"}`
+            : "No completed run"
+      }
     >
       <FilterBar
         facets={[
@@ -363,25 +380,25 @@ function FindingActions({ finding, onDone }) {
           Acknowledge
         </Button>
       ) : null}
-      <Button onClick={() => setMode("assign")} variant="secondary">
+      <Button disabled={action.submitting} onClick={() => setMode("assign")} variant="secondary">
         Assign
       </Button>
       {canConfirm ? (
-        <Button onClick={() => setMode("confirm")} variant="secondary">
+        <Button disabled={action.submitting} onClick={() => setMode("confirm")} variant="secondary">
           Confirm match
         </Button>
       ) : null}
-      <Button onClick={() => setMode("resolve")} variant="secondary">
+      <Button disabled={action.submitting} onClick={() => setMode("resolve")} variant="secondary">
         Resolve
       </Button>
-      <Button onClick={() => setMode("suppress")} tone="danger" variant="tertiary">
+      <Button disabled={action.submitting} onClick={() => setMode("suppress")} tone="danger" variant="tertiary">
         Suppress
       </Button>
     </div>
   );
 }
 
-function FindingsTab({ params, setParams }) {
+function FindingsTab({ params, setParams, pageFailed }) {
   const findings = useAiFindings({ state: params.findingState || "open,acknowledged", severity: params.severity || "" });
   const rows = findings.data?.items || [];
   const groups = groupFindings(rows);
@@ -405,7 +422,7 @@ function FindingsTab({ params, setParams }) {
       header: "Asset or intake",
       render: (row) => (
         <button className="ga-ai-linkish" onClick={() => setParams({ finding: row.findingId })} type="button">
-          {row.evidence?.assetName || row.intakeId || row.entityId}
+          {row.evidence?.assetName || row.intakeId || row.entityId || findingTypeLabel(row.findingType)}
         </button>
       ),
     },
@@ -429,8 +446,11 @@ function FindingsTab({ params, setParams }) {
             key: "findingState",
             label: "State",
             type: "select",
+            // The empty value is the default open+acknowledged view; label it
+            // as such rather than "All", and offer every state explicitly.
+            allLabel: "Open and acknowledged",
             options: [
-              { value: "open,acknowledged", label: "Open and acknowledged" },
+              { value: "open,acknowledged,suppressed,resolved", label: "All states" },
               { value: "open", label: "Open" },
               { value: "acknowledged", label: "Acknowledged" },
               { value: "suppressed", label: "Suppressed" },
@@ -452,7 +472,7 @@ function FindingsTab({ params, setParams }) {
           </button>
         </p>
       ) : null}
-      {unavailable ? (
+      {unavailable && pageFailed ? null : unavailable ? (
         <UnavailableState
           title="Findings unavailable"
           reason={findings.meta?.unavailableReason || findings.errorMessage || "Findings could not be loaded."}
@@ -551,7 +571,7 @@ function ImportDrawer({ open, onClose }) {
           </Button>
           {confirming ? (
             <Button loading={importer.submitting} onClick={() => submit("commit")} variant="primary">
-              Confirm import of {report?.summary?.valid || 0} rows
+              Confirm import of {report?.summary?.valid || 0} row{report?.summary?.valid === 1 ? "" : "s"}
             </Button>
           ) : (
             <Button disabled={!canCommit} onClick={() => setConfirming(true)} variant="primary">
@@ -726,7 +746,9 @@ export function AiGovernancePage({ shell = null }) {
       {tab === "inventory" ? (
         <InventoryTab pageFailed={summary.status === "unavailable" || summary.status === "error"} params={params} setParams={setParams} />
       ) : null}
-      {tab === "findings" ? <FindingsTab params={params} setParams={setParams} /> : null}
+      {tab === "findings" ? (
+        <FindingsTab pageFailed={summary.status === "unavailable" || summary.status === "error"} params={params} setParams={setParams} />
+      ) : null}
       {tab === "intake" ? <IntakeTab steward={steward} /> : null}
     </PageShell>
   );

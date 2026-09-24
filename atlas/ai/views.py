@@ -241,9 +241,14 @@ def asset_detail(ai: Any, avail: Mapping[str, Any], entity_id: str, *, tier_key:
     intakes = {str(r["intake_id"]): r for r in ai.list_intake_records()}
     declared = _declared_intake(ai, entity_id, parent, intakes)
     intake = (declared or {}).get("intake")
+    # An endpoint has no model family of its own; its served entities do.
+    child_families = sorted({
+        str(o["model_family"]) for o in observations
+        if o.get("parent_source_entity_id") == obs["source_entity_id"] and o.get("model_family")
+    })
     observed_values = {
         "provider": obs.get("provider"),
-        "model_family": obs.get("model_family"),
+        "model_family": obs.get("model_family") or (", ".join(child_families) or None),
         "owner": obs.get("owner"),
         "platform": obs.get("platform"),
         "risk_tier": (obs.get("tags_json") or {}).get(tier_key),
@@ -252,7 +257,9 @@ def asset_detail(ai: Any, avail: Mapping[str, Any], entity_id: str, *, tier_key:
     for obs_field, intake_field in (*DIFF_FIELDS, ("risk_tier", "risk_tier")):
         declared_value = (intake or {}).get(intake_field)
         observed_value = observed_values.get(obs_field)
-        differs = bool(declared_value and observed_value and str(declared_value).strip().lower() != str(observed_value).strip().lower())
+        observed_set = {v.strip().lower() for v in str(observed_value or "").split(",") if v.strip()}
+        # Several served models: it differs only if the declared value is none of them.
+        differs = bool(declared_value and observed_set and str(declared_value).strip().lower() not in observed_set)
         diff.append({"field": obs_field, "declared": declared_value, "observed": observed_value, "differs": differs})
     findings = ai.list_findings(entity_id=entity_id, limit=100) if include_config else []
     events = ai.list_entity_events([entity_id, *[f["finding_id"] for f in findings]], limit=100)

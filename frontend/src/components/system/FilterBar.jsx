@@ -157,7 +157,9 @@ export function FilterBar({
               value={value[facet.key] ?? ""}
               onChange={(event) => setFacet(facet.key, event.target.value)}
             >
-              <option value="">All</option>
+              {/* allLabel names what the empty value really shows when a
+                  surface defaults it to a subset (e.g. open findings). */}
+              <option value="">{facet.allLabel ?? "All"}</option>
               {(facet.options ?? []).map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label ?? option.value}

@@ -204,7 +204,7 @@ export function LineagePicker() {
       className="ga-lin-page"
       eyebrow="Knowledge & Proof"
       title="Lineage Atlas"
-      subtitle="Trace any governed asset from its upstream sources through to the downstream consumers you can see — with owners, quality and access evidence one click away."
+      subtitle="Trace any governed asset from its upstream sources through to the downstream consumers you can see, with owners, quality and access evidence one click away."
     >
       <div className="ga-lin-home">
         <div className="ga-lin-home-main">

@@ -81,8 +81,12 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             counts={"observations": dict(Counter(o.entity_kind for o in observations))},
         )
     except Exception as exc:  # noqa: BLE001 - record the failure, then fail the task
-        ai.update_reconciliation_run(run_id=run_id, actor_email=actor, status="failed", failure_reason=error_text(exc), finished=True)
-        logging.getLogger("atlas.ai.jobs").error("collection failed: %s", error_text(exc))
+        log = logging.getLogger("atlas.ai.jobs")
+        log.error("collection failed: %s", error_text(exc))
+        try:
+            ai.update_reconciliation_run(run_id=run_id, actor_email=actor, status="failed", failure_reason=error_text(exc), finished=True)
+        except Exception as mark_exc:  # noqa: BLE001 - don't mask the original failure
+            log.error("could not mark run %s failed: %s", run_id, error_text(mark_exc))
         return 1
     logging.getLogger("atlas.ai.jobs").info("run %s: %d observations", run_id, len(observations))
     return 0

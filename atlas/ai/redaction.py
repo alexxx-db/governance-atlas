@@ -108,6 +108,7 @@ _CREDENTIAL_SEGMENTS = frozenset(
     {"key", "apikey", "token", "secret", "password", "passwd", "credential", "credentials", "private", "bearer", "authorization"}
 )
 
+_SECRET_REF_VALUE_RE = re.compile(r"^[A-Za-z0-9_.\-]+/[A-Za-z0-9_.\-]+$")
 _SECRET_REF_RE = re.compile(r"^\{\{\s*secrets/([A-Za-z0-9_.\-]+)/([A-Za-z0-9_.\-]+)\s*\}\}$")
 # Searched anywhere in a value (not anchored): a key pasted into a comment or
 # description must not survive. Boundaries keep ordinary words ("task-...")
@@ -118,7 +119,9 @@ _CREDENTIAL_VALUE_RES = (
     re.compile(r"(?<![A-Za-z0-9])dose[0-9a-f]{20,}", re.IGNORECASE),  # Databricks OAuth secret
     re.compile(r"eyJ[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]*"),  # JWT
     re.compile(r"(?i)\bbearer\s+[A-Za-z0-9._~+/=\-]{8,}"),
-    re.compile(r"(?i)\bbasic\s+[A-Za-z0-9+/=]{8,}"),
+    # HTTP Basic credentials: base64 with at least one digit, +, / or =, so
+    # prose like "Basic sentiment classifier" survives.
+    re.compile(r"\b[Bb]asic\s+(?=[A-Za-z0-9+/]*[0-9+/=])[A-Za-z0-9+/]{16,}={0,2}"),
     re.compile(r"(^|[^A-Z0-9])(AKIA|ASIA)[0-9A-Z]{16}([^A-Z0-9]|$)"),  # AWS access key id
     re.compile(r"\b(ghp|gho|ghs|ghu|github_pat)_[A-Za-z0-9_]{10,}"),
     re.compile(r"\bxox[abprs]-[A-Za-z0-9\-]{10,}"),
@@ -135,7 +138,9 @@ def secret_ref(value: Any) -> Optional[str]:
 
 
 def is_credential_key(name: Any) -> bool:
-    segments = re.split(r"[_\-.\s]+", str(name).strip().lower())
+    # Split camelCase first so clientSecret / accessToken are caught too.
+    text = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", str(name).strip())
+    segments = re.split(r"[_\-.\s]+", text.lower())
     return any(segment in _CREDENTIAL_SEGMENTS for segment in segments if segment)
 
 
@@ -154,7 +159,9 @@ def scrub(value: Any) -> Any:
     secret. Returns ``None`` for a dropped scalar so callers can omit it.
     """
     if isinstance(value, Mapping):
-        if set(value.keys()) == {"secret_ref"} and isinstance(value.get("secret_ref"), str):
+        # Pass through only a well-formed "<scope>/<key>" reference; anything
+        # else under a secret_ref key is scrubbed like any other value.
+        if set(value.keys()) == {"secret_ref"} and isinstance(value.get("secret_ref"), str) and _SECRET_REF_VALUE_RE.match(value["secret_ref"]):
             return {"secret_ref": value["secret_ref"]}
         cleaned: Dict[str, Any] = {}
         for raw_key, raw_val in value.items():
@@ -223,8 +230,12 @@ def redact(object_type: str, data: Mapping[str, Any]) -> Dict[str, Any]:
         return {}
     out = scrub(_apply(spec, data)) or {}
     options = out.get("options")
-    if object_type == "connection" and isinstance(options, dict) and "host" in options:
-        options["host"] = strip_userinfo(options["host"])
+    if object_type == "connection" and isinstance(options, dict):
+        if "host" in options:
+            options["host"] = strip_userinfo(options["host"])
+        if isinstance(options.get("base_path"), str):
+            # Query strings can carry tokens (?api_key=...); keep the path only.
+            options["base_path"] = options["base_path"].split("?", 1)[0].split("#", 1)[0]
     return out
 
 

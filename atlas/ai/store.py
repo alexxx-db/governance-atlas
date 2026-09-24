@@ -121,6 +121,20 @@ def _stable_evidence(evidence: Any) -> str:
     return canonical_json(body)
 
 
+class FindingConflict(ValueError):
+    """The finding's state changed between read and write (maps to 409)."""
+
+
+def _affected_rows(frame: Any) -> Optional[int]:
+    """num_affected_rows from a DML result; None when the driver omits it."""
+    try:
+        if frame is not None and "num_affected_rows" in frame.columns and len(frame):
+            return int(frame["num_affected_rows"].iloc[0])
+    except (TypeError, ValueError):
+        pass
+    return None
+
+
 def _chunks(items: Sequence[Any], size: int = BATCH_SIZE) -> Iterable[Sequence[Any]]:
     for start in range(0, len(items), size):
         yield items[start : start + size]
@@ -238,9 +252,11 @@ class AiStore:
         try:
             return mutation()
         except Exception as exc:
+            # Every audited entry gets its failed counterpart; a partial list
+            # would leave "success" rows for writes that never landed.
             failed = [
                 AuditEntry(**{**entry.__dict__, "status": "failed", "detail": error_text(exc)[:500]})
-                for entry in entries[:BATCH_SIZE]
+                for entry in entries
             ]
             try:
                 self.audit_batch(failed)
@@ -422,40 +438,42 @@ WHERE intake_id IN ({", ".join(_lit(i) for i in chunk)})"""
             )
 
         def _write() -> Dict[str, int]:
-            for chunk in _chunks(list(records)):
-                source_rows = " UNION ALL ".join(
-                    "SELECT "
-                    + ", ".join(
-                        [
-                            f"{_s(r.intake_id)} AS intake_id",
-                            f"{_s(r.title)} AS title",
-                            f"{_s(r.state)} AS state",
-                            f"{_s(r.owner_email)} AS owner_email",
-                            f"{_s(r.business_unit)} AS business_unit",
-                            f"{_s(r.risk_tier)} AS risk_tier",
-                            f"{_s(r.platform)} AS platform",
-                            f"{_s(r.provider)} AS provider",
-                            f"{_s(r.model_family)} AS model_family",
-                            f"{_s(r.intended_use)} AS intended_use",
-                            f"{_t(r.approved_at)} AS approved_at",
-                            f"{_t(r.review_due_at)} AS review_due_at",
-                            f"{_s(r.source_system)} AS source_system",
-                            f"{_s(r.source_record_id)} AS source_record_id",
-                            f"{_s(r.ingest_source)} AS ingest_source",
-                            f"{_s(r.ingest_run_id)} AS ingest_run_id",
-                            f"{_s(r.attributes or {})} AS attributes_json",
-                            f"{_s(r.content_hash)} AS content_hash",
-                            f"{_s(r.provenance_class)} AS provenance_class",
-                            f"{_s(r.sample_run_id)} AS sample_run_id",
-                            f"{_ts(now)} AS created_at",
-                            f"{_s(actor_email)} AS created_by",
-                            f"{_ts(now)} AS updated_at",
-                            f"{_s(actor_email)} AS updated_by",
-                        ]
-                    )
-                    for r in chunk
+            # One MERGE for the whole import: Delta commits it atomically, so a
+            # failure can't leave the register half-imported (chunked MERGEs
+            # could). Rows are capped at MAX_ROWS_PER_REQUEST upstream.
+            source_rows = " UNION ALL ".join(
+                "SELECT "
+                + ", ".join(
+                    [
+                        f"{_s(r.intake_id)} AS intake_id",
+                        f"{_s(r.title)} AS title",
+                        f"{_s(r.state)} AS state",
+                        f"{_s(r.owner_email)} AS owner_email",
+                        f"{_s(r.business_unit)} AS business_unit",
+                        f"{_s(r.risk_tier)} AS risk_tier",
+                        f"{_s(r.platform)} AS platform",
+                        f"{_s(r.provider)} AS provider",
+                        f"{_s(r.model_family)} AS model_family",
+                        f"{_s(r.intended_use)} AS intended_use",
+                        f"{_t(r.approved_at)} AS approved_at",
+                        f"{_t(r.review_due_at)} AS review_due_at",
+                        f"{_s(r.source_system)} AS source_system",
+                        f"{_s(r.source_record_id)} AS source_record_id",
+                        f"{_s(r.ingest_source)} AS ingest_source",
+                        f"{_s(r.ingest_run_id)} AS ingest_run_id",
+                        f"{_s(r.attributes or {})} AS attributes_json",
+                        f"{_s(r.content_hash)} AS content_hash",
+                        f"{_s(r.provenance_class)} AS provenance_class",
+                        f"{_s(r.sample_run_id)} AS sample_run_id",
+                        f"{_ts(now)} AS created_at",
+                        f"{_s(actor_email)} AS created_by",
+                        f"{_ts(now)} AS updated_at",
+                        f"{_s(actor_email)} AS updated_by",
+                    ]
                 )
-                self.uc.execute(
+                for r in records
+            )
+            self.uc.execute(
                     f"""MERGE INTO {self._fq("intake_records")} t
 USING ({source_rows}) s
 ON t.intake_id = s.intake_id
@@ -469,9 +487,12 @@ WHEN MATCHED AND (t.content_hash <> s.content_hash OR t.provenance_class <> s.pr
     attributes_json=s.attributes_json, content_hash=s.content_hash,
     provenance_class=s.provenance_class, sample_run_id=s.sample_run_id,
     updated_at=s.updated_at, updated_by=s.updated_by
-WHEN NOT MATCHED THEN INSERT *"""
-                )
-                history = ", ".join(
+WHEN NOT MATCHED THEN INSERT *""",
+                timeout_s=120,
+            )
+            # History follows in one INSERT; if it fails, the failed audit rows
+            # for every intake record say so.
+            history = ", ".join(
                     "("
                     + ", ".join(
                         [
@@ -487,14 +508,15 @@ WHEN NOT MATCHED THEN INSERT *"""
                         ]
                     )
                     + ")"
-                    for r in chunk
-                )
-                self.uc.execute(
-                    f"""INSERT INTO {self._fq("intake_records_history")} (
+                for r in records
+            )
+            self.uc.execute(
+                f"""INSERT INTO {self._fq("intake_records_history")} (
     history_id, intake_id, change_kind, before_json, after_json,
     ingest_source, ingest_run_id, recorded_at, recorded_by
-) VALUES {history}"""
-                )
+) VALUES {history}""",
+                timeout_s=120,
+            )
             counts = Counter(kinds.values())
             return {"created": counts["created"], "updated": counts["updated"], "unchanged": counts["unchanged"]}
 
@@ -595,7 +617,7 @@ LIMIT 1"""
        failure_reason, triggered_by, started_at, finished_at
 FROM {self._fq("reconciliation_runs")}
 WHERE status = 'succeeded'
-ORDER BY finished_at DESC
+ORDER BY started_at DESC
 LIMIT 1"""
         )
         rows = _records(frame, ("sources_json", "counts_json"))
@@ -929,12 +951,17 @@ LIMIT {max(1, min(int(limit), 200))}"""
             source="api",
             request_id=request_id,
         )
-        self.audited(
-            [entry],
-            lambda: self.uc.execute(
-                f"UPDATE {self._fq('reconciliation_findings')} SET {', '.join(sets)} WHERE finding_id = {_lit(finding_id)}"
-            ),
-        )
+        def _update() -> None:
+            # Guard on the state we validated: a concurrent steward action or
+            # a job auto-resolve in between must not be silently overwritten.
+            frame = self.uc.query_df(
+                f"UPDATE {self._fq('reconciliation_findings')} SET {', '.join(sets)} "
+                f"WHERE finding_id = {_lit(finding_id)} AND state = {_lit(current)}"
+            )
+            if _affected_rows(frame) == 0:
+                raise FindingConflict("The finding changed since it was loaded. Reload and try again.")
+
+        self.audited([entry], _update)
         return {**prior, **{k: v for k, v in after.items() if k != "action"}}
 
     # ----------------------------------------------------------- registry/rel
@@ -1165,6 +1192,16 @@ WHERE lower(alias_type) = 'external_id' AND lower(source) IN ('intake_id', 'serv
             request_id=request_id,
         )
         self.audit_batch([entry])
+        # Resolve first: it is the guarded step (409 on a concurrent change),
+        # so a conflict leaves no override link or alias behind.
+        resolved = self.update_finding_state(
+            finding_id=finding_id,
+            action="resolve",
+            actor_email=actor_email,
+            actor_role=actor_role,
+            request_id=request_id,
+            note=note or f"Match confirmed to intake {intake_id}.",
+        )
         self.upsert_relationship(
             relationship_kind="declares",
             source_entity_id=f"intake:{intake_id}",
@@ -1182,14 +1219,7 @@ WHERE lower(alias_type) = 'external_id' AND lower(source) IN ('intake_id', 'serv
             entity_id=entity_id, intake_id=intake_id, source="intake_id",
             actor_email=actor_email, actor_role=actor_role, request_id=request_id,
         )
-        return self.update_finding_state(
-            finding_id=finding_id,
-            action="resolve",
-            actor_email=actor_email,
-            actor_role=actor_role,
-            request_id=request_id,
-            note=note or f"Match confirmed to intake {intake_id}.",
-        )
+        return resolved
 
     # --------------------------------------------------------------- controls
     def replace_control_results_for_run(self, results: Sequence[ControlResult], *, run_id: str, actor_email: str) -> int:

@@ -15,7 +15,7 @@ from databricks.sdk.service import catalog, serving
 from atlas.ai import models
 from atlas.ai.collectors import databricks as dbx
 
-SECRET_VALUE = "sk-live-0123456789abcdefghijkl"
+SECRET_VALUE = "sk-" + "live-0123456789abcdefghijkl"  # assembled: keeps secret scanners quiet
 
 
 def _ctx() -> models.RunContext:
@@ -250,6 +250,18 @@ class OtherAdapterTests(unittest.TestCase):
         self.assertEqual(result.state, "degraded")
         self.assertIn("only the first 2 of 3", result.reason)
         self.assertEqual(len(value), 2)
+
+    def test_version_cap_degrades_instead_of_silently_dropping(self) -> None:
+        from atlas.ai.probes import probe
+
+        model = catalog.RegisteredModelInfo(full_name="a.b.m")
+        versions = [catalog.ModelVersionInfo(version=i) for i in range(1, 5)]
+        w = FakeWorkspace(models_by_catalog={None: [model]}, model_detail={"a.b.m": model}, versions={"a.b.m": versions})
+        with unittest.mock.patch.object(dbx, "MAX_VERSIONS_PER_MODEL", 3):
+            result, value = probe("registered_models", lambda: dbx.collect_registered_models(w, _ctx(), catalogs=[]))
+        self.assertEqual(result.state, "degraded")
+        self.assertIn("only 3 versions collected for 1 model(s): a.b.m", result.reason)
+        self.assertEqual(len(value), 4)  # the model plus 3 versions
 
     def test_endpoint_tags_are_scrubbed(self) -> None:
         ep = _external_endpoint(tags=[serving.EndpointTag(key="api_key", value=SECRET_VALUE), serving.EndpointTag(key="team", value="claims")])

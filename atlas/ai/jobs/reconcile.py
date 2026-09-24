@@ -2,9 +2,12 @@
 
 Stage everything in memory with the pure ``atlas.ai.reconcile`` functions,
 then write. Every write is idempotent (MERGE keyed on deterministic IDs,
-control results replaced per run), and the run is marked ``succeeded`` last:
-readers only trust the latest succeeded run, so a failure mid-write never
-shows partial derived state, and re-running the same run converges.
+control results replaced per run), and the run is marked ``succeeded`` last,
+so re-running the same run converges. Observations and control results are
+scoped to a run, but findings, registry state, and relationships are global:
+after a failure mid-write the views (degraded, pinned to the previous
+succeeded run's observations) can show findings from the failed run until a
+repair or the next run completes.
 """
 
 from __future__ import annotations
@@ -196,6 +199,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     if not ready:
         LOG.error("run %s is not ready to reconcile (status=%s)", run_id, (run or {}).get("status"))
         return 1
+    newer = ai.latest_succeeded_run()
+    if newer and newer.get("run_id") != run_id and str(newer.get("started_at") or "") > str(run.get("started_at") or ""):
+        # Repairing an older run would roll findings back to stale observations.
+        LOG.error("run %s is older than succeeded run %s; not reconciling it", run_id, newer.get("run_id"))
+        return 1
     try:
         result = reconcile.reconcile(
             ai.observations_for_run(run_id),
@@ -212,8 +220,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         counts["observations"] = (run.get("counts_json") or {}).get("observations")
         ai.update_reconciliation_run(run_id=run_id, actor_email=actor, status="succeeded", counts=counts, finished=True)
     except Exception as exc:  # noqa: BLE001 - record, then fail the task
-        ai.update_reconciliation_run(run_id=run_id, actor_email=actor, status="failed", failure_reason=error_text(exc), finished=True)
         LOG.error("reconciliation failed: %s", error_text(exc))
+        try:
+            ai.update_reconciliation_run(run_id=run_id, actor_email=actor, status="failed", failure_reason=error_text(exc), finished=True)
+        except Exception as mark_exc:  # noqa: BLE001 - don't mask the original failure
+            LOG.error("could not mark run %s failed: %s", run_id, error_text(mark_exc))
         return 1
     LOG.info("run %s reconciled: %s", run_id, counts)
     return 0

@@ -204,6 +204,7 @@ def api_ai_findings(
 
 def api_ai_finding_patch(finding_id: str, payload: FindingPatch, request: Request) -> JSONResponse:
     from atlas.ai import views
+    from atlas.ai.store import FindingConflict
     from runtime_app import _ensure_can_approve, _ensure_live_runtime, _user_role_slug
 
     _ensure_live_runtime()
@@ -228,6 +229,8 @@ def api_ai_finding_patch(finding_id: str, payload: FindingPatch, request: Reques
         )
     except LookupError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except FindingConflict as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     return JSONResponse(_with_meta({"finding": views.finding_view(updated)}, request, source=AI_SOURCE))
@@ -251,16 +254,22 @@ def api_ai_finding_confirm_match(finding_id: str, payload: ConfirmMatchRequest, 
     intake_id = _clean_text(payload.intakeId, "intakeId", 128)
     if not intake_id or intake_id not in {str(r["intake_id"]) for r in ai.list_intake_records()}:
         raise HTTPException(status_code=400, detail="intakeId must name an existing intake record.")
-    updated = ai.confirm_match(
-        finding_id=finding_id,
-        entity_id=str(finding["entity_id"]),
-        entity_kind=str(finding.get("entity_kind") or ""),
-        intake_id=intake_id,
-        actor_email=actor,
-        actor_role=_user_role_slug(request),
-        request_id=_request_id(request) or None,
-        note=_clean_text(payload.note, "note"),
-    )
+    try:
+        updated = ai.confirm_match(
+            finding_id=finding_id,
+            entity_id=str(finding["entity_id"]),
+            entity_kind=str(finding.get("entity_kind") or ""),
+            intake_id=intake_id,
+            actor_email=actor,
+            actor_role=_user_role_slug(request),
+            request_id=_request_id(request) or None,
+            note=_clean_text(payload.note, "note"),
+        )
+    except LookupError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except ValueError as exc:
+        # The finding changed between the check above and the guarded write.
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
     return JSONResponse(_with_meta({"finding": views.finding_view(updated)}, request, source=AI_SOURCE))
 
 

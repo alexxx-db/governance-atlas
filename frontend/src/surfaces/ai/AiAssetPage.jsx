@@ -39,7 +39,7 @@ const TABS = [
 
 function ProvenanceChips({ items }) {
   return (
-    <div className="ga-ai-chips" aria-label="Provenance">
+    <div className="ga-ai-chips" role="group" aria-label="Provenance">
       {items
         .filter(([, value]) => value)
         .map(([label, value]) => (
@@ -122,7 +122,10 @@ function Overview({ asset }) {
                 <Badge size="sm" tone={severityTone(finding.severity)}>
                   {finding.severity}
                 </Badge>{" "}
-                {findingTypeLabel(finding.findingType)} · {finding.state}
+                <Link to={`/ai?tab=findings&findingState=open,acknowledged,suppressed,resolved&finding=${finding.findingId}`}>
+                  {findingTypeLabel(finding.findingType)}
+                </Link>{" "}
+                · {finding.state}
                 {finding.evidence?.reason ? <span className="ga-ai-muted"> · {finding.evidence.reason}</span> : null}
               </li>
             ))}
@@ -257,9 +260,9 @@ export function AiAssetPage({ entityId = "", shell = null }) {
           {tab === "controls" ? <Controls asset={asset} /> : null}
           {tab === "history" ? <History asset={asset} /> : null}
           {tab === "usage" ? (
-            <EmptyState title="Available in a later release" body="Usage and spend come from aggregated system tables in Phase 2." />
+            <EmptyState title="Available in a later release" body="Usage and spend from aggregated system tables will arrive in a later release." />
           ) : null}
-          {tab === "overview" && isSteward(shell) && asset.config ? (
+          {tab === "overview" && isSteward(shell) && asset.config && Object.keys(asset.config).length ? (
             <SectionCard title="Configuration (redacted)" subtitle="Allowlisted fields only. Credentials are never stored.">
               <pre className="ga-ai-config">{JSON.stringify(asset.config, null, 2)}</pre>
             </SectionCard>
