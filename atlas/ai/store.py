@@ -104,6 +104,12 @@ def _records(frame: Any, json_columns: Sequence[str] = ()) -> List[Dict[str, Any
     return rows
 
 
+def relationship_id_for(relationship_kind: str, source_entity_id: str, target_entity_id: str) -> str:
+    import hashlib
+
+    return hashlib.sha256(f"{relationship_kind}|{source_entity_id}|{target_entity_id}".encode("utf-8")).hexdigest()[:32]
+
+
 def _chunks(items: Sequence[Any], size: int = BATCH_SIZE) -> Iterable[Sequence[Any]]:
     for start in range(0, len(items), size):
         yield items[start : start + size]
@@ -541,6 +547,17 @@ LIMIT {max(1, min(int(limit), 200))}"""
         )
         return _records(frame, ("sources_json", "counts_json"))
 
+    def get_run(self, run_id: str) -> Optional[Dict[str, Any]]:
+        frame = self.uc.query_df(
+            f"""SELECT run_id, job_run_id, status, rule_set_version, sources_json, counts_json,
+       failure_reason, triggered_by, started_at, finished_at
+FROM {self._fq("reconciliation_runs")}
+WHERE run_id = {_lit(run_id)}
+LIMIT 1"""
+        )
+        rows = _records(frame, ("sources_json", "counts_json"))
+        return rows[0] if rows else None
+
     def latest_succeeded_run(self) -> Optional[Dict[str, Any]]:
         frame = self.uc.query_df(
             f"""SELECT run_id, job_run_id, status, rule_set_version, sources_json, counts_json,
@@ -907,11 +924,7 @@ WHERE entity_kind IN ('ai_model', 'ai_model_version', 'serving_endpoint', 'exter
     ) -> str:
         """Deterministic relationship_id; an existing override is never
         downgraded to a derived authority by the job."""
-        import hashlib
-
-        relationship_id = hashlib.sha256(
-            f"{relationship_kind}|{source_entity_id}|{target_entity_id}".encode("utf-8")
-        ).hexdigest()[:32]
+        relationship_id = relationship_id_for(relationship_kind, source_entity_id, target_entity_id)
         now = _now()
         entry = AuditEntry(
             event_type="ai.registry.relationship_upserted",

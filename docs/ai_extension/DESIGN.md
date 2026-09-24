@@ -371,6 +371,19 @@ branches, so Phase 2+ rules slot in.
 
 Reserved for Phase 2: `stale_observation` (`R-STL-01`).
 
+Units and children (Phase 1 Step 7): external models and model versions
+inherit their parent endpoint's or model's match. Findings are raised on the
+parent, so a shadow endpoint serving an external model is one `high`
+`found_not_registered`, not two findings. `found_different` compares the
+children's provider and model family. An approved intake that is the best
+candidate of an ambiguous asset is not also reported `registered_not_found`.
+`registered_not_found` is raised and auto-resolved only when both core
+sources (serving endpoints, registered models) were fully available that
+run, and auto-resolution skips kinds whose source was unavailable or degraded.
+M1 matches also write an informational alias with `source='intake_tag'`;
+only steward confirmations (`source='intake_id'`) count as M2, so removing the
+tag later still un-matches the asset.
+
 ### 5.3 Severity
 
 | Type | Severity |

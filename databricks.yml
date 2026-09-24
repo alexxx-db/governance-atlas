@@ -111,14 +111,77 @@ variables:
     description: "Days an approved intake may go unobserved before registered_not_found"
     default: "30"
   ai_collector_sp:
-    description: "Service principal application ID the AI collector job runs as; empty means the deploying identity (dev only)"
+    description: "Service principal application ID the AI collector job runs as in staging/prod (dev runs as the deploying user, PHASE0 D7)"
     default: ""
+  ai_job_schedule_pause_status:
+    description: "PAUSED or UNPAUSED for the AI collect-and-reconcile schedule (development mode pauses it regardless)"
+    default: "PAUSED"
   datapact_catalog:
     description: "UC catalog hosting the DataPact control plane (<catalog>.datapact). Empty/not-configured = auto-discover from DataPact's /Shared/DataPact pointer file."
     default: "not-configured"
 
 # ── App resource ────────────────────────────────────────────
 resources:
+  # AI governance extension: collect then reconcile (DESIGN.md 3.4, 12).
+  # Jobs collect; the app only reads the derived tables. Both tasks share one
+  # run id derived from {{job.run_id}}; config arrives as --env pairs because
+  # serverless tasks don't get app-style environment variables.
+  jobs:
+    atlas_ai_collect_and_reconcile:
+      name: atlas-ai-collect-and-reconcile
+      max_concurrent_runs: 1
+      environments:
+        - environment_key: ai_jobs
+          spec:
+            environment_version: "2"
+            dependencies:
+              - databricks-sdk==0.95.0
+              - pandas>=2.0
+              - psycopg[binary,pool]>=3.2
+      tasks:
+        - task_key: collect_databricks
+          environment_key: ai_jobs
+          spark_python_task:
+            python_file: ./atlas/ai/jobs/collect_databricks.py
+            parameters: &ai_job_params
+              - "--job-run-id"
+              - "{{job.run_id}}"
+              - "--env"
+              - "DATABRICKS_WAREHOUSE_ID=${var.warehouse_id}"
+              - "--env"
+              - "GOVAT_CATALOG=${var.gov_catalog}"
+              - "--env"
+              - "GOVAT_SCHEMA=${var.gov_schema}"
+              - "--env"
+              - "GOVAT_DISCOVERY_CATALOGS=${var.discovery_catalogs}"
+              - "--env"
+              - "GOVAT_AI_INTAKE_TAG_KEY=${var.ai_intake_tag_key}"
+              - "--env"
+              - "GOVAT_AI_TIER_TAG_KEY=${var.ai_tier_tag_key}"
+              - "--env"
+              - "GOVAT_AI_CATALOG_ALLOWLIST=${var.ai_catalog_allowlist}"
+              - "--env"
+              - "GOVAT_AI_TOOL_SCHEMA_ALLOWLIST=${var.ai_tool_schema_allowlist}"
+              - "--env"
+              - "GOVAT_AI_INTAKE_GRACE_DAYS=${var.ai_intake_grace_days}"
+              - "--env"
+              - "GOVAT_LAKEBASE_ENABLED=${var.lakebase_enabled}"
+              - "--env"
+              - "GOVAT_LAKEBASE_ENDPOINT_NAME=${var.lakebase_endpoint_name}"
+              - "--env"
+              - "GOVAT_LAKEBASE_SCHEMA=${var.lakebase_schema}"
+        - task_key: reconcile
+          depends_on:
+            - task_key: collect_databricks
+          environment_key: ai_jobs
+          spark_python_task:
+            python_file: ./atlas/ai/jobs/reconcile.py
+            parameters: *ai_job_params
+      schedule:
+        quartz_cron_expression: "0 0 6 * * ?"
+        timezone_id: UTC
+        pause_status: ${var.ai_job_schedule_pause_status}
+
   apps:
     atlas:
       name: ${var.app_name}
@@ -250,6 +313,9 @@ targets:
   # service-principal deploy lands under that SP, not a person's folder.
   staging:
     mode: production
+    # The AI collector job runs as a dedicated service principal outside dev.
+    run_as:
+      service_principal_name: ${var.ai_collector_sp}
     workspace:
       root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
     variables:
@@ -257,6 +323,9 @@ targets:
 
   prod:
     mode: production
+    # The AI collector job runs as a dedicated service principal outside dev.
+    run_as:
+      service_principal_name: ${var.ai_collector_sp}
     workspace:
       root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
     variables:

@@ -135,6 +135,15 @@ jobs:
       BUNDLE_VAR_lakebase_branch: ${{ vars.LAKEBASE_BRANCH || 'not-configured' }}
       BUNDLE_VAR_lakebase_database_resource: ${{ vars.LAKEBASE_DATABASE_RESOURCE || 'not-configured' }}
       BUNDLE_VAR_lakebase_schema: ${{ vars.LAKEBASE_SCHEMA || 'atlas_app' }}
+      BUNDLE_VAR_ai_features_enabled: ${{ vars.AI_FEATURES_ENABLED || 'false' }}
+      BUNDLE_VAR_ai_intake_tag_key: ${{ vars.AI_INTAKE_TAG_KEY || 'edw_intake_id' }}
+      BUNDLE_VAR_ai_tier_tag_key: ${{ vars.AI_TIER_TAG_KEY || 'ai_risk_tier' }}
+      BUNDLE_VAR_ai_catalog_allowlist: ${{ vars.AI_CATALOG_ALLOWLIST }}
+      BUNDLE_VAR_ai_tool_schema_allowlist: ${{ vars.AI_TOOL_SCHEMA_ALLOWLIST }}
+      BUNDLE_VAR_ai_intake_grace_days: ${{ vars.AI_INTAKE_GRACE_DAYS || '30' }}
+      # Required for staging/prod (run_as of the AI collector job).
+      BUNDLE_VAR_ai_collector_sp: ${{ vars.AI_COLLECTOR_SP }}
+      BUNDLE_VAR_ai_job_schedule_pause_status: ${{ vars.AI_JOB_SCHEDULE_PAUSE_STATUS || 'PAUSED' }}
     steps:
       - uses: actions/checkout@v4
 
