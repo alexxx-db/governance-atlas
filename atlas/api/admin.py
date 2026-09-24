@@ -30,7 +30,7 @@ from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-from atlas.util import sql_literal
+from atlas.util import error_text, sql_literal
 
 
 class BrandingPatch(BaseModel):
@@ -854,8 +854,13 @@ def build_admin_router() -> APIRouter:
             _store().upsert_role(email=email, role=role, updated_by=actor_email)
         except Exception as exc:
             raise HTTPException(
-                status_code=502, detail=f"Could not assign the role: {exc.__class__.__name__}: {exc}"
+                status_code=502, detail=f"Could not assign the role: {error_text(exc)}"
             ) from exc
+        # Apply now, not after the 60s role-cache TTL: a demoted user must
+        # lose their old permissions immediately.
+        from atlas.api.cache import _ttl_cache_pop
+
+        _ttl_cache_pop(f"runtime_user_role:{email.lower()}")
         return JSONResponse({"ok": True, "email": email, "role": role})
 
     return router

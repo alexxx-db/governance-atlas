@@ -21,6 +21,7 @@ from __future__ import annotations
 from typing import Any, Dict, Optional
 
 from fastapi import APIRouter, Body, HTTPException, Request
+from atlas.util import error_text
 from fastapi.responses import JSONResponse
 
 from atlas.api.cache import _ttl_value
@@ -80,7 +81,7 @@ def api_datapact_status(request: Request) -> JSONResponse:
             request,
             status_code=503,
             source=SOURCE,
-            detail=f"DataPact detection failed: {exc.__class__.__name__}: {exc}",
+            detail=f"DataPact detection failed: {error_text(exc)}",
             state="unavailable",
         )
 
@@ -120,7 +121,7 @@ def api_datapact_overview(request: Request) -> JSONResponse:
             request,
             status_code=503,
             source=SOURCE,
-            detail=f"DataPact portfolio is unavailable: {exc.__class__.__name__}: {exc}",
+            detail=f"DataPact portfolio is unavailable: {error_text(exc)}",
             state="unavailable",
         )
 
@@ -160,7 +161,7 @@ def api_datapact_run_detail(request: Request, run_id: int) -> JSONResponse:
             request,
             status_code=503,
             source=SOURCE,
-            detail=f"DataPact run {run_id} is unavailable: {exc.__class__.__name__}: {exc}",
+            detail=f"DataPact run {run_id} is unavailable: {error_text(exc)}",
             state="unavailable",
         )
     if not detail.get("detected"):
@@ -199,7 +200,7 @@ def api_datapact_run_live(request: Request, run_id: int) -> JSONResponse:
             request,
             status_code=503,
             source=SOURCE,
-            detail=f"Could not read run {run_id}: {exc.__class__.__name__}: {exc}",
+            detail=f"Could not read run {run_id}: {error_text(exc)}",
             state="unavailable",
         )
     return JSONResponse(
@@ -243,7 +244,7 @@ def api_datapact_trigger(
             request,
             status_code=502,
             source=SOURCE,
-            detail=f"Could not trigger the DataPact run: {exc.__class__.__name__}: {exc}",
+            detail=f"Could not trigger the DataPact run: {error_text(exc)}",
             state="unavailable",
         )
 
@@ -308,7 +309,7 @@ def api_datapact_genie_start(
             request,
             status_code=502,
             source=SOURCE,
-            detail=f"Could not reach the DataPact Signal Room: {exc.__class__.__name__}: {exc}",
+            detail=f"Could not reach the DataPact Signal Room: {error_text(exc)}",
             state="unavailable",
         )
     return JSONResponse(
@@ -360,7 +361,7 @@ def api_datapact_genie_poll(
             request,
             status_code=502,
             source=SOURCE,
-            detail=f"DataPact Signal Room did not complete: {exc.__class__.__name__}: {exc}",
+            detail=f"DataPact Signal Room did not complete: {error_text(exc)}",
             state="unavailable",
         )
     done = bool(result.get("done"))

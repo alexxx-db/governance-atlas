@@ -52,13 +52,9 @@ def api_insights_gap_analysis(
 ) -> JSONResponse:
     """Return the four-lane gap envelope + tile totals.
 
-    OBO-scope truthfulness (round 17): if the request's UC client latches
-    to the app-principal fallback during the inventory load (e.g. the
-    forwarded user token is missing the `sql` scope), the returned tiles
-    reflect the SP-visible estate — NOT the actor's view. We surface that
-    state in ``meta.state`` + ``meta.degraded`` + ``meta.obo_scope_fallback``
-    so the frontend can render a "Showing app-principal view" banner
-    instead of silently displaying narrower counts.
+    Per-user reads never fall back to the app principal (a stale token
+    yields a re-authorize 403 instead), so the tiles always reflect the
+    actor's own view.
 
     ``?refresh=1`` evicts the per-actor inventory cache entry before the
     load so the next OBO request re-attempts the actor-scoped path. This
@@ -69,7 +65,6 @@ def api_insights_gap_analysis(
         _ensure_live_runtime,
         _request_cache_scope,
         _store_for_read,
-        _uc_for_request,
         _visible_assets,
     )
     from atlas.api.cache import _ttl_cache_pop
@@ -84,10 +79,6 @@ def api_insights_gap_analysis(
         normalized_scope = _normalize_str(scope) or "shared"
         _ttl_cache_pop(f"runtime_inventory:{normalized_scope}")
 
-    # Build the UC client BEFORE the visible_assets call so we can inspect
-    # whether it latched fallback during the load.
-    uc_client = _uc_for_request(request)
-
     try:
         inv = _visible_assets(request)
     except Exception as exc:
@@ -101,15 +92,6 @@ def api_insights_gap_analysis(
             ),
             state="unavailable",
         )
-
-    obo_fallback_triggered = False
-    runtime_context_fn = getattr(uc_client, "runtime_context", None)
-    if callable(runtime_context_fn):
-        try:
-            ctx = runtime_context_fn() or {}
-            obo_fallback_triggered = bool(ctx.get("obo_scope_fallback"))
-        except Exception:
-            obo_fallback_triggered = False
 
     quality_df = _load_quality_frame(_store_for_read())
 
@@ -129,18 +111,7 @@ def api_insights_gap_analysis(
         ) from exc
 
     quality_available = quality_df is not None
-    # When OBO fallback fired, the inventory is SP-scoped and the envelope
-    # must advertise that plainly so the UI can render a degraded banner.
-    fallback_reason = (
-        "The forwarded user token is missing the `sql` scope; insights "
-        "are computed from the app-principal view of the catalog. Re-auth "
-        "then retry to restore the actor-scoped view."
-    )
-    warnings = []
-    if obo_fallback_triggered:
-        warnings.append(fallback_reason)
-
-    state = "degraded" if (obo_fallback_triggered or not quality_available) else "available"
+    state = "available" if quality_available else "degraded"
     envelope = _with_meta(
         {
             "tiles": analysis["tiles"],
@@ -152,16 +123,12 @@ def api_insights_gap_analysis(
         request,
         source=INSIGHTS_SOURCE,
         state=state,
-        authoritative=not obo_fallback_triggered,
+        authoritative=True,
         capabilities={
             "qualityLedger": bool(quality_available),
         },
-        warnings=warnings or None,
+        warnings=None,
     )
-    envelope.setdefault("meta", {})
-    envelope["meta"]["oboScopeFallback"] = bool(obo_fallback_triggered)
-    if obo_fallback_triggered:
-        envelope["meta"]["oboFallbackReason"] = fallback_reason
     return JSONResponse(envelope)
 
 

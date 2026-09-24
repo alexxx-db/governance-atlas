@@ -10,6 +10,7 @@ from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, HTTPException, Query, Request
+from atlas.util import error_text
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from pydantic import field_validator
@@ -249,7 +250,7 @@ async def api_scan_classification_recommendations(
             status_code=503,
             detail=(
                 "Unable to enumerate columns for classification scan. "
-                f"{exc.__class__.__name__}: {exc}"
+                f"{error_text(exc)}"
             ),
         ) from exc
 

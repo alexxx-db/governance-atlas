@@ -983,7 +983,6 @@ def api_run_asset_quality(payload: QualityRunInlineRequest, request: Request) ->
 class QualityCustomSqlRequest(BaseModel):
     targetEntityFqn: str
     sql: str
-    allowedComparisons: Optional[List[str]] = None
     rowBudget: int | None = None
     byteBudget: int | None = None
     timeBudgetMs: int | None = None
@@ -1008,7 +1007,6 @@ def api_quality_validate_custom_sql(
     validation = quality_service.validate_custom_sql(
         payload.sql,
         target_entity_fqn=payload.targetEntityFqn,
-        allowed_comparisons=payload.allowedComparisons or (),
     )
     budget = quality_service.check_budgets(
         row_budget=payload.rowBudget,

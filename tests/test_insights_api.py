@@ -201,34 +201,24 @@ class InsightsGapAnalysisApiTests(unittest.TestCase):
         # But ownership / policy / freshness still evaluate
         self.assertEqual(payload["tiles"]["policyGaps"], 1)
 
-    def test_envelope_flags_obo_scope_fallback(self) -> None:
-        """Round 17 regression: when the request's UC client latched to
-        the app-principal fallback, the envelope must surface
-        ``meta.oboScopeFallback=True`` + a fallback reason so the
-        frontend can render a "Showing app-principal view" banner
-        instead of silently displaying a narrower inventory."""
+    def test_envelope_never_reports_app_principal_fallback(self) -> None:
+        """Per-user reads can no longer fall back to the app principal, so the
+        envelope carries no fallback markers and stays authoritative."""
 
         import runtime_app
-
-        fallback_client = SimpleNamespace(
-            runtime_context=lambda: {"obo_scope_fallback": True}
-        )
 
         with patch.multiple(
             runtime_app,
             _ensure_live_runtime=lambda: None,
             _visible_assets=lambda request: _inv_frame(),
             _store_for_read=lambda: FakeStore(_quality_frame()),
-            _uc_for_request=lambda request: fallback_client,
             _request_cache_scope=lambda request: "test-actor|obo-available",
         ):
             response = insights_api.api_insights_gap_analysis(_request(), limit=25)
         self.assertEqual(response.status_code, 200)
         payload = _response_json(response)
-        self.assertIs(payload["meta"].get("oboScopeFallback"), True)
-        self.assertTrue(payload["meta"].get("oboFallbackReason"))
-        self.assertFalse(payload.get("authoritative"))
-        self.assertEqual(payload["meta"]["state"], "degraded")
+        self.assertNotIn("oboScopeFallback", payload["meta"])
+        self.assertNotIn("oboFallbackReason", payload["meta"])
 
     def test_router_registers_expected_route(self) -> None:
         router = insights_api.build_insights_router()

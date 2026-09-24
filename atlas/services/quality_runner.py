@@ -292,11 +292,16 @@ def _eval_custom_sql(uc, spec: TestCaseSpec) -> CaseOutcome:
     sql = spec.parameters.get("sql")
     if not sql:
         return CaseOutcome(spec.case_id, "errored", detail="sql required")
-    validation = quality_service.validate_custom_sql(
-        sql,
-        target_entity_fqn=spec.entity_fqn,
-        allowed_comparisons=spec.parameters.get("allowedComparisons") or (),
-    )
+    # Custom SQL is caller-authored, so it must run with the caller's own UC
+    # grants; on the app principal a steward could read anything the SP can.
+    if not str(getattr(uc, "cache_scope", "")).startswith("obo-"):
+        return CaseOutcome(
+            spec.case_id,
+            "errored",
+            detail="custom SQL requires per-user (OBO) authorization; it never runs as the app principal",
+        )
+    # No caller-supplied comparison entities: they widened the target check.
+    validation = quality_service.validate_custom_sql(sql, target_entity_fqn=spec.entity_fqn)
     if not validation.ok:
         return CaseOutcome(spec.case_id, "errored", detail=f"guard rejected: {validation.reason}")
     budget = quality_service.check_budgets(
@@ -308,8 +313,9 @@ def _eval_custom_sql(uc, spec: TestCaseSpec) -> CaseOutcome:
         return CaseOutcome(spec.case_id, "errored", detail=f"budget: {budget.reason}")
     time_budget_ms = spec.parameters.get("timeBudgetMs")
     try:
+        # Only the first cell is used; LIMIT stops an unbounded result set.
         frame = uc.query_df(
-            validation.normalized,
+            f"SELECT * FROM ({validation.normalized}) AS custom_check LIMIT 1",
             timeout_s=max(5, int(time_budget_ms) // 1000) if time_budget_ms else 30,
         )
     except Exception as exc:

@@ -318,7 +318,6 @@ def api_discovery_search(
         meta["discoveryStateReason"] = query_state["message"]
         meta["visibleAssetCount"] = int(summary.get("visibleAssets") or 0)
         meta["inventoryHydrating"] = True
-        meta["oboScopeFallback"] = False
         response = JSONResponse(envelope)
         # P4: hydrating envelopes must never be revalidated out of the
         # browser/proxy cache — polls have to observe the server's real
@@ -326,17 +325,6 @@ def api_discovery_search(
         response.headers["Cache-Control"] = "no-store"
         return response
 
-    # Snapshot the per-request UC client BEFORE the payload build so we
-    # can read its `obo_scope_fallback` flag afterwards without racing
-    # another fallback-latching client constructed inside the payload
-    # path. Guarded for the same test-isolation reason as above.
-    uc_client = None
-    try:
-        from runtime_app import _uc_for_request
-
-        uc_client = _uc_for_request(request)
-    except Exception:
-        uc_client = None
     try:
         payload = _discovery_search_payload(
             request=request,
@@ -418,41 +406,20 @@ def api_discovery_search(
         query_present=bool(_normalize_str(query)),
     )
 
-    # Round 19 OBO hardening: read the fallback flag off the UC client AFTER
-    # the payload build. If the request's OBO client silently degraded to
-    # the app-principal during the inventory read, surface that plainly so
-    # the Discovery frontend can render a "Showing app-principal view —
-    # Retry with actor scope" banner instead of letting the user stare at
-    # a narrower catalog set with no explanation.
-    obo_fallback_triggered = False
-    runtime_context_fn = getattr(uc_client, "runtime_context", None)
-    if callable(runtime_context_fn):
-        try:
-            ctx = runtime_context_fn() or {}
-            obo_fallback_triggered = bool(ctx.get("obo_scope_fallback"))
-        except Exception:
-            obo_fallback_triggered = False
-    fallback_reason = (
-        "The forwarded user token is missing the `sql` scope; Discovery is "
-        "showing the app-principal view of the catalog. Re-auth then retry "
-        "to restore the actor-scoped view."
-    )
-    warnings = [fallback_reason] if obo_fallback_triggered else []
-
-    state = "available"
-    if obo_fallback_triggered or not actor_scoped:
-        state = "degraded"
+    # Per-user reads never fall back to the app principal (runtime_app
+    # _UserScopedUC), so the view is degraded only when the app has no OBO.
+    state = "available" if actor_scoped else "degraded"
 
     envelope = _with_meta(
         payload,
         request,
         source="unity-catalog-inventory",
         state=state,
-        authoritative=actor_scoped and not obo_fallback_triggered,
+        authoritative=actor_scoped,
         capabilities={
-            "workspaceScopedInventory": (not actor_scoped) or obo_fallback_triggered,
+            "workspaceScopedInventory": not actor_scoped,
         },
-        warnings=warnings,
+        warnings=[],
     )
     meta = envelope.get("meta")
     if isinstance(meta, dict):
@@ -466,9 +433,6 @@ def api_discovery_search(
         if "discoveryStateAlias" in discovery_state_fields:
             meta["discoveryStateAlias"] = discovery_state_fields["discoveryStateAlias"]
         meta["visibleAssetCount"] = int(visible_count)
-        meta["oboScopeFallback"] = bool(obo_fallback_triggered)
-        if obo_fallback_triggered:
-            meta["oboFallbackReason"] = fallback_reason
         # D1: mirror the near-match suggestion into meta so envelope-only
         # consumers (empty-state renderers) see it without digging into the
         # payload body. Always a string; "" when no rewrite produced results.

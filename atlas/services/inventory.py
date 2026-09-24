@@ -7,7 +7,7 @@ from typing import Any, Callable, Dict, List, Optional
 import pandas as pd
 from fastapi import Request
 
-from atlas.api.cache import _TTL_CACHE, _CACHE_LOCK, _ttl_cache_pop, _ttl_value
+from atlas.api.cache import _TTL_CACHE, _CACHE_LOCK, _ttl_value
 from atlas.services import assets as asset_service
 from atlas.services.assets import normalize_str as _normalize_str
 from atlas.services import insights as insights_service
@@ -51,10 +51,9 @@ def visible_assets(
     under the OBO scope key would then serve SP-only results to the
     OBO-authenticated user for the full 5-minute TTL, which is exactly
     the regression reported when landing/test catalogs disappeared after
-    a deploy cold-start. We now build the UC client BEFORE delegating to
-    the cache and, if the client reports `obo_scope_fallback=True` after
-    the load, evict the cache entry so the next request attempts OBO
-    again instead of serving the degraded result for 5 minutes.
+    a deploy cold-start. Per-user reads no longer fall back to the app
+    principal at all (runtime_app._UserScopedUC), so a result cached
+    under the OBO scope key is always the actor's own view.
 
     **Short-TTL empty guard (2026-04-24):** the inner
     `cached_asset_inventory` already short-TTLs empty results at 15s to
@@ -91,23 +90,8 @@ def visible_assets(
         hidden_catalogs=hidden_catalogs,
     )
 
-    fallback_triggered = False
-    runtime_context_fn = getattr(uc_client, "runtime_context", None)
-    if callable(runtime_context_fn):
-        try:
-            ctx = runtime_context_fn() or {}
-            fallback_triggered = bool(ctx.get("obo_scope_fallback"))
-        except Exception:
-            fallback_triggered = False
-
-    if fallback_triggered:
-        # Don't poison the OBO cache key with SP-scoped data. Evict so the
-        # next request re-tries OBO; user's landing/test catalogs return as
-        # soon as the underlying primary client succeeds.
-        _ttl_cache_pop(cache_key)
-    else:
-        with _CACHE_LOCK:
-            _TTL_CACHE[cache_key] = (time.time(), result)
+    with _CACHE_LOCK:
+        _TTL_CACHE[cache_key] = (time.time(), result)
         # Post-hydration estate pre-warm: once we have the visible-assets frame
         # for this actor scope, proactively warm the per-asset header/freshness
         # caches for the visible estate so the FIRST click on any asset finds

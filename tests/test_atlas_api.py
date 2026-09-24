@@ -127,9 +127,9 @@ class FailingRequestStore(FakeStore):
         raise RuntimeError("request table unavailable")
 
 
-class FallbackUc:
-    def runtime_context(self) -> dict[str, bool]:
-        return {"obo_scope_fallback": True}
+class ActorUc:
+    def runtime_context(self) -> dict[str, str]:
+        return {"authMode": "obo-forwarded-token"}
 
 
 class AtlasApiTests(unittest.TestCase):
@@ -169,14 +169,14 @@ class AtlasApiTests(unittest.TestCase):
             paths,
         )
 
-    def test_command_center_returns_meta_and_fallback_warning(self) -> None:
+    def test_command_center_returns_meta_without_fallback_markers(self) -> None:
         import runtime_app
 
         with patch.multiple(
             runtime_app,
             _uc_runtime_status_fast=lambda background=True: {"state": "live", "message": ""},
             _fast_bootstrap_inventory_summary=lambda _scope, **_kwargs: {"visibleAssets": 1},
-            _uc_for_request=lambda request: FallbackUc(),
+            _uc_for_request=lambda request: ActorUc(),
             _visible_assets=lambda request: _visible_assets(),
             _store_for_read=lambda: FakeStore(),
             _request_cache_scope=lambda request: "test-actor",
@@ -187,9 +187,8 @@ class AtlasApiTests(unittest.TestCase):
         payload = _response_json(response)
         self.assertEqual(payload["estate"]["visibleAssetCount"], 1)
         self.assertEqual(payload["meta"]["source"], "unity-catalog-inventory+governance-store")
-        self.assertEqual(payload["meta"]["state"], "degraded")
-        self.assertIs(payload["meta"]["oboScopeFallback"], True)
-        self.assertFalse(payload["authoritative"])
+        self.assertNotIn("oboScopeFallback", payload["meta"])
+        self.assertNotIn("oboFallbackReason", payload["meta"])
 
     def test_command_center_preserves_store_source_warnings(self) -> None:
         import runtime_app

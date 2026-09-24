@@ -661,28 +661,6 @@ export function DiscoveryPage({
         </Button>
       }
     >
-      {/* OBO scope fallback: the user must KNOW they see the app-principal
-          subset and have a one-click retry back to actor scope. */}
-      {results.oboScopeFallback ? (
-        <StatusBanner
-          action={
-            <Button
-              disabled={results.refreshing}
-              onClick={() => results.refreshActorScope?.()}
-              variant="tertiary"
-            >
-              {results.refreshing ? "Retrying…" : "Retry with actor scope"}
-            </Button>
-          }
-          message={
-            results.oboFallbackReason ||
-            "The forwarded user token is missing the `sql` scope; Discovery is showing the app-principal view of the catalog."
-          }
-          title="Showing app-principal view."
-          tone="warning"
-        />
-      ) : null}
-
       {!sourceAuthoritative ? (
         <StatusBanner
           message="Asset values shown here require an explicitly live and authoritative source before they can be used for product-readiness evidence."

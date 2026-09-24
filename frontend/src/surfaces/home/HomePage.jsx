@@ -83,9 +83,7 @@ export function HomePage() {
             warnings: commandCenter.warnings.length
               ? commandCenter.warnings
               : [commandCenter.refreshError].filter(Boolean),
-            refresh: commandCenter.oboScopeFallback
-              ? commandCenter.refreshActorScope
-              : commandCenter.refresh,
+            refresh: commandCenter.refresh,
           }
         : { status: "available" };
 

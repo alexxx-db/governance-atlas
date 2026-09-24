@@ -218,8 +218,6 @@ export function useDiscoveryResults(filters, options = {}) {
     // and observedAt timestamp without refetching.
     meta:
       currentMeta,
-    oboScopeFallback: Boolean(query.data?.meta?.oboScopeFallback),
-    oboFallbackReason: query.data?.meta?.oboFallbackReason || "",
     refreshActorScope,
     refreshing: query.isFetching,
     requestKey: currentScopeKey,

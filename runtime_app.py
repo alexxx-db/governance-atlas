@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import html
 import json
 import logging
 import math
@@ -17,6 +18,7 @@ from urllib.parse import unquote
 
 import pandas as pd
 from fastapi import FastAPI, HTTPException, Query, Request
+from atlas.util import error_text, redact_error_text
 from fastapi.exceptions import RequestValidationError
 from pydantic import BaseModel, Field, field_validator
 from fastapi.responses import HTMLResponse, JSONResponse
@@ -294,6 +296,24 @@ app.mount(
 )
 
 
+_STATE_CHANGING_METHODS = frozenset({"POST", "PUT", "PATCH", "DELETE"})
+
+
+@app.middleware("http")
+async def cross_site_write_guard(request: Request, call_next):
+    """CSRF guard: refuse state-changing API calls a browser marks as coming
+    from another site. Sec-Fetch-Site is set by the browser and can't be forged
+    by page script. Other *.databricksapps.com apps are "same-site", so that is
+    refused too. Non-browser clients (no header) are unaffected."""
+    if request.method in _STATE_CHANGING_METHODS and request.url.path.startswith("/api/"):
+        if request.headers.get("sec-fetch-site", "").lower() in {"cross-site", "same-site"}:
+            return JSONResponse(
+                status_code=403,
+                content={"error": {"code": "cross_site_request", "message": "Cross-site requests are not allowed."}},
+            )
+    return await call_next(request)
+
+
 @app.middleware("http")
 async def request_diagnostics_middleware(request: Request, call_next):
     request_id = (
@@ -563,7 +583,7 @@ def _store() -> GovernanceStore:
             )
             return lakebase_store_service.DualWriteGovernanceStore(store, mirror)  # type: ignore[return-value]
         except Exception as exc:
-            message = f"{exc.__class__.__name__}: {exc}"
+            message = f"{error_text(exc)}"
             lakebase_store_service.record_inactive_status(
                 f"Lakebase dual-write mirror is inactive: {message}",
                 state="degraded",
@@ -573,13 +593,7 @@ def _store() -> GovernanceStore:
 
 
 def _format_runtime_message(exc: Exception) -> str:
-    message = _normalize_str(exc)
-    error_type = exc.__class__.__name__
-    if not message:
-        return error_type
-    if message.startswith(f"{error_type}:"):
-        return message
-    return f"{error_type}: {message}"
+    return error_text(exc)
 
 
 def _uc_runtime_status() -> Dict[str, Any]:
@@ -1070,16 +1084,7 @@ def _direct_actor_identity_visible(
         exact_row = asset_service.exact_identity_row(uc_client, asset_fqn)
     except Exception:
         return False
-    if exact_row is None:
-        return False
-    runtime_context = getattr(uc_client, "runtime_context", None)
-    if callable(runtime_context):
-        try:
-            if bool((runtime_context() or {}).get("obo_scope_fallback")):
-                return False
-        except Exception:
-            return False
-    return True
+    return exact_row is not None
 
 
 def _direct_workspace_identity_visible(asset_fqn: str) -> bool:
@@ -1134,13 +1139,6 @@ def _asset_visibility_record(
                 uc_client = _uc_for_request(request)
                 exact_row = asset_service.exact_identity_row(uc_client, asset_fqn)
                 direct_visible = exact_row is not None
-                runtime_context = getattr(uc_client, "runtime_context", None)
-                if direct_visible and actor_scoped and callable(runtime_context):
-                    try:
-                        if bool((runtime_context() or {}).get("obo_scope_fallback")):
-                            direct_visible = False
-                    except Exception:
-                        direct_visible = False
             except Exception:
                 direct_visible = False
         if direct_visible:
@@ -1482,9 +1480,12 @@ def _ensure_live_runtime() -> None:
 async def http_exception_handler(request: Request, exc: HTTPException):
     if str(request.url.path).startswith("/api/"):
         request_id = _http_request_id(request)
+        # Many handlers build detail from str(exc); redact SDK config
+        # identifiers here once instead of at every raise site.
+        detail = redact_error_text(exc.detail) if isinstance(exc.detail, str) else exc.detail
         return JSONResponse(
             {
-                "detail": exc.detail,
+                "detail": detail,
                 "requestId": request_id,
                 "httpRequestId": request_id,
                 "errorClass": "HTTPException",
@@ -1492,7 +1493,7 @@ async def http_exception_handler(request: Request, exc: HTTPException):
             status_code=exc.status_code,
             headers={REQUEST_ID_HEADER: request_id} if request_id else None,
         )
-    return HTMLResponse(str(exc.detail), status_code=exc.status_code)
+    return HTMLResponse(html.escape(redact_error_text(str(exc.detail))), status_code=exc.status_code)
 
 
 @app.exception_handler(RequestValidationError)
@@ -1589,7 +1590,7 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
         return HTMLResponse("Permission denied.", status_code=403)
     if path_is_api:
         request_id = _http_request_id(request)
-        detail = f"{exc.__class__.__name__}: {message.splitlines()[0][:300]}" if message else exc.__class__.__name__
+        detail = error_text(exc)
         return JSONResponse(
             {
                 "detail": detail,
@@ -2251,7 +2252,7 @@ def _shell_payload(
             return {
                 "state": "unknown",
                 "detected": False,
-                "message": f"{exc.__class__.__name__}: {exc}",
+                "message": f"{error_text(exc)}",
                 "surface": "datapact",
             }
 
@@ -2310,7 +2311,7 @@ def _shell_payload(
             return {
                 "state": "unavailable",
                 "provider": "genie",
-                "message": f"{exc.__class__.__name__}: {exc}",
+                "message": f"{error_text(exc)}",
             }
 
     def _load_lakebase_status() -> Dict[str, Any]:
@@ -2337,7 +2338,7 @@ def _shell_payload(
         except Exception as exc:
             return {
                 "state": "unavailable",
-                "message": f"{exc.__class__.__name__}: {exc}",
+                "message": f"{error_text(exc)}",
                 "enabled": False,
             }
 

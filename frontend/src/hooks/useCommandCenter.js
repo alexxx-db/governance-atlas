@@ -194,8 +194,6 @@ export function useCommandCenter(options = {}) {
       warnings.length > 0,
     warnings,
     meta: data?.meta || null,
-    oboScopeFallback: Boolean(data?.meta?.oboScopeFallback),
-    oboFallbackReason: data?.meta?.oboFallbackReason || "",
     refresh: query.refetch,
     refreshActorScope,
   };

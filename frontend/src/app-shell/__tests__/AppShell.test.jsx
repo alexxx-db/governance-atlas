@@ -158,8 +158,6 @@ function primeHooks({
     degraded: false,
     warnings: [],
     meta: null,
-    oboScopeFallback: false,
-    oboFallbackReason: "",
     refresh: vi.fn(),
     refreshActorScope: vi.fn(),
   });

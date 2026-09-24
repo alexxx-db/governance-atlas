@@ -70,7 +70,6 @@ describe("nonAuthoritativeEvidence", () => {
         state: "degraded",
         source: "unity-catalog-inventory",
         authoritative: false,
-        oboScopeFallback: true,
       },
       warnings: ["The forwarded user token is missing the sql scope."],
     })).toBe(false);

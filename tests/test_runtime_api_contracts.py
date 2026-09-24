@@ -541,42 +541,6 @@ class RuntimeApiContractsTests(unittest.TestCase):
         self.assertEqual(record["visibilityState"], "visible")
         self.assertEqual(record["visibilityMethod"], "direct-identity")
 
-    def test_direct_actor_identity_does_not_widen_when_obo_falls_back_to_app_principal(
-        self,
-    ) -> None:
-        runtime_app = snapshot_script.runtime_app
-        request = SimpleNamespace(
-            headers={
-                "x-forwarded-email": "analyst@example.com",
-                "x-forwarded-access-token": "actor-token",
-            }
-        )
-
-        class FallbackUC:
-            def runtime_context(self):
-                return {"obo_scope_fallback": True}
-
-        with patch.multiple(
-            runtime_app,
-            _request_auth_mode=lambda _request: "obo-available",
-            _asset_is_visible=lambda *_args, **_kwargs: False,
-            _asset_exists=lambda *_args, **_kwargs: True,
-            _uc_for_request=lambda _request: FallbackUC(),
-        ), patch.object(
-            runtime_app.asset_service,
-            "exact_identity_row",
-            lambda *_args, **_kwargs: object(),
-        ):
-            record = runtime_app._asset_visibility_record(
-                "main.sales.deep_link_only", request
-            )
-
-        self.assertTrue(record["exists"])
-        self.assertFalse(record["visible"])
-        self.assertFalse(record["openable"])
-        self.assertEqual(record["visibilityState"], "hidden")
-        self.assertEqual(record["visibilityMethod"], "inventory")
-
     def test_lineage_payload_uses_actor_uc_for_actor_scoped_system_lineage(
         self,
     ) -> None:

@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Tuple
 
 import pandas as pd
 
-from .util import lineage_window_predicate, quote_ident, quote_uc_3part, sql_literal
+from .util import error_text, lineage_window_predicate, quote_ident, quote_uc_3part, sql_literal
 
 if TYPE_CHECKING:
     from databricks.sdk import WorkspaceClient
@@ -111,14 +111,7 @@ def _workspace_client_class():
 
 
 def _safe_error_text(exc: Exception | None) -> str:
-    if exc is None:
-        return ""
-    message = str(exc or "").strip()
-    if not message:
-        return exc.__class__.__name__
-    if message.startswith(f"{exc.__class__.__name__}:"):
-        return message
-    return f"{exc.__class__.__name__}: {message}"
+    return error_text(exc)
 
 
 def _normalize_relation_type(raw: Any) -> str:

@@ -25,6 +25,8 @@ class FakeFrame:
 
 
 class ScriptedUC:
+    cache_scope = "obo-test"  # per-user client (custom SQL requires it)
+
     def __init__(self, table):
         # table: list of (substring, rows) in registration order.
         self._table = table
@@ -216,6 +218,33 @@ class RunQualitySuiteTests(unittest.TestCase):
             )],
         )
         self.assertEqual(result.passed, 1)
+
+    def test_custom_sql_refused_on_app_principal_and_limited(self) -> None:
+        from atlas.services.quality_runner import run_quality_suite
+
+        seen: List[str] = []
+
+        class AppPrincipalUC(ScriptedUC):
+            cache_scope = "app"
+
+        spec = _spec(
+            case_id="cs",
+            test_key="custom_sql",
+            entity_fqn="main.t.t",
+            parameters={"sql": "SELECT count(*) FROM main.t.t", "threshold": 10},
+        )
+        store = FakeStore()
+        result = run_quality_suite(store=store, uc_client=AppPrincipalUC([]), cases=[spec])
+        self.assertEqual(result.errored, 1)
+        self.assertIn("per-user", store.results[0]["detail"])
+
+        class RecordingUC(ScriptedUC):
+            def query_df(self, sql: str, **_kwargs):
+                seen.append(sql)
+                return FakeFrame([{"c": 1}])
+
+        run_quality_suite(store=FakeStore(), uc_client=RecordingUC([]), cases=[spec])
+        self.assertTrue(seen[0].rstrip().endswith("LIMIT 1"))
 
     def test_unknown_test_key_skipped(self) -> None:
         from atlas.services.quality_runner import run_quality_suite

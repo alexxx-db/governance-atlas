@@ -685,20 +685,6 @@
       },
       "QualityCustomSqlRequest": {
         "properties": {
-          "allowedComparisons": {
-            "anyOf": [
-              {
-                "items": {
-                  "type": "string"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Allowedcomparisons"
-          },
           "byteBudget": {
             "anyOf": [
               {
@@ -3689,7 +3675,7 @@
     },
     "/api/insights/gap-analysis": {
       "get": {
-        "description": "Return the four-lane gap envelope + tile totals.\n\nOBO-scope truthfulness (round 17): if the request's UC client latches\nto the app-principal fallback during the inventory load (e.g. the\nforwarded user token is missing the `sql` scope), the returned tiles\nreflect the SP-visible estate \u2014 NOT the actor's view. We surface that\nstate in ``meta.state`` + ``meta.degraded`` + ``meta.obo_scope_fallback``\nso the frontend can render a \"Showing app-principal view\" banner\ninstead of silently displaying narrower counts.\n\n``?refresh=1`` evicts the per-actor inventory cache entry before the\nload so the next OBO request re-attempts the actor-scoped path. This\nis the escape hatch when a cached SP snapshot is stale.",
+        "description": "Return the four-lane gap envelope + tile totals.\n\nPer-user reads never fall back to the app principal (a stale token\nyields a re-authorize 403 instead), so the tiles always reflect the\nactor's own view.\n\n``?refresh=1`` evicts the per-actor inventory cache entry before the\nload so the next OBO request re-attempts the actor-scoped path. This\nis the escape hatch when a cached SP snapshot is stale.",
         "operationId": "api_insights_gap_analysis_api_insights_gap_analysis_get",
         "parameters": [
           {

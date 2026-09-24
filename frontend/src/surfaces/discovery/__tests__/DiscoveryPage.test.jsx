@@ -97,8 +97,6 @@ function resultsState(overrides = {}) {
     },
     queryState: null,
     meta: null,
-    oboScopeFallback: false,
-    oboFallbackReason: "",
     refreshActorScope: vi.fn(),
     refreshing: false,
     requestKey: "scope-1",
@@ -316,17 +314,6 @@ describe("DiscoveryPage — empty-state honesty", () => {
     expect(screen.getByText("Invalid discovery query.")).toBeTruthy();
     expect(screen.getByText("Use AND, OR, parentheses.")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Clear search" })).toBeTruthy();
-  });
-
-  it("surfaces the OBO scope fallback with a one-click actor-scope retry", () => {
-    const refreshActorScope = vi.fn();
-    resultsMock.mockImplementation(() =>
-      resultsState({ oboScopeFallback: true, oboFallbackReason: "Token missing sql scope.", refreshActorScope }),
-    );
-    renderPage();
-    expect(screen.getByText("Showing app-principal view.")).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "Retry with actor scope" }));
-    expect(refreshActorScope).toHaveBeenCalled();
   });
 });
 

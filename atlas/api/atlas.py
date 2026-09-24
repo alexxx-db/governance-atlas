@@ -6,9 +6,11 @@ import hashlib
 import datetime as dt
 import re
 import threading
-from typing import Any, Mapping, Optional, Sequence
+import time
+from typing import Any, Dict, List, Mapping, Optional, Sequence
 
 from fastapi import APIRouter, Body, HTTPException, Query, Request
+from atlas.util import error_text
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, field_validator
 import pandas as pd
@@ -311,22 +313,6 @@ class AtlasAiPoll(BaseModel):
     @classmethod
     def _sanitize_poll_question(cls, value):
         return input_safety.sanitize_plain_text(value, field="question", max_length=2000, allow_empty=True)
-
-
-def _obo_fallback_payload(uc_client) -> tuple[bool, str]:
-    runtime_context_fn = getattr(uc_client, "runtime_context", None)
-    if not callable(runtime_context_fn):
-        return False, ""
-    try:
-        ctx = runtime_context_fn() or {}
-    except Exception:
-        return False, ""
-    if not ctx.get("obo_scope_fallback"):
-        return False, ""
-    return (
-        True,
-        "The forwarded user token is missing the `sql` scope; this response is computed from the app-principal view of the catalog. Re-authenticate, then retry to restore actor-scoped visibility.",
-    )
 
 
 def _steward_or_admin(request: Request) -> str:
@@ -791,15 +777,14 @@ def api_command_center(
                 state="unavailable",
             )
 
-    fallback, reason = _obo_fallback_payload(uc_client)
     payload_meta = payload.get("meta") if isinstance(payload.get("meta"), dict) else {}
     payload_warnings = [
         _normalize_str(warning)
         for warning in (payload_meta.get("warnings") or [])
         if _normalize_str(warning)
     ]
-    warnings = [*payload_warnings, *([reason] if reason else [])]
-    degraded = bool(fallback or payload_warnings)
+    warnings = payload_warnings
+    degraded = bool(payload_warnings)
     response = _with_meta(
         payload,
         request,
@@ -809,10 +794,6 @@ def api_command_center(
         warnings=warnings or None,
         capabilities={"refresh": True},
     )
-    response.setdefault("meta", {})
-    response["meta"]["oboScopeFallback"] = bool(fallback)
-    if reason:
-        response["meta"]["oboFallbackReason"] = reason
     return JSONResponse(response)
 
 
@@ -1509,7 +1490,7 @@ def api_admin_control_center(
             ai_status = {
                 "state": "unavailable",
                 "provider": "genie",
-                "message": f"{exc.__class__.__name__}: {exc}",
+                "message": f"{error_text(exc)}",
             }
         # Jobs inventory MUST use the app-principal client: the per-request
         # OBO token frequently lacks the `jobs` scope, so the SDK pager
@@ -1588,7 +1569,7 @@ def api_admin_control_center(
             ai_status = {
                 "state": "unavailable",
                 "provider": "genie",
-                "message": f"{exc.__class__.__name__}: {exc}",
+                "message": f"{error_text(exc)}",
             }
         payload = atlas_metrics.admin_control_center_payload(
             visible_assets=pd.DataFrame(),
@@ -2563,7 +2544,7 @@ def api_atlas_ai_recommendations(
         elif genie_status.get("provider") == "genie":
             genie_warning = _normalize_str(genie_status.get("message"))
     except Exception as exc:
-        genie_warning = f"Genie-backed Atlas AI unavailable: {exc.__class__.__name__}: {exc}"
+        genie_warning = f"Genie-backed Atlas AI unavailable: {error_text(exc)}"
 
     warnings = []
     if genie_warning:
@@ -2638,7 +2619,7 @@ def api_atlas_ai_message(request: Request, body: AtlasAiPoll | None = Body(defau
             user_access_token=forwarded_token,
         )
     except Exception as exc:
-        return unavailable(f"Atlas AI could not complete the request: {exc.__class__.__name__}: {exc}")
+        return unavailable(f"Atlas AI could not complete the request: {error_text(exc)}")
 
     if not result.get("done"):
         return _wrap(
@@ -2666,14 +2647,39 @@ def api_atlas_ai_message(request: Request, body: AtlasAiPoll | None = Body(defau
     )
 
 
+_AUTOFILL_WINDOW_S = 60
+_AUTOFILL_MAX_CALLS = 20
+_AUTOFILL_CALLS: Dict[str, List[float]] = {}
+_AUTOFILL_LOCK = threading.Lock()
+
+
+def _enforce_autofill_rate_limit(actor_email: str) -> None:
+    # ponytail: per-process sliding window; move to Lakebase if the app scales out.
+    now = time.monotonic()
+    with _AUTOFILL_LOCK:
+        recent = [t for t in _AUTOFILL_CALLS.get(actor_email, []) if now - t < _AUTOFILL_WINDOW_S]
+        if len(recent) >= _AUTOFILL_MAX_CALLS:
+            _AUTOFILL_CALLS[actor_email] = recent
+            raise HTTPException(
+                status_code=429,
+                detail=f"AI autofill is limited to {_AUTOFILL_MAX_CALLS} drafts per minute. Try again shortly.",
+            )
+        recent.append(now)
+        _AUTOFILL_CALLS[actor_email] = recent
+
+
 def api_atlas_ai_autofill(request: Request, body: AtlasAiAutofill | None = Body(default=None)) -> JSONResponse:
     """Draft freeform field values (e.g. a glossary definition + domain from a
     term name) with the generative endpoint. Returns {fields, model, warnings};
     everything is a draft the user reviews before saving — this never writes."""
     from atlas.services import ai_generation
-    from runtime_app import _config, _ensure_live_runtime, _request_obo_token
+    from runtime_app import _config, _ensure_can_mutate, _ensure_live_runtime, _request_obo_token
 
     _ensure_live_runtime()
+    # Drafts are for editors, and every call is billed to the app's serving
+    # endpoint: require a writer+ identity and cap calls per user.
+    actor_email = _ensure_can_mutate(request)
+    _enforce_autofill_rate_limit(actor_email)
     kind = _normalize_str(getattr(body, "kind", "")) if body else ""
     context = getattr(body, "context", None) if body else None
     if not kind:
@@ -2714,7 +2720,7 @@ def api_atlas_ai_autofill(request: Request, body: AtlasAiAutofill | None = Body(
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc))
     except Exception as exc:
-        return unavailable(f"AI autofill is unavailable right now: {exc.__class__.__name__}: {exc}")
+        return unavailable(f"AI autofill is unavailable right now: {error_text(exc)}")
     return _wrap(
         {"kind": kind, "fields": result.get("fields", {}), "model": result.get("model", ""),
          "warnings": result.get("warnings", [])},

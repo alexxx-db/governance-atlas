@@ -43,3 +43,26 @@ def lineage_window_predicate() -> str:
     except ValueError:
         days = 365
     return f"event_date >= date_sub(current_date(), {max(1, days)})"
+
+
+_CONFIG_SUFFIX_RE = re.compile(r"[ .]*\bConfig:.*$", re.MULTILINE)
+
+
+def redact_error_text(text: str) -> str:
+    """Strip the Databricks SDK's "Config: host=..., client_id=..." suffix
+    (workspace/client identifiers) from an error message before it reaches
+    a browser. Callers log the full exception server-side."""
+    return _CONFIG_SUFFIX_RE.sub("", str(text or "")).strip()
+
+
+def error_text(exc: BaseException | None, limit: int = 300) -> str:
+    """"Class: first line of message", redacted and length-capped: the one
+    format for exception text returned in API responses."""
+    if exc is None:
+        return ""
+    name = exc.__class__.__name__
+    lines = redact_error_text(str(exc)).splitlines()
+    message = lines[0][:limit] if lines else ""
+    if not message:
+        return name
+    return message if message.startswith(f"{name}:") else f"{name}: {message}"
