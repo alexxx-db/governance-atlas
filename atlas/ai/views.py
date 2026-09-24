@@ -41,10 +41,16 @@ def availability(ai: Any) -> Dict[str, Any]:
         )
         return {"state": "unavailable", "reason": reason, "run": None, "latestRun": _run_summary(latest), "sources": {}, "warnings": [reason]}
     sources = dict(succeeded.get("sources_json") or {})
+    notes: List[str] = []
     for name, probe in sorted(sources.items()):
         state = str((probe or {}).get("state") or "unknown")
-        if state != models.PROBE_AVAILABLE:
-            warnings.append(f"{name} was {state} in run {succeeded['run_id']}: {(probe or {}).get('reason') or 'no reason recorded'}")
+        reason = (probe or {}).get("reason") or "no reason recorded"
+        if state in (models.PROBE_NOT_SUPPORTED, models.PROBE_NOT_CONFIGURED):
+            # Known permanent gaps are disclosed, but they are not an outage.
+            label = "not supported" if state == models.PROBE_NOT_SUPPORTED else "not configured"
+            notes.append(f"{name} ({label}): {reason}")
+        elif state != models.PROBE_AVAILABLE:
+            warnings.append(f"{name} was {state} in run {succeeded['run_id']}: {reason}")
     if latest and latest["run_id"] != succeeded["run_id"]:
         if latest.get("status") == "failed":
             warnings.append(
@@ -59,6 +65,7 @@ def availability(ai: Any) -> Dict[str, Any]:
         "latestRun": _run_summary(latest),
         "sources": sources,
         "warnings": warnings,
+        "notes": notes,
     }
 
 

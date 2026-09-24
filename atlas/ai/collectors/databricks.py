@@ -25,7 +25,7 @@ from typing import Any, Callable, Dict, Iterable, List, Mapping, Optional, Seque
 
 from atlas.ai import models
 from atlas.ai.models import Observation, ProbeResult, RunContext
-from atlas.ai.probes import Degraded, probe, unavailable
+from atlas.ai.probes import Degraded, not_configured, not_supported, probe
 from atlas.ai.redaction import redact, summarize_credentials
 
 COLLECTOR = "dbx_ai_collector"
@@ -366,8 +366,8 @@ def collect(
     if tool_schemas:
         run("uc_function_tools", lambda: collect_uc_function_tools(w, ctx, schemas=tool_schemas))
     else:
-        results["uc_function_tools"] = unavailable("uc_function_tools", "No tool schemas configured (ai_tool_schema_allowlist is empty).")
-    results["ai_asset_registry"] = unavailable(
+        results["uc_function_tools"] = not_configured("uc_function_tools", "No tool schemas configured (ai_tool_schema_allowlist is empty).")
+    results["ai_asset_registry"] = not_supported(
         "ai_asset_registry", "No AI asset registry API exists in databricks-sdk 0.95 (agents are observed from agent/* serving endpoints)."
     )
     return observations, results

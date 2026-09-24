@@ -239,6 +239,23 @@ class ReadRouteTests(unittest.TestCase):
         self.assertEqual(body["items"][0]["provenance"]["ingestSource"], "csv")
 
 
+class AvailabilityNotesTests(unittest.TestCase):
+    def test_known_gaps_are_notes_not_degradation(self) -> None:
+        from atlas.ai import views
+
+        run = {**SUCCEEDED, "sources_json": {
+            "serving_endpoints": {"state": "available"},
+            "registered_models": {"state": "available"},
+            "ai_asset_registry": {"state": "not_supported", "reason": "No AI asset registry API"},
+            "uc_function_tools": {"state": "not_configured", "reason": "No tool schemas configured"},
+        }}
+        avail = views.availability(FakeAi(runs=[run], succeeded=run))
+        self.assertEqual(avail["state"], "available")
+        self.assertEqual(avail["warnings"], [])
+        self.assertEqual(len(avail["notes"]), 2)
+        self.assertIn("not supported", avail["notes"][0])
+
+
 class MutationRouteTests(unittest.TestCase):
     def _real_store(self, **uc_kwargs: Any):
         finding = pd.DataFrame([{"finding_id": FINDING_ID, "finding_type": "ambiguous_match", "state": "open", "entity_id": EP_ID, "entity_kind": "serving_endpoint"}])

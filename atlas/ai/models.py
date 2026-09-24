@@ -43,6 +43,10 @@ PROVENANCE_SAMPLE = "sample"
 PROBE_AVAILABLE = "available"
 PROBE_DEGRADED = "degraded"
 PROBE_UNAVAILABLE = "unavailable"
+# Known, permanent gaps: not an outage, so they don't degrade views. The
+# kinds they would cover are still treated as unseen by reconciliation.
+PROBE_NOT_SUPPORTED = "not_supported"
+PROBE_NOT_CONFIGURED = "not_configured"
 
 INTAKE_STATES = ("draft", "submitted", "approved", "rejected", "retired")
 FINDING_STATES = ("open", "acknowledged", "resolved", "suppressed")
