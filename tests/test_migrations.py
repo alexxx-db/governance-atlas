@@ -50,7 +50,7 @@ class MigrationTests(unittest.TestCase):
 
         applied = migrations.apply_migrations(uc, "main", "atlas")
 
-        self.assertEqual(applied, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18])
+        self.assertEqual(applied, list(range(1, 23)))
         self.assertTrue(
             any("CREATE TABLE IF NOT EXISTS `main`.`atlas`.`schema_migrations`" in sql for sql in uc.executed)
         )
@@ -184,7 +184,7 @@ class MigrationTests(unittest.TestCase):
         )
         self.assertEqual(
             uc._applied_versions,
-            {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18},
+            set(range(1, 23)),
         )
 
     def test_apply_migrations_is_idempotent(self) -> None:
@@ -199,6 +199,30 @@ class MigrationTests(unittest.TestCase):
         # (CREATE SCHEMA + CREATE TABLE) twice (from apply_migrations +
         # applied_versions), which is the only execute() traffic.
         self.assertEqual(executed_after_first_run + 4, len(uc.executed))
+
+    def test_ai_extension_migrations_resolve_placeholders(self) -> None:
+        uc = FakeUC()
+        migrations.apply_migrations(uc, "main", "atlas")
+        for table in (
+            "ai_asset_observations",
+            "intake_records",
+            "intake_records_history",
+            "reconciliation_runs",
+            "reconciliation_findings",
+            "ai_control_results",
+        ):
+            self.assertTrue(
+                any(f"CREATE TABLE IF NOT EXISTS `main`.`atlas`.`{table}`" in sql for sql in uc.executed),
+                table,
+            )
+        # No unresolved {placeholder} survives formatting.
+        self.assertFalse([sql for sql in uc.executed if re.search(r"\{[a-z_]+\}", sql)])
+
+    def test_ai_extension_versions_are_19_to_22_in_order(self) -> None:
+        versions = [m.version for m in migrations.DEFAULT_MIGRATIONS]
+        self.assertEqual(versions, sorted(versions))
+        self.assertEqual(versions[-4:], [19, 20, 21, 22])
+        self.assertEqual(len(versions), len(set(versions)))
 
 
 if __name__ == "__main__":

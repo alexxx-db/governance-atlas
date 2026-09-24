@@ -887,6 +887,157 @@ DEFAULT_MIGRATIONS: tuple[Migration, ...] = (
             ) USING DELTA""",
         ),
     ),
+    # --- AI governance extension (docs/ai_extension/DESIGN.md 4.2) ---------
+    # Tables apply even when ai_features_enabled is false: they are inert
+    # until the collector/reconcile jobs write to them. Reserved, not yet
+    # created: 23 ai_usage_daily (Phase 2 usage/spend), 24 mcp_reviews
+    # (Phase 2 MCP review workflow).
+    Migration(
+        version=19,
+        name="ai_asset_observations",
+        statements=(
+            # Append-only; written only by collector jobs. Every row carries
+            # provenance (source/collector/version/run/observed_at) so each
+            # rendered datum traces back to a concrete observation.
+            """CREATE TABLE IF NOT EXISTS {ai_asset_observations_table} (
+                observation_id          STRING NOT NULL,
+                run_id                  STRING NOT NULL,
+                source_system           STRING NOT NULL COMMENT 'databricks | servicenow | aws | ... (open-ended)',
+                collector               STRING NOT NULL,
+                collector_version       STRING NOT NULL,
+                entity_kind             STRING NOT NULL,
+                source_entity_id        STRING NOT NULL,
+                parent_source_entity_id STRING,
+                display_name            STRING,
+                platform                STRING COMMENT 'databricks | external',
+                provider                STRING,
+                model_family            STRING,
+                owner                   STRING,
+                tags_json               STRING,
+                config_json             STRING COMMENT 'redacted via atlas/ai/redaction.py allowlists only',
+                relationships_json      STRING COMMENT 'observed edges, e.g. serves',
+                content_hash            STRING NOT NULL,
+                probe_state             STRING COMMENT 'available | degraded',
+                provenance_class        STRING NOT NULL COMMENT 'organic | sample',
+                sample_run_id           STRING,
+                observed_at             TIMESTAMP NOT NULL,
+                recorded_at             TIMESTAMP NOT NULL
+            ) USING DELTA""",
+        ),
+    ),
+    Migration(
+        version=20,
+        name="ai_intake_records",
+        statements=(
+            """CREATE TABLE IF NOT EXISTS {intake_records_table} (
+                intake_id          STRING NOT NULL,
+                title              STRING NOT NULL,
+                state              STRING NOT NULL COMMENT 'draft | submitted | approved | rejected | retired',
+                owner_email        STRING NOT NULL,
+                business_unit      STRING,
+                risk_tier          STRING,
+                platform           STRING,
+                provider           STRING,
+                model_family       STRING,
+                intended_use       STRING,
+                approved_at        TIMESTAMP,
+                review_due_at      TIMESTAMP,
+                source_system      STRING NOT NULL COMMENT 'csv | servicenow',
+                source_record_id   STRING,
+                ingest_source      STRING NOT NULL COMMENT 'csv | servicenow',
+                ingest_run_id      STRING NOT NULL,
+                attributes_json    STRING,
+                content_hash       STRING NOT NULL,
+                provenance_class   STRING NOT NULL COMMENT 'organic | sample',
+                sample_run_id      STRING,
+                created_at         TIMESTAMP,
+                created_by         STRING,
+                updated_at         TIMESTAMP,
+                updated_by         STRING
+            ) USING DELTA""",
+            """CREATE TABLE IF NOT EXISTS {intake_records_history_table} (
+                history_id     STRING NOT NULL,
+                intake_id      STRING NOT NULL,
+                change_kind    STRING NOT NULL COMMENT 'created | updated | unchanged',
+                before_json    STRING,
+                after_json     STRING,
+                ingest_source  STRING NOT NULL,
+                ingest_run_id  STRING NOT NULL,
+                recorded_at    TIMESTAMP NOT NULL,
+                recorded_by    STRING
+            ) USING DELTA""",
+        ),
+    ),
+    Migration(
+        version=21,
+        name="ai_reconciliation_runs_and_findings",
+        statements=(
+            # A run becomes the commit marker for derived state when it
+            # reaches status='succeeded' (DESIGN.md 3.4).
+            """CREATE TABLE IF NOT EXISTS {reconciliation_runs_table} (
+                run_id            STRING NOT NULL,
+                job_run_id        STRING,
+                status            STRING NOT NULL COMMENT 'collecting | reconciling | succeeded | failed',
+                rule_set_version  STRING,
+                sources_json      STRING COMMENT 'per-source ProbeResult: state, reason, sampled_at',
+                counts_json       STRING,
+                failure_reason    STRING,
+                triggered_by      STRING,
+                started_at        TIMESTAMP NOT NULL,
+                finished_at       TIMESTAMP
+            ) USING DELTA""",
+            # finding_id is a deterministic hash so re-runs MERGE instead of
+            # duplicating; steward fields are never overwritten by the job.
+            """CREATE TABLE IF NOT EXISTS {reconciliation_findings_table} (
+                finding_id          STRING NOT NULL COMMENT 'sha256(type|entity_id|intake_id|rule_id)',
+                finding_type        STRING NOT NULL,
+                rule_id             STRING NOT NULL,
+                severity            STRING NOT NULL COMMENT 'critical | high | medium | low',
+                state               STRING NOT NULL COMMENT 'open | acknowledged | resolved | suppressed',
+                entity_id           STRING,
+                entity_kind         STRING,
+                intake_id           STRING,
+                match_rule          STRING COMMENT 'M1 | M2 | M3 | M4',
+                match_score         DOUBLE,
+                evidence_json       STRING,
+                first_seen_run_id   STRING NOT NULL,
+                last_run_id         STRING NOT NULL,
+                first_seen_at       TIMESTAMP NOT NULL,
+                last_seen_at        TIMESTAMP NOT NULL,
+                assignee_email      STRING,
+                task_id             STRING,
+                resolution_note     STRING,
+                suppression_reason  STRING,
+                resolved_by         STRING COMMENT 'steward email | system',
+                resolved_at         TIMESTAMP,
+                state_changed_by    STRING,
+                state_changed_at    TIMESTAMP,
+                provenance_class    STRING NOT NULL,
+                sample_run_id       STRING
+            ) USING DELTA""",
+        ),
+    ),
+    Migration(
+        version=22,
+        name="ai_control_results",
+        statements=(
+            # Per-run rows; the app reads only the latest succeeded run.
+            """CREATE TABLE IF NOT EXISTS {ai_control_results_table} (
+                result_id        STRING NOT NULL,
+                run_id           STRING NOT NULL,
+                entity_id        STRING NOT NULL,
+                entity_kind      STRING NOT NULL,
+                control_id       STRING NOT NULL,
+                control_version  STRING NOT NULL,
+                status           STRING NOT NULL COMMENT 'pass | fail | not_applicable | unknown',
+                signal_source    STRING,
+                evidence_json    STRING,
+                observed_at      TIMESTAMP NOT NULL,
+                provenance_class STRING NOT NULL,
+                sample_run_id    STRING
+            ) USING DELTA""",
+        ),
+    ),
 )
 
 
@@ -999,6 +1150,12 @@ def apply_migrations(
                     catalog, schema, "classification_recommendations"
                 ),
                 tenant_branding_table=_fq_table(catalog, schema, "tenant_branding"),
+                ai_asset_observations_table=_fq_table(catalog, schema, "ai_asset_observations"),
+                intake_records_table=_fq_table(catalog, schema, "intake_records"),
+                intake_records_history_table=_fq_table(catalog, schema, "intake_records_history"),
+                reconciliation_runs_table=_fq_table(catalog, schema, "reconciliation_runs"),
+                reconciliation_findings_table=_fq_table(catalog, schema, "reconciliation_findings"),
+                ai_control_results_table=_fq_table(catalog, schema, "ai_control_results"),
             ).strip()
             if sql:
                 uc.execute(sql)
