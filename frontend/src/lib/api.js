@@ -1058,6 +1058,57 @@ export function pollDataPactGenie(conversationId, messageId, options = {}) {
   );
 }
 
+/* ------------------------------------------------------------------ */
+/* AI governance (/api/ai, DESIGN.md 9). Registered only when the       */
+/* backend flag is on; the surface is hidden otherwise.                 */
+/* ------------------------------------------------------------------ */
+
+function aiQuery(params = {}) {
+  const search = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value === undefined || value === null || value === "") return;
+    search.set(key, String(value));
+  });
+  const text = search.toString();
+  return text ? `?${text}` : "";
+}
+
+export function fetchAiSummary(options = {}) {
+  return request("/ai/summary", { signal: options.signal });
+}
+
+export function fetchAiInventory(filters = {}, options = {}) {
+  return request(`/ai/inventory${aiQuery(filters)}`, { signal: options.signal });
+}
+
+export function fetchAiAsset(entityId, options = {}) {
+  return request(`/ai/assets/${encodeURIComponent(entityId)}`, { signal: options.signal });
+}
+
+export function fetchAiFindings(filters = {}, options = {}) {
+  return request(`/ai/findings${aiQuery(filters)}`, { signal: options.signal });
+}
+
+export function patchAiFinding(findingId, body, options = {}) {
+  return requestJson(`/ai/findings/${encodeURIComponent(findingId)}`, "PATCH", body, options);
+}
+
+export function confirmAiFindingMatch(findingId, body, options = {}) {
+  return requestJson(`/ai/findings/${encodeURIComponent(findingId)}/confirm-match`, "POST", body, options);
+}
+
+export function fetchAiIntake(options = {}) {
+  return request("/ai/intake", { signal: options.signal });
+}
+
+export function importAiIntake(csvText, mode, options = {}) {
+  return requestJson(`/ai/intake/import?mode=${encodeURIComponent(mode)}`, "POST", { csvText }, options);
+}
+
+export function fetchAiRuns(options = {}) {
+  return request("/ai/reconciliation/runs", { signal: options.signal });
+}
+
 export function fetchTaxonomyOverview(options = {}) {
   const path = contractPath("taxonomyOverview") || "/atlas/taxonomy/overview";
   const params = new URLSearchParams();

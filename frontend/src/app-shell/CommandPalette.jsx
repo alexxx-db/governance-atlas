@@ -21,6 +21,7 @@ import { AssetTypeIcon } from "../components/primitives/AssetTypeIcon";
 import { usePaletteSearch } from "../hooks/usePaletteSearch";
 import { refHref } from "../nav/refs.js";
 import { navSections } from "../nav/routes.js";
+import { railGateAllowed } from "./Rail.jsx";
 
 const SURFACE_SUBTITLES = {
   home: "Executive governance posture",
@@ -31,6 +32,8 @@ const SURFACE_SUBTITLES = {
   evidence: "Immutable governance event log",
   admin: "Runtime, integrations, and policy",
   help: "How Governance Atlas works",
+  ai: "AI assets, intake, and findings",
+  datapact: "DataPact validation results",
 };
 
 function ownerDisplayName(owner) {
@@ -71,7 +74,7 @@ function isModifiedClick(event) {
   return event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey;
 }
 
-export function CommandPalette({ seedAssets = [], onNavigateRef, onSearchDiscovery, onClose }) {
+export function CommandPalette({ seedAssets = [], onNavigateRef, onSearchDiscovery, onClose, shell = null }) {
   const [query, setQuery] = useState("");
   const [cursor, setCursor] = useState(0);
   const inputRef = useRef(null);
@@ -95,6 +98,9 @@ export function CommandPalette({ seedAssets = [], onNavigateRef, onSearchDiscove
     const rows = [];
     for (const section of navSections()) {
       for (const item of section.items) {
+        // Same gates as the rail: never offer a jump to a surface that is
+        // admin-only for this user or not mounted (AI governance flag off).
+        if (!railGateAllowed(item.gate, shell)) continue;
         rows.push({
           id: `nav-${item.surface}-${item.path}`,
           group: "Jump to",
@@ -193,7 +199,7 @@ export function CommandPalette({ seedAssets = [], onNavigateRef, onSearchDiscove
       }
     }
     return [...staticRows, ...queryRows];
-  }, [glossaryTerms, liveAssets, owners, query, seedAssets]);
+  }, [glossaryTerms, liveAssets, owners, query, seedAssets, shell]);
 
   const runItem = (item) => {
     if (!item) return;

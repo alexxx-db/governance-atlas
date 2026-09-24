@@ -27,6 +27,8 @@ const GlossaryPage = lazy(() => import("../surfaces/glossary/GlossaryPage.jsx"))
 const HomePage = lazy(() => import("../surfaces/home/HomePage.jsx"));
 const AdminPage = lazy(() => import("../surfaces/admin/AdminPage.jsx"));
 const HelpPage = lazy(() => import("../surfaces/help/HelpPage.jsx"));
+const AiGovernancePage = lazy(() => import("../surfaces/ai/AiGovernancePage.jsx"));
+const AiAssetPage = lazy(() => import("../surfaces/ai/AiAssetPage.jsx"));
 
 function RouteFallback({ eyebrow, message }) {
   return (
@@ -352,6 +354,33 @@ function HelpRoute() {
 }
 
 /* ------------------------------------------------------------------ */
+/* AI governance (docs/ai_extension/DESIGN.md 10)                       */
+/* ------------------------------------------------------------------ */
+
+// Mounted only when the backend registered /api/ai (bootstrap
+// shell.aiGovernance.enabled); otherwise a deep link lands on Home rather
+// than a surface whose API does not exist.
+function AiRoute({ detail = false }) {
+  const shellCtx = useShellContext();
+  const location = useLocation();
+  if (!shellCtx.shell?.aiGovernance?.enabled) return <Navigate replace to="/home" />;
+  const rawId = detail ? location.pathname.replace(/^\/ai\/assets\/?/, "") : "";
+  let entityId = rawId;
+  try {
+    entityId = decodeURIComponent(rawId);
+  } catch {
+    // Malformed escapes: pass the raw text; the API rejects invalid ids (400).
+  }
+  return (
+    <Suspense
+      fallback={<RouteFallback eyebrow="Loading AI governance" message="Loading the AI inventory, findings, and intake records." />}
+    >
+      {detail ? <AiAssetPage entityId={entityId} shell={shellCtx.shell} /> : <AiGovernancePage shell={shellCtx.shell} />}
+    </Suspense>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* The tree                                                             */
 /* ------------------------------------------------------------------ */
 
@@ -368,6 +397,8 @@ export function SurfaceRoutes() {
       <Route element={<AssetHubRoute />} path="/assets/*" />
       <Route element={<StewardshipRoute />} path="/stewardship" />
       <Route element={<DataPactRoute />} path="/datapact" />
+      <Route element={<AiRoute />} path="/ai" />
+      <Route element={<AiRoute detail />} path="/ai/assets/*" />
       <Route element={<GlossaryRoute />} path="/glossary/*" />
       <Route element={<GlossaryRoute />} path="/glossary" />
       <Route element={<LineageRoute />} path="/lineage/*" />

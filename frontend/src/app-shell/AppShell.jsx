@@ -443,6 +443,7 @@ export function AppShell({ children }) {
             onNavigateRef={(ref) => adapters.navigate(ref)}
             onSearchDiscovery={(query) => adapters.openDiscovery({ q: query }, { fresh: true })}
             seedAssets={runtime.contextSeedAssets}
+            shell={shell}
           />
         ) : null}
 

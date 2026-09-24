@@ -182,6 +182,38 @@ export const ROUTES = [
     },
   },
   {
+    surface: "ai",
+    path: "/ai/assets/:entityId",
+    // AI Asset 360 (docs/ai_extension/DESIGN.md 10). Detail route: not a rail
+    // destination; declared before the bare /ai route like /assets/:fqn.
+    aliases: [],
+    nav: null,
+    gate: "aiGovernance",
+    paramsSchema: { tab: str(), ...PEEK },
+  },
+  {
+    surface: "ai",
+    path: "/ai",
+    // gate "aiGovernance": the rail entry and route exist only when the
+    // backend registered /api/ai (bootstrap shell.aiGovernance.enabled).
+    aliases: ["/ai-governance"],
+    nav: { section: "govern", label: "AI Governance", icon: "sparkles" },
+    gate: "aiGovernance",
+    paramsSchema: {
+      // inventory | findings | intake
+      tab: str(),
+      kind: str(),
+      state: str(),
+      provider: str(),
+      q: str(),
+      severity: str(),
+      findingState: str(),
+      // ?finding=<id> opens the finding evidence drawer.
+      finding: str(),
+      ...PEEK,
+    },
+  },
+  {
     surface: "glossary",
     path: "/glossary/:termId",
     // Term detail is path-addressable (COHESION: "/glossary/<termId>"). Listed

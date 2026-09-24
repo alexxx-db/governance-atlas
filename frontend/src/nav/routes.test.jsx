@@ -214,6 +214,8 @@ describe("route table: shape", () => {
     expect(ROUTES.map((route) => route.path).sort()).toEqual(
       [
         "/admin",
+        "/ai",
+        "/ai/assets/:entityId",
         "/assets",
         "/assets/:fqn",
         "/datapact",
@@ -238,6 +240,7 @@ describe("route table: shape", () => {
       "Discover",
       "Stewardship",
       "DataPact",
+      "AI Governance",
     ]);
     expect(sections[1].items.map((item) => item.label)).toEqual([
       "Glossary & CDEs",
@@ -248,6 +251,8 @@ describe("route table: shape", () => {
     // Stewardship badge = MY open items; Control Center is admin-gated.
     expect(sections[0].items[2].badgeKey).toBe("myWork");
     expect(sections[2].items[0].gate).toBe("admin");
+    // AI Governance is feature-gated: hidden unless the backend flag is on.
+    expect(sections[0].items[4].gate).toBe("aiGovernance");
     // The hub is NOT a static rail item (contextual entry comes in Wave B).
     const railSurfaces = sections.flatMap((section) => section.items.map((item) => item.surface));
     expect(railSurfaces).not.toContain("assets");

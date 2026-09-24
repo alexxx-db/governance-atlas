@@ -1,0 +1,221 @@
+/*
+ * surfaces/ai/ai.css: AI governance surface. --ga-* tokens only (no raw
+ * colors, no importance overrides), per scripts/check-css.mjs and CLAUDE.md.
+ */
+
+.ga-ai-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--ga-space-3);
+  margin-bottom: var(--ga-space-4);
+}
+
+.ga-ai-muted {
+  color: var(--ga-text-muted);
+}
+
+.ga-ai-name-cell,
+.ga-ai-subtitle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ga-space-2);
+  flex-wrap: wrap;
+}
+
+.ga-ai-name-cell a {
+  color: var(--ga-bright-blue);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.ga-ai-name-cell a:hover,
+.ga-ai-name-cell a:focus-visible {
+  text-decoration: underline;
+}
+
+.ga-ai-provenance {
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--ga-space-1);
+  font-size: 0.85em;
+}
+
+.ga-ai-linkish {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--ga-bright-blue);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.ga-ai-linkish:hover,
+.ga-ai-linkish:focus-visible {
+  text-decoration: underline;
+}
+
+.ga-ai-evidence {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ga-space-3);
+  color: var(--ga-text);
+}
+
+.ga-ai-facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--ga-space-2) var(--ga-space-4);
+  margin: 0;
+}
+
+.ga-ai-facts dt {
+  color: var(--ga-text-muted);
+}
+
+.ga-ai-facts dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.ga-ai-diff {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--ga-text);
+}
+
+.ga-ai-diff caption {
+  text-align: left;
+  color: var(--ga-text-muted);
+  padding-bottom: var(--ga-space-2);
+}
+
+.ga-ai-diff th,
+.ga-ai-diff td {
+  text-align: left;
+  padding: var(--ga-space-2) var(--ga-space-3);
+  border-bottom: 1px solid var(--ga-border);
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.ga-ai-diff th {
+  color: var(--ga-text-muted);
+  font-weight: var(--ga-font-weight-bold);
+}
+
+/* A differing field: warning edge + label, not color alone (accessible). */
+.ga-ai-diff tr.is-different td {
+  background: var(--ga-surface-muted);
+}
+
+.ga-ai-diff tr.is-different td:first-child {
+  box-shadow: inset 3px 0 0 var(--ga-warning);
+  font-weight: var(--ga-font-weight-bold);
+}
+
+.ga-ai-subhead {
+  margin: 0 0 var(--ga-space-2);
+  color: var(--ga-text-soft);
+}
+
+.ga-ai-candidates,
+.ga-ai-list,
+.ga-ai-timeline {
+  margin: 0;
+  padding-left: var(--ga-space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ga-space-2);
+  color: var(--ga-text);
+}
+
+.ga-ai-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ga-space-2);
+}
+
+.ga-ai-action-form,
+.ga-ai-import {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ga-space-3);
+}
+
+.ga-ai-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ga-space-1);
+  color: var(--ga-text-soft);
+}
+
+.ga-ai-field input,
+.ga-ai-field textarea {
+  background: var(--ga-surface);
+  color: var(--ga-text);
+  border: 1px solid var(--ga-border-strong);
+  border-radius: var(--ga-radius-md);
+  padding: var(--ga-space-2) var(--ga-space-3);
+  font: inherit;
+}
+
+.ga-ai-field input:focus-visible,
+.ga-ai-field textarea:focus-visible {
+  outline: 2px solid var(--ga-bright-blue);
+  outline-offset: 1px;
+}
+
+.ga-ai-import-report {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ga-space-1);
+  color: var(--ga-text);
+}
+
+.ga-ai-error {
+  margin: 0;
+  color: var(--ga-danger);
+}
+
+.ga-ai-compare {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--ga-space-3);
+}
+
+.ga-ai-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ga-space-2);
+}
+
+.ga-ai-chip {
+  border: 1px solid var(--ga-border);
+  border-radius: var(--ga-radius-pill);
+  padding: var(--ga-space-1) var(--ga-space-3);
+  color: var(--ga-text);
+  font-size: 0.85em;
+  overflow-wrap: anywhere;
+}
+
+.ga-ai-config {
+  margin: 0;
+  max-height: 360px;
+  overflow: auto;
+  background: var(--ga-surface-strong);
+  color: var(--ga-text);
+  border-radius: var(--ga-radius-md);
+  padding: var(--ga-space-3);
+  font-size: 0.85em;
+}
+
+.ga-ai-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

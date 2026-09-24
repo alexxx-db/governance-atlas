@@ -47,6 +47,7 @@ const RAIL_ICONS = {
   datapact: <Icon><path d="M12 3 5 6v5c0 4.5 3 7.5 7 10 4-2.5 7-5.5 7-10V6l-7-3Z" /><path d="M9 11.5h6" /><path d="M9 14.5h4" /></Icon>,
   sliders: <Icon><path d="M4 6h10" /><path d="M18 6h2" /><path d="M4 12h2" /><path d="M10 12h10" /><path d="M4 18h8" /><path d="M16 18h4" /><circle cx="16" cy="6" r="2" /><circle cx="8" cy="12" r="2" /><circle cx="14" cy="18" r="2" /></Icon>,
   help: <Icon><circle cx="12" cy="12" r="9" /><path d="M9.5 9a2.7 2.7 0 0 1 5 1.4c0 1.8-2.5 2.1-2.5 4" /><path d="M12 17.5h.01" /></Icon>,
+  sparkles: <Icon><path d="M12 4 13.8 9 19 10.8 13.8 12.6 12 18l-1.8-5.4L5 10.8 10.2 9Z" /><path d="M19 3v4" /><path d="M17 5h4" /></Icon>,
 };
 
 function roleSlug(value) {
@@ -63,6 +64,16 @@ export function adminRailAllowed(shell) {
   const role = roleSlug(shell.role || shell.actorRole);
   if (!role) return Boolean(shell.roleProvisional);
   return role.includes("admin");
+}
+
+// Feature gate for surfaces the backend registers conditionally. The AI
+// governance entry shows only when bootstrap reports the flag on, so the rail
+// never advertises a surface whose API is not mounted.
+export function railGateAllowed(gate, shell) {
+  if (!gate) return true;
+  if (gate === "admin") return adminRailAllowed(shell);
+  if (gate === "aiGovernance") return Boolean(shell?.aiGovernance?.enabled);
+  return false;
 }
 
 function isModifiedClick(event) {
@@ -154,7 +165,7 @@ export function Rail({
   const sections = navSections()
     .map((section) => ({
       ...section,
-      items: section.items.filter((item) => item.gate !== "admin" || adminRailAllowed(shell)),
+      items: section.items.filter((item) => railGateAllowed(item.gate, shell)),
     }))
     .filter((section) => section.items.length > 0);
 
