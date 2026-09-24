@@ -180,9 +180,6 @@ resources:
           depends_on:
             - task_key: collect_databricks
           environment_key: ai_jobs
-          # A retry would re-run a failed task under the same run id; the
-          # collector is idempotent, but a real failure should fail once, loudly.
-          max_retries: 0
           spark_python_task:
             python_file: ./atlas/ai/jobs/reconcile.py
             parameters: *ai_job_params

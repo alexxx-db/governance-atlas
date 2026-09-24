@@ -89,4 +89,11 @@ describe("AiAssetPage", () => {
     renderPage();
     expect(await screen.findByText("AI asset not found")).toBeTruthy();
   });
+
+  it("does not claim a reader's asset has no findings when the API withholds them", async () => {
+    api.fetchAiAsset.mockResolvedValue({ asset: { ...ASSET, findings: null }, meta: { state: "available", source: "governance-store:ai", authoritative: true, warnings: [] } });
+    renderPage();
+    expect(await screen.findByText("Findings are visible to stewards and admins.")).toBeTruthy();
+    expect(screen.queryByText("No findings reference this asset.")).toBeNull();
+  });
 });

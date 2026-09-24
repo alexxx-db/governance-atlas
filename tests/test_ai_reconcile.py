@@ -303,3 +303,43 @@ class SampleProvenanceTests(unittest.TestCase):
         res = run([o], [])
         self.assertTrue(res.controls)
         self.assertTrue(all(c.provenance_class == "sample" and c.sample_run_id == "ga-ai-1" for c in res.controls))
+
+
+
+class ReviewFixTests(unittest.TestCase):
+    def test_rnf_skips_intakes_previously_linked_to_blind_kinds(self) -> None:
+        tools_blind = {**ALL_AVAILABLE, "uc_function_tools": {"state": "not_configured"}}
+        old = intake("INT-7", approved_at=(NOW - timedelta(days=90)).isoformat())
+        res = reconcile.reconcile([], [old], aliases={}, active_findings=[], sources=tools_blind,
+                                  intake_tag_key="edw_intake_id", tier_tag_key="ai_risk_tier", grace_days=30, now=NOW,
+                                  prior_declares={"INT-7": {"uc_function_tool"}})
+        self.assertEqual(res.findings, [])
+        self.assertIn("uc_function_tool", res.blind_kinds)
+        res = reconcile.reconcile([], [old], aliases={}, active_findings=[], sources=tools_blind,
+                                  intake_tag_key="edw_intake_id", tier_tag_key="ai_risk_tier", grace_days=30, now=NOW)
+        self.assertEqual(res.findings[0].evidence["sourcesNotSearched"], ["uc_function_tools"])
+
+    def test_write_result_supersedes_stale_declares_but_not_overrides(self) -> None:
+        import pandas as pd
+
+        from atlas.ai.jobs.reconcile import write_result
+        from atlas.ai.store import AiStore
+        from test_ai_store import FakeGovernanceStore, FakeUC
+
+        result = run([obs("serving_endpoint", "ep1")], [intake("INT-1")])  # tag removed: no declares now
+        ep = result.units[0].asset
+        rels = pd.DataFrame([
+            {"relationship_id": "r-old", "relationship_kind": "declares", "authority_source": "registry", "target_entity_kind": "serving_endpoint", "target_entity_id": ep.entity_id},
+            {"relationship_id": "r-steward", "relationship_kind": "declares", "authority_source": "override", "target_entity_kind": "serving_endpoint", "target_entity_id": ep.entity_id},
+        ])
+
+        class Gov(FakeGovernanceStore):
+            def list_entity_aliases(self, alias_type=None):
+                return pd.DataFrame()
+
+        uc = FakeUC(frames={"FROM `main`.`atlas`.`entity_relationships`": rels})
+        counts = write_result(AiStore(Gov(uc)), result, run_id="run-9", actor="collector", prior_states={})
+        self.assertEqual(counts["declaresSuperseded"], 1)
+        update = next(sql for sql in uc.executed if "SET state = 'superseded'" in sql)
+        self.assertIn("'r-old'", update)
+        self.assertNotIn("'r-steward'", update)

@@ -68,6 +68,15 @@ const PARAMS_SCHEMA = {
 
 const TAB_KEYS = ["inventory", "findings", "intake"];
 
+// The API pages at 200 rows; say so rather than implying the page is complete.
+function TruncationNotice({ shown, total }) {
+  return typeof total === "number" && total > shown ? (
+    <p className="ga-ai-muted" role="status">
+      Showing {shown.toLocaleString()} of {total.toLocaleString()}. Narrow the filters to see the rest.
+    </p>
+  ) : null;
+}
+
 function SampleBadge({ provenanceClass }) {
   return provenanceClass === "sample" ? (
     <Badge size="sm" tone="accent">
@@ -92,7 +101,7 @@ function Provenance({ provenance, showSample = true }) {
 /* Inventory                                                            */
 /* ------------------------------------------------------------------ */
 
-function InventoryTab({ params, setParams }) {
+function InventoryTab({ params, setParams, pageFailed }) {
   const inventory = useAiInventory({
     kind: params.kind,
     state: params.state,
@@ -172,7 +181,7 @@ function InventoryTab({ params, setParams }) {
         onClear={() => setParams({ q: "", kind: "", state: "", provider: "" })}
         value={{ q: params.q || "", kind: params.kind || "", state: params.state || "", provider: params.provider || "" }}
       />
-      {unavailable ? (
+      {unavailable && pageFailed ? null : unavailable ? (
         <UnavailableState
           title="No AI inventory to show"
           reason={inventory.meta?.unavailableReason || inventory.errorMessage || "The AI inventory is unavailable."}
@@ -193,6 +202,7 @@ function InventoryTab({ params, setParams }) {
           rows={rows}
         />
       )}
+      <TruncationNotice shown={rows.length} total={total} />
     </SectionCard>
   );
 }
@@ -221,7 +231,11 @@ function FindingEvidence({ finding }) {
         <dd>{valueOrDash(finding.intakeId)}</dd>
         <dt>Match</dt>
         <dd>
-          {finding.matchRule ? `${finding.matchRule}, score ${Number(finding.matchScore).toFixed(2)}` : "No match"}
+          {finding.matchRule
+            ? typeof finding.matchScore === "number"
+              ? `${finding.matchRule}, score ${finding.matchScore.toFixed(2)}`
+              : finding.matchRule
+            : "No match"}
         </dd>
         <dt>First seen</dt>
         <dd>{formatTimestamp(finding.firstSeenAt)}</dd>
@@ -316,7 +330,11 @@ function FindingActions({ finding, onDone }) {
         ) : null}
         <label className="ga-ai-field">
           <span>{prompt.label}</span>
-          <textarea onChange={(event) => setText(event.target.value)} rows={3} value={text} />
+          {mode === "assign" ? (
+            <input autoComplete="email" onChange={(event) => setText(event.target.value)} type="email" value={text} />
+          ) : (
+            <textarea onChange={(event) => setText(event.target.value)} rows={3} value={text} />
+          )}
         </label>
         <div className="ga-ai-action-row">
           <Button disabled={blocked} loading={action.submitting} onClick={prompt.submit} variant="primary">
@@ -326,6 +344,15 @@ function FindingActions({ finding, onDone }) {
             Cancel
           </Button>
         </div>
+      </div>
+    );
+  }
+  if (finding.state === "suppressed" || finding.state === "resolved") {
+    return (
+      <div className="ga-ai-action-row">
+        <Button loading={action.submitting} onClick={() => run({ action: "reopen" }, "Finding reopened.")} variant="secondary">
+          Reopen
+        </Button>
       </div>
     );
   }
@@ -359,6 +386,8 @@ function FindingsTab({ params, setParams }) {
   const rows = findings.data?.items || [];
   const groups = groupFindings(rows);
   const selected = rows.find((row) => row.findingId === params.finding) || null;
+  const total = findings.data?.total;
+  const missingDeepLink = Boolean(params.finding) && (findings.status === "available" || findings.status === "degraded") && !selected;
   const unavailable = findings.status === "unavailable" || findings.status === "error";
 
   const columns = [
@@ -414,6 +443,15 @@ function FindingsTab({ params, setParams }) {
         onClear={() => setParams({ severity: "", findingState: "" })}
         value={{ severity: params.severity || "", findingState: params.findingState || "" }}
       />
+      <TruncationNotice shown={rows.length} total={total} />
+      {missingDeepLink ? (
+        <p className="ga-ai-muted" role="status">
+          The linked finding is not in this view. Change the state or severity filter to find it.{" "}
+          <button className="ga-ai-linkish" onClick={() => setParams({ finding: "" })} type="button">
+            Dismiss
+          </button>
+        </p>
+      ) : null}
       {unavailable ? (
         <UnavailableState
           title="Findings unavailable"
@@ -428,7 +466,7 @@ function FindingsTab({ params, setParams }) {
         <EmptyState title="No findings in this view" body="Reconciliation found nothing matching these filters in the completed runs." />
       ) : (
         groups.map((group) => (
-          <SectionCard key={group.type} subtitle={`${group.items.length} finding${group.items.length === 1 ? "" : "s"}`} title={findingTypeLabel(group.type)}>
+          <SectionCard key={group.type} subtitle={`${group.items.length} finding${group.items.length === 1 ? "" : "s"}${typeof total === "number" && total > rows.length ? " shown" : ""}`} title={findingTypeLabel(group.type)}>
             <DataTable caption={findingTypeLabel(group.type)} columns={columns} rowKey="findingId" rows={group.items} />
           </SectionCard>
         ))
@@ -457,13 +495,29 @@ function ImportDrawer({ open, onClose }) {
   const [confirming, setConfirming] = useState(false);
 
   const readFile = (event) => {
-    const file = event.target.files?.[0];
+    const input = event.target;
+    const file = input.files?.[0];
     if (!file) return;
-    file.text().then((content) => {
-      setText(content);
-      setReport(null);
-      setConfirming(false);
-    });
+    file
+      .text()
+      .then((content) => {
+        setText(content);
+        setReport(null);
+        setConfirming(false);
+      })
+      .catch(() => toast("The file could not be read.", { tone: "danger" }))
+      // Clear the input so choosing the same file again still fires onChange.
+      .finally(() => {
+        input.value = "";
+      });
+  };
+
+  const close = () => {
+    setText("");
+    setReport(null);
+    setValidatedText(null);
+    setConfirming(false);
+    onClose?.();
   };
 
   const submit = async (mode) => {
@@ -476,11 +530,7 @@ function ImportDrawer({ open, onClose }) {
       }
       const committed = result.committed || {};
       toast(`Imported intake: ${committed.created || 0} created, ${committed.updated || 0} updated, ${committed.unchanged || 0} unchanged.`, { tone: "success" });
-      setText("");
-      setReport(null);
-      setValidatedText(null);
-      setConfirming(false);
-      onClose?.();
+      close();
     } catch (error) {
       // A rejected commit (422) carries the per-row report: show it.
       if (error?.payload?.results) setReport(error.payload);
@@ -510,7 +560,7 @@ function ImportDrawer({ open, onClose }) {
           )}
         </div>
       }
-      onClose={onClose}
+      onClose={close}
       open={open}
       title="Import intake records"
     >
@@ -673,7 +723,9 @@ export function AiGovernancePage({ shell = null }) {
       {notes.length ? (
         <p className="ga-ai-muted ga-ai-notes">Not collected: {notes.join(" · ")}</p>
       ) : null}
-      {tab === "inventory" ? <InventoryTab params={params} setParams={setParams} /> : null}
+      {tab === "inventory" ? (
+        <InventoryTab pageFailed={summary.status === "unavailable" || summary.status === "error"} params={params} setParams={setParams} />
+      ) : null}
       {tab === "findings" ? <FindingsTab params={params} setParams={setParams} /> : null}
       {tab === "intake" ? <IntakeTab steward={steward} /> : null}
     </PageShell>

@@ -244,6 +244,8 @@ def api_ai_finding_confirm_match(finding_id: str, payload: ConfirmMatchRequest, 
     finding = ai.findings_by_id([finding_id]).get(finding_id)
     if finding is None:
         raise HTTPException(status_code=404, detail="Finding not found.")
+    if finding.get("state") not in {"open", "acknowledged"}:
+        raise HTTPException(status_code=409, detail="Only open or acknowledged findings can be confirmed to an intake.")
     if finding.get("finding_type") not in {"ambiguous_match", "found_not_registered"} or not finding.get("entity_id"):
         raise HTTPException(status_code=409, detail="Only ambiguous or unregistered asset findings can be confirmed to an intake.")
     intake_id = _clean_text(payload.intakeId, "intakeId", 128)

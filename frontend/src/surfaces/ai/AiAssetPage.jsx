@@ -108,8 +108,14 @@ function Overview({ asset }) {
           </tbody>
         </table>
       </SectionCard>
-      <SectionCard title="Findings" subtitle={`${(asset.findings || []).length} finding(s) on this asset`}>
-        {(asset.findings || []).length ? (
+      <SectionCard
+        title="Findings"
+        subtitle={asset.findings === null ? "Visible to stewards" : `${(asset.findings || []).length} finding(s) on this asset`}
+      >
+        {asset.findings === null ? (
+          // The API withholds findings from readers (null, not []), so don't claim there are none.
+          <p className="ga-ai-muted">Findings are visible to stewards and admins.</p>
+        ) : (asset.findings || []).length ? (
           <ul className="ga-ai-list">
             {asset.findings.map((finding) => (
               <li key={finding.findingId}>

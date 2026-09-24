@@ -290,3 +290,36 @@ class ProvenanceRegressionTests(unittest.TestCase):
         )
         insert = next(sql for sql in uc.executed if sql.startswith("INSERT INTO `main`.`atlas`.`ai_control_results`"))
         self.assertIn("'sample', 'ga-ai-1'", insert)
+
+
+class TransitionTests(unittest.TestCase):
+    def _store_with(self, state: str):
+        return _store(frames={"WHERE finding_id IN": pd.DataFrame([{"finding_id": "f1", "state": state}])})
+
+    def test_closed_findings_only_reopen(self) -> None:
+        for state in ("resolved", "suppressed"):
+            store, uc, _ = self._store_with(state)
+            for action, kwargs in (("resolve", {"note": "n"}), ("suppress", {"reason": "r"}), ("acknowledge", {}), ("assign", {"assignee_email": "a@b.co"})):
+                with self.assertRaises(ValueError):
+                    store.update_finding_state(finding_id="f1", action=action, actor_email="s@b.co", actor_role="steward", **kwargs)
+            self.assertEqual(uc.executed, [])
+            store.update_finding_state(finding_id="f1", action="reopen", actor_email="s@b.co", actor_role="steward")
+            self.assertTrue(any("state = 'open'" in sql for sql in uc.executed))
+
+    def test_active_findings_cannot_reopen(self) -> None:
+        store, _, _ = self._store_with("open")
+        with self.assertRaises(ValueError):
+            store.update_finding_state(finding_id="f1", action="reopen", actor_email="s@b.co", actor_role="steward")
+
+
+
+class AliasAuditTests(unittest.TestCase):
+    def test_alias_audited_before_write(self) -> None:
+        store, uc, gov = _store(fail_on="metadata_audit_log")
+        with self.assertRaises(RuntimeError):
+            store.upsert_alias(entity_id="e1", intake_id="INT-1", source="intake_tag", actor_email="collector")
+        self.assertEqual(gov.alias_calls, [])
+        store, uc, gov = _store()
+        store.upsert_alias(entity_id="e1", intake_id="INT-1", source="intake_tag", actor_email="collector")
+        self.assertTrue(any("'ai.registry.alias_upserted'" in sql for sql in uc.executed))
+        self.assertEqual(gov.alias_calls[0]["source"], "intake_tag")

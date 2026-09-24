@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import unittest
+import unittest.mock
 from datetime import datetime, timezone
 from types import SimpleNamespace
 from typing import Any, Dict, List
@@ -238,6 +239,22 @@ class OtherAdapterTests(unittest.TestCase):
         self.assertEqual(result.state, "degraded")
         self.assertIn("1 model(s) unreadable", result.reason)
         self.assertEqual([o.source_entity_id for o in value], ["a.b.ok"])
+
+    def test_model_cap_degrades_instead_of_silently_truncating(self) -> None:
+        from atlas.ai.probes import probe
+
+        listed = [catalog.RegisteredModelInfo(full_name=f"a.b.m{i}") for i in range(3)]
+        w = FakeWorkspace(models_by_catalog={None: listed}, model_detail={m.full_name: m for m in listed})
+        with unittest.mock.patch.object(dbx, "MAX_MODELS", 2):
+            result, value = probe("registered_models", lambda: dbx.collect_registered_models(w, _ctx(), catalogs=[]))
+        self.assertEqual(result.state, "degraded")
+        self.assertIn("only the first 2 of 3", result.reason)
+        self.assertEqual(len(value), 2)
+
+    def test_endpoint_tags_are_scrubbed(self) -> None:
+        ep = _external_endpoint(tags=[serving.EndpointTag(key="api_key", value=SECRET_VALUE), serving.EndpointTag(key="team", value="claims")])
+        obs = dbx.collect_serving_endpoints(FakeWorkspace(endpoints=[ep], detail=_detail({})), _ctx())
+        self.assertEqual(obs[0].tags, {"team": "claims"})
 
     def test_only_http_connections_flagged_mcp(self) -> None:
         connections = [
