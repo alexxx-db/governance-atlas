@@ -11,7 +11,7 @@ from __future__ import annotations
 import unittest
 from datetime import datetime, timedelta, timezone
 
-from atlas.services import export as export_service
+from axiom.services import export as export_service
 
 
 class EvaluateExportRequestTests(unittest.TestCase):

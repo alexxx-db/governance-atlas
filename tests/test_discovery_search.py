@@ -9,7 +9,7 @@ from unittest.mock import patch
 
 import pandas as pd
 
-from atlas.services import assets
+from axiom.services import assets
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT_PATH = ROOT / "scripts" / "generate_runtime_api_openapi_snapshot.py"
@@ -103,26 +103,26 @@ class StructuredDiscoverySearchTests(unittest.TestCase):
         inventory = pd.DataFrame(
             [
                 {
-                    "fqn": "datapact.enterprise_metadata_ops.customer_profile_coverage",
-                    "table_catalog": "datapact",
+                    "fqn": "emet.enterprise_metadata_ops.customer_profile_coverage",
+                    "table_catalog": "emet",
                     "table_schema": "enterprise_metadata_ops",
                     "table_name": "customer_profile_coverage",
                     "tags": {},
                 },
                 {
-                    "fqn": "datapact.atlas_ga_stress_20260502120000_deadbee.workflow_entities",
-                    "table_catalog": "datapact",
-                    "table_schema": "atlas_ga_stress_20260502120000_deadbee",
+                    "fqn": "emet.axiom_ax_stress_20260502120000_deadbee.workflow_entities",
+                    "table_catalog": "emet",
+                    "table_schema": "axiom_ax_stress_20260502120000_deadbee",
                     "table_name": "workflow_entities",
                     "tags": {},
                 },
                 {
-                    "fqn": "datapact.ops.validation_events",
-                    "table_catalog": "datapact",
+                    "fqn": "emet.ops.validation_events",
+                    "table_catalog": "emet",
                     "table_schema": "ops",
                     "table_name": "validation_events",
                     "tags": {
-                        "governance_atlas.exclude_from_organic_evidence": "true",
+                        "axiom.exclude_from_organic_evidence": "true",
                     },
                 },
             ]
@@ -132,70 +132,70 @@ class StructuredDiscoverySearchTests(unittest.TestCase):
 
         self.assertEqual(
             visible["fqn"].tolist(),
-            ["datapact.enterprise_metadata_ops.customer_profile_coverage"],
+            ["emet.enterprise_metadata_ops.customer_profile_coverage"],
         )
 
     def test_visible_assets_excludes_control_plane_schemas(self) -> None:
         inventory = pd.DataFrame(
             [
                 {
-                    "fqn": "datapact.enterprise_metadata_ops.customer_profile_coverage",
-                    "table_catalog": "datapact",
+                    "fqn": "emet.enterprise_metadata_ops.customer_profile_coverage",
+                    "table_catalog": "emet",
                     "table_schema": "enterprise_metadata_ops",
                     "table_name": "customer_profile_coverage",
                     "tags": {},
                 },
                 {
-                    "fqn": "datapact.governance_atlas_demo.customer_profile_coverage",
-                    "table_catalog": "datapact",
-                    "table_schema": "governance_atlas_demo",
+                    "fqn": "emet.axiom_demo.customer_profile_coverage",
+                    "table_catalog": "emet",
+                    "table_schema": "axiom_demo",
                     "table_name": "customer_profile_coverage",
                     "tags": {},
                 },
                 {
-                    "fqn": "datapact.atlas.change_requests",
-                    "table_catalog": "datapact",
-                    "table_schema": "atlas",
+                    "fqn": "emet.axiom.change_requests",
+                    "table_catalog": "emet",
+                    "table_schema": "axiom",
                     "table_name": "change_requests",
                     "tags": {},
                 },
                 {
-                    "fqn": "datapact.governance_hub.metadata_audit",
-                    "table_catalog": "datapact",
+                    "fqn": "emet.governance_hub.metadata_audit",
+                    "table_catalog": "emet",
                     "table_schema": "governance_hub",
                     "table_name": "metadata_audit",
                     "tags": {},
                 },
                 {
-                    "fqn": "datapact.atlas_ai.atlas_ai_assets_current",
-                    "table_catalog": "datapact",
-                    "table_schema": "atlas_ai",
-                    "table_name": "atlas_ai_assets_current",
+                    "fqn": "emet.axiom_ai.axiom_ai_assets_current",
+                    "table_catalog": "emet",
+                    "table_schema": "axiom_ai",
+                    "table_name": "axiom_ai_assets_current",
                     "tags": {},
                 },
             ]
         )
 
-        with patch.dict("os.environ", {"GOVAT_CATALOG": "datapact", "GOVAT_SCHEMA": "atlas"}):
+        with patch.dict("os.environ", {"AXIOM_CATALOG": "emet", "AXIOM_SCHEMA": "axiom"}):
             visible = assets.visible_assets(inventory)
 
         self.assertEqual(
             visible["fqn"].tolist(),
-            ["datapact.enterprise_metadata_ops.customer_profile_coverage"],
+            ["emet.enterprise_metadata_ops.customer_profile_coverage"],
         )
 
     def test_asset_payload_hides_internal_governance_tags(self) -> None:
         payload = assets.base_asset_payload(
             pd.Series(
                 {
-                    "fqn": "datapact.governance_atlas_demo.customer_profile_coverage",
-                    "table_catalog": "datapact",
-                    "table_schema": "governance_atlas_demo",
+                    "fqn": "emet.axiom_demo.customer_profile_coverage",
+                    "table_catalog": "emet",
+                    "table_schema": "axiom_demo",
                     "table_name": "customer_profile_coverage",
                     "tags": {
                         "domain": "Customer",
-                        "governance_atlas_evidence_source": "home-northstar",
-                        "governance_atlas.exclude_from_organic_evidence": "false",
+                        "axiom_evidence_source": "home-northstar",
+                        "axiom.exclude_from_organic_evidence": "false",
                     },
                     "domain": "Customer",
                 }
@@ -203,17 +203,17 @@ class StructuredDiscoverySearchTests(unittest.TestCase):
         )
 
         self.assertEqual(payload["tags"], {"domain": "Customer"})
-        self.assertNotIn("governance_atlas_evidence_source=home-northstar", payload["tagLabels"])
+        self.assertNotIn("axiom_evidence_source=home-northstar", payload["tagLabels"])
 
     def test_hidden_schema_deep_links_are_marked_hidden_before_exact_identity(self) -> None:
-        with patch.dict("os.environ", {"GOVAT_CATALOG": "datapact", "GOVAT_SCHEMA": "atlas"}):
-            self.assertTrue(assets.asset_fqn_is_hidden("datapact.atlas.change_requests"))
-            self.assertTrue(assets.asset_fqn_is_hidden("datapact.atlas_ai.atlas_ai_assets_current"))
+        with patch.dict("os.environ", {"AXIOM_CATALOG": "emet", "AXIOM_SCHEMA": "axiom"}):
+            self.assertTrue(assets.asset_fqn_is_hidden("emet.axiom.change_requests"))
+            self.assertTrue(assets.asset_fqn_is_hidden("emet.axiom_ai.axiom_ai_assets_current"))
             self.assertTrue(
-                assets.asset_fqn_is_hidden("datapact.governance_atlas_demo.customer_profile_coverage")
+                assets.asset_fqn_is_hidden("emet.axiom_demo.customer_profile_coverage")
             )
             self.assertFalse(
-                assets.asset_fqn_is_hidden("datapact.enterprise_metadata_ops.customer_profile_coverage")
+                assets.asset_fqn_is_hidden("emet.enterprise_metadata_ops.customer_profile_coverage")
             )
 
     def test_structured_query_supports_grouped_boolean_field_terms(self) -> None:
@@ -369,11 +369,11 @@ class DiscoverySemanticsAndTypoToleranceTests(unittest.TestCase):
         # The UC table_owner (authoritative) and the assignment roll-up
         # (owners_summary) must both be searchable.
         frame = _inventory_df()
-        frame["uc_owner"] = ["skyler@entrada.ai", "", ""]
-        frame["owners_summary"] = ["", "steward@entrada.ai", ""]
+        frame["uc_owner"] = ["abarreto@shorecp.com", "", ""]
+        frame["owners_summary"] = ["", "steward@shorecp.com", ""]
 
         by_uc_owner = assets.discovery_search_payload(
-            frame, query='owner:"skyler@entrada.ai"', query_mode="structured"
+            frame, query='owner:"abarreto@shorecp.com"', query_mode="structured"
         )
         self.assertEqual(
             [asset["fqn"] for asset in by_uc_owner["assets"]],
@@ -381,7 +381,7 @@ class DiscoverySemanticsAndTypoToleranceTests(unittest.TestCase):
         )
 
         by_summary = assets.discovery_search_payload(
-            frame, query='owner:"steward@entrada.ai"', query_mode="structured"
+            frame, query='owner:"steward@shorecp.com"', query_mode="structured"
         )
         self.assertEqual(
             [asset["fqn"] for asset in by_summary["assets"]],

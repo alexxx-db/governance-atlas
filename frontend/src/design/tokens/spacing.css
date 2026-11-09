@@ -2,19 +2,19 @@
  * Spacing scale.
  * 4px-based modular scale: space-1 = 4, space-2 = 8, step=4 until space-6, then 8.
  *
- * --ga-space-* is canonical (Wave C8). The --gh-space-* aliases died with
+ * --ax-space-* is canonical (Wave C8). The --gh-space-* aliases died with
  * entity.css in cohesion follow-up 3 (their last consumer).
  */
 
 :root {
-  --ga-space-0: 0;
-  --ga-space-1: 4px;
-  --ga-space-2: 8px;
-  --ga-space-3: 12px;
-  --ga-space-4: 16px;
-  --ga-space-5: 20px;
-  --ga-space-6: 24px;
-  --ga-space-7: 32px;
-  --ga-space-8: 40px;
-  --ga-space-9: 48px;
+  --ax-space-0: 0;
+  --ax-space-1: 4px;
+  --ax-space-2: 8px;
+  --ax-space-3: 12px;
+  --ax-space-4: 16px;
+  --ax-space-5: 20px;
+  --ax-space-6: 24px;
+  --ax-space-7: 32px;
+  --ax-space-8: 40px;
+  --ax-space-9: 48px;
 }

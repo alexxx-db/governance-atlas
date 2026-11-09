@@ -18,7 +18,7 @@ from __future__ import annotations
 import unittest
 from unittest.mock import MagicMock
 
-from atlas import uc as uc_module
+from axiom import uc as uc_module
 
 # Import lazily inside tests to avoid pulling in the entire FastAPI app
 # at module-import time (runtime_app imports lots of side-effecting
@@ -85,7 +85,7 @@ class UserScopedClientTests(unittest.TestCase):
 
 class SqlLiteralEscapingTests(unittest.TestCase):
     def test_backslash_cannot_break_out_of_literal(self) -> None:
-        from atlas.util import sql_literal
+        from axiom.util import sql_literal
 
         # `\'` must not become an escaped quote that lets `''` close the literal.
         self.assertEqual(sql_literal("x\\' OR 1=1 --"), "'x\\\\'' OR 1=1 --'")

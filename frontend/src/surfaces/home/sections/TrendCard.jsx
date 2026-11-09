@@ -65,15 +65,15 @@ function visibleTicks(points) {
 
 function AxisFrame({ children, ariaLabel }) {
   return (
-    <div className="ga-home-trend" role="img" aria-label={ariaLabel}>
-      <div className="ga-home-trend-axis" aria-hidden="true">
+    <div className="ax-home-trend" role="img" aria-label={ariaLabel}>
+      <div className="ax-home-trend-axis" aria-hidden="true">
         <span>100%</span>
         <span>75%</span>
         <span>50%</span>
         <span>25%</span>
         <span>0%</span>
       </div>
-      <div className="ga-home-trend-plot">{children}</div>
+      <div className="ax-home-trend-plot">{children}</div>
     </div>
   );
 }
@@ -93,12 +93,12 @@ function CollectingChart({ point = null, collectingSince = "" }) {
       }
     >
       {hasPoint ? (
-        <svg className="ga-home-trend-svg" viewBox={`0 0 ${WIDTH} ${HEIGHT}`} preserveAspectRatio="none" aria-hidden="true">
-          <line className="ga-home-trend-line" x1="24" x2={WIDTH - 24} y1={pointY} y2={pointY} strokeDasharray="4 6" opacity="0.5" />
-          <circle className="ga-home-trend-dot" cx={WIDTH - 30} cy={pointY} r="4" />
+        <svg className="ax-home-trend-svg" viewBox={`0 0 ${WIDTH} ${HEIGHT}`} preserveAspectRatio="none" aria-hidden="true">
+          <line className="ax-home-trend-line" x1="24" x2={WIDTH - 24} y1={pointY} y2={pointY} strokeDasharray="4 6" opacity="0.5" />
+          <circle className="ax-home-trend-dot" cx={WIDTH - 30} cy={pointY} r="4" />
         </svg>
       ) : null}
-      <div className="ga-home-trend-note">
+      <div className="ax-home-trend-note">
         {hasPoint
           ? `Daily snapshots recording — history since ${collectingSince || "today"}`
           : "Trend history unavailable"}
@@ -118,12 +118,12 @@ function TrendLineChart({ points }) {
   const latest = pairs[pairs.length - 1];
   return (
     <AxisFrame ariaLabel="Governance posture trend">
-      <svg className="ga-home-trend-svg" viewBox={`0 0 ${WIDTH} ${HEIGHT}`} preserveAspectRatio="none" aria-hidden="true">
-        <path className="ga-home-trend-area" d={smoothAreaPath(pairs, HEIGHT)} />
-        <path className="ga-home-trend-line" d={smoothLinePath(pairs)} />
-        {latest ? <circle className="ga-home-trend-dot" cx={latest[0]} cy={latest[1]} r="4" /> : null}
+      <svg className="ax-home-trend-svg" viewBox={`0 0 ${WIDTH} ${HEIGHT}`} preserveAspectRatio="none" aria-hidden="true">
+        <path className="ax-home-trend-area" d={smoothAreaPath(pairs, HEIGHT)} />
+        <path className="ax-home-trend-line" d={smoothLinePath(pairs)} />
+        {latest ? <circle className="ax-home-trend-dot" cx={latest[0]} cy={latest[1]} r="4" /> : null}
       </svg>
-      <div className="ga-home-trend-ticks" aria-hidden="true">
+      <div className="ax-home-trend-ticks" aria-hidden="true">
         {visibleTicks(points).map((point) => (
           <span key={point.label}>{trendTickLabel(point.label)}</span>
         ))}
@@ -149,13 +149,13 @@ export function TrendCard({ posture = {} }) {
 
   return (
     <SectionCard
-      className="ga-home-trend-card"
+      className="ax-home-trend-card"
       title={showWindows ? `Posture trend · ${selectedWindow.label}` : "Posture trend"}
-      subtitle="Daily governance snapshots recorded by Governance Atlas"
+      subtitle="Daily governance snapshots recorded by Axiom"
       tooltip="Historical posture snapshots are shown only when recorded; nothing is interpolated."
       actions={
         showWindows ? (
-          <div className="ga-home-trend-windows" role="group" aria-label="Posture trend range">
+          <div className="ax-home-trend-windows" role="group" aria-label="Posture trend range">
             {TREND_WINDOWS.map((item) => (
               <button
                 aria-pressed={selectedWindow.key === item.key}
@@ -179,7 +179,7 @@ export function TrendCard({ posture = {} }) {
       ) : (
         <TrendLineChart points={windowedPoints} />
       )}
-      <p className="ga-home-trend-footer">
+      <p className="ax-home-trend-footer">
         <strong>
           {collecting
             ? `Collecting since ${collectingSince || "today"}`

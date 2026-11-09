@@ -8,7 +8,7 @@ from unittest.mock import patch
 
 def _load_admin_module():
     try:
-        from atlas.api import admin as module
+        from axiom.api import admin as module
 
         return module
     except ModuleNotFoundError as exc:
@@ -56,7 +56,7 @@ def _load_admin_module():
     sys.modules["fastapi"] = fastapi
     sys.modules["fastapi.responses"] = responses
 
-    from atlas.api import admin as module  # type: ignore
+    from axiom.api import admin as module  # type: ignore
 
     return module
 
@@ -180,13 +180,13 @@ class TruthCheckTests(unittest.TestCase):
         catalogs_df = pd.DataFrame([{"catalog_count": 12}])
         schemas_df = pd.DataFrame(
             [
-                {"catalog": "datapact", "schema_count": 5},
+                {"catalog": "emet", "schema_count": 5},
                 {"catalog": "finance_prod", "schema_count": 3},
             ]
         )
         tables_df = pd.DataFrame(
             [
-                {"catalog": "datapact", "table_count": 200},
+                {"catalog": "emet", "table_count": 200},
                 {"catalog": "finance_prod", "table_count": 40},
             ]
         )
@@ -202,20 +202,20 @@ class TruthCheckTests(unittest.TestCase):
         fake_runtime_app._store = lambda: None
         fake_runtime_app._user_role_slug = lambda _request: "admin"
 
-        # Patch the real atlas.services.assets module so the lazy import
+        # Patch the real axiom.services.assets module so the lazy import
         # inside _ui_inventory_counts picks up our deterministic fixtures.
-        from atlas.services import assets as real_assets
+        from axiom.services import assets as real_assets
         inventory_df = pd.DataFrame(
-            [{"table_catalog": "datapact"} for _ in range(198)]
+            [{"table_catalog": "emet"} for _ in range(198)]
             + [{"table_catalog": "finance_prod"} for _ in range(40)]
         )
         visible_df = pd.DataFrame(
-            [{"table_catalog": "datapact"} for _ in range(195)]
+            [{"table_catalog": "emet"} for _ in range(195)]
             + [{"table_catalog": "finance_prod"} for _ in range(40)]
         )
 
         env = {
-            "GOVAT_DISCOVERY_CATALOGS": "datapact,finance_prod",
+            "AXIOM_DISCOVERY_CATALOGS": "emet,finance_prod",
         }
 
         with patch.dict(sys.modules, {"runtime_app": fake_runtime_app}), patch.dict(
@@ -229,7 +229,7 @@ class TruthCheckTests(unittest.TestCase):
 
         self.assertIn("data", payload)
         data = payload["data"]
-        self.assertEqual(data["discoveryCatalogs"], ["datapact", "finance_prod"])
+        self.assertEqual(data["discoveryCatalogs"], ["emet", "finance_prod"])
         self.assertEqual(data["metastore"]["catalogTotal"], 12)
         self.assertEqual(data["metastore"]["schemaTotalForDiscovery"], 8)
         self.assertEqual(data["metastore"]["tableTotalForDiscovery"], 240)
@@ -241,11 +241,11 @@ class TruthCheckTests(unittest.TestCase):
         self.assertEqual(data["drift"]["hiddenByVisibility"], 3)
         # Per-catalog breakdown contains both discovery catalogs.
         catalogs = {entry["catalog"]: entry for entry in data["metastore"]["perCatalog"]}
-        self.assertIn("datapact", catalogs)
-        self.assertEqual(catalogs["datapact"]["metastore"]["tableCount"], 200)
-        self.assertEqual(catalogs["datapact"]["ui"]["inventoryAssetCount"], 198)
-        self.assertEqual(catalogs["datapact"]["drift"]["inventoryDelta"], 2)
-        self.assertTrue(catalogs["datapact"]["configured"])
+        self.assertIn("emet", catalogs)
+        self.assertEqual(catalogs["emet"]["metastore"]["tableCount"], 200)
+        self.assertEqual(catalogs["emet"]["ui"]["inventoryAssetCount"], 198)
+        self.assertEqual(catalogs["emet"]["drift"]["inventoryDelta"], 2)
+        self.assertTrue(catalogs["emet"]["configured"])
         # Queries collection is non-empty with no errors.
         self.assertGreaterEqual(len(data["queries"]), 3)
         self.assertTrue(all(q["error"] is None for q in data["queries"]))
@@ -263,10 +263,10 @@ class TruthCheckTests(unittest.TestCase):
         fake_runtime_app._store = lambda: None
         fake_runtime_app._user_role_slug = lambda _request: "admin"
 
-        from atlas.services import assets as real_assets
+        from axiom.services import assets as real_assets
 
         with patch.dict(sys.modules, {"runtime_app": fake_runtime_app}), patch.dict(
-            "os.environ", {"GOVAT_DISCOVERY_CATALOGS": "datapact"}, clear=False
+            "os.environ", {"AXIOM_DISCOVERY_CATALOGS": "emet"}, clear=False
         ), patch.object(
             real_assets, "inventory", lambda *_a, **_k: pd.DataFrame()
         ), patch.object(

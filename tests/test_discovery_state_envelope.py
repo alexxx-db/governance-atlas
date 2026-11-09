@@ -19,7 +19,7 @@ from unittest.mock import patch
 
 import pandas as pd
 
-from atlas.api import discovery as discovery_module
+from axiom.api import discovery as discovery_module
 
 
 def _request(headers=None) -> SimpleNamespace:

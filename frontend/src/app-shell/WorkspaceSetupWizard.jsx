@@ -92,8 +92,8 @@ export default function WorkspaceSetupWizard({
   }
 
   return (
-    <div className="ga-shell-readiness-layout">
-      <div className="ga-shell-readiness-main">
+    <div className="ax-shell-readiness-layout">
+      <div className="ax-shell-readiness-main">
         <SectionCard
           actions={
             <>
@@ -123,11 +123,11 @@ export default function WorkspaceSetupWizard({
           subtitle="Shell-owned readiness truth for the current actor, workspace, and safe operational-sharing path."
           title={title}
         >
-          <div className="ga-shell-chip-row">
+          <div className="ax-shell-chip-row">
             <StateBadge state={setupReadiness.state || "unknown"} />
             {observedAt ? <Badge tone="muted">Observed {observedAt}</Badge> : null}
           </div>
-          <p className="ga-shell-readiness-note">
+          <p className="ax-shell-readiness-note">
             Use this guide to confirm readiness, understand claim narrowing, and verify how protected
             operational surfaces are shared before widening product claims.
           </p>
@@ -151,7 +151,7 @@ export default function WorkspaceSetupWizard({
             />
           ) : null}
 
-          <div className="ga-shell-readiness-tiles">
+          <div className="ax-shell-readiness-tiles">
             <SummaryTile
               label="Setup status"
               note={readinessNote}
@@ -250,7 +250,7 @@ export default function WorkspaceSetupWizard({
             ]}
           />
           {acceptedSharingPaths.length ? (
-            <div className="ga-shell-chip-row">
+            <div className="ax-shell-chip-row">
               {acceptedSharingPaths.map((path) => (
                 <Badge key={path} tone="muted">
                   {path}
@@ -308,12 +308,12 @@ export default function WorkspaceSetupWizard({
         ) : null}
       </div>
 
-      <aside className="ga-shell-readiness-side">
+      <aside className="ax-shell-readiness-side">
         <SectionCard
           subtitle="Current actor, deployment context, and rollout scope for this setup session."
           title="Workspace context"
         >
-          <div className="ga-shell-readiness-subhead">
+          <div className="ax-shell-readiness-subhead">
             <h3>Identity</h3>
           </div>
           <AttributeList
@@ -326,7 +326,7 @@ export default function WorkspaceSetupWizard({
             ]}
           />
 
-          <div className="ga-shell-readiness-subhead">
+          <div className="ax-shell-readiness-subhead">
             <h3>Configuration</h3>
           </div>
           <AttributeList
@@ -337,7 +337,7 @@ export default function WorkspaceSetupWizard({
             ]}
           />
 
-          <div className="ga-shell-readiness-subhead">
+          <div className="ax-shell-readiness-subhead">
             <h3>Scope</h3>
           </div>
           <AttributeList
@@ -352,11 +352,11 @@ export default function WorkspaceSetupWizard({
             ]}
           />
 
-          <div className="ga-shell-readiness-subhead">
+          <div className="ax-shell-readiness-subhead">
             <h3>Blocked surfaces</h3>
           </div>
           {blockedSurfaces.length ? (
-            <div className="ga-shell-chip-row">
+            <div className="ax-shell-chip-row">
               {blockedSurfaces.map((surface) => (
                 <Badge key={surface} tone="muted">
                   {surface}
@@ -364,13 +364,13 @@ export default function WorkspaceSetupWizard({
               ))}
             </div>
           ) : (
-            <p className="ga-shell-readiness-note">No blocked surfaces are reported right now.</p>
+            <p className="ax-shell-readiness-note">No blocked surfaces are reported right now.</p>
           )}
 
-          <div className="ga-shell-readiness-subhead">
+          <div className="ax-shell-readiness-subhead">
             <h3>Feature inventory</h3>
           </div>
-          <p className="ga-shell-readiness-note">
+          <p className="ax-shell-readiness-note">
             {featureFlags.length
               ? `${featureFlags.length} runtime feature flags are exposed for setup and surface gating.`
               : "No feature-flag inventory is exposed yet."}

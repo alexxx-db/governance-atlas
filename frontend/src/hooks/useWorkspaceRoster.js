@@ -6,12 +6,12 @@
 // gets free text with no suggestions rather than a broken form.
 import { useMemo } from "react";
 import { fetchWorkspaceRoster } from "../lib/api";
-import { useAtlasQuery } from "./useAtlasQuery";
+import { useAxiomQuery } from "./useAxiomQuery";
 
 export function useWorkspaceRoster(options = {}) {
   const enabled = options.enabled !== false;
-  const { query } = useAtlasQuery({
-    key: ["atlas", "workspace-roster"],
+  const { query } = useAxiomQuery({
+    key: ["axiom", "workspace-roster"],
     fetch: (signal) => fetchWorkspaceRoster({ signal }),
     enabled,
     // The account roster changes rarely; cache it generously so opening a

@@ -2,7 +2,7 @@
 // must sit fully inside the hero's clipping box and Sort must stay in-column.
 import { chromium } from "playwright";
 
-const BASE = process.env.ATLAS_CAPTURE_BASE || "http://localhost:3100";
+const BASE = process.env.AXIOM_CAPTURE_BASE || "http://localhost:3100";
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1280, height: 1100 } });
 await page.goto(`${BASE}/discover`, { waitUntil: "domcontentloaded" });

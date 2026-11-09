@@ -100,7 +100,7 @@ function WorkItemDetail({ item, onAsset }) {
           <ActionRow icon="archive" label="Archive · sandbox cleanup" detail="No queries in 30+ days"/>
         </>}
         {item.kind === 'Description missing' && <>
-          <ActionRow icon="sparkles" label="Auto-draft description with Atlas AI" detail="Cited from upstream lineage and column tags"/>
+          <ActionRow icon="sparkles" label="Auto-draft description with Axiom AI" detail="Cited from upstream lineage and column tags"/>
           <ActionRow icon="user-cog" label="Reassign to Customer Stewards"/>
         </>}
         {item.kind === 'Re-certification due' && <>

@@ -1,8 +1,8 @@
 # Asset 360 / Entity Page — Forensic Teardown
 
 Audited 2026-07-21 against live dev app `https://atlas-2543889327043640.aws.databricksapps.com`, 7 assets across 7 catalogs
-(datapact.enterprise_metadata_ops.product_mortgage_signal, finance_prod.curated.revenue_daily, finance_prod.gold.revenue_recognition,
-main.datapact.run_history, customer_360.gold.customer_profile, hr_secure.confidential.compensation_band, sales_prod.silver.orders).
+(emet.enterprise_metadata_ops.product_mortgage_signal, finance_prod.curated.revenue_daily, finance_prod.gold.revenue_recognition,
+main.emet.run_history, customer_360.gold.customer_profile, hr_secure.confidential.compensation_band, sales_prod.silver.orders).
 Evidence: API captures in `arch_entity/api/`, screenshots + widget census in `arch_entity/shots/` (report.json), warehouse ground truth via SQL.
 Probe script: `frontend/scripts/qa_tmp_a360_teardown.mjs`. Console errors during all runs: **0**.
 
@@ -28,7 +28,7 @@ the canonical cache reads as absent → `placeholderData` is null → switching 
 "keep authoritative data on a degraded refetch" fix. One-token bug (`null` → `Infinity`/omit), page-wide blast radius.
 
 ### P0-3 — Composite /360 endpoint hard-codes Freshness, Quality, and Access as "unavailable" — forever, for every asset
-`atlas_metrics.py:1693-1719`: `freshness: {state:"unavailable"...}`, `quality: {state:"unavailable", message:"Quality runs are not included in
+`axiom_metrics.py:1693-1719`: `freshness: {state:"unavailable"...}`, `quality: {state:"unavailable", message:"Quality runs are not included in
 this composite payload yet."}`, `access: {state:"unavailable"...}` are literal constants. No code path ever populates them. Consequences:
 - The hero freshness card can never show a real state; the drawer's Freshness fact and Quality/Access tabs are placeholders **by construction**
   (drawer Quality tab literally prints the backend's apology string — `Asset360Drawer.jsx:447-456`).
@@ -65,8 +65,8 @@ Live census: `Request Change`, `Open Lineage`, `Certify ⌄`, `⋮` (all enabled
 
 ### P1-6 — First-visit hydration takes minutes while widgets show dashes; client polls every 3s indefinitely
 Cold `GET /api/assets/<fqn>?sections=header,activity,schema,operational,profiler,properties` took **5.4-7.1s** and still returned
-`loadedSections:["header"]` with `state:"loading"` (all 7 assets; `api/*.detail.json`). `GET /api/atlas/assets/<fqn>/360` returns in ~0.5s but
-`state:"loading"`, `loadedSections:[]`, empty schema/activity/usage; a background thread warms the full detail (atlas.py:774-801) — observed
+`loadedSections:["header"]` with `state:"loading"` (all 7 assets; `api/*.detail.json`). `GET /api/axiom/assets/<fqn>/360` returns in ~0.5s but
+`state:"loading"`, `loadedSections:[]`, empty schema/activity/usage; a background thread warms the full detail (axiom.py:774-801) — observed
 completion ~4 minutes after first touch (17:04 → 17:08 re-poll: schema 22 cols, activity 40). Until then the Overview renders "—" everywhere
 and both `useAsset360` and `useAssetDetail` refetch on 3s intervals (useAsset360.js:86-88, useAssetDetail.js:127-129). Warm loads are fine
 (shell 150ms, hero 350-1000ms, warm hero reload 3.9s on the deep asset), so the pain is concentrated on first-ever views — which is what a
@@ -74,13 +74,13 @@ demo audience always hits.
 
 ### P1-7 — Activity is rendered from the poorest projection of rich stored data
 UI: "Task updated 2026-07-21T15:04:19.000Z" (Overview rail, no actor, raw ISO, click → generic Stewardship). The API payload for the same
-entry carries `createdBy:"skyler@entrada.ai"`, `status:"Pending"`, `detail:"open"`; the Overview rail renders only
+entry carries `createdBy:"abarreto@shorecp.com"`, `status:"Pending"`, `detail:"open"`; the Overview rail renders only
 `item.createdAt || item.actorEmail || item.detail` (EntityWorkspace.jsx:947) — **`createdBy` is fetched but never rendered** (field-name
-mismatch: it checks `actorEmail`). The store row (`datapact.atlas.activity_events`, verified by SQL) additionally holds `task_id`,
+mismatch: it checks `actorEmail`). The store row (`emet.axiom.activity_events`, verified by SQL) additionally holds `task_id`,
 `thread_id`, and `payload_json` with **priority ("p1")** — dropped entirely. The Activity tab does show the actor but concatenates text
-without separators: "Task updatedPending open skyler@entrada.ai • 2026-07-21T15:04:19.000Z". 360 activity also mixes humanized and raw slug
+without separators: "Task updatedPending open abarreto@shorecp.com • 2026-07-21T15:04:19.000Z". 360 activity also mixes humanized and raw slug
 titles ("Task updated" vs "task-status-updated" / "task-triage-updated") because `metadataAudit` items pass `item.action` through raw
-(atlas_metrics.py:1660-1673).
+(axiom_metrics.py:1660-1673).
 
 ### P1-8 — The Access tab contains no access content; it leaks developer telemetry instead
 Screenshot `..._tab_Access.png`: left panel "Live Record Signals" = storage facts (mostly "—", "Workloads Unavailable", "Connected Assets
@@ -95,8 +95,8 @@ Sensitivity cell is "—". Column-level `glossaryTerm`/`glossaryTerms` are in th
 (`glossary_link_lookup`, assets.py:3331-3350, key `column:<fqn>:<col>`), but **no column-level glossary_links rows exist** — only asset-level
 terms do (header chips show them). So the header advertises "Contracted Revenue, Net Revenue" while the schema's Glossary column is uniformly
 empty — the mapping gap the owner noticed. Sensitivity is derived by regex over tag labels (EntityWorkspace.jsx:755) and no column tags carry
-those markers. For main.datapact.run_history, "Policy Tags" prints raw operational tags including a GUID
-("datapact_installation_id: 07a31656…") — noise presented as policy.
+those markers. For main.emet.run_history, "Policy Tags" prints raw operational tags including a GUID
+("emet_installation_id: 07a31656…") — noise presented as policy.
 
 ### P2-10 — Owner/steward attribution is fragile and contradicts the drawer
 Every asset shows Owner "Skyler" because `ownerForRole(/owner/i)` (EntityWorkspace.jsx:441-449) matches the UC owner entry
@@ -110,8 +110,8 @@ subtitle (Asset360Drawer.jsx:118-129 reads `displayName` which business-owner en
 - revenue_daily: "8 Downstream Assets / 0 Users / 0 Queries"; run_history: "0 Downstream / **29 Users** / 0 Queries".
 Downstream count comes from lineage-derived relatedAssets, Users from operational consumers, Queries from query-history — three sources with
 different availability, rendered as one coherent "Last 30 days" block (there is no 30-day scoping anywhere in the backend; `usage` counts are
-list lengths — atlas_metrics.py:1681-1686). The "(Last 30 days)" caption is fabricated. Root availability: `workloadVisibility`
-capability is `unknown/false` (bootstrap), the 360 only requests `operational` when OBO actor-scoped (atlas.py:757-759) — so Queries/Users are
+list lengths — axiom_metrics.py:1681-1686). The "(Last 30 days)" caption is fabricated. Root availability: `workloadVisibility`
+capability is `unknown/false` (bootstrap), the 360 only requests `operational` when OBO actor-scoped (axiom.py:757-759) — so Queries/Users are
 *never-fetched* in non-OBO contexts, not "unavailable".
 - "View all usage" routes to the Lineage workspace's Operational Context — which the same page's header may claim is unavailable (P1-5).
 
@@ -120,7 +120,7 @@ Computed-style probe (report.json → hoverStyles): Request Change and Open Line
 and after) — a later `!important` rule (northstar.css button overrides, ~7722-7734 layering war with app.css:459-490) pins the background so
 the hover rule never lands. The kebab does respond. So the hero mixes hover-dead and hover-live buttons side by side. The CSS file itself
 documents the prior inverse failure ("hovered buttons to a near-white fill … 'highlight contrasts to the point you can't see'") — the fix
-layer overshot into no-feedback. Old-shell remnants persist: the entire page chrome is `gh-*` classes patched by `!important` `ga-*` overrides;
+layer overshot into no-feedback. Old-shell remnants persist: the entire page chrome is `gh-*` classes patched by `!important` `ax-*` overrides;
 residual light leak: `.gh-owner-avatar` backgrounds rgb(236,254,255)/rgb(240,249,255) (light pastel chips on dark card).
 
 ### P2-13 — The two "unavailable"-claiming placeholders mislabel in-flight state and dead-end states
@@ -140,7 +140,7 @@ The drawer (5 tabs) and page (7 tabs) consume the same `useAsset360` but render 
 are permanent placeholders (Lineage, Quality, Access — the latter two blocked by P0-3), the Overview repeats a "Buildability note" of
 dev-facing provenance copy, the footer buttons overflow the panel edge ("Open full re…" clipped — `nav__drawer.png`), and its facts contradict
 the page (P2-10, usage: drawer "Usage unavailable" vs page "8 Downstream Assets"). Inline hex colors throughout (`#a8d3e8`, `#34d399`,
-rgba literals — Asset360Drawer.jsx:71-77) violate the `--ga-*` token rule.
+rgba literals — Asset360Drawer.jsx:71-77) violate the `--ax-*` token rule.
 
 ### P3-16 — Misc copy/consistency
 - Hero subtitle "Product 360" / "Finance 360" (domain + literal "360") reads as a template artifact (EntityWorkspace.jsx:629).
@@ -241,7 +241,7 @@ first impressions are all dashes.
 
 ## Screenshot index (arch_entity/shots/)
 - `*__overview.png` per asset — full Overview
-- `datapact_…__hero.png`, `…__hero_hover.png` — header actions
-- `datapact_…__tab_{Columns,Governance,Profile,Quality,Access,Activity}.png` — note tab_Profile = shell-regression evidence; tab_Quality actually captured the Profiler tab because placeholder tab clicks are no-ops (itself evidence)
+- `emet_…__hero.png`, `…__hero_hover.png` — header actions
+- `emet_…__tab_{Columns,Governance,Profile,Quality,Access,Activity}.png` — note tab_Profile = shell-regression evidence; tab_Quality actually captured the Profiler tab because placeholder tab clicks are no-ops (itself evidence)
 - `nav__discovery.png`, `nav__search_results.png`, `nav__drawer*.png` — reachability + drawer
 - `report.json` — full widget census, hover probes, timings, request logs

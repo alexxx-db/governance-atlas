@@ -8,7 +8,7 @@ from __future__ import annotations
 import json
 import unittest
 
-from atlas.ai import redaction
+from axiom.ai import redaction
 
 # Credential-shaped fixtures are assembled at runtime so no committed line
 # matches a real token pattern (GitHub push protection blocks those).

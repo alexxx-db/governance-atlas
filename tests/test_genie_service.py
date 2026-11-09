@@ -3,8 +3,8 @@ from __future__ import annotations
 import unittest
 from types import SimpleNamespace
 
-from atlas.config import AppConfig
-from atlas.services import genie
+from axiom.config import AppConfig
+from axiom.services import genie
 
 
 class FakeGenieClient:
@@ -41,28 +41,28 @@ class GenieServiceTests(unittest.TestCase):
     def _config(self, **overrides):
         data = {
             "warehouse_id": "warehouse-123",
-            "gov_catalog": "datapact",
-            "gov_schema": "atlas",
+            "gov_catalog": "emet",
+            "gov_schema": "axiom",
             "genie_space_id": "",
-            "genie_space_title": "Governance Atlas Metadata Room",
-            "atlas_ai_provider": "local",
+            "genie_space_title": "Axiom Metadata Room",
+            "axiom_ai_provider": "local",
         }
         data.update(overrides)
         return AppConfig(**data)
 
     def test_provider_status_without_genie_is_unavailable_not_local_evidence(self) -> None:
-        status = genie.provider_status(self._config(atlas_ai_provider="local"))
+        status = genie.provider_status(self._config(axiom_ai_provider="local"))
 
         self.assertEqual(status["provider"], "unavailable")
         self.assertEqual(status["state"], "unavailable")
         self.assertIn("configured Databricks Genie space", status["message"])
 
     def test_provider_status_requires_space_id_for_genie(self) -> None:
-        status = genie.provider_status(self._config(atlas_ai_provider="genie"))
+        status = genie.provider_status(self._config(axiom_ai_provider="genie"))
 
         self.assertEqual(status["provider"], "genie")
         self.assertEqual(status["state"], "unavailable")
-        self.assertIn("GOVAT_GENIE_SPACE_ID", status["message"])
+        self.assertIn("AXIOM_GENIE_SPACE_ID", status["message"])
 
     def test_ask_genie_normalizes_text_and_query_evidence(self) -> None:
         message = SimpleNamespace(
@@ -74,7 +74,7 @@ class GenieServiceTests(unittest.TestCase):
                     attachment_id="att-1",
                     text=SimpleNamespace(content="Customer has the highest open work count."),
                     query=SimpleNamespace(
-                        query="SELECT domain, count(*) FROM atlas_ai_assets_current GROUP BY domain",
+                        query="SELECT domain, count(*) FROM axiom_ai_assets_current GROUP BY domain",
                         title="Domain open work",
                         statement_id="stmt-1",
                         query_result_metadata={"row_count": 3, "is_truncated": False},
@@ -85,7 +85,7 @@ class GenieServiceTests(unittest.TestCase):
         client = FakeGenieClient(message)
 
         payload = genie.ask_genie(
-            config=self._config(atlas_ai_provider="genie", genie_space_id="space-1"),
+            config=self._config(axiom_ai_provider="genie", genie_space_id="space-1"),
             question="Which domains need stewardship?",
             client=client,
         )
@@ -107,7 +107,7 @@ class GenieServiceTests(unittest.TestCase):
                 SimpleNamespace(
                     attachment_id="att-2",
                     query=SimpleNamespace(
-                        query="SELECT asset_fqn FROM atlas_ai_assets_current WHERE is_critical = TRUE",
+                        query="SELECT asset_fqn FROM axiom_ai_assets_current WHERE is_critical = TRUE",
                         statement_id="stmt-2",
                         query_result_metadata={"row_count": 2},
                     ),
@@ -137,7 +137,7 @@ class GenieServiceTests(unittest.TestCase):
         client = FakeGenieClient(message, statement=statement)
 
         payload = genie.ask_genie(
-            config=self._config(atlas_ai_provider="genie", genie_space_id="space-1"),
+            config=self._config(axiom_ai_provider="genie", genie_space_id="space-1"),
             question="Which critical assets are not certified?",
             client=client,
         )
@@ -159,7 +159,7 @@ class GenieServiceTests(unittest.TestCase):
                     query=SimpleNamespace(
                         query=(
                             "SELECT quality.asset_fqn, quality.column_name, quality.detail "
-                            "FROM atlas_ai_quality_latest quality "
+                            "FROM axiom_ai_quality_latest quality "
                             "UNION ALL SELECT 'unavailable', NULL, "
                             "'No data quality issues found for critical assets.'"
                         ),
@@ -189,7 +189,7 @@ class GenieServiceTests(unittest.TestCase):
         client = FakeGenieClient(message, statement=statement)
 
         payload = genie.ask_genie(
-            config=self._config(atlas_ai_provider="genie", genie_space_id="space-1"),
+            config=self._config(axiom_ai_provider="genie", genie_space_id="space-1"),
             question="Show me data quality issues impacting critical assets.",
             client=client,
         )
@@ -211,7 +211,7 @@ class GenieServiceTests(unittest.TestCase):
         client = FakeGenieClient(message=None, started=started)
 
         result = genie.start_genie(
-            config=self._config(atlas_ai_provider="genie", genie_space_id="space-1"),
+            config=self._config(axiom_ai_provider="genie", genie_space_id="space-1"),
             question="Which domains need stewardship?",
             client=client,
         )
@@ -228,7 +228,7 @@ class GenieServiceTests(unittest.TestCase):
         client = FakeGenieClient(message)
 
         result = genie.poll_genie(
-            config=self._config(atlas_ai_provider="genie", genie_space_id="space-1"),
+            config=self._config(axiom_ai_provider="genie", genie_space_id="space-1"),
             conversation_id="conv-9", message_id="msg-9", client=client,
         )
 
@@ -245,7 +245,7 @@ class GenieServiceTests(unittest.TestCase):
         client = FakeGenieClient(message)
 
         result = genie.poll_genie(
-            config=self._config(atlas_ai_provider="genie", genie_space_id="space-1"),
+            config=self._config(axiom_ai_provider="genie", genie_space_id="space-1"),
             conversation_id="conv-9", message_id="msg-9", client=client,
         )
 
@@ -269,7 +269,7 @@ class GenieServiceTests(unittest.TestCase):
 
         client = FakeGenieClient(message=None, started=KeyErrorWait())
         result = genie.start_genie(
-            config=self._config(atlas_ai_provider="genie", genie_space_id="space-1"),
+            config=self._config(axiom_ai_provider="genie", genie_space_id="space-1"),
             question="Which assets need stewardship?", client=client,
         )
         self.assertEqual(result["conversationId"], "conv-w")
@@ -281,7 +281,7 @@ class GenieServiceTests(unittest.TestCase):
         client = FakeGenieClient(message)
 
         result = genie.poll_genie(
-            config=self._config(atlas_ai_provider="genie", genie_space_id="space-1"),
+            config=self._config(axiom_ai_provider="genie", genie_space_id="space-1"),
             conversation_id="c", message_id="m", client=client,
         )
 
@@ -295,7 +295,7 @@ class GenieServiceTests(unittest.TestCase):
 
         with self.assertRaises(RuntimeError):
             genie.poll_genie(
-                config=self._config(atlas_ai_provider="genie", genie_space_id="space-1"),
+                config=self._config(axiom_ai_provider="genie", genie_space_id="space-1"),
                 conversation_id="c", message_id="m", client=client,
             )
 

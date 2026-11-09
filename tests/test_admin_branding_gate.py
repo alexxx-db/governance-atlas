@@ -20,7 +20,7 @@ from types import ModuleType, SimpleNamespace
 
 def _load_admin_module():
     try:
-        from atlas.api import admin as module
+        from axiom.api import admin as module
 
         return module
     except ModuleNotFoundError as exc:
@@ -73,7 +73,7 @@ def _load_admin_module():
     sys.modules["fastapi"] = fastapi
     sys.modules["fastapi.responses"] = responses
 
-    from atlas.api import admin as module  # type: ignore
+    from axiom.api import admin as module  # type: ignore
 
     return module
 
@@ -155,14 +155,14 @@ class BrandingGetGateTests(unittest.TestCase):
         from fastapi import HTTPException
 
         fake_runtime = _fake_runtime(role)
-        # Swap atlas.services.branding so no real DB call is attempted.
-        fake_branding = ModuleType("atlas.services.branding")
+        # Swap axiom.services.branding so no real DB call is attempted.
+        fake_branding = ModuleType("axiom.services.branding")
         fake_branding.get_branding = lambda store: store.get_tenant_branding()
         with unittest.mock.patch.dict(
             sys.modules,
             {
                 "runtime_app": fake_runtime,
-                "atlas.services.branding": fake_branding,
+                "axiom.services.branding": fake_branding,
             },
         ):
             try:

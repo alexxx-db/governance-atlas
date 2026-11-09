@@ -36,7 +36,7 @@ export function isUcAssetFqn(value) {
  *      deepLinks.catalogExplorer) is authoritative — absolutize it against
  *      the workspace host if it is relative, or pass it through if absolute.
  *   2. Otherwise construct `/explore/data/<catalog>/<schema>/<table>` — the
- *      exact shape the backend itself emits (atlas/services/capabilities.py) —
+ *      exact shape the backend itself emits (axiom/services/capabilities.py) —
  *      but ONLY when we have BOTH a real workspace host AND a 3-part FQN.
  *   3. No host or no FQN → "" (the caller renders nothing rather than a dead
  *      or wrong link).
@@ -221,7 +221,7 @@ export function buildEvidenceRecords({
       source: "quality-runner+databricks-dqm",
       status: qualityAvailable ? "available" : "unavailable",
       detail: qualityAvailable
-        ? `${arrayValue(quality?.runs).length} Atlas quality run(s), ${arrayValue(quality?.results).length} result row(s), Databricks DQM ${evidenceState(dqm) || "unavailable"}.`
+        ? `${arrayValue(quality?.runs).length} Axiom quality run(s), ${arrayValue(quality?.results).length} result row(s), Databricks DQM ${evidenceState(dqm) || "unavailable"}.`
         : quality?.error || "No backed quality or Databricks monitoring evidence is available for this asset.",
     },
     {
@@ -308,7 +308,7 @@ export function downloadImpactPacket(packet) {
     .replace(/[^a-zA-Z0-9_.-]/g, "_")
     .slice(0, 120);
   link.href = url;
-  link.download = `atlas-impact-brief-${safeFqn}-${new Date().toISOString().slice(0, 10)}.json`;
+  link.download = `axiom-impact-brief-${safeFqn}-${new Date().toISOString().slice(0, 10)}.json`;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);

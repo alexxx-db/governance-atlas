@@ -2,7 +2,7 @@
   "generatedAt": "2026-05-01T14:15:34.859Z",
   "appUrl": "https://atlas-2543889327043640.aws.databricksapps.com",
   "deploymentId": "01f14566f47d140d8219adbd76744c2e",
-  "assetFqn": "datapact.governance_atlas_demo.customer_stewardship_queue",
+  "assetFqn": "emet.axiom_demo.customer_stewardship_queue",
   "evidenceKind": "live_databricks",
   "mockApi": false,
   "expectedBuildId": "",
@@ -32,7 +32,7 @@
     "governanceWorkbenchOk": true,
     "governanceMetricCount": 4,
     "governanceRequestCount": 5,
-    "governanceSelectedRequestId": "ga-home-seed-request-01",
+    "governanceSelectedRequestId": "ax-home-seed-request-01",
     "governanceRequestDetailOk": true,
     "governanceDiffRows": 4,
     "governanceApproverSteps": 2,
@@ -57,7 +57,7 @@
     "cdeProtectedNotInferred": true,
     "cdeSensitiveCandidateCount": 14,
     "cdeSourceNoQualityRunner": true,
-    "cdeDetailId": "datapact.governance_atlas_demo.customer_profile_coverage",
+    "cdeDetailId": "emet.axiom_demo.customer_profile_coverage",
     "cdeDetailOk": true,
     "cdeDetailControlsArray": true,
     "cdeDetailLineageSnapshot": true,
@@ -179,84 +179,84 @@
       "buildId": "frontend-06483b108bd4"
     },
     "assetDetail": {
-      "path": "/api/assets/datapact.governance_atlas_demo.customer_stewardship_queue?sections=header&sections=activity&sections=schema&sections=properties&sections=operational&sections=profiler",
+      "path": "/api/assets/emet.axiom_demo.customer_stewardship_queue?sections=header&sections=activity&sections=schema&sections=properties&sections=operational&sections=profiler",
       "status": 200,
       "ok": true,
       "buildId": "frontend-06483b108bd4"
     },
     "asset360": {
-      "path": "/api/atlas/assets/datapact.governance_atlas_demo.customer_stewardship_queue/360",
+      "path": "/api/axiom/assets/emet.axiom_demo.customer_stewardship_queue/360",
       "status": 200,
       "ok": true,
       "buildId": "frontend-06483b108bd4"
     },
     "lineage": {
-      "path": "/api/lineage/datapact.governance_atlas_demo.customer_stewardship_queue",
+      "path": "/api/lineage/emet.axiom_demo.customer_stewardship_queue",
       "status": 200,
       "ok": true,
       "buildId": "frontend-06483b108bd4"
     },
     "governanceWorkbench": {
-      "path": "/api/atlas/governance/workbench",
+      "path": "/api/axiom/governance/workbench",
       "status": 200,
       "ok": true,
       "buildId": "frontend-06483b108bd4"
     },
     "insights": {
-      "path": "/api/atlas/insights",
+      "path": "/api/axiom/insights",
       "status": 200,
       "ok": true,
       "buildId": "frontend-06483b108bd4"
     },
     "taxonomyOverview": {
-      "path": "/api/atlas/taxonomy/overview",
+      "path": "/api/axiom/taxonomy/overview",
       "status": 200,
       "ok": true,
       "buildId": "frontend-06483b108bd4"
     },
     "cdeDashboard": {
-      "path": "/api/atlas/cde",
+      "path": "/api/axiom/cde",
       "status": 200,
       "ok": true,
       "buildId": "frontend-06483b108bd4"
     },
     "auditEvidence": {
-      "path": "/api/atlas/audit/evidence?limit=25",
+      "path": "/api/axiom/audit/evidence?limit=25",
       "status": 200,
       "ok": true,
       "buildId": "frontend-06483b108bd4"
     },
     "adminControlCenter": {
-      "path": "/api/atlas/admin/control-center",
+      "path": "/api/axiom/admin/control-center",
       "status": 200,
       "ok": true,
       "buildId": "frontend-06483b108bd4"
     },
     "genieChat": {
-      "path": "/api/atlas-ai/chat",
+      "path": "/api/axiom-ai/chat",
       "status": 200,
       "ok": true,
       "buildId": "frontend-06483b108bd4"
     },
     "cdeDetail": {
-      "path": "/api/atlas/cde/datapact.governance_atlas_demo.customer_profile_coverage",
+      "path": "/api/axiom/cde/emet.axiom_demo.customer_profile_coverage",
       "status": 200,
       "ok": true,
       "buildId": "frontend-06483b108bd4"
     },
     "auditEvidenceDetail": {
-      "path": "/api/atlas/audit/evidence?audit_id=49a96dce51ba4ade90e1845ec92c42e1&limit=25",
+      "path": "/api/axiom/audit/evidence?audit_id=49a96dce51ba4ade90e1845ec92c42e1&limit=25",
       "status": 200,
       "ok": true,
       "buildId": "frontend-06483b108bd4"
     },
     "governanceRequestDetail": {
-      "path": "/api/atlas/governance/requests/ga-home-seed-request-01",
+      "path": "/api/axiom/governance/requests/ax-home-seed-request-01",
       "status": 200,
       "ok": true,
       "buildId": "frontend-06483b108bd4"
     }
   },
   "passed": true,
-  "validationRule": "Endpoint checks must return HTTP 200 on the active build, Lakebase write mirror must be active with zero failures, Asset 360 must be same-asset, lineage must be authoritative/reachable, Governance workbench/detail must expose live requests with diff and approver evidence, Insights must return the dashboard KPI/heatmap/leaderboard contract, Taxonomy must return array-backed facet and glossary contracts, CDEs must return dashboard/detail envelopes with unavailable control coverage and no quality-runner source claim, Audit must return steward/admin-gated metadata-audit evidence with numeric summary, selected event, before/after keys, array-backed approval/artifact fields, a linkedRequest key, and no unsupported change-events source claim, Admin must return same-build control-center evidence with runtime diagnostics, coverage object, branding, integration health, bulk-import state, system/access shape, and recent admin activity array, and Atlas AI transport must be provider=genie with query evidence and no sentinel fallback SQL or result rows."
+  "validationRule": "Endpoint checks must return HTTP 200 on the active build, Lakebase write mirror must be active with zero failures, Asset 360 must be same-asset, lineage must be authoritative/reachable, Governance workbench/detail must expose live requests with diff and approver evidence, Insights must return the dashboard KPI/heatmap/leaderboard contract, Taxonomy must return array-backed facet and glossary contracts, CDEs must return dashboard/detail envelopes with unavailable control coverage and no quality-runner source claim, Audit must return steward/admin-gated metadata-audit evidence with numeric summary, selected event, before/after keys, array-backed approval/artifact fields, a linkedRequest key, and no unsupported change-events source claim, Admin must return same-build control-center evidence with runtime diagnostics, coverage object, branding, integration health, bulk-import state, system/access shape, and recent admin activity array, and Axiom AI transport must be provider=genie with query evidence and no sentinel fallback SQL or result rows."
 }

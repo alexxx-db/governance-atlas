@@ -35,7 +35,7 @@ describe("LineageNodeCard status foot lines (L4/L9)", () => {
     );
     const line = screen.getByText("Not visible to your account");
     expect(line.className).toContain("is-empty");
-    expect(container.querySelectorAll(".ga-lineage-v2-card-foot .is-empty")).toHaveLength(1);
+    expect(container.querySelectorAll(".ax-lineage-v2-card-foot .is-empty")).toHaveLength(1);
   });
 
   it("renders the cold-cache loading foot line muted (L4)", () => {

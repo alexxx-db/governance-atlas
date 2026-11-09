@@ -150,12 +150,12 @@ Current v104 route-level gaps, materialized from the side-by-side review:
     (`topbar` sampled delta `11.22` on most pairs).
   - [ ] visual: active nav row geometry is close but the icon glyphs, label weight, and
     cyan emphasis still differ from the references route by route.
-  - [ ] visual: the workspace breadcrumb says `datapact.atlas` instead of
-    `entrada-prod`; this is product-truthful but still a visible reference mismatch.
+  - [ ] visual: the workspace breadcrumb says `emet.axiom` instead of
+    `prod`; this is product-truthful but still a visible reference mismatch.
   - [ ] visual: the UC chip now uses backed runtime coverage (`95.5%`) rather than the
     reference `87.4%`; this is an intentional truth constraint but must be recorded as
     a visual deviation or the reference data must be backed to match it.
-  - [ ] visual: Atlas AI panels use route-specific current copy and often remain open
+  - [ ] visual: Axiom AI panels use route-specific current copy and often remain open
     over content where the reference either shows a different prompt set or no rail in
     the first viewport.
   - [ ] functional: v99 proves local runtime interactions only. Current deployed
@@ -302,7 +302,7 @@ Current objective diff metrics from v93 remain blocking:
 
 Performance evidence from the current local runtime:
 
-- Cold `/api/atlas/command-center`: `0.026s`, returns honest loading/degraded envelope.
+- Cold `/api/axiom/command-center`: `0.026s`, returns honest loading/degraded envelope.
 - Cold `/api/bootstrap?surface=home`: `0.002s`, shell bootstrap returns immediately.
 - Cold `/api/assets/finance_prod.curated.revenue_daily?sections=header`: `4.019s`, now uses `headerSource=direct-unity-catalog-identity` with real UC tags and governance-store owners/requests; this is improved from the previous full-inventory block but remains open for more tightening.
 - Warm `/api/discovery/search?limit=100`: `0.010s`, `50` assets, minimum coverage `100`, no assets below `100`.
@@ -386,7 +386,7 @@ Performance evidence from the current local runtime:
   lower capture begins with the coverage chart title clipped under the topbar.
 - [ ] visual: lower-scroll content frame is substantially wider/left-shifted than the
   reference, changing chart, risk, catalog, CDE, and activity rhythm.
-- [ ] visual: lower AI rail copy and prompt set differ from the reference Atlas AI panel.
+- [ ] visual: lower AI rail copy and prompt set differ from the reference Axiom AI panel.
 - [ ] functional: export fallback must show visible failure feedback if browser blob
   export support is unavailable.
 - [ ] functional: current Command Center evidence is local prototype evidence and does
@@ -535,14 +535,14 @@ Performance evidence from the current local runtime:
 
 ## Mock And Fixture Removal Gaps
 
-- [ ] truth/provenance: `frontend/scripts/atlas_prototype_current_capture.mjs` intercepts
+- [ ] truth/provenance: `frontend/scripts/axiom_prototype_current_capture.mjs` intercepts
   app APIs and serves prototype payloads; it must not be a closure path for product rows.
 - [ ] truth/provenance: `northstar/data/mock.js` remains a reference/prototype data
   source and must not feed customer-facing runtime behavior.
 - [x] truth/provenance: production frontend files render `prototype_mock`, `Prototype
   mock`, `Prototype fixture`, and `local-prototype-mock` copy in multiple app surfaces.
   Closure evidence: current runtime v88 screenshots render no such visible product
-  copy, and `rg` over `frontend/src`, `runtime_app.py`, `atlas`, `app.yaml`,
+  copy, and `rg` over `frontend/src`, `runtime_app.py`, `axiom`, `app.yaml`,
   `databricks.yml`, and `scripts` found the remaining tokens only in tests,
   non-authoritative evidence detection, capture/reference tooling, audit guards, or
   backend validation constants rather than customer-facing runtime copy.

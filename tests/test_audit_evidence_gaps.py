@@ -13,8 +13,8 @@ import unittest
 
 import pandas as pd
 
-from atlas.services import atlas_metrics
-from atlas.store import GovernanceStore
+from axiom.services import axiom_metrics
+from axiom.store import GovernanceStore
 
 
 def _ts(days_ago: float) -> str:
@@ -70,14 +70,14 @@ class StoreSqlExclusionTests(unittest.TestCase):
                 captured.update(kwargs)
                 return pd.DataFrame()
 
-        atlas_metrics.audit_evidence_payload(store=CapturingStore(), limit=40)
+        axiom_metrics.audit_evidence_payload(store=CapturingStore(), limit=40)
         self.assertIs(captured.get("exclude_internal"), True)
         self.assertEqual(captured.get("limit"), 40)
 
 
 class AuditWindowTests(unittest.TestCase):
     def test_90d_range_is_a_real_window(self) -> None:
-        self.assertEqual(atlas_metrics._audit_window_start("90d"), pd.Timedelta(days=90))
+        self.assertEqual(axiom_metrics._audit_window_start("90d"), pd.Timedelta(days=90))
 
     def test_90d_range_filters_out_older_rows(self) -> None:
         class AuditStore:
@@ -103,7 +103,7 @@ class AuditWindowTests(unittest.TestCase):
                     ]
                 )
 
-        payload = atlas_metrics.audit_evidence_payload(store=AuditStore(), date_range="90d", limit=25)
+        payload = axiom_metrics.audit_evidence_payload(store=AuditStore(), date_range="90d", limit=25)
         self.assertEqual(payload["summary"]["totalChanges"], 1)
 
 
@@ -124,7 +124,7 @@ class EmptyRangeGuidanceTests(unittest.TestCase):
                     ]
                 )
 
-        payload = atlas_metrics.audit_evidence_payload(store=AuditStore(), date_range="24h", limit=25)
+        payload = axiom_metrics.audit_evidence_payload(store=AuditStore(), date_range="24h", limit=25)
         self.assertEqual(payload["summary"]["totalChanges"], 0)
         self.assertTrue(payload["summary"]["lastEventAt"])
         # Sanity: the timestamp parses back to roughly 10 days ago.
@@ -165,7 +165,7 @@ class SummarySemanticsTests(unittest.TestCase):
                     ]
                 )
 
-        payload = atlas_metrics.audit_evidence_payload(store=AuditStore(), limit=25)
+        payload = axiom_metrics.audit_evidence_payload(store=AuditStore(), limit=25)
         # AUD-3 is a benign policy change: counted in policyChanges but not a violation.
         self.assertEqual(payload["summary"]["policyViolations"], 2)
         self.assertEqual(payload["summary"]["policyChanges"], 3)
@@ -184,7 +184,7 @@ class SummarySemanticsTests(unittest.TestCase):
                     ]
                 )
 
-        payload = atlas_metrics.audit_evidence_payload(store=AuditStore(), limit=25)
+        payload = axiom_metrics.audit_evidence_payload(store=AuditStore(), limit=25)
         # Renamed tile: these are governance change requests, not access
         # reviews. Open + resolved both come from the same ledger, and the
         # label ships in the payload so the UI cannot mislabel the tile.
@@ -200,7 +200,7 @@ class SummarySemanticsTests(unittest.TestCase):
             def list_metadata_audit(self, **_: object) -> pd.DataFrame:
                 return pd.DataFrame()
 
-        payload = atlas_metrics.audit_evidence_payload(store=AuditStore(), limit=25)
+        payload = axiom_metrics.audit_evidence_payload(store=AuditStore(), limit=25)
         self.assertIsNone(payload["summary"]["governanceRequests"]["open"])
         self.assertIsNone(payload["summary"]["governanceRequests"]["resolved"])
         # A real store that terminally lacks the ledger keeps its reason as
@@ -216,7 +216,7 @@ class SummarySemanticsTests(unittest.TestCase):
         # the background. The tile leaked "list_change_requests is not
         # available on the governance store." as its SOURCE line. Transient
         # hydration must present as loading with no diagnostic sentence.
-        payload = atlas_metrics.audit_evidence_payload(store=None, limit=25)
+        payload = axiom_metrics.audit_evidence_payload(store=None, limit=25)
         requests_block = payload["summary"]["governanceRequests"]
         self.assertIsNone(requests_block["open"])
         self.assertEqual(requests_block["state"], "loading")
@@ -231,11 +231,11 @@ class SummarySemanticsTests(unittest.TestCase):
             def list_metadata_audit(self, **_: object) -> pd.DataFrame:
                 return pd.DataFrame()
 
-        payload = atlas_metrics.audit_evidence_payload(store=AuditStore(), limit=25)
+        payload = axiom_metrics.audit_evidence_payload(store=AuditStore(), limit=25)
         self.assertEqual(payload["summary"]["sourceTable"], "main.governance.metadata_audit_log")
 
     def test_source_table_empty_without_store_identity(self) -> None:
-        payload = atlas_metrics.audit_evidence_payload(store=None, limit=25)
+        payload = axiom_metrics.audit_evidence_payload(store=None, limit=25)
         self.assertEqual(payload["summary"]["sourceTable"], "")
 
 
@@ -257,19 +257,19 @@ class DiffWhitelistTests(unittest.TestCase):
                     row["after_json"] = json.dumps(after)
                 return _audit_frame([row])
 
-        return atlas_metrics.audit_evidence_payload(store=AuditStore(), limit=25)
+        return axiom_metrics.audit_evidence_payload(store=AuditStore(), limit=25)
 
     def test_safe_fields_survive_and_internal_keys_are_dropped(self) -> None:
         payload = self._payload_for(
-            {"owner": "old.owner@entrada.ai", "actor_entry_id": "entry-123", "row_hash": "abc", "created_at": _ts(4)},
-            {"owner": "skyler@entrada.ai", "actor_entry_id": "entry-456", "row_hash": "def", "created_at": _ts(0.1)},
+            {"owner": "old.owner@shorecp.com", "actor_entry_id": "entry-123", "row_hash": "abc", "created_at": _ts(4)},
+            {"owner": "abarreto@shorecp.com", "actor_entry_id": "entry-456", "row_hash": "def", "created_at": _ts(0.1)},
         )
         event = payload["events"][0]
         self.assertEqual(event["diffState"], "available")
         before = json.loads(event["before_json"])
         after = json.loads(event["after_json"])
-        self.assertEqual(before["owner"], "old.owner@entrada.ai")
-        self.assertEqual(after["owner"], "skyler@entrada.ai")
+        self.assertEqual(before["owner"], "old.owner@shorecp.com")
+        self.assertEqual(after["owner"], "abarreto@shorecp.com")
         for blocked in ("actor_entry_id", "row_hash", "created_at"):
             self.assertNotIn(blocked, before)
             self.assertNotIn(blocked, after)
@@ -321,7 +321,7 @@ class DetailSynthesisTests(unittest.TestCase):
                     ]
                 )
 
-        payload = atlas_metrics.audit_evidence_payload(store=AuditStore(), limit=25)
+        payload = axiom_metrics.audit_evidence_payload(store=AuditStore(), limit=25)
         by_id = {event["audit_id"]: event for event in payload["events"]}
         self.assertEqual(by_id["AUD-1"]["display_detail"], "Task Created for main.customer.customer_dim")
         # Rows with a real detail keep it; nothing synthesized on top.
@@ -333,16 +333,16 @@ class StableAuditIdTests(unittest.TestCase):
 
     def test_display_id_is_first_8_hex_of_the_event_uuid(self) -> None:
         self.assertEqual(
-            atlas_metrics.audit_display_id("2f8a41c6-9b7d-4e21-a5c3-000011112222"),
+            axiom_metrics.audit_display_id("2f8a41c6-9b7d-4e21-a5c3-000011112222"),
             "AUD-2F8A41C6",
         )
 
     def test_human_aud_ids_pass_through_verbatim(self) -> None:
-        self.assertEqual(atlas_metrics.audit_display_id("AUD-1"), "AUD-1")
+        self.assertEqual(axiom_metrics.audit_display_id("AUD-1"), "AUD-1")
 
     def test_non_hex_ids_hash_stably(self) -> None:
-        first = atlas_metrics.audit_display_id("zz-strange-id")
-        second = atlas_metrics.audit_display_id("zz-strange-id")
+        first = axiom_metrics.audit_display_id("zz-strange-id")
+        second = axiom_metrics.audit_display_id("zz-strange-id")
         self.assertEqual(first, second)
         self.assertTrue(first.startswith("AUD-"))
 
@@ -366,8 +366,8 @@ class StableAuditIdTests(unittest.TestCase):
             def list_metadata_audit(self, **_: object) -> pd.DataFrame:
                 return _audit_frame(rows[: self.keep])
 
-        full = atlas_metrics.audit_evidence_payload(store=AuditStore(3), limit=25)
-        narrowed = atlas_metrics.audit_evidence_payload(store=AuditStore(1), limit=25)
+        full = axiom_metrics.audit_evidence_payload(store=AuditStore(3), limit=25)
+        narrowed = axiom_metrics.audit_evidence_payload(store=AuditStore(1), limit=25)
         # The first event keeps the same display ID no matter how many other
         # rows the current filter window happens to contain.
         self.assertEqual(
@@ -405,13 +405,13 @@ class WindowTruncationTests(unittest.TestCase):
         return AuditStore()
 
     def test_full_window_reports_truncation(self) -> None:
-        payload = atlas_metrics.audit_evidence_payload(store=self._store(5), limit=5)
+        payload = axiom_metrics.audit_evidence_payload(store=self._store(5), limit=5)
         self.assertTrue(payload["summary"]["windowTruncated"])
         self.assertEqual(payload["summary"]["fetchedRows"], 5)
         self.assertEqual(payload["summary"]["fetchLimit"], 5)
 
     def test_partial_window_is_not_truncated(self) -> None:
-        payload = atlas_metrics.audit_evidence_payload(store=self._store(3), limit=25)
+        payload = axiom_metrics.audit_evidence_payload(store=self._store(3), limit=25)
         self.assertFalse(payload["summary"]["windowTruncated"])
         self.assertEqual(payload["summary"]["fetchedRows"], 3)
 
@@ -465,14 +465,14 @@ class ExclusionReconciliationTests(unittest.TestCase):
         return AuditStore()
 
     def test_counts_are_range_scoped_and_split_by_reason(self) -> None:
-        day = atlas_metrics.audit_evidence_payload(store=self._store(), date_range="24h", limit=25)
+        day = axiom_metrics.audit_evidence_payload(store=self._store(), date_range="24h", limit=25)
         self.assertEqual(day["summary"]["totalChanges"], 1)
         self.assertEqual(day["summary"]["internalRowsExcluded"], 1)
         self.assertEqual(day["summary"]["nonAuthoritativeRowsExcluded"], 1)
         # hiddenRowsExcluded is the same population's total exclusions.
         self.assertEqual(day["summary"]["hiddenRowsExcluded"], 2)
 
-        quarter = atlas_metrics.audit_evidence_payload(store=self._store(), date_range="90d", limit=25)
+        quarter = axiom_metrics.audit_evidence_payload(store=self._store(), date_range="90d", limit=25)
         self.assertEqual(quarter["summary"]["internalRowsExcluded"], 2)
         self.assertEqual(quarter["summary"]["nonAuthoritativeRowsExcluded"], 1)
         # The 24h counts are a subset of the 90d counts — captions reconcile.
@@ -498,9 +498,9 @@ class AuditEventsRouteScopeTests(unittest.TestCase):
                     "action": "metadata updated",
                     "source": "store",
                     "status": "success",
-                    "before_json": json.dumps({"owner": "old@entrada.ai", "uc_full_name": "main.customer.customer_dim"}),
-                    "after_json": json.dumps({"owner": "new@entrada.ai"}),
-                    "actor_email": "skyler@entrada.ai",
+                    "before_json": json.dumps({"owner": "old@shorecp.com", "uc_full_name": "main.customer.customer_dim"}),
+                    "after_json": json.dumps({"owner": "new@shorecp.com"}),
+                    "actor_email": "abarreto@shorecp.com",
                     "actor_role": "admin",
                     "detail": "Owner changed",
                     "created_at": "2026-07-01 12:00:00",
@@ -514,7 +514,7 @@ class AuditEventsRouteScopeTests(unittest.TestCase):
                     "entity_fqn": "restricted.payroll.salary_raw",
                     "action": "grant changed",
                     "status": "success",
-                    "actor_email": "hidden.admin@entrada.ai",
+                    "actor_email": "hidden.admin@shorecp.com",
                     "detail": "Privilege changed",
                     "created_at": "2026-07-01 13:00:00",
                 },
@@ -526,7 +526,7 @@ class AuditEventsRouteScopeTests(unittest.TestCase):
         from types import SimpleNamespace
         from unittest.mock import patch
 
-        from atlas.api import catalog as catalog_api
+        from axiom.api import catalog as catalog_api
 
         class EventsStore:
             def list_audit_events(self, **_: object) -> pd.DataFrame:
@@ -556,7 +556,7 @@ class AuditEventsRouteScopeTests(unittest.TestCase):
 
         # Visibility scope: the out-of-scope asset's event is gone.
         self.assertEqual(len(rows), 1)
-        self.assertNotIn("hidden.admin@entrada.ai", serialized)
+        self.assertNotIn("hidden.admin@shorecp.com", serialized)
         self.assertEqual(payload["meta"]["hiddenRowsExcluded"], 1)
         self.assertEqual(payload["meta"]["rowScope"], "visible-assets")
 
@@ -570,7 +570,7 @@ class AuditEventsRouteScopeTests(unittest.TestCase):
         self.assertEqual(row["displayAuditId"], "AUD-2F8A41C6")
         self.assertEqual(row["audit_id"], "2f8a41c6-9b7d-4e21-a5c3-000011112222")
         # Diff is the whitelist-redacted object form; internal keys dropped.
-        self.assertEqual(row["after"], {"owner": "new@entrada.ai"})
+        self.assertEqual(row["after"], {"owner": "new@shorecp.com"})
         self.assertNotIn("uc_full_name", json.dumps(row["before"]))
         # Timestamps are explicit-UTC ISO with Z.
         self.assertTrue(row["created_at"].endswith("Z"))

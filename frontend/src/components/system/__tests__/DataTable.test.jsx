@@ -69,7 +69,7 @@ describe("DataTable", () => {
     render(<DataTable columns={columns} rows={rows} loading loadingRows={3} />);
     const table = document.querySelector("table");
     expect(table.getAttribute("aria-busy")).toBe("true");
-    expect(document.querySelectorAll(".ga-sys-table-skeleton-row").length).toBe(3);
+    expect(document.querySelectorAll(".ax-sys-table-skeleton-row").length).toBe(3);
     // real rows are not rendered while loading
     expect(screen.queryByText("beta")).toBeNull();
   });
@@ -85,7 +85,7 @@ describe("DataTable", () => {
     const anchors = screen.getAllByRole("link");
     expect(anchors.length).toBe(3);
     expect(anchors[0].getAttribute("href")).toBe("/assets/main.sales.b");
-    expect(anchors[0].className).toContain("ga-sys-table-rowlink");
+    expect(anchors[0].className).toContain("ax-sys-table-rowlink");
   });
 
   it("clicking anywhere in a rowTarget row delegates to the row anchor (navigate adapter)", () => {
@@ -107,7 +107,7 @@ describe("DataTable", () => {
 
   it("applies density and stickyHeader classes", () => {
     render(<DataTable columns={columns} rows={rows} density="compact" stickyHeader />);
-    const wrap = document.querySelector(".ga-sys-table-wrap");
+    const wrap = document.querySelector(".ax-sys-table-wrap");
     expect(wrap.className).toContain("density-compact");
     expect(wrap.className).toContain("is-sticky");
   });

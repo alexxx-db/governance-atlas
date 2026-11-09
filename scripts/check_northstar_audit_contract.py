@@ -1022,7 +1022,7 @@ def validate_current_evidence() -> None:
         raise AssertionError(
             f"current evidence report evidenceKind does not match manifest pin: report={evidence_kind}, manifest={expected_evidence_kind}"
         )
-    if "atlas_prototype_current_capture.mjs" not in expected_capture_command:
+    if "axiom_prototype_current_capture.mjs" not in expected_capture_command:
         raise AssertionError("reference_manifest.json must record the current capture command")
     if report.get("mockApi") or evidence_kind in MOCK_EVIDENCE_KINDS:
         raise AssertionError(
@@ -2206,7 +2206,7 @@ def main() -> int:
         # longer tracked in git (it accounted for ~1.3GB and made the repo
         # unpushable against GitHub's 2GB pack limit). Without the evidence checked
         # out there is nothing for this contract to validate, so skip cleanly.
-        # Regenerate the evidence locally (frontend/scripts/atlas_*_qa.mjs, etc.)
+        # Regenerate the evidence locally (frontend/scripts/axiom_*_qa.mjs, etc.)
         # to run the full contract.
         print(
             "northstar audit contract skipped: visual QA evidence not checked out "

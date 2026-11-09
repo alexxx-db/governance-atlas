@@ -7,7 +7,7 @@ Covers three behaviors that were untested after commits f6eb282, 21467cd,
    stay admin even when the governance store is not live.
 
 2. `_user_role_slug` happy path preserves the table's role. An email
-   listed in `GOVAT_ADMIN_EMAILS` does NOT get re-promoted to admin if
+   listed in `AXIOM_ADMIN_EMAILS` does NOT get re-promoted to admin if
    the `user_roles` table has a demotion row for them (e.g., `"reader"`).
 
 3. `_user_role_slug` exception path honors `admin_emails` as a safety
@@ -22,10 +22,10 @@ from unittest.mock import patch
 
 
 def _stub_identity_module() -> None:
-    """Stub atlas.api.identity so runtime_app imports cleanly in tests."""
-    if "atlas.api.identity" in sys.modules:
+    """Stub axiom.api.identity so runtime_app imports cleanly in tests."""
+    if "axiom.api.identity" in sys.modules:
         return
-    module = ModuleType("atlas.api.identity")
+    module = ModuleType("axiom.api.identity")
 
     def _user_email(request):
         if request is None:
@@ -42,7 +42,7 @@ def _stub_identity_module() -> None:
     module._request_auth_mode = lambda _request: "app-principal"
     module._request_read_visibility_scope = lambda _request: "app-principal"
     module._request_obo_token = lambda _request: ""
-    sys.modules["atlas.api.identity"] = module
+    sys.modules["axiom.api.identity"] = module
 
 
 def _load_runtime_module():
@@ -106,7 +106,7 @@ class UserRoleSlugTests(unittest.TestCase):
     def test_happy_path_preserves_demoted_reader_even_if_in_admin_emails(
         self,
     ) -> None:
-        """Regression test: an email in GOVAT_ADMIN_EMAILS that has a
+        """Regression test: an email in AXIOM_ADMIN_EMAILS that has a
         non-admin row in user_roles MUST keep the table's role. The
         admin_emails fallback is a rescue hatch, not an override."""
         runtime_app = _load_runtime_module()

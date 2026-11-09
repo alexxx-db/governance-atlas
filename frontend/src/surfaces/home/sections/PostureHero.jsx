@@ -29,15 +29,15 @@ function PostureRing({ value, label, caption, formula, sublabel }) {
   const center = size / 2;
   const display = Number.isInteger(pct) ? pct.toFixed(0) : pct.toFixed(1);
   return (
-    <div className="ga-home-ring-block">
+    <div className="ax-home-ring-block">
       {/* Only the value lives inside the arc now — the descriptive label used
           to overlap the ring stroke ("interposed on the visual"); it renders
           as a proper caption beneath the gauge. */}
-      <div className="ga-home-ring" style={{ width: size, height: size }}>
+      <div className="ax-home-ring" style={{ width: size, height: size }}>
         <svg aria-hidden="true" width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-          <circle className="ga-home-ring-track" cx={center} cy={center} r={radius} />
+          <circle className="ax-home-ring-track" cx={center} cy={center} r={radius} />
           <circle
-            className="ga-home-ring-value"
+            className="ax-home-ring-value"
             cx={center}
             cy={center}
             r={radius}
@@ -46,27 +46,27 @@ function PostureRing({ value, label, caption, formula, sublabel }) {
             transform={`rotate(-90 ${center} ${center})`}
           />
         </svg>
-        <div className="ga-home-ring-center">
+        <div className="ax-home-ring-center">
           <strong>
             {display}
             <small>%</small>
           </strong>
         </div>
       </div>
-      <div className="ga-home-ring-label">
-        <span className="ga-home-ring-title">
+      <div className="ax-home-ring-label">
+        <span className="ax-home-ring-title">
           {label}
           {formula ? (
             /* Formula popover survives the rebuild: payload formula string,
                surfaced through the kit's info tip. */
-            <span className="ga-sys-info-tip" role="img" aria-label={`How ${label} is calculated: ${formula}`} title={formula}>
+            <span className="ax-sys-info-tip" role="img" aria-label={`How ${label} is calculated: ${formula}`} title={formula}>
               i
             </span>
           ) : null}
         </span>
         {/* One-line disambiguation: posture is a composite score, coverage is
             one metadata metric — the two numbers looked interchangeable. */}
-        {sublabel ? <p className="ga-home-ring-sub">{sublabel}</p> : null}
+        {sublabel ? <p className="ax-home-ring-sub">{sublabel}</p> : null}
         {caption ? <em>{caption}</em> : null}
       </div>
     </div>
@@ -224,10 +224,10 @@ export function PostureHero({ data, kpis, loading = false }) {
   ];
 
   return (
-    <section className="ga-home-hero" aria-label="Current governance posture">
-      <div className="ga-home-hero-ring">
+    <section className="ax-home-hero" aria-label="Current governance posture">
+      <div className="ax-home-hero-ring">
         {postureValue === null ? (
-          <div className="ga-home-ring-unavailable">
+          <div className="ax-home-ring-unavailable">
             <strong aria-hidden="true">—</strong>
             <span>Governance posture unavailable</span>
             <em>{ringCaption}</em>
@@ -242,9 +242,9 @@ export function PostureHero({ data, kpis, loading = false }) {
           />
         )}
       </div>
-      <div className="ga-home-hero-copy">
-        <span className="ga-sys-eyebrow">The state of {estateLabel}</span>
-        <h2 className="ga-home-headline">
+      <div className="ax-home-hero-copy">
+        <span className="ax-sys-eyebrow">The state of {estateLabel}</span>
+        <h2 className="ax-home-headline">
           {governedCount !== null ? (
             <>
               <strong>{formatKpiValue(governedKpi)}</strong> governed assets are in scope
@@ -267,7 +267,7 @@ export function PostureHero({ data, kpis, loading = false }) {
             </>
           )}
         </h2>
-        <div className="ga-home-hero-tiles">
+        <div className="ax-home-hero-tiles">
           {heroTiles.map((tile) => (
             <StatTile
               key={tile.key}
@@ -277,23 +277,23 @@ export function PostureHero({ data, kpis, loading = false }) {
               deltaTone={tile.deltaTone}
               hint={tile.hint}
               target={tile.target}
-              className="ga-home-hero-tile"
+              className="ax-home-hero-tile"
             />
           ))}
         </div>
       </div>
-      <div className="ga-home-changes" aria-label="What changed today">
+      <div className="ax-home-changes" aria-label="What changed today">
         <h3>What changed today</h3>
         {loading && !hasRealDelta ? (
           // Still loading: never assert "No changes today" before the
           // command-center payload has actually arrived.
-          <div className="ga-home-no-changes" role="status">
+          <div className="ax-home-no-changes" role="status">
             <strong>Loading today's changes…</strong>
             <em>Reading the latest governance snapshot</em>
           </div>
         ) : hasRealDelta ? (
           rows.map((row) => (
-            <div className={`ga-home-change tone-${row.tone}`} key={row.label}>
+            <div className={`ax-home-change tone-${row.tone}`} key={row.label}>
               <span>{row.label}</span>
               <strong>
                 {row.previous !== null && row.previous !== undefined ? (
@@ -311,7 +311,7 @@ export function PostureHero({ data, kpis, loading = false }) {
         ) : (
           // Honest zero-delta state: old evidence keeps its date instead of
           // masquerading as today's movement.
-          <div className="ga-home-no-changes" role="status">
+          <div className="ax-home-no-changes" role="status">
             <strong>No changes today</strong>
             <em>
               {qualityStamp

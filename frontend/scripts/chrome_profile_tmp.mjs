@@ -16,7 +16,7 @@ export async function resolveChromeProfileName(chromeProfileRoot, explicitName =
 export async function copyChromeProfileToTemp({
   chromeProfileRoot,
   profileName,
-  prefix = "govat-chrome-profile-",
+  prefix = "axiom-chrome-profile-",
 }) {
   const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), prefix));
   for (const sourcePath of [

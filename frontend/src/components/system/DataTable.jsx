@@ -99,13 +99,13 @@ export function DataTable({
     // Convenience full-row click: delegate to the row's real anchor unless
     // the user clicked something interactive inside the row.
     if (event.target.closest(ROW_INTERACTIVE)) return;
-    const anchor = event.currentTarget.querySelector("a.ga-sys-table-rowlink");
+    const anchor = event.currentTarget.querySelector("a.ax-sys-table-rowlink");
     if (anchor) anchor.click();
   };
 
   const Anchor = inRouter ? Link : "a";
   const classes = [
-    "ga-sys-table-wrap",
+    "ax-sys-table-wrap",
     `density-${density === "compact" ? "compact" : "comfortable"}`,
     stickyHeader ? "is-sticky" : "",
     className,
@@ -118,8 +118,8 @@ export function DataTable({
 
   return (
     <div className={classes}>
-      <table className="ga-sys-table" aria-busy={loading || undefined}>
-        {caption ? <caption className="ga-sys-visually-hidden">{caption}</caption> : null}
+      <table className="ax-sys-table" aria-busy={loading || undefined}>
+        {caption ? <caption className="ax-sys-visually-hidden">{caption}</caption> : null}
         <thead>
           <tr>
             {columns.map((column) => {
@@ -141,11 +141,11 @@ export function DataTable({
                   {column.sortable ? (
                     <button
                       type="button"
-                      className={`ga-sys-table-sort ${isSorted ? `is-${activeSort.dir}` : ""}`.trim()}
+                      className={`ax-sys-table-sort ${isSorted ? `is-${activeSort.dir}` : ""}`.trim()}
                       onClick={() => handleSortClick(column)}
                     >
                       <span>{column.header ?? column.label}</span>
-                      <span className="ga-sys-table-sort-arrow" aria-hidden="true" />
+                      <span className="ax-sys-table-sort-arrow" aria-hidden="true" />
                     </button>
                   ) : (
                     (column.header ?? column.label)
@@ -158,17 +158,17 @@ export function DataTable({
         <tbody>
           {loading
             ? Array.from({ length: loadingRows }, (_, index) => (
-                <tr key={`skeleton-${index}`} className="ga-sys-table-skeleton-row" aria-hidden="true">
+                <tr key={`skeleton-${index}`} className="ax-sys-table-skeleton-row" aria-hidden="true">
                   {columns.map((column) => (
                     <td key={columnKey(column)}>
-                      <span className="ga-sys-skeleton" />
+                      <span className="ax-sys-skeleton" />
                     </td>
                   ))}
                 </tr>
               ))
             : null}
           {showEmpty ? (
-            <tr className="ga-sys-table-empty-row">
+            <tr className="ax-sys-table-empty-row">
               <td colSpan={colCount}>{emptyState ?? <EmptyState title="No rows" body={emptyMessage} />}</td>
             </tr>
           ) : null}
@@ -194,7 +194,7 @@ export function DataTable({
                           {wrapAsLink ? (
                             <Anchor
                               {.../** @type {any} */ (inRouter ? { to: href } : { href })}
-                              className="ga-sys-table-rowlink"
+                              className="ax-sys-table-rowlink"
                               onClick={(event) => {
                                 if (!navigate || event.defaultPrevented) return;
                                 if (

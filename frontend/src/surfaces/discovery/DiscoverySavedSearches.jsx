@@ -74,8 +74,8 @@ export function DiscoverySavedSearches({ filters, onApply, onClose }) {
   };
 
   return (
-    <div aria-label="Saved searches" className="ga-disc-saved-searches" role="dialog">
-      <div className="ga-disc-saved-searches-save">
+    <div aria-label="Saved searches" className="ax-disc-saved-searches" role="dialog">
+      <div className="ax-disc-saved-searches-save">
         <label>
           <span>Save current search as</span>
           <input
@@ -106,12 +106,12 @@ export function DiscoverySavedSearches({ filters, onApply, onClose }) {
         <small>{savedSearchSummary(savedSearchFromFilters(draftName || "draft", filters))} · Local</small>
       </div>
       {savedSearches.length ? (
-        <ul className="ga-disc-saved-searches-list">
+        <ul className="ax-disc-saved-searches-list">
           {savedSearches.map((entry) => (
             <li key={entry.id}>
               <button
                 aria-label={`Apply saved search ${entry.name}`}
-                className="ga-disc-saved-search-apply"
+                className="ax-disc-saved-search-apply"
                 onClick={() => {
                   onApply?.(entry);
                   onClose?.();
@@ -134,11 +134,11 @@ export function DiscoverySavedSearches({ filters, onApply, onClose }) {
           ))}
         </ul>
       ) : (
-        <p className="ga-disc-support-copy">
+        <p className="ax-disc-support-copy">
           No saved searches in this browser yet. Set a query or filters, then save them here.
         </p>
       )}
-      <div className="ga-disc-saved-searches-foot">
+      <div className="ax-disc-saved-searches-foot">
         <span>Saved searches live in this browser&apos;s local storage.</span>
         <Button onClick={onClose} variant="tertiary">
           Close

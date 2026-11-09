@@ -18,17 +18,17 @@ import unusedImports from "eslint-plugin-unused-imports";
 
 const TEST_IGNORES = ["src/**/*.test.{js,jsx}", "src/**/__tests__/**", "src/test/**"];
 
-// Data access goes through hooks/ + lib/ (useAtlasQuery / api.js) only.
+// Data access goes through hooks/ + lib/ (useAxiomQuery / api.js) only.
 const FETCH_SELECTORS = [
   {
     selector: "CallExpression[callee.name='fetch']",
     message:
-      "Direct fetch() outside hooks/ + lib/ — data access goes through the hooks layer (useAtlasQuery). [enforced since Wave C8]",
+      "Direct fetch() outside hooks/ + lib/ — data access goes through the hooks layer (useAxiomQuery). [enforced since Wave C8]",
   },
   {
     selector: "CallExpression[callee.object.name='window'][callee.property.name='fetch']",
     message:
-      "Direct window.fetch() outside hooks/ + lib/ — data access goes through the hooks layer (useAtlasQuery). [enforced since Wave C8]",
+      "Direct window.fetch() outside hooks/ + lib/ — data access goes through the hooks layer (useAxiomQuery). [enforced since Wave C8]",
   },
 ];
 
@@ -48,13 +48,13 @@ const STORAGE_SELECTORS = [
 ];
 
 // Custom window events were one of the 7 parallel navigation mechanisms.
-// Cross-surface intent is navigate(ref) (nav/useAtlasNavigate); only the
+// Cross-surface intent is navigate(ref) (nav/useAxiomNavigate); only the
 // app-shell may broker window-level events (e.g. the palette opener).
 const CUSTOM_EVENT_SELECTORS = [
   {
     selector: "NewExpression[callee.name='CustomEvent']",
     message:
-      "Custom window events outside app-shell/ — use navigate(entityRef) from nav/useAtlasNavigate instead of event buses. [enforced since Wave C8]",
+      "Custom window events outside app-shell/ — use navigate(entityRef) from nav/useAxiomNavigate instead of event buses. [enforced since Wave C8]",
   },
 ];
 
@@ -64,17 +64,17 @@ const HISTORY_SELECTORS = [
   {
     selector: "MemberExpression[object.name='window'][property.name='history']",
     message:
-      "window.history bypasses the router — use nav/useSurfaceParams (params) or nav/useAtlasNavigate (navigation). [enforced since Wave C8]",
+      "window.history bypasses the router — use nav/useSurfaceParams (params) or nav/useAxiomNavigate (navigation). [enforced since Wave C8]",
   },
 ];
 
-// Polling is always bounded and always owned by useAtlasQuery (§10 guardrail 3).
+// Polling is always bounded and always owned by useAxiomQuery (§10 guardrail 3).
 // Hooks keep their legacy refetchInterval until the Wave A2 refactor lands.
 const REFETCH_SELECTORS = [
   {
     selector: "Property[key.name='refetchInterval']",
     message:
-      "refetchInterval outside hooks/ — polling is owned (and bounded) by useAtlasQuery. [enforced since Wave C8]",
+      "refetchInterval outside hooks/ — polling is owned (and bounded) by useAxiomQuery. [enforced since Wave C8]",
   },
 ];
 
@@ -94,14 +94,14 @@ const RESTRICTED_QUERY_IMPORTS = {
             "useQueryClient",
           ],
           message:
-            "react-query hooks outside hooks/ + lib/ — components consume data via the hooks layer (useAtlasQuery). [enforced since Wave C8]",
+            "react-query hooks outside hooks/ + lib/ — components consume data via the hooks layer (useAxiomQuery). [enforced since Wave C8]",
         },
       ],
       patterns: [
         {
           group: ["**/lib/queryClient", "**/lib/queryClient.js"],
           message:
-            "atlasQueryClient is not a cross-surface bus — cache coordination lives inside hooks/ + lib/. [enforced since Wave C8]",
+            "axiomQueryClient is not a cross-surface bus — cache coordination lives inside hooks/ + lib/. [enforced since Wave C8]",
         },
       ],
     },

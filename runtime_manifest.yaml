@@ -5,9 +5,9 @@ runtime:
   app_object: app
   frontend_dist: frontend/dist/index.html
   frontend_assets: frontend/dist/assets
-  frontend_build_manifest: frontend/dist/atlas-build-manifest.json
+  frontend_build_manifest: frontend/dist/axiom-build-manifest.json
 removed_runtime_paths:
   - app.py
   - modern_app.py
   - modern_ui
-  - atlas/openmetadata.py
+  - axiom/openmetadata.py

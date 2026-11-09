@@ -1,12 +1,12 @@
 /*
  * app-shell/shell.css — Wave B1 shell chrome (FRONTEND_BLUEPRINT §9).
  *
- * Clean-file contract: ga-* selectors only, --ga-* tokens, no priority
+ * Clean-file contract: ax-* selectors only, --ax-* tokens, no priority
  * overrides, zero raw hex (check-css enforced). Frame GRID/layout rules intentionally
  * stay in the legacy sheets for this wave — the shell root emits the legacy
  * frame class names (see legacyShellContract.js) so those load-bearing rules
  * keep applying; this file styles only the chrome that was REBUILT: the
- * palette, the Atlas AI dock + FAB, the header search trigger, and shell
+ * palette, the Axiom AI dock + FAB, the header search trigger, and shell
  * state wrappers. The legacy blocks these replace (gh cmdk/floating-ai) are
  * deleted from app.css / orphaned in northstar.css and die in Wave C8.
  */
@@ -16,16 +16,16 @@
 /* ------------------------------------------------------------------ */
 
 /* Route-level state cards (boot gating, Suspense fallbacks, diagnostics). */
-.ga-shell-route-state {
+.ax-shell-route-state {
   display: grid;
   gap: 18px;
   padding: 28px;
 }
 
-.ga-shell-inline-link {
+.ax-shell-inline-link {
   border: 0;
   background: transparent;
-  color: var(--ga-bright-blue);
+  color: var(--ax-bright-blue);
   cursor: pointer;
   font: inherit;
   font-size: 0.8rem;
@@ -34,31 +34,31 @@
   text-underline-offset: 3px;
 }
 
-.ga-shell-inline-link:hover,
-.ga-shell-inline-link:focus-visible {
-  color: var(--ga-light-blue);
+.ax-shell-inline-link:hover,
+.ax-shell-inline-link:focus-visible {
+  color: var(--ax-light-blue);
   outline: none;
 }
 
 /* Rail items are real anchors now — neutralize anchor defaults so the
-   existing .ga-side-nav-item button styling carries over unchanged. */
-a.ga-shell-nav-item {
+   existing .ax-side-nav-item button styling carries over unchanged. */
+a.ax-shell-nav-item {
   text-decoration: none;
   color: inherit;
   cursor: pointer;
 }
 
-a.ga-shell-nav-item[aria-disabled="true"] {
+a.ax-shell-nav-item[aria-disabled="true"] {
   cursor: not-allowed;
   opacity: 0.55;
 }
 
-.ga-shell-nav-divider {
+.ax-shell-nav-divider {
   min-height: 4px;
 }
 
 /* Header icon actions are anchors too (bell/help). */
-a.ga-icon-button {
+a.ax-icon-button {
   text-decoration: none;
 }
 
@@ -66,17 +66,17 @@ a.ga-icon-button {
 /* Header search trigger (unified search: opens the ⌘K palette)         */
 /* ------------------------------------------------------------------ */
 
-.ga-shell-search-trigger {
+.ax-shell-search-trigger {
   width: 100%;
   min-height: 40px;
   display: inline-flex;
   align-items: center;
   gap: 10px;
   padding: 0 12px;
-  border: 1px solid var(--ga-border);
+  border: 1px solid var(--ax-border);
   border-radius: 10px;
-  background: var(--ga-surface-muted);
-  color: var(--ga-text-muted);
+  background: var(--ax-surface-muted);
+  color: var(--ax-text-muted);
   cursor: pointer;
   font: inherit;
   font-size: 0.82rem;
@@ -84,20 +84,20 @@ a.ga-icon-button {
   transition: border-color 120ms ease, background 120ms ease, color 120ms ease;
 }
 
-.ga-shell-search-trigger:hover:not(:disabled),
-.ga-shell-search-trigger:focus-visible:not(:disabled) {
-  border-color: rgba(102, 197, 255, 0.5);
-  background: var(--ga-surface);
-  color: var(--ga-text-soft);
+.ax-shell-search-trigger:hover:not(:disabled),
+.ax-shell-search-trigger:focus-visible:not(:disabled) {
+  border-color: rgba(116, 151, 220, 0.5);
+  background: var(--ax-surface);
+  color: var(--ax-text-soft);
   outline: none;
 }
 
-.ga-shell-search-trigger:disabled {
+.ax-shell-search-trigger:disabled {
   cursor: not-allowed;
   opacity: 0.6;
 }
 
-.ga-shell-search-trigger > span:nth-child(2) {
+.ax-shell-search-trigger > span:nth-child(2) {
   flex: 1 1 auto;
   min-width: 0;
   overflow: hidden;
@@ -105,22 +105,22 @@ a.ga-icon-button {
   white-space: nowrap;
 }
 
-.ga-shell-search-kbd {
+.ax-shell-search-kbd {
   display: inline-flex;
   gap: 3px;
 }
 
-.ga-shell-search-kbd kbd {
+.ax-shell-search-kbd kbd {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-width: 16px;
   padding: 1px 5px;
-  border: 1px solid var(--ga-border);
+  border: 1px solid var(--ax-border);
   border-bottom-width: 2px;
   border-radius: 4px;
-  background: var(--ga-surface);
-  color: var(--ga-text-muted);
+  background: var(--ax-surface);
+  color: var(--ax-text-muted);
   font-family: ui-monospace, SFMono-Regular, monospace;
   font-size: 10px;
   line-height: 1.3;
@@ -130,7 +130,7 @@ a.ga-icon-button {
 /* Command palette (⌘K) — ported from the legacy gh cmdk block           */
 /* ------------------------------------------------------------------ */
 
-.ga-cmdk-backdrop {
+.ax-cmdk-backdrop {
   position: fixed;
   inset: 0;
   background: rgba(10, 15, 23, 0.55);
@@ -140,74 +140,74 @@ a.ga-icon-button {
   align-items: flex-start;
   justify-content: center;
   padding-top: 10vh;
-  animation: ga-cmdk-fade 120ms ease-out;
+  animation: ax-cmdk-fade 120ms ease-out;
 }
 
-@keyframes ga-cmdk-fade {
+@keyframes ax-cmdk-fade {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
-.ga-cmdk {
+.ax-cmdk {
   width: min(640px, 92vw);
   max-height: 70vh;
-  background: var(--ga-surface);
-  color: var(--ga-text);
-  border: 1px solid var(--ga-border);
+  background: var(--ax-surface);
+  color: var(--ax-text);
+  border: 1px solid var(--ax-border);
   border-radius: 10px;
-  box-shadow: 0 28px 62px rgba(10, 15, 23, 0.38), 0 1px 0 rgba(207, 239, 255, 0.08) inset;
+  box-shadow: 0 28px 62px rgba(10, 15, 23, 0.38), 0 1px 0 rgba(205, 218, 244, 0.08) inset;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
-.ga-cmdk-input-row {
+.ax-cmdk-input-row {
   display: flex;
   align-items: center;
   padding: 10px 14px;
-  border-bottom: 1px solid var(--ga-border);
+  border-bottom: 1px solid var(--ax-border);
   gap: 10px;
 }
 
-.ga-cmdk-prefix {
-  color: var(--ga-text-muted);
+.ax-cmdk-prefix {
+  color: var(--ax-text-muted);
   font-weight: 700;
 }
 
-.ga-cmdk-input {
+.ax-cmdk-input {
   flex: 1 1 auto;
   background: transparent;
   border: 0;
   outline: none;
   font-size: 14px;
-  color: var(--ga-text);
+  color: var(--ax-text);
 }
 
-.ga-cmdk-hint {
+.ax-cmdk-hint {
   font-size: 11px;
-  color: var(--ga-text-muted);
-  background: var(--ga-surface-muted);
+  color: var(--ax-text-muted);
+  background: var(--ax-surface-muted);
   padding: 2px 8px;
   border-radius: 3px;
-  border: 1px solid var(--ga-border);
+  border: 1px solid var(--ax-border);
 }
 
-.ga-cmdk-list {
+.ax-cmdk-list {
   flex: 1 1 auto;
   overflow-y: auto;
   padding: 6px 0;
 }
 
-.ga-cmdk-group {
+.ax-cmdk-group {
   font-size: 10px;
   text-transform: uppercase;
   font-weight: 700;
   letter-spacing: 0.06em;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   padding: 8px 14px 4px;
 }
 
-.ga-cmdk-item {
+.ax-cmdk-item {
   display: grid;
   grid-template-columns: 28px 1fr auto;
   gap: 10px;
@@ -222,51 +222,51 @@ a.ga-icon-button {
   text-decoration: none;
 }
 
-.ga-cmdk-item.is-active {
-  background: var(--ga-surface-soft);
+.ax-cmdk-item.is-active {
+  background: var(--ax-surface-soft);
 }
 
-.ga-cmdk-item-glyph {
-  color: var(--ga-bright-blue);
+.ax-cmdk-item-glyph {
+  color: var(--ax-bright-blue);
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 
-.ga-cmdk-generic-glyph {
+.ax-cmdk-generic-glyph {
   font-size: 14px;
 }
 
-.ga-cmdk-item-text {
+.ax-cmdk-item-text {
   display: flex;
   flex-direction: column;
   min-width: 0;
 }
 
-.ga-cmdk-item-title {
+.ax-cmdk-item-title {
   font-size: 13px;
   font-weight: 600;
-  color: var(--ga-text);
+  color: var(--ax-text);
   line-height: 1.2;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.ga-cmdk-item-subtitle {
+.ax-cmdk-item-subtitle {
   font-size: 11px;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   font-family: ui-monospace, SFMono-Regular, monospace;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.ga-cmdk-item-badge {
-  border: 1px solid var(--ga-border);
+.ax-cmdk-item-badge {
+  border: 1px solid var(--ax-border);
   border-radius: 999px;
-  background: var(--ga-surface-muted);
-  color: var(--ga-text-muted);
+  background: var(--ax-surface-muted);
+  color: var(--ax-text-muted);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -275,43 +275,43 @@ a.ga-icon-button {
   white-space: nowrap;
 }
 
-.ga-cmdk-empty {
+.ax-cmdk-empty {
   padding: 24px;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   text-align: center;
   font-size: 13px;
 }
 
-.ga-cmdk-empty.is-loading,
-.ga-cmdk-live-status {
-  color: var(--ga-text-soft);
+.ax-cmdk-empty.is-loading,
+.ax-cmdk-live-status {
+  color: var(--ax-text-soft);
   font-size: 12px;
   padding: 10px 14px;
 }
 
-.ga-cmdk-footer {
+.ax-cmdk-footer {
   display: flex;
   gap: 12px;
   padding: 8px 14px;
-  border-top: 1px solid var(--ga-border);
+  border-top: 1px solid var(--ax-border);
   font-size: 11px;
-  color: var(--ga-text-muted);
-  background: var(--ga-surface-muted);
+  color: var(--ax-text-muted);
+  background: var(--ax-surface-muted);
 }
 
-.ga-cmdk-footer-hint {
+.ax-cmdk-footer-hint {
   display: inline-flex;
   align-items: center;
   gap: 4px;
 }
 
-.ga-cmdk kbd {
+.ax-cmdk kbd {
   display: inline-block;
   padding: 1px 5px;
-  border: 1px solid var(--ga-border);
+  border: 1px solid var(--ax-border);
   border-bottom-width: 2px;
   border-radius: 3px;
-  background: var(--ga-surface);
+  background: var(--ax-surface);
   font-family: ui-monospace, SFMono-Regular, monospace;
   font-size: 10px;
   min-width: 16px;
@@ -320,10 +320,10 @@ a.ga-icon-button {
 }
 
 /* ------------------------------------------------------------------ */
-/* Atlas AI FAB — ported from the legacy fab block                      */
+/* Axiom AI FAB — ported from the legacy fab block                      */
 /* ------------------------------------------------------------------ */
 
-.ga-ai-fab {
+.ax-ai-fab {
   position: fixed;
   right: 20px;
   bottom: 20px;
@@ -335,49 +335,49 @@ a.ga-icon-button {
   justify-content: center;
   border: 0;
   border-radius: 999px;
-  background: var(--ga-highlight-blue);
-  color: var(--ga-navy-950);
-  box-shadow: 0 8px 20px rgba(2, 80, 128, 0.45), 0 1px 0 rgba(255, 255, 255, 0.18) inset;
+  background: var(--ax-highlight-blue);
+  color: var(--ax-navy-950);
+  box-shadow: 0 8px 20px rgba(50, 83, 150, 0.45), 0 1px 0 rgba(255, 255, 255, 0.18) inset;
   cursor: pointer;
   transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease, opacity 160ms ease;
 }
 
-.ga-ai-fab:hover:not(:disabled),
-.ga-ai-fab:focus-visible:not(:disabled) {
+.ax-ai-fab:hover:not(:disabled),
+.ax-ai-fab:focus-visible:not(:disabled) {
   transform: translateY(-1px);
   background: rgb(79, 153, 196);
-  box-shadow: 0 12px 28px rgba(2, 80, 128, 0.55), 0 1px 0 rgba(255, 255, 255, 0.22) inset;
+  box-shadow: 0 12px 28px rgba(50, 83, 150, 0.55), 0 1px 0 rgba(255, 255, 255, 0.22) inset;
   outline: none;
 }
 
-.ga-ai-fab:disabled {
+.ax-ai-fab:disabled {
   opacity: 0.48;
   cursor: not-allowed;
   box-shadow: none;
 }
 
-.ga-ai-fab .ga-ai-mark {
+.ax-ai-fab .ax-ai-mark {
   width: 24px;
   height: 24px;
 }
 
 @media (max-width: 1600px) {
-  .ga-ai-fab {
+  .ax-ai-fab {
     right: 14px;
     bottom: 14px;
     width: 44px;
     height: 44px;
-    box-shadow: 0 6px 16px rgba(2, 80, 128, 0.4), 0 1px 0 rgba(255, 255, 255, 0.18) inset;
+    box-shadow: 0 6px 16px rgba(50, 83, 150, 0.4), 0 1px 0 rgba(255, 255, 255, 0.18) inset;
   }
 
-  .ga-ai-fab .ga-ai-mark {
+  .ax-ai-fab .ax-ai-mark {
     width: 21px;
     height: 21px;
   }
 }
 
 @media (max-width: 980px) {
-  .ga-ai-fab {
+  .ax-ai-fab {
     right: 10px;
     bottom: 10px;
     width: 44px;
@@ -386,10 +386,10 @@ a.ga-icon-button {
 }
 
 /* ------------------------------------------------------------------ */
-/* Atlas AI dock — ported from the legacy floating-ai block             */
+/* Axiom AI dock — ported from the legacy floating-ai block             */
 /* ------------------------------------------------------------------ */
 
-.ga-ai-dock {
+.ax-ai-dock {
   position: fixed;
   z-index: 1200;
   width: min(360px, calc(100vw - 24px));
@@ -397,28 +397,28 @@ a.ga-icon-button {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto auto;
   overflow: hidden;
-  border: 1px solid rgba(102, 197, 255, 0.34);
-  border-radius: var(--ga-radius-lg);
+  border: 1px solid rgba(116, 151, 220, 0.34);
+  border-radius: var(--ax-radius-lg);
   background: linear-gradient(180deg, rgba(8, 50, 78, 0.99), rgba(5, 25, 41, 0.99));
-  color: var(--ga-text);
-  box-shadow: 0 24px 72px rgba(0, 5, 14, 0.46), var(--ga-glass-highlight);
+  color: var(--ax-text);
+  box-shadow: 0 24px 72px rgba(0, 5, 14, 0.46), var(--ax-glass-highlight);
   min-width: 320px;
   min-height: 360px;
   max-width: calc(100vw - 24px);
   max-height: calc(100vh - 72px);
   /* Distinct entry so the killer feature announces itself when opened. */
-  animation: ga-ai-dock-in 0.26s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: ax-ai-dock-in 0.26s cubic-bezier(0.16, 1, 0.3, 1) both;
   will-change: transform, opacity;
 }
 
 /* AI-accent hairline: a soft cyan aura marks the dock as the AI surface. */
-.ga-ai-dock::before {
+.ax-ai-dock::before {
   content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(160deg, rgba(102, 197, 255, 0.55), rgba(102, 197, 255, 0) 42%);
+  background: linear-gradient(160deg, rgba(116, 151, 220, 0.55), rgba(116, 151, 220, 0) 42%);
   /* Gradient-border mask idiom: the fill is a functional mask, not a palette
      color — the `black` keyword keeps it token-clean (no raw hex). */
   -webkit-mask: linear-gradient(black 0 0) content-box, linear-gradient(black 0 0);
@@ -428,7 +428,7 @@ a.ga-icon-button {
   opacity: 0.9;
 }
 
-@keyframes ga-ai-dock-in {
+@keyframes ax-ai-dock-in {
   from {
     opacity: 0;
     transform: translateY(10px) scale(0.985);
@@ -440,134 +440,134 @@ a.ga-icon-button {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ga-ai-dock {
+  .ax-ai-dock {
     animation: none;
   }
 }
 
-.ga-ai-dock.is-maximized {
-  box-shadow: 0 32px 96px rgba(0, 5, 14, 0.58), var(--ga-glass-highlight);
+.ax-ai-dock.is-maximized {
+  box-shadow: 0 32px 96px rgba(0, 5, 14, 0.58), var(--ax-glass-highlight);
 }
 
-.ga-shell-app[data-ai-open="true"] .ga-ai-dock {
-  width: var(--ga-ai-dock-width);
+.ax-shell-app[data-ai-open="true"] .ax-ai-dock {
+  width: var(--ax-ai-dock-width);
 }
 
 @media (min-width: 2200px) {
-  .ga-ai-dock {
+  .ax-ai-dock {
     width: min(440px, calc(100vw - 24px));
     height: min(640px, calc(100vh - 110px));
   }
 }
 
-.ga-ai-dock-header {
+.ax-ai-dock-header {
   min-height: 54px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   padding: 11px 12px 10px;
-  border-bottom: 1px solid rgba(102, 197, 255, 0.18);
+  border-bottom: 1px solid rgba(116, 151, 220, 0.18);
   background: rgba(5, 26, 43, 0.82);
   cursor: grab;
   user-select: none;
 }
 
-.ga-ai-dock-header:active {
+.ax-ai-dock-header:active {
   cursor: grabbing;
 }
 
-.ga-ai-dock-header > div {
+.ax-ai-dock-header > div {
   display: inline-flex;
   align-items: center;
   min-width: 0;
   gap: 9px;
 }
 
-.ga-ai-dock-header .ga-ai-mark {
+.ax-ai-dock-header .ax-ai-mark {
   width: 32px;
   height: 32px;
   padding: 6px;
   border-radius: 8px;
-  background: linear-gradient(180deg, rgba(102, 197, 255, 0.96), rgba(48, 153, 203, 0.96));
+  background: linear-gradient(180deg, rgba(116, 151, 220, 0.96), rgba(48, 153, 203, 0.96));
   color: rgb(4, 36, 58);
-  box-shadow: 0 0 0 1px rgba(207, 239, 255, 0.28) inset, 0 10px 24px rgba(51, 189, 231, 0.2);
+  box-shadow: 0 0 0 1px rgba(205, 218, 244, 0.28) inset, 0 10px 24px rgba(51, 189, 231, 0.2);
   flex: 0 0 auto;
 }
 
-.ga-ai-dock-header span {
+.ax-ai-dock-header span {
   display: grid;
   gap: 1px;
   min-width: 0;
 }
 
-.ga-ai-dock-header strong {
+.ax-ai-dock-header strong {
   font-size: 0.96rem;
   font-weight: 700;
 }
 
-.ga-ai-dock-header em {
+.ax-ai-dock-header em {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   font-size: 0.72rem;
   font-style: normal;
 }
 
-.ga-ai-dock-header em::before {
+.ax-ai-dock-header em::before {
   content: "";
   width: 6px;
   height: 6px;
   flex: 0 0 auto;
   border-radius: 50%;
-  background: var(--ga-success);
+  background: var(--ax-success);
   box-shadow: 0 0 0 2px rgba(68, 238, 171, 0.1);
 }
 
-.ga-ai-dock-header button {
+.ax-ai-dock-header button {
   width: 28px;
   height: 28px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(207, 239, 255, 0.18);
+  border: 1px solid rgba(205, 218, 244, 0.18);
   border-radius: 8px;
-  background: rgba(207, 239, 255, 0.06);
-  color: var(--ga-text-soft);
+  background: rgba(205, 218, 244, 0.06);
+  color: var(--ax-text-soft);
   cursor: pointer;
   font: inherit;
   font-size: 0.86rem;
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
-.ga-ai-dock-header-actions {
+.ax-ai-dock-header-actions {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   flex: 0 0 auto;
 }
 
-.ga-ai-dock-icon-btn:hover,
-.ga-ai-dock-icon-btn:focus-visible {
-  background: rgba(102, 197, 255, 0.18);
-  border-color: rgba(102, 197, 255, 0.55);
-  color: var(--ga-text-strong);
+.ax-ai-dock-icon-btn:hover,
+.ax-ai-dock-icon-btn:focus-visible {
+  background: rgba(116, 151, 220, 0.18);
+  border-color: rgba(116, 151, 220, 0.55);
+  color: var(--ax-text-strong);
   outline: none;
 }
 
-.ga-ai-dock-icon-btn[aria-pressed="true"] {
-  background: rgba(102, 197, 255, 0.22);
-  border-color: rgba(102, 197, 255, 0.6);
-  color: var(--ga-text-strong);
+.ax-ai-dock-icon-btn[aria-pressed="true"] {
+  background: rgba(116, 151, 220, 0.22);
+  border-color: rgba(116, 151, 220, 0.6);
+  color: var(--ax-text-strong);
 }
 
 /* Resize grips: 4 edges + 4 corners. Absolutely positioned so they never
-   disturb the grid layout; the pointer handler in AtlasAiDock.jsx does the
+   disturb the grid layout; the pointer handler in AxiomAiDock.jsx does the
    actual resize (edges pin the opposite side so the dock grows toward centre).
    Edge strips are 8px thin bands; corners are 16px squares that sit above the
    edges. */
-.ga-ai-dock-resize {
+.ax-ai-dock-resize {
   position: absolute;
   touch-action: none;
   z-index: 3;
@@ -575,8 +575,8 @@ a.ga-icon-button {
 }
 
 /* Edges */
-.ga-ai-dock-resize-n,
-.ga-ai-dock-resize-s {
+.ax-ai-dock-resize-n,
+.ax-ai-dock-resize-s {
   left: 16px;
   right: 16px;
   height: 7px;
@@ -584,29 +584,29 @@ a.ga-icon-button {
 }
 /* Offsets sit the 7px strips mostly OUTSIDE the dock (only ~2px inside) so they
    never create a dead click-zone over the transcript/input (review F7). */
-.ga-ai-dock-resize-n { top: -5px; }
-.ga-ai-dock-resize-s { bottom: -5px; }
-.ga-ai-dock-resize-e,
-.ga-ai-dock-resize-w {
+.ax-ai-dock-resize-n { top: -5px; }
+.ax-ai-dock-resize-s { bottom: -5px; }
+.ax-ai-dock-resize-e,
+.ax-ai-dock-resize-w {
   top: 16px;
   bottom: 16px;
   width: 7px;
   cursor: ew-resize;
 }
-.ga-ai-dock-resize-e { right: -5px; }
-.ga-ai-dock-resize-w { left: -5px; }
+.ax-ai-dock-resize-e { right: -5px; }
+.ax-ai-dock-resize-w { left: -5px; }
 
 /* Corners (win over edges via later paint + larger hit box) */
-.ga-ai-dock-resize-ne,
-.ga-ai-dock-resize-nw,
-.ga-ai-dock-resize-se,
-.ga-ai-dock-resize-sw {
+.ax-ai-dock-resize-ne,
+.ax-ai-dock-resize-nw,
+.ax-ai-dock-resize-se,
+.ax-ai-dock-resize-sw {
   width: 16px;
   height: 16px;
   z-index: 4;
 }
-.ga-ai-dock-resize-nw { top: -4px; left: -4px; cursor: nwse-resize; }
-.ga-ai-dock-resize-se {
+.ax-ai-dock-resize-nw { top: -4px; left: -4px; cursor: nwse-resize; }
+.ax-ai-dock-resize-se {
   right: -4px;
   bottom: -4px;
   cursor: nwse-resize;
@@ -615,14 +615,14 @@ a.ga-icon-button {
   justify-content: flex-end;
   padding: 2px;
 }
-.ga-ai-dock-resize-ne { top: -4px; right: -4px; cursor: nesw-resize; }
-.ga-ai-dock-resize-sw { bottom: -4px; left: -4px; cursor: nesw-resize; }
+.ax-ai-dock-resize-ne { top: -4px; right: -4px; cursor: nesw-resize; }
+.ax-ai-dock-resize-sw { bottom: -4px; left: -4px; cursor: nesw-resize; }
 
-.ga-ai-dock-resize-se:hover {
-  color: var(--ga-bright-blue);
+.ax-ai-dock-resize-se:hover {
+  color: var(--ax-bright-blue);
 }
 
-.ga-ai-dock-body {
+.ax-ai-dock-body {
   min-height: 0;
   display: flex;
   flex-direction: column;
@@ -631,7 +631,7 @@ a.ga-icon-button {
   padding: 16px 18px 12px;
 }
 
-.ga-ai-dock-transcript {
+.ax-ai-dock-transcript {
   min-height: auto;
   flex: 0 0 auto;
   display: grid;
@@ -639,68 +639,68 @@ a.ga-icon-button {
   gap: 8px;
 }
 
-.ga-ai-dock-message {
+.ax-ai-dock-message {
   display: grid;
   gap: 4px;
   padding: 11px 13px;
-  border: 1px solid rgba(102, 197, 255, 0.2);
-  border-radius: var(--ga-radius-md);
-  background: rgba(207, 239, 255, 0.07);
+  border: 1px solid rgba(116, 151, 220, 0.2);
+  border-radius: var(--ax-radius-md);
+  background: rgba(205, 218, 244, 0.07);
 }
 
-.ga-ai-dock-message.is-empty {
+.ax-ai-dock-message.is-empty {
   min-height: 110px;
   align-content: start;
-  border-left: 3px solid var(--ga-bright-blue);
+  border-left: 3px solid var(--ax-bright-blue);
   background: rgba(24, 68, 103, 0.56);
 }
 
-.ga-ai-dock-message.tone-user {
+.ax-ai-dock-message.tone-user {
   margin-left: 22px;
-  border-color: rgba(92, 225, 230, 0.3);
-  background: rgba(92, 225, 230, 0.1);
+  border-color: rgba(200, 200, 200, 0.3);
+  background: rgba(200, 200, 200, 0.1);
 }
 
-.ga-ai-dock-message.tone-assistant {
+.ax-ai-dock-message.tone-assistant {
   margin-right: 12px;
 }
 
-.ga-ai-dock-message.tone-warn {
+.ax-ai-dock-message.tone-warn {
   border-color: rgba(255, 184, 77, 0.34);
   background: rgba(255, 184, 77, 0.1);
 }
 
-@keyframes ga-ai-dock-spin {
+@keyframes ax-ai-dock-spin {
   to { transform: rotate(360deg); }
 }
 
-.ga-ai-dock-message.is-pending strong::after {
+.ax-ai-dock-message.is-pending strong::after {
   content: "";
   display: inline-block;
   width: 14px;
   height: 14px;
   margin-left: 7px;
   vertical-align: -2px;
-  border: 2px solid rgba(207, 239, 255, 0.2);
-  border-top-color: var(--ga-bright-blue);
+  border: 2px solid rgba(205, 218, 244, 0.2);
+  border-top-color: var(--ax-bright-blue);
   border-radius: 50%;
-  animation: ga-ai-dock-spin 0.8s linear infinite;
+  animation: ax-ai-dock-spin 0.8s linear infinite;
 }
 
-.ga-ai-dock-message > span {
-  color: var(--ga-bright-blue);
+.ax-ai-dock-message > span {
+  color: var(--ax-bright-blue);
   font-size: 0.66rem;
   font-weight: 700;
   text-transform: uppercase;
 }
 
-.ga-ai-dock-message.is-empty > span {
+.ax-ai-dock-message.is-empty > span {
   display: none;
 }
 
-.ga-ai-dock-message strong,
-.ga-ai-dock-message .ga-ai-dock-markdown {
-  color: var(--ga-text);
+.ax-ai-dock-message strong,
+.ax-ai-dock-message .ax-ai-dock-markdown {
+  color: var(--ax-text);
   font-size: 0.82rem;
   font-weight: 500;
   line-height: 1.35;
@@ -709,74 +709,74 @@ a.ga-icon-button {
   word-break: break-word;
 }
 
-.ga-ai-dock-markdown p {
+.ax-ai-dock-markdown p {
   margin: 0 0 0.45em;
 }
 
-.ga-ai-dock-markdown p:last-child {
+.ax-ai-dock-markdown p:last-child {
   margin-bottom: 0;
 }
 
-.ga-ai-dock-markdown ul {
+.ax-ai-dock-markdown ul {
   margin: 0.35em 0 0;
   padding-left: 1.1em;
 }
 
-.ga-ai-dock-markdown strong {
+.ax-ai-dock-markdown strong {
   font-weight: 700;
 }
 
-.ga-ai-dock-markdown code {
-  border: 1px solid rgba(207, 239, 255, 0.18);
+.ax-ai-dock-markdown code {
+  border: 1px solid rgba(205, 218, 244, 0.18);
   border-radius: 5px;
   background: rgba(2, 9, 20, 0.26);
-  color: var(--ga-light-blue);
+  color: var(--ax-light-blue);
   padding: 0.05em 0.32em;
 }
 
-.ga-ai-dock-message em {
-  color: var(--ga-text-muted);
+.ax-ai-dock-message em {
+  color: var(--ax-text-muted);
   font-size: 0.68rem;
   font-style: normal;
 }
 
-.ga-ai-dock-evidence {
+.ax-ai-dock-evidence {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
   margin-top: 3px;
 }
 
-.ga-ai-dock-evidence button,
-.ga-ai-dock-evidence-chip {
+.ax-ai-dock-evidence button,
+.ax-ai-dock-evidence-chip {
   min-width: 0;
   max-width: 100%;
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  border: 1px solid rgba(102, 197, 255, 0.22);
+  border: 1px solid rgba(116, 151, 220, 0.22);
   border-radius: 999px;
-  background: rgba(102, 197, 255, 0.09);
-  color: var(--ga-text-soft);
+  background: rgba(116, 151, 220, 0.09);
+  color: var(--ax-text-soft);
   font: inherit;
   font-size: 0.66rem;
   line-height: 1.1;
   padding: 4px 7px;
 }
 
-.ga-ai-dock-evidence button {
+.ax-ai-dock-evidence button {
   cursor: pointer;
 }
 
-.ga-ai-dock-evidence button:hover,
-.ga-ai-dock-evidence button:focus-visible {
-  border-color: rgba(102, 197, 255, 0.5);
-  background: rgba(102, 197, 255, 0.16);
-  color: var(--ga-text);
+.ax-ai-dock-evidence button:hover,
+.ax-ai-dock-evidence button:focus-visible {
+  border-color: rgba(116, 151, 220, 0.5);
+  background: rgba(116, 151, 220, 0.16);
+  color: var(--ax-text);
   outline: none;
 }
 
-.ga-ai-dock-evidence span {
+.ax-ai-dock-evidence span {
   min-width: 0;
   color: inherit;
   font: inherit;
@@ -787,59 +787,59 @@ a.ga-icon-button {
   white-space: nowrap;
 }
 
-.ga-ai-dock-evidence em {
-  color: var(--ga-bright-blue);
+.ax-ai-dock-evidence em {
+  color: var(--ax-bright-blue);
   font-size: 0.58rem;
   font-style: normal;
   white-space: nowrap;
 }
 
-.ga-ai-dock-evidence-detail {
-  border: 1px solid rgba(102, 197, 255, 0.18);
+.ax-ai-dock-evidence-detail {
+  border: 1px solid rgba(116, 151, 220, 0.18);
   border-radius: 8px;
   background: rgba(3, 17, 32, 0.52);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  color: var(--ga-text-soft);
+  color: var(--ax-text-soft);
   display: grid;
   gap: 7px;
   margin-top: 8px;
   padding: 9px;
 }
 
-.ga-ai-dock-evidence-detail header {
+.ax-ai-dock-evidence-detail header {
   align-items: flex-start;
   display: flex;
   gap: 8px;
   justify-content: space-between;
 }
 
-.ga-ai-dock-evidence-detail header div {
+.ax-ai-dock-evidence-detail header div {
   display: grid;
   gap: 2px;
   min-width: 0;
 }
 
-.ga-ai-dock-evidence-detail header span,
-.ga-ai-dock-evidence-statement {
-  color: var(--ga-text-muted);
+.ax-ai-dock-evidence-detail header span,
+.ax-ai-dock-evidence-statement {
+  color: var(--ax-text-muted);
   font-size: 0.6rem;
   letter-spacing: 0.09em;
   margin: 0;
   text-transform: uppercase;
 }
 
-.ga-ai-dock-evidence-detail header strong {
-  color: var(--ga-text);
+.ax-ai-dock-evidence-detail header strong {
+  color: var(--ax-text);
   font-size: 0.72rem;
   letter-spacing: 0;
 }
 
-.ga-ai-dock-evidence-detail header button {
+.ax-ai-dock-evidence-detail header button {
   align-items: center;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(226, 242, 255, 0.12);
   border-radius: 6px;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   cursor: pointer;
   display: inline-flex;
   height: 22px;
@@ -847,18 +847,18 @@ a.ga-icon-button {
   width: 22px;
 }
 
-.ga-ai-dock-evidence-detail header button:hover,
-.ga-ai-dock-evidence-detail header button:focus-visible {
-  border-color: rgba(102, 197, 255, 0.5);
-  color: var(--ga-text);
+.ax-ai-dock-evidence-detail header button:hover,
+.ax-ai-dock-evidence-detail header button:focus-visible {
+  border-color: rgba(116, 151, 220, 0.5);
+  color: var(--ax-text);
   outline: none;
 }
 
-.ga-ai-dock-evidence-sql {
+.ax-ai-dock-evidence-sql {
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(226, 242, 255, 0.1);
   border-radius: 6px;
-  color: var(--ga-text);
+  color: var(--ax-text);
   font-size: 0.66rem;
   line-height: 1.35;
   margin: 0;
@@ -869,13 +869,13 @@ a.ga-icon-button {
 }
 
 /* Inline generated-SQL block shown with the answer (open by default). */
-.ga-ai-dock-inline-sql {
+.ax-ai-dock-inline-sql {
   margin-top: 8px;
 }
 
-.ga-ai-dock-inline-sql > summary {
+.ax-ai-dock-inline-sql > summary {
   cursor: pointer;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   font-size: 0.68rem;
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -884,35 +884,35 @@ a.ga-icon-button {
   user-select: none;
 }
 
-.ga-ai-dock-inline-sql > summary::-webkit-details-marker {
+.ax-ai-dock-inline-sql > summary::-webkit-details-marker {
   display: none;
 }
 
-.ga-ai-dock-inline-sql > summary::before {
+.ax-ai-dock-inline-sql > summary::before {
   content: "▾ ";
-  color: var(--ga-text-faint);
+  color: var(--ax-text-faint);
 }
 
-.ga-ai-dock-inline-sql:not([open]) > summary::before {
+.ax-ai-dock-inline-sql:not([open]) > summary::before {
   content: "▸ ";
 }
 
-.ga-ai-dock-inline-sql > summary:hover {
-  color: var(--ga-bright-blue);
+.ax-ai-dock-inline-sql > summary:hover {
+  color: var(--ax-bright-blue);
 }
 
-.ga-ai-dock-inline-sql .ga-ai-dock-evidence-sql {
+.ax-ai-dock-inline-sql .ax-ai-dock-evidence-sql {
   margin-top: 6px;
   max-height: 200px;
 }
 
-.ga-ai-dock-evidence-empty {
-  color: var(--ga-text-muted);
+.ax-ai-dock-evidence-empty {
+  color: var(--ax-text-muted);
   font-size: 0.68rem;
   margin: 0;
 }
 
-.ga-ai-dock-evidence-table {
+.ax-ai-dock-evidence-table {
   border: 1px solid rgba(226, 242, 255, 0.08);
   border-radius: 6px;
   display: grid;
@@ -920,16 +920,16 @@ a.ga-icon-button {
   overflow: hidden;
 }
 
-.ga-ai-dock-evidence-table [role="row"] {
+.ax-ai-dock-evidence-table [role="row"] {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
 }
 
-.ga-ai-dock-evidence-table [role="row"] + [role="row"] {
+.ax-ai-dock-evidence-table [role="row"] + [role="row"] {
   border-top: 1px solid rgba(226, 242, 255, 0.08);
 }
 
-.ga-ai-dock-evidence-table span {
+.ax-ai-dock-evidence-table span {
   min-width: 0;
   overflow: hidden;
   padding: 5px 6px;
@@ -937,24 +937,24 @@ a.ga-icon-button {
   white-space: nowrap;
 }
 
-.ga-ai-dock-evidence-table [role="columnheader"] {
-  color: var(--ga-text-muted);
+.ax-ai-dock-evidence-table [role="columnheader"] {
+  color: var(--ax-text-muted);
   font-weight: 700;
 }
 
-.ga-ai-dock-prompts {
+.ax-ai-dock-prompts {
   display: grid;
   gap: 6px;
 }
 
-.ga-ai-dock-prompt-group {
+.ax-ai-dock-prompt-group {
   flex: 0 0 auto;
   display: grid;
   gap: 7px;
 }
 
-.ga-ai-dock-prompt-label {
-  color: var(--ga-text-muted);
+.ax-ai-dock-prompt-label {
+  color: var(--ax-text-muted);
   font-size: 0.58rem;
   font-weight: 800;
   letter-spacing: 0.16em;
@@ -962,17 +962,17 @@ a.ga-icon-button {
   text-transform: uppercase;
 }
 
-.ga-ai-dock-prompts button {
+.ax-ai-dock-prompts button {
   display: flex;
   align-items: center;
   justify-content: flex-start;
   gap: 10px;
   min-height: 54px;
   padding: 8px 10px;
-  border: 1px solid rgba(102, 197, 255, 0.2);
-  border-radius: var(--ga-radius-md);
-  background: rgba(207, 239, 255, 0.07);
-  color: var(--ga-text);
+  border: 1px solid rgba(116, 151, 220, 0.2);
+  border-radius: var(--ax-radius-md);
+  background: rgba(205, 218, 244, 0.07);
+  color: var(--ax-text);
   cursor: pointer;
   font: inherit;
   font-size: 0.76rem;
@@ -980,101 +980,101 @@ a.ga-icon-button {
   text-align: left;
 }
 
-.ga-ai-dock-prompt-icon {
+.ax-ai-dock-prompt-icon {
   width: 15px;
   height: 15px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-  border: 1px solid rgba(102, 197, 255, 0.42);
+  border: 1px solid rgba(116, 151, 220, 0.42);
   border-radius: 999px;
-  color: var(--ga-bright-blue);
+  color: var(--ax-bright-blue);
   font-size: 0.62rem;
   line-height: 1;
 }
 
-.ga-ai-dock-prompts button > span:nth-child(2) {
+.ax-ai-dock-prompts button > span:nth-child(2) {
   min-width: 0;
   flex: 1 1 auto;
 }
 
-.ga-ai-dock-prompts button:disabled {
+.ax-ai-dock-prompts button:disabled {
   cursor: not-allowed;
   opacity: 0.66;
 }
 
-.ga-ai-dock-prompt-arrow {
-  color: var(--ga-bright-blue);
+.ax-ai-dock-prompt-arrow {
+  color: var(--ax-bright-blue);
   flex: 0 0 auto;
 }
 
-.ga-ai-dock-input {
+.ax-ai-dock-input {
   position: relative;
   padding: 0 18px 10px;
 }
 
-.ga-ai-dock-input input {
+.ax-ai-dock-input input {
   width: 100%;
   min-height: 42px;
-  border: 1px solid rgba(102, 197, 255, 0.24);
-  border-radius: var(--ga-radius-md);
-  background: rgba(207, 239, 255, 0.08);
-  color: var(--ga-text);
+  border: 1px solid rgba(116, 151, 220, 0.24);
+  border-radius: var(--ax-radius-md);
+  background: rgba(205, 218, 244, 0.08);
+  color: var(--ax-text);
   font: inherit;
   padding: 0 44px 0 12px;
 }
 
-.ga-ai-dock-input button {
+.ax-ai-dock-input button {
   position: absolute;
   right: 17px;
   top: 5px;
   width: 32px;
   height: 32px;
-  border: 1px solid rgba(102, 197, 255, 0.22);
+  border: 1px solid rgba(116, 151, 220, 0.22);
   border-radius: 8px;
-  background: rgba(102, 197, 255, 0.1);
-  color: var(--ga-bright-blue);
+  background: rgba(116, 151, 220, 0.1);
+  color: var(--ax-bright-blue);
   cursor: pointer;
 }
 
-.ga-ai-dock-input button:disabled {
+.ax-ai-dock-input button:disabled {
   cursor: not-allowed;
   opacity: 0.62;
 }
 
-.ga-ai-dock-spinner {
+.ax-ai-dock-spinner {
   display: inline-block;
   width: 14px;
   height: 14px;
-  border: 2px solid rgba(207, 239, 255, 0.2);
-  border-top-color: var(--ga-bright-blue);
+  border: 2px solid rgba(205, 218, 244, 0.2);
+  border-top-color: var(--ax-bright-blue);
   border-radius: 50%;
-  animation: ga-ai-dock-spin 0.8s linear infinite;
+  animation: ax-ai-dock-spin 0.8s linear infinite;
 }
 
-.ga-ai-dock-disclaimer {
+.ax-ai-dock-disclaimer {
   margin: 0;
   padding: 0 12px 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   font-size: 0.72rem;
 }
 
-.ga-ai-dock-disclaimer button {
+.ax-ai-dock-disclaimer button {
   width: 15px;
   height: 15px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-  border: 1px solid rgba(207, 239, 255, 0.28);
+  border: 1px solid rgba(205, 218, 244, 0.28);
   border-radius: 50%;
   background: transparent;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   cursor: help;
   font: inherit;
   font-size: 0.62rem;
@@ -1082,13 +1082,13 @@ a.ga-icon-button {
   padding: 0;
 }
 
-.ga-ai-dock-info {
+.ax-ai-dock-info {
   margin: -8px 12px 12px;
   padding: 8px 10px;
-  border: 1px solid rgba(102, 197, 255, 0.2);
+  border: 1px solid rgba(116, 151, 220, 0.2);
   border-radius: 7px;
   background: rgba(5, 28, 45, 0.92);
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   font-size: 0.72rem;
   line-height: 1.35;
 }
@@ -1101,7 +1101,7 @@ a.ga-icon-button {
 /* stacking context, and the canonical keyboard-focus ring. Effective   */
 /* values are unchanged — body font/color/background resolve to the     */
 /* SAME tokens app.css used (its legacy font/background names were      */
-/* aliases of --ga-font-body / --ga-bg). Tokens import from main.jsx.   */
+/* aliases of --ax-font-body / --ax-bg). Tokens import from main.jsx.   */
 /* ------------------------------------------------------------------ */
 
 * {
@@ -1120,9 +1120,9 @@ body,
 
 body {
   margin: 0;
-  font-family: var(--ga-font-body);
-  color: var(--ga-text);
-  background: var(--ga-bg);
+  font-family: var(--ax-font-body);
+  color: var(--ax-text);
+  background: var(--ax-bg);
   text-rendering: optimizeLegibility;
   font-synthesis: none;
   -webkit-font-smoothing: antialiased;
@@ -1143,16 +1143,16 @@ body {
 }
 
 /* Canonical keyboard-focus treatment (moved from app.css): a 2px
-   --ga-focus ring with offset on every button. Component rules must not
+   --ax-focus ring with offset on every button. Component rules must not
    zero this out. */
 button:focus-visible {
-  outline: 2px solid var(--ga-focus);
+  outline: 2px solid var(--ax-focus);
   outline-offset: 2px;
 }
 
 /* Frame supplement: app.css used to give the main column its grid flow;
    the surviving sheets only assign its grid-area/overflow. */
-.ga-shell-main {
+.ax-shell-main {
   display: grid;
   gap: 16px;
 }
@@ -1165,68 +1165,68 @@ button:focus-visible {
 /* the boot screen always had; tones only shift the border/wash.        */
 /* ------------------------------------------------------------------ */
 
-.ga-shell-state-card {
+.ax-shell-state-card {
   position: relative;
   overflow: hidden;
   display: grid;
   gap: 12px;
   padding: 24px;
-  border: 1px solid rgba(102, 197, 255, 0.2);
-  border-radius: var(--ga-radius-xl, 24px);
+  border: 1px solid rgba(116, 151, 220, 0.2);
+  border-radius: var(--ax-radius-xl, 24px);
   background:
-    radial-gradient(circle at top left, rgba(92, 225, 230, 0.08), transparent 30%),
-    radial-gradient(circle at top right, rgba(102, 197, 255, 0.06), transparent 26%),
+    radial-gradient(circle at top left, rgba(200, 200, 200, 0.08), transparent 30%),
+    radial-gradient(circle at top right, rgba(116, 151, 220, 0.06), transparent 26%),
     linear-gradient(180deg, rgba(12, 38, 60, 0.96) 0%, rgba(9, 32, 52, 0.98) 100%);
   box-shadow:
     0 18px 36px rgba(0, 14, 28, 0.32),
-    0 1px 0 rgba(102, 197, 255, 0.08) inset;
-  color: var(--ga-text);
+    0 1px 0 rgba(116, 151, 220, 0.08) inset;
+  color: var(--ax-text);
 }
 
-.ga-shell-state-card::before {
+.ax-shell-state-card::before {
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
   height: 4px;
-  background: linear-gradient(90deg, rgba(102, 197, 255, 0.85) 0%, rgba(61, 132, 173, 0.6) 100%);
+  background: linear-gradient(90deg, rgba(116, 151, 220, 0.85) 0%, rgba(91, 127, 208, 0.6) 100%);
   opacity: 0.86;
 }
 
-.ga-shell-state-card.tone-bad {
-  border-color: color-mix(in srgb, var(--ga-danger) 30%, transparent);
+.ax-shell-state-card.tone-bad {
+  border-color: color-mix(in srgb, var(--ax-danger) 30%, transparent);
   background:
     radial-gradient(circle at top right, rgba(255, 92, 108, 0.1), transparent 34%),
     linear-gradient(180deg, rgba(12, 38, 60, 0.96) 0%, rgba(9, 32, 52, 0.98) 100%);
 }
 
-.ga-shell-state-card.tone-warn {
-  border-color: color-mix(in srgb, var(--ga-warning) 28%, transparent);
+.ax-shell-state-card.tone-warn {
+  border-color: color-mix(in srgb, var(--ax-warning) 28%, transparent);
 }
 
-.ga-shell-state-card.tone-good {
-  border-color: color-mix(in srgb, var(--ga-success) 26%, transparent);
+.ax-shell-state-card.tone-good {
+  border-color: color-mix(in srgb, var(--ax-success) 26%, transparent);
 }
 
-.ga-shell-state-card h2 {
+.ax-shell-state-card h2 {
   margin: 0;
   font-size: clamp(1.24rem, 1.08rem + 0.46vw, 1.76rem);
   letter-spacing: -0.04em;
 }
 
-.ga-shell-state-card-message {
+.ax-shell-state-card-message {
   margin: 0;
   max-width: 58ch;
-  color: var(--ga-text-soft);
+  color: var(--ax-text-soft);
   line-height: 1.52;
   overflow-wrap: anywhere;
 }
 
-.ga-shell-state-card-extra {
+.ax-shell-state-card-extra {
   display: grid;
   gap: 12px;
 }
 
-.ga-shell-state-card-actions {
+.ax-shell-state-card-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -1234,12 +1234,12 @@ button:focus-visible {
 }
 
 /* Skeleton bars inside the card stay narrow like the preboot screen. */
-.ga-shell-state-card .ga-sys-loading {
+.ax-shell-state-card .ax-sys-loading {
   max-width: 520px;
 }
 
 /* Header for the shell-owned readiness view (settings entry). */
-.ga-shell-route-state-head {
+.ax-shell-route-state-head {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -1247,18 +1247,18 @@ button:focus-visible {
   flex-wrap: wrap;
 }
 
-.ga-shell-route-state-head h1 {
+.ax-shell-route-state-head h1 {
   margin: 4px 0 6px;
   font-size: clamp(1.24rem, 1.06rem + 0.52vw, 1.82rem);
   font-weight: 800;
   letter-spacing: -0.03em;
-  color: var(--ga-text-strong);
+  color: var(--ax-text-strong);
 }
 
-.ga-shell-route-state-head p {
+.ax-shell-route-state-head p {
   margin: 0;
   max-width: 72ch;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   font-size: 0.9rem;
   line-height: 1.5;
 }
@@ -1271,167 +1271,167 @@ button:focus-visible {
 /* they style here rather than in a surface sheet).                     */
 /* ------------------------------------------------------------------ */
 
-.ga-shell-readiness-layout {
+.ax-shell-readiness-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.6fr) minmax(320px, 0.9fr);
   gap: 12px;
   align-items: start;
 }
 
-.ga-shell-readiness-layout.is-single {
+.ax-shell-readiness-layout.is-single {
   grid-template-columns: 1fr;
 }
 
 @media (max-width: 1440px) {
-  .ga-shell-readiness-layout {
+  .ax-shell-readiness-layout {
     grid-template-columns: 1fr;
   }
 }
 
-.ga-shell-readiness-main,
-.ga-shell-readiness-side {
+.ax-shell-readiness-main,
+.ax-shell-readiness-side {
   min-width: 0;
   display: grid;
   gap: 12px;
   align-content: start;
 }
 
-.ga-shell-readiness-subhead h3 {
+.ax-shell-readiness-subhead h3 {
   margin: 6px 0 0;
   font-size: 0.92rem;
   font-weight: 800;
   letter-spacing: -0.01em;
-  color: var(--ga-text-strong);
+  color: var(--ax-text-strong);
 }
 
-.ga-shell-readiness-subhead p {
+.ax-shell-readiness-subhead p {
   margin: 2px 0 0;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   font-size: 0.82rem;
   line-height: 1.5;
 }
 
-.ga-shell-readiness-note {
+.ax-shell-readiness-note {
   margin: 0;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   font-size: 0.84rem;
   line-height: 1.5;
   overflow-wrap: anywhere;
   word-break: break-word;
 }
 
-.ga-shell-chip-row {
+.ax-shell-chip-row {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
   align-items: center;
 }
 
-.ga-shell-readiness-tiles {
+.ax-shell-readiness-tiles {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   gap: 8px;
 }
 
-.ga-shell-readiness-tile {
+.ax-shell-readiness-tile {
   display: grid;
   gap: 6px;
   padding: 10px;
-  border: 1px solid var(--ga-border);
-  border-radius: var(--ga-radius-md, 12px);
-  background: var(--ga-surface-muted);
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-radius-md, 12px);
+  background: var(--ax-surface-muted);
 }
 
-.ga-shell-readiness-tile-head {
+.ax-shell-readiness-tile-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
 }
 
-.ga-shell-readiness-tile-value {
+.ax-shell-readiness-tile-value {
   font-weight: 800;
-  color: var(--ga-text-strong);
+  color: var(--ax-text-strong);
   overflow-wrap: anywhere;
 }
 
-.ga-shell-readiness-tile-label {
+.ax-shell-readiness-tile-label {
   font-weight: 700;
   font-size: 0.86rem;
-  color: var(--ga-text-soft);
+  color: var(--ax-text-soft);
 }
 
-.ga-shell-readiness-list {
+.ax-shell-readiness-list {
   display: grid;
   gap: 8px;
 }
 
-.ga-shell-readiness-item {
+.ax-shell-readiness-item {
   display: grid;
   gap: 6px;
   padding: 9px 11px;
-  border: 1px solid var(--ga-border);
-  border-radius: var(--ga-radius-md, 10px);
-  background: var(--ga-surface);
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-radius-md, 10px);
+  background: var(--ax-surface);
 }
 
-.ga-shell-readiness-item-topline {
+.ax-shell-readiness-item-topline {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
 }
 
-.ga-shell-readiness-item-copy {
+.ax-shell-readiness-item-copy {
   min-width: 0;
   display: grid;
   gap: 2px;
 }
 
-.ga-shell-readiness-item-title {
+.ax-shell-readiness-item-title {
   font-weight: 800;
-  color: var(--ga-text-strong);
+  color: var(--ax-text-strong);
   overflow-wrap: anywhere;
 }
 
-.ga-shell-readiness-item-meta {
-  color: var(--ga-text-muted);
+.ax-shell-readiness-item-meta {
+  color: var(--ax-text-muted);
   font-size: 0.82rem;
   line-height: 1.45;
   overflow-wrap: anywhere;
 }
 
-.ga-shell-attr-list {
+.ax-shell-attr-list {
   margin: 0;
   display: grid;
   gap: 0;
 }
 
-.ga-shell-attr-row {
+.ax-shell-attr-row {
   display: grid;
   grid-template-columns: minmax(118px, 0.42fr) minmax(0, 1fr);
   gap: 10px;
   align-items: start;
   padding: 0.6rem 0;
-  border-bottom: 1px solid var(--ga-border-muted);
+  border-bottom: 1px solid var(--ax-border-muted);
 }
 
-.ga-shell-attr-row:last-child {
+.ax-shell-attr-row:last-child {
   border-bottom: 0;
   padding-bottom: 0;
 }
 
-.ga-shell-attr-row dt {
-  color: var(--ga-text-muted);
+.ax-shell-attr-row dt {
+  color: var(--ax-text-muted);
   font-size: 0.86rem;
 }
 
-.ga-shell-attr-row dd {
+.ax-shell-attr-row dd {
   margin: 0;
   font-weight: 700;
   text-align: right;
   min-width: 0;
-  color: var(--ga-text);
+  color: var(--ax-text);
   overflow-wrap: anywhere;
   word-break: break-word;
 }

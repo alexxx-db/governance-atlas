@@ -12,9 +12,9 @@ import unittest
 
 import pandas as pd
 
-from atlas.services import assets as assets_service
-from atlas.services import live_metadata
-from atlas.uc import UCSQLClient
+from axiom.services import assets as assets_service
+from axiom.services import live_metadata
+from axiom.uc import UCSQLClient
 
 
 class FakeUc:

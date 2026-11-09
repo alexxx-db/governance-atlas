@@ -5,7 +5,7 @@
       "run_app.py"
     ],
     "create_time":"2026-04-29T02:01:10Z",
-    "creator":"skyler@entrada.ai",
+    "creator":"abarreto@shorecp.com",
     "deployment_artifacts": {
       "source_code_path":"/Workspace/Users/6cc86299-e989-42b7-9268-4f4335124812/src/01f1436f4b3c1e35a236f8d9154e7930"
     },
@@ -15,47 +15,47 @@
         "name":"DATABRICKS_WAREHOUSE_ID"
       },
       {
-        "name":"GOVAT_CATALOG"
+        "name":"AXIOM_CATALOG"
       },
       {
-        "name":"GOVAT_SCHEMA"
+        "name":"AXIOM_SCHEMA"
       },
       {
-        "name":"GOVAT_ADMIN_EMAILS"
+        "name":"AXIOM_ADMIN_EMAILS"
       },
       {
-        "name":"GOVAT_ENVIRONMENT_LABEL"
+        "name":"AXIOM_ENVIRONMENT_LABEL"
       },
       {
-        "name":"GOVAT_DEPLOY_TARGET"
+        "name":"AXIOM_DEPLOY_TARGET"
       },
       {
-        "name":"GOVAT_ATLAS_AI_PROVIDER"
+        "name":"AXIOM_AI_PROVIDER"
       },
       {
-        "name":"GOVAT_GENIE_SPACE_ID"
+        "name":"AXIOM_GENIE_SPACE_ID"
       },
       {
-        "name":"GOVAT_GENIE_SPACE_TITLE"
+        "name":"AXIOM_GENIE_SPACE_TITLE"
       },
       {
-        "name":"GOVAT_ATLAS_AI_REQUIRE_BENCHMARK"
+        "name":"AXIOM_AI_REQUIRE_BENCHMARK"
       },
       {
-        "name":"GOVAT_LAKEBASE_ENABLED"
+        "name":"AXIOM_LAKEBASE_ENABLED"
       },
       {
-        "name":"GOVAT_LAKEBASE_ENDPOINT_NAME"
+        "name":"AXIOM_LAKEBASE_ENDPOINT_NAME"
       },
       {
-        "name":"GOVAT_LAKEBASE_SCHEMA"
+        "name":"AXIOM_LAKEBASE_SCHEMA"
       },
       {
-        "name":"GOVAT_LAKEBASE_UC_CATALOG"
+        "name":"AXIOM_LAKEBASE_UC_CATALOG"
       }
     ],
     "mode":"SNAPSHOT",
-    "source_code_path":"/Workspace/Users/skyler@entrada.ai/.bundle/atlas/dev/files",
+    "source_code_path":"/Workspace/Users/abarreto@shorecp.com/.bundle/axiom/dev/files",
     "status": {
       "message":"App started successfully",
       "state":"SUCCEEDED"
@@ -72,9 +72,9 @@
     "state":"ACTIVE"
   },
   "create_time":"2026-04-24T06:19:19Z",
-  "creator":"skyler@entrada.ai",
-  "default_source_code_path":"/Workspace/Users/skyler@entrada.ai/.bundle/atlas/dev/files",
-  "description":"Governance Atlas - a Databricks-native enterprise metadata workspace extending Unity Catalog, deployable to any Databricks workspace.\n",
+  "creator":"abarreto@shorecp.com",
+  "default_source_code_path":"/Workspace/Users/abarreto@shorecp.com/.bundle/axiom/dev/files",
+  "description":"Axiom - a Databricks-native enterprise metadata workspace extending Unity Catalog, deployable to any Databricks workspace.\n",
   "effective_user_api_scopes": [
     "sql",
     "catalog.connections",
@@ -86,7 +86,7 @@
     "catalog.catalogs:read"
   ],
   "id":"6cc86299-e989-42b7-9268-4f4335124812",
-  "name":"atlas",
+  "name":"axiom",
   "oauth2_app_client_id":"551ed2fa-4d54-4dc4-bc7f-abb6e9bdb9ad",
   "oauth2_app_integration_id":"551ed2fa-4d54-4dc4-bc7f-abb6e9bdb9ad",
   "resources": [
@@ -99,26 +99,26 @@
     },
     {
       "genie_space": {
-        "name":"Governance Atlas Metadata Room",
+        "name":"Axiom Metadata Room",
         "permission":"CAN_RUN",
         "space_id":"01f1406a11221afa985d3fe64c9fbea1"
       },
-      "name":"atlas-genie-space"
+      "name":"axiom-genie-space"
     },
     {
-      "name":"atlas-lakebase",
+      "name":"axiom-lakebase",
       "postgres": {
-        "branch":"projects/governance-atlas-state/branches/production",
-        "database":"projects/governance-atlas-state/branches/production/databases/db-y68x-6gpq0zhrl4",
+        "branch":"projects/axiom-state/branches/production",
+        "database":"projects/axiom-state/branches/production/databases/db-y68x-6gpq0zhrl4",
         "permission":"CAN_CONNECT_AND_CREATE"
       }
     }
   ],
   "service_principal_client_id":"6cc86299-e989-42b7-9268-4f4335124812",
   "service_principal_id":73650668244367,
-  "service_principal_name":"app-5q741p atlas",
+  "service_principal_name":"app-5q741p axiom",
   "update_time":"2026-04-29T02:01:10Z",
-  "updater":"skyler@entrada.ai",
+  "updater":"abarreto@shorecp.com",
   "url":"https://atlas-2543889327043640.aws.databricksapps.com",
   "user_api_scopes": [
     "sql",

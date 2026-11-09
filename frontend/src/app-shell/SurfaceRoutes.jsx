@@ -21,7 +21,7 @@ const AssetHubPage = lazy(() => import("../surfaces/asset/AssetHubPage.jsx"));
 const AssetPickerPage = lazy(() => import("../surfaces/asset/AssetPickerPage.jsx"));
 const LineagePage = lazy(() => import("../surfaces/lineage/LineagePage.jsx"));
 const StewardshipPage = lazy(() => import("../surfaces/stewardship/StewardshipPage.jsx"));
-const DataPactPage = lazy(() => import("../surfaces/datapact/DataPactPage.jsx"));
+const EmetPage = lazy(() => import("../surfaces/emet/emetPage.jsx"));
 const EvidencePage = lazy(() => import("../surfaces/evidence/EvidencePage.jsx"));
 const GlossaryPage = lazy(() => import("../surfaces/glossary/GlossaryPage.jsx"));
 const HomePage = lazy(() => import("../surfaces/home/HomePage.jsx"));
@@ -32,7 +32,7 @@ const AiAssetPage = lazy(() => import("../surfaces/ai/AiAssetPage.jsx"));
 
 function RouteFallback({ eyebrow, message }) {
   return (
-    <section className="ga-shell-route-state">
+    <section className="ax-shell-route-state">
       <ShellStateCard eyebrow={eyebrow} loading message={message} title="Preparing the workspace surface." />
     </section>
   );
@@ -88,10 +88,10 @@ function DiscoveryRoute() {
     >
       {/* The rebuilt surface is router-self-sufficient (useSurfaceParams /
           usePeek); only shell-owned signals — bootstrap seed + boot state +
-          Atlas AI availability — are threaded. */}
+          Axiom AI availability — are threaded. */}
       <DiscoveryPage
-        atlasAiAvailable={shellCtx.atlasAiAvailable}
-        atlasAiUnavailableReason={shellCtx.atlasAiUnavailableReason}
+        axiomAiAvailable={shellCtx.axiomAiAvailable}
+        axiomAiUnavailableReason={shellCtx.axiomAiUnavailableReason}
         bootMessage={shellCtx.effectiveBootMessage}
         bootState={shellCtx.effectiveBootState}
         bootstrap={shellCtx.bootstrap}
@@ -208,10 +208,10 @@ function StewardshipRoute() {
 }
 
 /* ------------------------------------------------------------------ */
-/* DataPact Control Center                                              */
+/* emet Control Center                                              */
 /* ------------------------------------------------------------------ */
 
-function DataPactRoute() {
+function EmetRoute() {
   const shellCtx = useShellContext();
   // Router-self-sufficient: the surface reads ?tab/?run/?job via
   // useSurfaceParams and performs its own authoritative OBO detection. Only
@@ -222,12 +222,12 @@ function DataPactRoute() {
     <Suspense
       fallback={
         <RouteFallback
-          eyebrow="Loading DataPact"
-          message="Detecting the DataPact control plane and loading validation results."
+          eyebrow="Loading emet"
+          message="Detecting the emet control plane and loading validation results."
         />
       }
     >
-      <DataPactPage shell={shellCtx.shell} />
+      <EmetPage shell={shellCtx.shell} />
     </Suspense>
   );
 }
@@ -242,7 +242,7 @@ function GlossaryRoute() {
   // router-self-sufficient — it reads /glossary/:termId via useParams and
   // ?tab=/?cde=/?q=/?status= via useSurfaceParams, and renders real anchors
   // through the system refs contract. The legacy pending-term handoff
-  // (ga-pending-glossary-term sessionStorage + ga:select-glossary-term
+  // (ax-pending-glossary-term sessionStorage + ax:select-glossary-term
   // window event) is dead: nav/routes.js promotes legacy ?term= links to
   // the durable /glossary/<termId> path in the canonical gate upstream.
   // Only shell identity rides in — G6 term Approve/Reject is steward/admin-gated.
@@ -396,7 +396,7 @@ export function SurfaceRoutes() {
       <Route element={<AssetPickerRoute />} path="/assets" />
       <Route element={<AssetHubRoute />} path="/assets/*" />
       <Route element={<StewardshipRoute />} path="/stewardship" />
-      <Route element={<DataPactRoute />} path="/datapact" />
+      <Route element={<EmetRoute />} path="/emet" />
       <Route element={<AiRoute />} path="/ai" />
       <Route element={<AiRoute detail />} path="/ai/assets/*" />
       <Route element={<GlossaryRoute />} path="/glossary/*" />

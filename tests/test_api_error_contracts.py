@@ -9,12 +9,12 @@ from fastapi import HTTPException
 from fastapi.exceptions import RequestValidationError
 
 import runtime_app
-from atlas.api import response as response_api
+from axiom.api import response as response_api
 
 
 def _request(request_id: str = "req-123", method: str = "GET", path: str = "/api/test") -> SimpleNamespace:
     return SimpleNamespace(
-        headers={"X-GOVAT-Client-Request-ID": request_id},
+        headers={"X-AXIOM-Client-Request-ID": request_id},
         state=SimpleNamespace(http_request_id=request_id),
         url=SimpleNamespace(path=path),
         method=method,
@@ -94,7 +94,7 @@ class ApiErrorContractTests(unittest.TestCase):
         )
         response = asyncio.run(
             runtime_app.unhandled_exception_handler(
-                _request("scope-id", method="GET", path="/api/atlas/admin/control-center"),
+                _request("scope-id", method="GET", path="/api/axiom/admin/control-center"),
                 PermissionError(raw),
             )
         )

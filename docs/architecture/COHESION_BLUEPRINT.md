@@ -1,4 +1,4 @@
-# Governance Atlas — Cohesion Rebuild (canonical architecture)
+# Axiom — Cohesion Rebuild (canonical architecture)
 
 Status: **decided law** for the experience-layer rebuild (2026-07-21). Synthesized from three
 adversarial blueprints: product/IA, frontend technical inventory, and the Asset 360 forensic
@@ -54,11 +54,11 @@ catalog/domain → `/discovery?filters=…`.
 1. **Component kit** `frontend/src/components/system/` — PageShell, SectionCard, StatTile,
    EntityChip, DataTable, StateViews (Loading/Empty/Unavailable/StatusBanner — the only
    status renderings allowed), Toast, Drawer, TabStrip (URL-bound via `param`), FilterBar,
-   Badge, Button. One `system.css`, all `ga-*` tokens. Dependencies point inward only.
-2. **Data contract** `hooks/useAtlasQuery.js` + `lib/envelope.js` — the single
+   Badge, Button. One `system.css`, all `ax-*` tokens. Dependencies point inward only.
+2. **Data contract** `hooks/useAxiomQuery.js` + `lib/envelope.js` — the single
    envelope-status implementation; bounded polling mandatory (`poll.maxAttempts`); seeds
    render as `hydrating` (never blank "loading"); refresh failures degrade, never wipe.
-   No component may import fetch/useQuery/atlasQueryClient or interpret `meta.state`.
+   No component may import fetch/useQuery/axiomQueryClient or interpret `meta.state`.
 3. **Navigation fabric** `frontend/src/nav/` — `routes.js` table (surface, path, aliases,
    nav metadata, params schema) drives `<Routes>`, the rail, the palette, and
    `navigate(entityRef|surfaceRef)`. `useSurfaceParams(schema)` for typed URL state.
@@ -69,7 +69,7 @@ catalog/domain → `/discovery?filters=…`.
 ## Cohesion laws (permanent, CI-enforced)
 
 1. One entity model — one route per entity kind, one EntityChip; the text is the anchor.
-2. One number per concept — semantics live in `atlas/services/semantics.py`; the frontend
+2. One number per concept — semantics live in `axiom/services/semantics.py`; the frontend
    renders payload labels, never re-derives. Two same-named numbers with different values
    on one screen is a release blocker.
 3. One loading grammar — skeleton = loading; "—" + reason = unavailable; "Collecting since
@@ -86,7 +86,7 @@ catalog/domain → `/discovery?filters=…`.
 8. CI guardrails: `scripts/check-css.mjs` (no new `gh-*`, no raw hex outside tokens, no
    `!important`, no CSS imports outside main.jsx, gh-count ratchet); ESLint restrictions
    (fetch/useQuery/storage/events/history bans outside sanctioned modules);
-   `refetchInterval` only inside useAtlasQuery.
+   `refetchInterval` only inside useAxiomQuery.
 
 ## Waves
 
@@ -96,7 +96,7 @@ catalog/domain → `/discovery?filters=…`.
   activity payloads carry actor/priority/task ids; distinct `dataUpdatedAt`/`lastAltered`
   fields).
 - **B:** B1 AppShell rewrite (Routes from the table; App.jsx → ~150 lines; AppFrame dies;
-  Atlas AI extracted to a dock) · B2 Asset 360 rewritten on the kit (PageShell + `?tab=` +
+  Axiom AI extracted to a dock) · B2 Asset 360 rewritten on the kit (PageShell + `?tab=` +
   EntityChips; two parallel queries replacing the 4-stage waterfall; real header actions —
   Certify writes + audits, Request composer, honest lineage button; teardown rebuild spec
   items 1-12).

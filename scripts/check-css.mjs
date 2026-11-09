@@ -6,7 +6,7 @@
  *   gh         legacy `gh-` prefix usage (classes and `--gh-` token aliases) in
  *              CSS/JSX/JS. May only go DOWN per file; new files must be at 0.
  *   hex        raw hex colors outside design/tokens/ — palette values belong in
- *              `--ga-*` tokens (CLAUDE.md: never hard-code a palette color).
+ *              `--ax-*` tokens (CLAUDE.md: never hard-code a palette color).
  *   important  `!important` outside the third-party-override whitelist.
  *   cssImport  `import "*.css"` outside main.jsx and components/system/ —
  *              component-level CSS imports create cascade-order nondeterminism.
@@ -70,8 +70,8 @@ const IMPORTANT_RE = /!\s*important/gu;
 const CSS_IMPORT_RE = /import\s+(?:[^"';]*?from\s+)?["'][^"']+\.css(?:\?[^"']*)?["']/gu;
 
 const METRIC_HELP = {
-  gh: "new legacy gh- class/token usage — use ga-* system classes and --ga-* tokens",
-  hex: "raw hex color — use a --ga-* design token (tokens live in design/tokens/)",
+  gh: "new legacy gh- class/token usage — use ax-* system classes and --ax-* tokens",
+  hex: "raw hex color — use a --ax-* design token (tokens live in design/tokens/)",
   important: "!important — restructure specificity instead (whitelist is for third-party overrides only)",
   cssImport: "component-level CSS import — all app CSS is imported from main.jsx (or components/system/)",
 };

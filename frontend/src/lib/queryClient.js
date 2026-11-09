@@ -1,6 +1,6 @@
 import { QueryClient } from "@tanstack/react-query";
 
-export function createAtlasQueryClient() {
+export function createAxiomQueryClient() {
   return new QueryClient({
     defaultOptions: {
       queries: {
@@ -17,4 +17,4 @@ export function createAtlasQueryClient() {
   });
 }
 
-export const atlasQueryClient = createAtlasQueryClient();
+export const axiomQueryClient = createAxiomQueryClient();

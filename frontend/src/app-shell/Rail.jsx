@@ -8,14 +8,14 @@
  * the hub's real /assets/<fqn> address.
  *
  * Items are REAL <a href> anchors (cross-linking law: middle-clickable,
- * copyable), with left-click routed through useAtlasNavigate.
+ * copyable), with left-click routed through useAxiomNavigate.
  */
 
-import entradaLogoUrl from "../assets/brand/entrada-logo.png";
+import scpMarkUrl from "../assets/brand/scp-mark.svg";
 import { UserChip } from "../components/primitives/UserChip";
 import { navSections } from "../nav/routes.js";
 import { refHref } from "../nav/refs.js";
-import { useAtlasNavigate } from "../nav/useAtlasNavigate.js";
+import { useAxiomNavigate } from "../nav/useAxiomNavigate.js";
 import { SHELL_CLASSNAMES } from "./legacyShellContract.js";
 
 const Icon = ({ children }) => (
@@ -44,7 +44,7 @@ const RAIL_ICONS = {
   listChecks: <Icon><path d="m4 7 1.5 1.5L8.5 5" /><path d="M11 7h9" /><path d="m4 13 1.5 1.5 3-3.5" /><path d="M11 13h9" /><path d="m4 19 1.5 1.5 3-3.5" /><path d="M11 19h9" /></Icon>,
   book: <Icon><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 0-3-3Z" /><path d="M5 4v13" /><path d="M9 8h6" /><path d="M9 12h6" /></Icon>,
   shieldCheck: <Icon><path d="M12 3 5 6v5c0 4.5 3 7.5 7 10 4-2.5 7-5.5 7-10V6l-7-3Z" /><path d="m9 12 2 2 4-5" /></Icon>,
-  datapact: <Icon><path d="M12 3 5 6v5c0 4.5 3 7.5 7 10 4-2.5 7-5.5 7-10V6l-7-3Z" /><path d="M9 11.5h6" /><path d="M9 14.5h4" /></Icon>,
+  emet: <Icon><path d="M12 3 5 6v5c0 4.5 3 7.5 7 10 4-2.5 7-5.5 7-10V6l-7-3Z" /><path d="M9 11.5h6" /><path d="M9 14.5h4" /></Icon>,
   sliders: <Icon><path d="M4 6h10" /><path d="M18 6h2" /><path d="M4 12h2" /><path d="M10 12h10" /><path d="M4 18h8" /><path d="M16 18h4" /><circle cx="16" cy="6" r="2" /><circle cx="8" cy="12" r="2" /><circle cx="14" cy="18" r="2" /></Icon>,
   help: <Icon><circle cx="12" cy="12" r="9" /><path d="M9.5 9a2.7 2.7 0 0 1 5 1.4c0 1.8-2.5 2.1-2.5 4" /><path d="M12 17.5h.01" /></Icon>,
   sparkles: <Icon><path d="M12 4 13.8 9 19 10.8 13.8 12.6 12 18l-1.8-5.4L5 10.8 10.2 9Z" /><path d="M19 3v4" /><path d="M17 5h4" /></Icon>,
@@ -130,7 +130,7 @@ export function Rail({
   onOpenCapabilities,
   onSignOut,
 }) {
-  const navigate = useAtlasNavigate();
+  const navigate = useAxiomNavigate();
 
   const renderItem = (item) => {
     const target = item.entityRef || { surface: item.surface, params: item.params || {} };
@@ -144,7 +144,7 @@ export function Rail({
       <a
         aria-current={active ? "page" : undefined}
         aria-disabled={shellDisabled ? "true" : undefined}
-        className={`ga-side-nav-item ga-shell-nav-item ${active ? "is-active" : ""}`.trim()}
+        className={`ax-side-nav-item ax-shell-nav-item ${active ? "is-active" : ""}`.trim()}
         href={href}
         key={item.key || item.surface}
         onClick={(event) => {
@@ -155,9 +155,9 @@ export function Rail({
         }}
         title={shellDisabled && shellDisabledReason ? shellDisabledReason : item.title || item.label}
       >
-        <span className="ga-side-nav-icon">{RAIL_ICONS[item.icon] || RAIL_ICONS.gauge}</span>
+        <span className="ax-side-nav-icon">{RAIL_ICONS[item.icon] || RAIL_ICONS.gauge}</span>
         <span>{item.label}</span>
-        {badgeValue > 0 ? <span className="ga-side-nav-badge">{badgeLabel(badgeValue)}</span> : null}
+        {badgeValue > 0 ? <span className="ax-side-nav-badge">{badgeLabel(badgeValue)}</span> : null}
       </a>
     );
   };
@@ -171,23 +171,23 @@ export function Rail({
 
   return (
     <aside
-      aria-label="Governance Atlas navigation"
-      className={`ga-side-nav ${SHELL_CLASSNAMES.rail}`}
+      aria-label="Axiom navigation"
+      className={`ax-side-nav ${SHELL_CLASSNAMES.rail}`}
     >
-      <div className="ga-side-nav-logo">
-        <img src={entradaLogoUrl} alt="Entrada" />
+      <div className="ax-side-nav-logo">
+        <img src={scpMarkUrl} alt="Shore Capital Partners" />
         <span>
-          <strong>Governance Atlas</strong>
-          <em>By Entrada</em>
+          <strong>Axiom</strong>
+          <em>By Shore Capital Partners</em>
         </span>
       </div>
-      <nav aria-label="Primary modules" className="ga-side-nav-items">
+      <nav aria-label="Primary modules" className="ax-side-nav-items">
         {sections.map((section) => (
-          <div className="ga-side-nav-section" key={section.id}>
+          <div className="ax-side-nav-section" key={section.id}>
             {section.label ? (
-              <div className="ga-side-nav-section-title">{section.label}</div>
+              <div className="ax-side-nav-section-title">{section.label}</div>
             ) : (
-              <div aria-hidden="true" className="ga-side-nav-section-title ga-shell-nav-divider" />
+              <div aria-hidden="true" className="ax-side-nav-section-title ax-shell-nav-divider" />
             )}
             {section.items.map((item) => renderItem(item))}
             {/* PERMANENT Asset 360 entry (owner directive 1): routes.js
@@ -203,7 +203,7 @@ export function Rail({
           </div>
         ))}
       </nav>
-      <div className="ga-side-nav-user">
+      <div className="ax-side-nav-user">
         <UserChip
           userEmail={shell?.userEmail || ""}
           userName={shell?.userName || shell?.displayName || shell?.userEmail || ""}

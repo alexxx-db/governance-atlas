@@ -6,7 +6,7 @@ import { useLineageGraphV2 } from "../../components/lineage-v2/useLineageGraphV2
 import { usePaletteSearch } from "../../hooks/usePaletteSearch";
 import { useLineageRecommendations } from "../../hooks/useLineageRecommendations";
 import { readRecentLineage } from "../../lib/prefs";
-import { useAtlasNavigate } from "../../nav/useAtlasNavigate";
+import { useAxiomNavigate } from "../../nav/useAxiomNavigate";
 import { useSurfaceParams } from "../../nav/useSurfaceParams";
 import { compactCount } from "./lineagePresentation.js";
 
@@ -72,7 +72,7 @@ function RankedAssetCard({ item, onOpen, rank }) {
 
   return (
     <div
-      className="ga-lin-rank-card"
+      className="ax-lin-rank-card"
       onClick={handleClick}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
@@ -84,39 +84,39 @@ function RankedAssetCard({ item, onOpen, rank }) {
       role="button"
       tabIndex={0}
     >
-      <div className="ga-lin-rank-badge" aria-hidden="true">{rank}</div>
-      <div className="ga-lin-rank-body">
-        <div className="ga-lin-rank-head">
+      <div className="ax-lin-rank-badge" aria-hidden="true">{rank}</div>
+      <div className="ax-lin-rank-body">
+        <div className="ax-lin-rank-head">
           <EntityChip
             appearance="inline"
-            className="ga-lin-rank-title"
+            className="ax-lin-rank-title"
             entity={{ kind: "lineage", fqn: item.fqn, label: item.name || item.fqn }}
           />
-          {objectType ? <span className="ga-lin-rank-type">{objectType}</span> : null}
+          {objectType ? <span className="ax-lin-rank-type">{objectType}</span> : null}
         </div>
-        <div className="ga-lin-rank-path">{assetPathMeta(item)}</div>
-        <div className="ga-lin-rank-edges">
-          <span className="ga-lin-rank-edgecount">
+        <div className="ax-lin-rank-path">{assetPathMeta(item)}</div>
+        <div className="ax-lin-rank-edges">
+          <span className="ax-lin-rank-edgecount">
             <strong>{totalLabel}</strong> edges
           </span>
-          <span className="ga-lin-rank-split">
-            <span className="ga-lin-rank-up">{compactCount(up)} up</span>
-            <span className="ga-lin-rank-splitbar" aria-hidden="true">
+          <span className="ax-lin-rank-split">
+            <span className="ax-lin-rank-up">{compactCount(up)} up</span>
+            <span className="ax-lin-rank-splitbar" aria-hidden="true">
               <span style={{ width: `${upPct}%` }} />
             </span>
-            <span className="ga-lin-rank-down">{compactCount(down)} down</span>
+            <span className="ax-lin-rank-down">{compactCount(down)} down</span>
           </span>
         </div>
         {(domain || owner || certification || sensitivity) ? (
-          <div className="ga-lin-rank-chips">
+          <div className="ax-lin-rank-chips">
             {domain ? (
               <EntityChip appearance="chip" entity={{ kind: "domain", name: domain, label: domain }} />
             ) : null}
             {owner ? (
               <EntityChip appearance="chip" entity={{ kind: "owner", email: owner, label: owner }} />
             ) : null}
-            {certification ? <span className="ga-lin-rank-tag tone-good">{certification}</span> : null}
-            {sensitivity ? <span className="ga-lin-rank-tag tone-warn">{sensitivity}</span> : null}
+            {certification ? <span className="ax-lin-rank-tag tone-good">{certification}</span> : null}
+            {sensitivity ? <span className="ax-lin-rank-tag tone-warn">{sensitivity}</span> : null}
           </div>
         ) : null}
       </div>
@@ -134,12 +134,12 @@ function FeaturedPreview({ fqn, label, onOpen }) {
   const graph = useLineageGraphV2(fqn || "", { enabled: Boolean(fqn) });
   if (!fqn) return null;
   return (
-    <aside className="ga-lin-feature">
-      <div className="ga-lineage-v2-section-title">
+    <aside className="ax-lin-feature">
+      <div className="ax-lineage-v2-section-title">
         <span>Featured graph</span>
         <small>Live preview · click to explore</small>
       </div>
-      <div className="ga-lin-feature-frame">
+      <div className="ax-lin-feature-frame">
         <LineageCanvasV2
           error={graph.error}
           focusId={fqn}
@@ -151,7 +151,7 @@ function FeaturedPreview({ fqn, label, onOpen }) {
           warming={graph.warming}
         />
       </div>
-      <button className="ga-lin-feature-open" onClick={() => onOpen(fqn)} type="button">
+      <button className="ax-lin-feature-open" onClick={() => onOpen(fqn)} type="button">
         Open {label || fqn} lineage →
       </button>
     </aside>
@@ -161,7 +161,7 @@ function FeaturedPreview({ fqn, label, onOpen }) {
 const HOW_IT_WORKS = [
   {
     title: "Anchor on an asset",
-    body: "Pick any governed table or view. Atlas walks Unity Catalog lineage outward from that focus.",
+    body: "Pick any governed table or view. Axiom walks Unity Catalog lineage outward from that focus.",
   },
   {
     title: "Follow upstream & downstream",
@@ -175,7 +175,7 @@ const HOW_IT_WORKS = [
 
 export function LineagePicker() {
   const [params, setParams] = useSurfaceParams(PICKER_PARAMS_SCHEMA);
-  const navigate = useAtlasNavigate();
+  const navigate = useAxiomNavigate();
   const query = params.q || "";
   const search = usePaletteSearch(query);
   const recommendations = useLineageRecommendations({ enabled: true, limit: 8 });
@@ -201,37 +201,37 @@ export function LineagePicker() {
 
   return (
     <PageShell
-      className="ga-lin-page"
+      className="ax-lin-page"
       eyebrow="Knowledge & Proof"
       title="Lineage Atlas"
       subtitle="Trace any governed asset from its upstream sources through to the downstream consumers you can see, with owners, quality and access evidence one click away."
     >
-      <div className="ga-lin-home">
-        <div className="ga-lin-home-main">
-          <div className="ga-lin-picker-search">
-            <label className="ga-lin-picker-label" htmlFor="ga-lin-picker-input">
+      <div className="ax-lin-home">
+        <div className="ax-lin-home-main">
+          <div className="ax-lin-picker-search">
+            <label className="ax-lin-picker-label" htmlFor="ax-lin-picker-input">
               Search for an asset to open its lineage
             </label>
             <input
               autoFocus
-              className="ga-lin-search-input"
-              id="ga-lin-picker-input"
+              className="ax-lin-search-input"
+              id="ax-lin-picker-input"
               onChange={(event) => setParams({ q: event.target.value })}
               placeholder="Search tables, views, catalogs…"
               type="search"
               value={query}
             />
             {query.trim() || search.searching || search.searchError ? (
-              <div className="ga-lin-picker-results">
+              <div className="ax-lin-picker-results">
                 {search.searching ? (
-                  <div className="ga-lin-picker-status" role="status">Searching assets…</div>
+                  <div className="ax-lin-picker-status" role="status">Searching assets…</div>
                 ) : search.searchError ? (
-                  <div className="ga-lin-picker-status">{search.searchError}</div>
+                  <div className="ax-lin-picker-status">{search.searchError}</div>
                 ) : search.assets.length ? (
                   search.assets.slice(0, 8).map((candidate) => (
                     <EntityChip
                       appearance="row"
-                      className="ga-lin-rec-row"
+                      className="ax-lin-rec-row"
                       entity={{
                         kind: "lineage",
                         fqn: candidate.fqn,
@@ -242,14 +242,14 @@ export function LineagePicker() {
                     />
                   ))
                 ) : (
-                  <div className="ga-lin-picker-status">No matching assets.</div>
+                  <div className="ax-lin-picker-status">No matching assets.</div>
                 )}
               </div>
             ) : null}
           </div>
 
-          <div className="ga-lin-ranked">
-            <div className="ga-lineage-v2-section-title">
+          <div className="ax-lin-ranked">
+            <div className="ax-lineage-v2-section-title">
               <span>High-lineage assets</span>
               <small>
                 {recommendationsDegraded
@@ -258,45 +258,45 @@ export function LineagePicker() {
               </small>
             </div>
             {recommendations.loading ? (
-              <div className="ga-lin-rank-grid">
+              <div className="ax-lin-rank-grid">
                 {[0, 1, 2, 3].map((i) => (
-                  <div className="ga-lin-rank-card is-skeleton" key={i} aria-hidden="true" />
+                  <div className="ax-lin-rank-card is-skeleton" key={i} aria-hidden="true" />
                 ))}
               </div>
             ) : recommendations.error ? (
-              <p className="ga-lineage-v2-rail-empty">{recommendations.error}</p>
+              <p className="ax-lineage-v2-rail-empty">{recommendations.error}</p>
             ) : items.length ? (
               <>
                 {recommendationsDegraded ? (
-                  <p className="ga-lineage-v2-rail-empty">
+                  <p className="ax-lineage-v2-rail-empty">
                     Each candidate is verified openable for you, but edge counts include
                     assets outside your visible catalogs.
                   </p>
                 ) : null}
-                <div className="ga-lin-rank-grid">
+                <div className="ax-lin-rank-grid">
                   {items.slice(0, 6).map((item, index) => (
                     <RankedAssetCard item={item} key={item.fqn} onOpen={openLineage} rank={index + 1} />
                   ))}
                 </div>
               </>
             ) : (
-              <p className="ga-lineage-v2-rail-empty">
+              <p className="ax-lineage-v2-rail-empty">
                 No ranked high-lineage assets were returned for the current visibility scope.
               </p>
             )}
           </div>
 
           {recentFqns.length ? (
-            <div className="ga-lin-recent">
-              <div className="ga-lineage-v2-section-title">
+            <div className="ax-lin-recent">
+              <div className="ax-lineage-v2-section-title">
                 <span>Recent journeys</span>
                 <small>Lineage graphs you opened before</small>
               </div>
-              <div className="ga-lin-recent-rows">
+              <div className="ax-lin-recent-rows">
                 {recentFqns.map((fqn) => (
                   <EntityChip
                     appearance="row"
-                    className="ga-lin-rec-row"
+                    className="ax-lin-rec-row"
                     entity={{
                       kind: "lineage",
                       fqn,
@@ -316,10 +316,10 @@ export function LineagePicker() {
         ) : null}
       </div>
 
-      <div className="ga-lin-how">
+      <div className="ax-lin-how">
         {HOW_IT_WORKS.map((step, index) => (
-          <div className="ga-lin-how-step" key={step.title}>
-            <span className="ga-lin-how-num" aria-hidden="true">{index + 1}</span>
+          <div className="ax-lin-how-step" key={step.title}>
+            <span className="ax-lin-how-num" aria-hidden="true">{index + 1}</span>
             <div>
               <strong>{step.title}</strong>
               <p>{step.body}</p>

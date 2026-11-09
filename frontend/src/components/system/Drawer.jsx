@@ -85,15 +85,15 @@ export function Drawer({
   const style =
     width != null
       ? /** @type {import('react').CSSProperties} */ ({
-          "--ga-sys-drawer-width": typeof width === "number" ? `${width}px` : String(width),
+          "--ax-sys-drawer-width": typeof width === "number" ? `${width}px` : String(width),
         })
       : undefined;
 
   return createPortal(
-    <div className="ga-sys-drawer-root">
-      <div className="ga-sys-drawer-scrim" onClick={() => onCloseRef.current?.()} aria-hidden="true" />
+    <div className="ax-sys-drawer-root">
+      <div className="ax-sys-drawer-scrim" onClick={() => onCloseRef.current?.()} aria-hidden="true" />
       <aside
-        className={`ga-sys-drawer ${className}`.trim()}
+        className={`ax-sys-drawer ${className}`.trim()}
         role="dialog"
         aria-modal="true"
         aria-labelledby={title ? titleId : undefined}
@@ -101,7 +101,7 @@ export function Drawer({
         tabIndex={-1}
         style={style}
       >
-        <header className="ga-sys-drawer-header">
+        <header className="ax-sys-drawer-header">
           {title ? <h2 id={titleId}>{title}</h2> : <span />}
           <Button
             variant="icon"
@@ -111,8 +111,8 @@ export function Drawer({
             onClick={() => onCloseRef.current?.()}
           />
         </header>
-        <div className="ga-sys-drawer-body">{children}</div>
-        {footer ? <footer className="ga-sys-drawer-footer">{footer}</footer> : null}
+        <div className="ax-sys-drawer-body">{children}</div>
+        {footer ? <footer className="ax-sys-drawer-footer">{footer}</footer> : null}
       </aside>
     </div>,
     document.body,

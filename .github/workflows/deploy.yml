@@ -1,4 +1,4 @@
-name: Deploy Governance Atlas
+name: Deploy Axiom
 
 on:
   push:
@@ -84,23 +84,23 @@ jobs:
         run: python3 scripts/validate_repo_hygiene.py
 
       - name: Backend compile check
-        run: python3 -m py_compile run_app.py runtime_app.py atlas/api/*.py atlas/services/*.py atlas/*.py scripts/prepare_bundle.py scripts/validate_repo_hygiene.py
+        run: python3 -m py_compile run_app.py runtime_app.py axiom/api/*.py axiom/services/*.py axiom/*.py scripts/prepare_bundle.py scripts/validate_repo_hygiene.py
 
       - name: Backend unit tests
         run: python3 -m unittest discover -s tests
 
       - name: Prepare clean bundle directory
-        run: python3 scripts/prepare_bundle.py --output "${RUNNER_TEMP}/atlas_bundle"
+        run: python3 scripts/prepare_bundle.py --output "${RUNNER_TEMP}/axiom_bundle"
 
       - name: Install Databricks CLI
         uses: databricks/setup-cli@602f285bac0c85e5985bf4c16d5a2befed0578d9 # v1.14.1
 
       - name: Validate packaged bundle
-        working-directory: ${{ runner.temp }}/atlas_bundle
+        working-directory: ${{ runner.temp }}/axiom_bundle
         run: databricks bundle validate -t dev
 
       - name: Summarize packaged bundle
-        working-directory: ${{ runner.temp }}/atlas_bundle
+        working-directory: ${{ runner.temp }}/axiom_bundle
         run: databricks bundle summary -t dev
 
   deploy:
@@ -117,24 +117,24 @@ jobs:
     environment: ${{ github.event.inputs.target }}
     env:
       TARGET: ${{ github.event.inputs.target }}
-      BUNDLE_VAR_app_name: ${{ vars.APP_NAME || 'atlas' }}
+      BUNDLE_VAR_app_name: ${{ vars.APP_NAME || 'axiom' }}
       BUNDLE_VAR_warehouse_id: ${{ vars.DATABRICKS_WAREHOUSE_ID }}
       BUNDLE_VAR_gov_catalog: ${{ vars.GOV_CATALOG }}
       BUNDLE_VAR_gov_schema: ${{ vars.GOV_SCHEMA }}
       BUNDLE_VAR_admin_emails: ${{ vars.ADMIN_EMAILS }}
       BUNDLE_VAR_discovery_catalogs: ${{ vars.DISCOVERY_CATALOGS }}
       BUNDLE_VAR_environment_label: ${{ vars.ENVIRONMENT_LABEL }}
-      BUNDLE_VAR_datapact_catalog: ${{ vars.DATAPACT_CATALOG || 'not-configured' }}
-      BUNDLE_VAR_ai_generation_endpoint: ${{ vars.AI_GENERATION_ENDPOINT || 'databricks-claude-opus-4-8' }}
-      BUNDLE_VAR_lineage_lookback_days: ${{ vars.LINEAGE_LOOKBACK_DAYS || '365' }}
-      BUNDLE_VAR_atlas_ai_provider: ${{ vars.ATLAS_AI_PROVIDER || 'local' }}
+      BUNDLE_VAR_emet_catalog: ${{ vars.EMET_CATALOG || 'not-configured' }}
+      BUNDLE_VAR_ai_generation_endpoint: ${{ vars.AI_GENERATION_ENDPOINT || 'databricks-claude-sonnet-4-6' }}
+      BUNDLE_VAR_lineage_lookback_days: ${{ vars.LINEAGE_LOOKBACK_DAYS || '90' }}
+      BUNDLE_VAR_axiom_ai_provider: ${{ vars.AXIOM_AI_PROVIDER || 'local' }}
       BUNDLE_VAR_genie_space_id: ${{ vars.GENIE_SPACE_ID || 'not-configured' }}
-      BUNDLE_VAR_atlas_ai_require_benchmark: ${{ vars.ATLAS_AI_REQUIRE_BENCHMARK || 'false' }}
+      BUNDLE_VAR_axiom_ai_require_benchmark: ${{ vars.AXIOM_AI_REQUIRE_BENCHMARK || 'false' }}
       BUNDLE_VAR_lakebase_enabled: ${{ vars.LAKEBASE_ENABLED || 'false' }}
       BUNDLE_VAR_lakebase_endpoint_name: ${{ vars.LAKEBASE_ENDPOINT_NAME || 'not-configured' }}
       BUNDLE_VAR_lakebase_branch: ${{ vars.LAKEBASE_BRANCH || 'not-configured' }}
       BUNDLE_VAR_lakebase_database_resource: ${{ vars.LAKEBASE_DATABASE_RESOURCE || 'not-configured' }}
-      BUNDLE_VAR_lakebase_schema: ${{ vars.LAKEBASE_SCHEMA || 'atlas_app' }}
+      BUNDLE_VAR_lakebase_schema: ${{ vars.LAKEBASE_SCHEMA || 'axiom_app' }}
       BUNDLE_VAR_ai_features_enabled: ${{ vars.AI_FEATURES_ENABLED || 'false' }}
       BUNDLE_VAR_ai_intake_tag_key: ${{ vars.AI_INTAKE_TAG_KEY || 'edw_intake_id' }}
       BUNDLE_VAR_ai_tier_tag_key: ${{ vars.AI_TIER_TAG_KEY || 'ai_risk_tier' }}
@@ -171,19 +171,26 @@ jobs:
       - name: Install Databricks CLI
         uses: databricks/setup-cli@602f285bac0c85e5985bf4c16d5a2befed0578d9 # v1.14.1
 
+      - name: Install packaging dependencies
+        run: python3 -m pip install PyYAML==6.0.2
+
       - name: Prepare packaged bundle for target
-        run: python3 scripts/prepare_bundle.py --output "${RUNNER_TEMP}/atlas_bundle" --target "$TARGET"
+        run: python3 scripts/prepare_bundle.py --output "${RUNNER_TEMP}/axiom_bundle" --target "$TARGET"
 
       - name: Deploy packaged bundle
-        working-directory: ${{ runner.temp }}/atlas_bundle
+        working-directory: ${{ runner.temp }}/axiom_bundle
         run: databricks bundle deploy -t "$TARGET"
+
+      - name: Migrate governance schema
+        working-directory: ${{ runner.temp }}/axiom_bundle
+        run: databricks bundle run axiom_schema_migrate -t "$TARGET"
 
       - name: Deploy Databricks App snapshot
         run: |
           user_name="$(databricks current-user me -o json | python3 -c 'import json,sys; print(json.load(sys.stdin)["userName"])')"
           databricks apps start "$BUNDLE_VAR_app_name" --timeout 20m
           databricks apps deploy "$BUNDLE_VAR_app_name" \
-            --source-code-path "/Workspace/Users/${user_name}/.bundle/atlas/${TARGET}/files" \
+            --source-code-path "/Workspace/Users/${user_name}/.bundle/axiom/${TARGET}/files" \
             --timeout 20m
 
       - name: Summary

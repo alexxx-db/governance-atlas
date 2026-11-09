@@ -24,14 +24,14 @@ function ActivityRow({ row }) {
   const taskId = String(row.taskId || "").trim();
 
   return (
-    <li className="ga-asset-activity-row">
-      <div className="ga-asset-activity-main">
-        <span className="ga-asset-activity-title">{row.title || "Activity"}</span>
+    <li className="ax-asset-activity-row">
+      <div className="ax-asset-activity-main">
+        <span className="ax-asset-activity-title">{row.title || "Activity"}</span>
         {priority ? <Badge size="sm" tone={priorityTone(row.priority)}>{priority}</Badge> : null}
         {status ? <Badge size="sm" status={status} /> : null}
       </div>
-      {row.detail ? <p className="ga-asset-activity-detail">{row.detail}</p> : null}
-      <div className="ga-asset-activity-meta">
+      {row.detail ? <p className="ax-asset-activity-detail">{row.detail}</p> : null}
+      <div className="ax-asset-activity-meta">
         {actor ? (
           <EntityChip appearance="inline" entity={{ kind: "owner", email: actor, label: actor }} />
         ) : null}
@@ -61,7 +61,7 @@ export function ActivityTab({ a360, a360Loading }) {
       {!a360 && a360Loading ? (
         <LoadingState variant="card" lines={4} />
       ) : rows.length ? (
-        <ul className="ga-asset-activity-list">
+        <ul className="ax-asset-activity-list">
           {rows.map((row, index) => (
             <ActivityRow key={row.id || row.displayAuditId || index} row={row} />
           ))}

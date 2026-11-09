@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { Badge, Button, Drawer, EntityChip } from "../../components/system";
 import { useAsset360 } from "../../hooks/useAsset360";
 import { useAssetDetail } from "../../hooks/useAssetDetail";
-import { useAtlasNavigate } from "../../nav/useAtlasNavigate";
+import { useAxiomNavigate } from "../../nav/useAxiomNavigate";
 import { AssetTrustHero } from "./AssetTrustHero";
 import { ExternalLink, catalogExplorerUrl, useWorkspaceHost } from "./ExternalLink";
 
@@ -29,7 +29,7 @@ export function AssetPeekPanel({ fqn = "", open = true, onClose = null }) {
   const active = Boolean(fqn) && open;
   const detail = useAssetDetail(fqn, { sections: PEEK_SECTIONS, enabled: active });
   const a360 = useAsset360(fqn, { enabled: active });
-  const navigate = useAtlasNavigate();
+  const navigate = useAxiomNavigate();
 
   // Same stub guards as AssetHubPage: hydrating inventory stubs are not
   // assets, and unknown owner slots stay busy while /360 is pending —
@@ -74,9 +74,9 @@ export function AssetPeekPanel({ fqn = "", open = true, onClose = null }) {
       open={active}
       onClose={onClose}
       title={asset?.name || fqn}
-      className="ga-asset-peek"
+      className="ax-asset-peek"
       footer={
-        <div className="ga-asset-peek-footer">
+        <div className="ax-asset-peek-footer">
           <ExternalLink href={explorerHref} />
           <Button variant="primary" tone="accent" onClick={openFullRecord}>
             Open full record
@@ -84,7 +84,7 @@ export function AssetPeekPanel({ fqn = "", open = true, onClose = null }) {
         </div>
       }
     >
-      <p className="ga-asset-peek-fqn" title={fqn}>
+      <p className="ax-asset-peek-fqn" title={fqn}>
         {fqn}
       </p>
 
@@ -97,15 +97,15 @@ export function AssetPeekPanel({ fqn = "", open = true, onClose = null }) {
         compact
       />
 
-      <dl className="ga-asset-facts ga-asset-peek-facts">
+      <dl className="ax-asset-facts ax-asset-peek-facts">
         {facts.map((item) => (
-          <div key={item.label} className="ga-asset-fact">
+          <div key={item.label} className="ax-asset-fact">
             <dt>{item.label}</dt>
             <dd>{item.text}</dd>
           </div>
         ))}
         {asset?.domain && asset.domain !== "Unassigned" ? (
-          <div className="ga-asset-fact">
+          <div className="ax-asset-fact">
             <dt>Domain</dt>
             <dd>
               <EntityChip appearance="inline" entity={{ kind: "domain", name: asset.domain }} />

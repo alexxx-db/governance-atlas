@@ -16,7 +16,7 @@ from unittest.mock import patch
 
 import pandas as pd
 
-from atlas.api import insights as insights_api
+from axiom.api import insights as insights_api
 
 
 NOW = datetime.now(timezone.utc).replace(microsecond=0)

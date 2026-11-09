@@ -114,7 +114,7 @@ describe("AiGovernancePage", () => {
   });
 
   it("shows dashes, not zeros, and the reason when no run has completed", async () => {
-    const reason = "No AI reconciliation run has completed yet. Run the atlas-ai-collect-and-reconcile job.";
+    const reason = "No AI reconciliation run has completed yet. Run the axiom-ai-collect-and-reconcile job.";
     api.fetchAiSummary.mockResolvedValue({
       summary: { assetCount: null, shadowAi: null, ambiguousMatches: null, posture: null, findings: null },
       availability: { state: "unavailable", run: null },
@@ -123,7 +123,7 @@ describe("AiGovernancePage", () => {
     api.fetchAiInventory.mockResolvedValue({ items: [], total: null, meta: meta("unavailable", [reason], reason) });
     renderPage();
     expect((await screen.findAllByText(reason)).length).toBeGreaterThan(0);
-    const tiles = screen.getByText("AI assets").closest(".ga-sys-stat-tile");
+    const tiles = screen.getByText("AI assets").closest(".ax-sys-stat-tile");
     expect(within(tiles).getByText("—")).toBeTruthy();
     expect(screen.queryByText("0")).toBeNull();
   });

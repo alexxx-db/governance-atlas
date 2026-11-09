@@ -1,14 +1,14 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { describe, expect, it, vi } from "vitest";
-import { atlasQueryClient } from "../../../lib/queryClient";
+import { axiomQueryClient } from "../../../lib/queryClient";
 import { WorkItemPanel } from "../WorkItemPanel.jsx";
 
 // The panel now mounts AssignToControl, which calls useWorkspaceRoster
 // (react-query) — so every render needs a QueryClientProvider, mirroring the
 // StewardshipPage test harness. renderPanel wraps render + rerender for us.
 const Providers = ({ children }) => (
-  <QueryClientProvider client={atlasQueryClient}>{children}</QueryClientProvider>
+  <QueryClientProvider client={axiomQueryClient}>{children}</QueryClientProvider>
 );
 const renderPanel = (ui, options) => render(ui, { wrapper: Providers, ...options });
 
@@ -30,7 +30,7 @@ const baseItem = {
   kind: "Owner missing",
   status: "Pending",
   priority: "P1",
-  requester: "sky@entrada.ai",
+  requester: "sky@shorecp.com",
   createdAt: "2026-07-01T09:00:00Z",
   assetFqn: "finance_prod.curated.revenue_daily",
 };
@@ -110,13 +110,13 @@ describe("WorkItemPanel evidence trail", () => {
           comments: [
             {
               id: "c-1",
-              author: "ana@entrada.ai",
+              author: "ana@shorecp.com",
               at: "2026-07-03T12:00:00Z",
               text: "Reviewed the ownership evidence.",
               displayAuditId: "AUD-12ab34cd",
             },
             // No mapping: plain comment, no event anchor for this row.
-            { id: "c-2", author: "bo@entrada.ai", at: "2026-07-04T12:00:00Z", text: "Second note." },
+            { id: "c-2", author: "bo@shorecp.com", at: "2026-07-04T12:00:00Z", text: "Second note." },
           ],
         }}
       />,
@@ -175,10 +175,10 @@ describe("WorkItemPanel assign to another steward (G7)", () => {
     fireEvent.click(trigger);
 
     const input = screen.getByLabelText("Assignee email");
-    fireEvent.change(input, { target: { value: "steward@entrada.ai" } });
+    fireEvent.change(input, { target: { value: "steward@shorecp.com" } });
     fireEvent.click(screen.getByRole("button", { name: "Assign" }));
 
-    expect(onAssignTo).toHaveBeenCalledWith("steward@entrada.ai");
+    expect(onAssignTo).toHaveBeenCalledWith("steward@shorecp.com");
     // A successful (truthy) write collapses the picker back to the trigger.
     await waitFor(() => expect(screen.queryByLabelText("Assignee email")).toBeNull());
     expect(screen.getByRole("button", { name: "Assign to…" })).toBeTruthy();
@@ -191,10 +191,10 @@ describe("WorkItemPanel assign to another steward (G7)", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: "Assign to…" }));
     fireEvent.change(screen.getByLabelText("Assignee email"), {
-      target: { value: "ghost@entrada.ai" },
+      target: { value: "ghost@shorecp.com" },
     });
     fireEvent.click(screen.getByRole("button", { name: "Assign" }));
-    await waitFor(() => expect(onAssignTo).toHaveBeenCalledWith("ghost@entrada.ai"));
+    await waitFor(() => expect(onAssignTo).toHaveBeenCalledWith("ghost@shorecp.com"));
     // Rejected write leaves the input in place so the steward can correct it.
     expect(screen.getByLabelText("Assignee email")).toBeTruthy();
   });

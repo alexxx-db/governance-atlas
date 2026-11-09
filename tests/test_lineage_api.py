@@ -7,7 +7,7 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 import runtime_app
-from atlas.api import lineage as lineage_api
+from axiom.api import lineage as lineage_api
 
 
 def _response_json(response) -> dict[str, object]:
@@ -174,7 +174,7 @@ class LineageApiTests(unittest.TestCase):
         )
 
     def test_visible_inventory_lineage_capability_opens_even_without_observed_edges(self) -> None:
-        from atlas.services import capabilities as capability_service
+        from axiom.services import capabilities as capability_service
 
         payload = capability_service.bootstrap_capabilities(
             actor_role="reader",
@@ -289,7 +289,7 @@ class LineageApiTests(unittest.TestCase):
         recommendation_payload = {
             "items": [
                 {
-                    "fqn": "main.datapact.run_history",
+                    "fqn": "main.emet.run_history",
                     "edgeCount": 626,
                     "upstreamCount": 622,
                     "downstreamCount": 4,

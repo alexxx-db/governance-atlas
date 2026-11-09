@@ -73,8 +73,8 @@ function LineageGraph({ compact }) {
     if (n.cert === 'restricted') return '#F4B740';
     if (n.cert === 'certified') return '#34D399';
     if (n.cert === 'uncertified') return '#6B829A';
-    if (n.type === 'job') return '#5CE1E6';
-    return '#3D84AD';
+    if (n.type === 'job') return '#C8C8C8';
+    return '#5B7FD0';
   };
 
   const edgeSet = LINEAGE.edges;
@@ -99,8 +99,8 @@ function LineageGraph({ compact }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '14px 18px', borderBottom: '1px solid var(--srf-line-soft)', background: 'rgba(7,16,26,0.4)' }}>
           <div style={{ display: 'flex', gap: 16, fontSize: 11.5, color: 'var(--txt-muted)', alignItems: 'center' }}>
             <LegendDot color="#34D399" label="Certified"/>
-            <LegendDot color="#3D84AD" label="Source"/>
-            <LegendDot color="#5CE1E6" label="Job / Pipeline"/>
+            <LegendDot color="#5B7FD0" label="Source"/>
+            <LegendDot color="#C8C8C8" label="Job / Pipeline"/>
             <LegendDot color="#F4B740" label="Restricted"/>
             <span style={{ color: 'var(--txt-subtle)', borderLeft: '1px solid var(--srf-line)', paddingLeft: 14, marginLeft: 4 }}>
               <Icon name="info" size={11} style={{ marginRight: 4 }}/>
@@ -120,11 +120,11 @@ function LineageGraph({ compact }) {
             <path d="M0,0 L10,5 L0,10 z" fill="#2A4D6B"/>
           </marker>
           <marker id="arr-hi" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-            <path d="M0,0 L10,5 L0,10 z" fill="#3D84AD"/>
+            <path d="M0,0 L10,5 L0,10 z" fill="#5B7FD0"/>
           </marker>
           <linearGradient id="edgeGrad" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#3D84AD" stopOpacity="0.95"/>
-            <stop offset="100%" stopColor="#66C5FF" stopOpacity="0.9"/>
+            <stop offset="0%" stopColor="#5B7FD0" stopOpacity="0.95"/>
+            <stop offset="100%" stopColor="#7497DC" stopOpacity="0.9"/>
           </linearGradient>
           <filter id="glowSoft" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur stdDeviation="2" result="b"/>
@@ -139,7 +139,7 @@ function LineageGraph({ compact }) {
           return (
             <g key={c}>
               <rect x={c * colW} y="0" width={colW} height={H}
-                fill={d === 0 ? 'rgba(61,132,173,0.06)' : c % 2 === 0 ? 'rgba(61,132,173,0.018)' : 'transparent'}/>
+                fill={d === 0 ? 'rgba(91,127,208,0.06)' : c % 2 === 0 ? 'rgba(91,127,208,0.018)' : 'transparent'}/>
               <text x={c * colW + colW/2} y={14} fontSize="9"
                 fill={d === 0 ? 'var(--accent)' : 'var(--txt-subtle)'}
                 textAnchor="middle" letterSpacing="2.2" fontWeight="700" opacity={d === 0 ? 0.85 : 0.5}>
@@ -161,14 +161,14 @@ function LineageGraph({ compact }) {
             <g key={i}>
               <path id={pid} className="lineage-edge" d={d}
                 fill="none"
-                stroke={isHi ? 'url(#edgeGrad)' : isFocusEdge ? 'rgba(61,132,173,0.65)' : 'var(--srf-line)'}
+                stroke={isHi ? 'url(#edgeGrad)' : isFocusEdge ? 'rgba(91,127,208,0.65)' : 'var(--srf-line)'}
                 strokeWidth={isHi ? 2.4 : isFocusEdge ? 1.8 : 1.2}
                 markerEnd={isHi ? 'url(#arr-hi)' : 'url(#arr)'}
                 opacity={hover && !isHi ? 0.18 : 1}
                 strokeLinecap="round"/>
               {(isFocusEdge || isHi) && !compact && (
                 <FlowParticles path={pid} count={isHi ? 3 : 2} dur={isHi ? 1.6 : 2.4}
-                  color={isHi ? '#3D84AD' : 'rgba(61,132,173,0.75)'}/>
+                  color={isHi ? '#5B7FD0' : 'rgba(91,127,208,0.75)'}/>
               )}
             </g>
           );
@@ -189,14 +189,14 @@ function LineageGraph({ compact }) {
                onMouseEnter={() => setHover(n.id)} onMouseLeave={() => setHover(null)}>
               {isFocus && !compact && (
                 <rect className="lineage-focus-ring" x="-4" y="-4" width={w+8} height={h+8} rx="10"
-                  fill="none" stroke="#3D84AD" strokeWidth="1.5" opacity="0.9"/>
+                  fill="none" stroke="#5B7FD0" strokeWidth="1.5" opacity="0.9"/>
               )}
               {(isHover || isFocus) && !compact && (
                 <rect x="-2" y="-2" width={w+4} height={h+4} rx="9" fill={color} opacity="0.12" filter="url(#glowSoft)"/>
               )}
               <rect className="lineage-node-bg" width={w} height={h} rx="8"
-                fill={isFocus ? 'rgba(61,132,173,0.16)' : n.type === 'restricted' ? 'rgba(244,183,64,0.06)' : 'var(--srf-3)'}
-                stroke={isFocus ? '#3D84AD' : (isHover || isTraced) ? color : 'var(--srf-line)'}
+                fill={isFocus ? 'rgba(91,127,208,0.16)' : n.type === 'restricted' ? 'rgba(244,183,64,0.06)' : 'var(--srf-3)'}
+                stroke={isFocus ? '#5B7FD0' : (isHover || isTraced) ? color : 'var(--srf-line)'}
                 strokeWidth={isFocus ? 1.5 : 1}/>
               <rect x="0" y="0" width="3" height={h} rx="1.5" fill={color}/>
               <circle cx="14" cy={h/2} r="3.5" fill={color} filter={isHover ? 'url(#glowSoft)' : ''}/>

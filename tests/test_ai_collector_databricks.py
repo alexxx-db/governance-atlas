@@ -12,8 +12,8 @@ from typing import Any, Dict, List
 
 from databricks.sdk.service import catalog, serving
 
-from atlas.ai import models
-from atlas.ai.collectors import databricks as dbx
+from axiom.ai import models
+from axiom.ai.collectors import databricks as dbx
 
 SECRET_VALUE = "sk-" + "live-0123456789abcdefghijkl"  # assembled: keeps secret scanners quiet
 
@@ -195,9 +195,9 @@ class ServingEndpointAdapterTests(unittest.TestCase):
         self.assertEqual(obs[0].entity_kind, models.AGENT)
 
     def test_sample_marker_from_tag(self) -> None:
-        tagged = _external_endpoint(tags=[serving.EndpointTag(key=dbx.SAMPLE_TAG_KEY, value="ga-ai-sample-1")])
+        tagged = _external_endpoint(tags=[serving.EndpointTag(key=dbx.SAMPLE_TAG_KEY, value="ax-ai-sample-1")])
         obs = dbx.collect_serving_endpoints(FakeWorkspace(endpoints=[tagged], detail=_detail({})), _ctx())
-        self.assertTrue(all(o.provenance_class == "sample" and o.sample_run_id == "ga-ai-sample-1" for o in obs))
+        self.assertTrue(all(o.provenance_class == "sample" and o.sample_run_id == "ax-ai-sample-1" for o in obs))
 
     def test_content_hash_stable_across_runs(self) -> None:
         w = FakeWorkspace(endpoints=[_external_endpoint()], detail=_detail({}))
@@ -233,7 +233,7 @@ class OtherAdapterTests(unittest.TestCase):
             models_by_catalog={None: [catalog.RegisteredModelInfo(full_name="a.b.ok"), catalog.RegisteredModelInfo(full_name="a.b.denied")]},
             model_detail={"a.b.ok": catalog.RegisteredModelInfo(full_name="a.b.ok"), "a.b.denied": PermissionError("no USE CATALOG")},
         )
-        from atlas.ai.probes import probe
+        from axiom.ai.probes import probe
 
         result, value = probe("registered_models", lambda: dbx.collect_registered_models(w, _ctx(), catalogs=[]))
         self.assertEqual(result.state, "degraded")
@@ -241,7 +241,7 @@ class OtherAdapterTests(unittest.TestCase):
         self.assertEqual([o.source_entity_id for o in value], ["a.b.ok"])
 
     def test_model_cap_degrades_instead_of_silently_truncating(self) -> None:
-        from atlas.ai.probes import probe
+        from axiom.ai.probes import probe
 
         listed = [catalog.RegisteredModelInfo(full_name=f"a.b.m{i}") for i in range(3)]
         w = FakeWorkspace(models_by_catalog={None: listed}, model_detail={m.full_name: m for m in listed})
@@ -252,7 +252,7 @@ class OtherAdapterTests(unittest.TestCase):
         self.assertEqual(len(value), 2)
 
     def test_version_cap_degrades_instead_of_silently_dropping(self) -> None:
-        from atlas.ai.probes import probe
+        from axiom.ai.probes import probe
 
         model = catalog.RegisteredModelInfo(full_name="a.b.m")
         versions = [catalog.ModelVersionInfo(version=i) for i in range(1, 5)]
@@ -270,13 +270,13 @@ class OtherAdapterTests(unittest.TestCase):
 
     def test_only_http_connections_flagged_mcp(self) -> None:
         connections = [
-            {"name": "mcp1", "connection_type": "HTTP", "options": {"is_mcp_connection": "true", "host": "mcp.example.com", "client_secret": SECRET_VALUE}, "comment": "[atlas-sample:ga-ai-1]"},
+            {"name": "mcp1", "connection_type": "HTTP", "options": {"is_mcp_connection": "true", "host": "mcp.example.com", "client_secret": SECRET_VALUE}, "comment": "[axiom-sample:ax-ai-1]"},
             {"name": "http_plain", "connection_type": "HTTP", "options": {"is_mcp_connection": "false"}},
             {"name": "pg", "connection_type": "MANAGED_POSTGRESQL", "options": {}},
         ]
         obs = dbx.collect_mcp_connections(FakeWorkspace(connections=connections), _ctx())
         self.assertEqual([o.source_entity_id for o in obs], ["mcp1"])
-        self.assertEqual(obs[0].sample_run_id, "ga-ai-1")
+        self.assertEqual(obs[0].sample_run_id, "ax-ai-1")
         self.assertNotIn(SECRET_VALUE, json.dumps(obs[0].config))
 
     def test_functions_only_in_allowlisted_schemas(self) -> None:

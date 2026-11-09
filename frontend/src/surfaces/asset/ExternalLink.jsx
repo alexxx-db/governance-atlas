@@ -52,7 +52,7 @@ export function catalogExplorerUrl(fqn, deepLink, host = "") {
   const base = trimHost(host);
   const dl = String(deepLink || "").trim();
   if (dl && /^https?:\/\//i.test(dl)) return dl; // already absolute — trust it
-  // A relative path without a host would resolve against the Atlas app origin
+  // A relative path without a host would resolve against the Axiom app origin
   // and 404, so render no link rather than a broken one.
   if (!base) return "";
   if (dl) {
@@ -108,8 +108,8 @@ export function ExternalLink({
   if (!href) return null;
   const classes =
     variant === "menu"
-      ? ["ga-asset-menu-item", className].filter(Boolean).join(" ")
-      : ["ga-sys-button", "is-secondary", "tone-neutral", "size-md", "ga-asset-open-databricks", className]
+      ? ["ax-asset-menu-item", className].filter(Boolean).join(" ")
+      : ["ax-sys-button", "is-secondary", "tone-neutral", "size-md", "ax-asset-open-databricks", className]
           .filter(Boolean)
           .join(" ");
   return (
@@ -121,10 +121,10 @@ export function ExternalLink({
       title="Open in Databricks Catalog Explorer"
       onClick={onClick}
     >
-      <span className="ga-sys-button-icon" aria-hidden="true">
+      <span className="ax-sys-button-icon" aria-hidden="true">
         {ExternalIcon}
       </span>
-      <span className="ga-sys-button-label">{label}</span>
+      <span className="ax-sys-button-label">{label}</span>
     </a>
   );
 }

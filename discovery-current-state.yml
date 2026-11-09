@@ -23,9 +23,9 @@
   - banner [ref=e44]:
     - generic [ref=e46]:
       - generic [ref=e47]:
-        - button "Governance Atlas" [ref=e48] [cursor=pointer]:
+        - button "Axiom" [ref=e48] [cursor=pointer]:
           - img [ref=e50]
-          - generic [ref=e52]: Governance Atlas
+          - generic [ref=e52]: Axiom
         - generic [ref=e55]:
           - img [ref=e57]
           - searchbox "Search Databricks Unity Catalog, tables, views, and metrics" [ref=e60]
@@ -35,7 +35,7 @@
           - generic [ref=e68]:
             - generic [ref=e69]: Skyler Myers
             - generic [ref=e70]: Admin
-          - img "skyler@entrada.ai" [ref=e71]: SM
+          - img "abarreto@shorecp.com" [ref=e71]: SM
       - navigation "Primary modules" [ref=e72]:
         - button "Discovery" [ref=e73] [cursor=pointer]:
           - generic [ref=e74]: Discovery
@@ -221,8 +221,8 @@
             - heading "ap_self_assessed_tax_dist_history" [level=3] [ref=e309]
             - generic [ref=e310]:
               - 'generic "Domain: Unassigned" [ref=e311]': UNCATEGORIZED DATA
-              - generic "alice@entrada.ai" [ref=e312]:
-                - img "alice@entrada.ai" [ref=e313]: AL
+              - generic "alice@shorecp.com" [ref=e312]:
+                - img "alice@shorecp.com" [ref=e313]: AL
                 - generic [ref=e314]: Alice
             - generic [ref=e315]:
               - generic [ref=e316]: PII
@@ -378,21 +378,21 @@
             - button "Lineage unavailable" [disabled] [ref=e468]
             - button "Open Record" [ref=e469]
             - generic [ref=e470]: Updated —
-          - button "Open atlas_reference_asset" [ref=e471] [cursor=pointer]:
+          - button "Open axiom_reference_asset" [ref=e471] [cursor=pointer]:
             - generic [ref=e472]:
               - generic [ref=e473]:
                 - img "Delta Table" [ref=e474]:
                   - img [ref=e475]
                 - generic [ref=e479]: Table/View
               - generic [ref=e480]:
-                - checkbox "Select atlas_reference_asset" [ref=e481]
+                - checkbox "Select axiom_reference_asset" [ref=e481]
                 - button "Add to favorites" [ref=e482]: ☆
                 - button "Open Governance" [ref=e483]: ⋮
-            - heading "atlas_reference_asset" [level=3] [ref=e484]
+            - heading "axiom_reference_asset" [level=3] [ref=e484]
             - generic [ref=e485]:
               - 'generic "Domain: Unassigned" [ref=e486]': UNCATEGORIZED DATA
               - generic "Suggested steward — no owner assigned" [ref=e487]:
-                - img "dev.reference.atlas_reference_asset" [ref=e488]: DA
+                - img "dev.reference.axiom_reference_asset" [ref=e488]: DA
                 - generic [ref=e489]: Namer Avatar
             - generic [ref=e490]:
               - generic [ref=e491]: PII
@@ -408,7 +408,7 @@
                 - generic [ref=e500]: ▤
                 - text: 2 notebook usage
               - 'generic "Metadata coverage: 92%" [ref=e501]': High Trust 92%
-            - paragraph [ref=e502]: Atlas reference validation table created by runtime QA.
+            - paragraph [ref=e502]: Axiom reference validation table created by runtime QA.
             - button "Lineage unavailable" [disabled] [ref=e503]
             - button "Open Record" [ref=e504]
             - generic [ref=e505]: Updated —

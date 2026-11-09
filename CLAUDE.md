@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-# Working on Governance Atlas
+# Working on Axiom
 
 This file codifies how Claude works on this repo. Read it at the start of every session and follow it for every user-reported defect or feature request.
 
@@ -22,24 +22,24 @@ npm ci
 npm run lint && npm run typecheck
 npm run test                                     # vitest run, jsdom, fileParallelism off
 npx vitest run src/hooks/useLineage.test.jsx     # single test file
-npm run build        # runs scripts/check-css.mjs first, then vite build + atlas-build-manifest.json
+npm run build        # runs scripts/check-css.mjs first, then vite build + axiom-build-manifest.json
 
 # Local run (needs a built frontend/dist; run_app.py refuses to start otherwise)
 python run_app.py
 # Vite dev server on :3000 proxying /api to a deployed app:
-ATLAS_DEV_PROXY_TARGET=https://<app-url> ATLAS_DEV_PROXY_TOKEN=<token> npm run dev
+AXIOM_DEV_PROXY_TARGET=https://<app-url> AXIOM_DEV_PROXY_TOKEN=<token> npm run dev
 ```
 
 ## Architecture
 
-Runtime chain: `app.yaml -> run_app.py -> runtime_app.py (FastAPI) -> frontend/dist`. There is no Streamlit mode and no OpenMetadata bridge; `validate_repo_hygiene.py` fails CI if legacy files (`app.py`, `modern_app.py`, `atlas/openmetadata.py`, …) reappear.
+Runtime chain: `app.yaml -> run_app.py -> runtime_app.py (FastAPI) -> frontend/dist`. There is no Streamlit mode and no OpenMetadata bridge; `validate_repo_hygiene.py` fails CI if legacy files (`app.py`, `modern_app.py`, `axiom/openmetadata.py`, …) reappear.
 
-- `runtime_app.py` — FastAPI app, lifespan, middleware, static serving; mounts routers built by `atlas/api/build_*_router()` (discovery, catalog, assets, lineage, governance, classification, export, admin, insights, atlas/atlas-ai, cde, datapact, runtime).
-- `atlas/api/` — HTTP layer. `identity.py` resolves the caller: on-behalf-of (OBO) user token from `x-forwarded-access-token`, else app service principal. `cache.py` holds the TTL cache + OBO client cache — cache keys **must** be partitioned by acting credentials (a prior bug leaked per-user UC reads across users). `response.py` is the shared response-envelope helper.
-- `atlas/services/` — domain logic (lineage, live_metadata, inventory, governance, quality, classification, genie, lakebase, datapact, …).
-- `atlas/uc.py` — Unity Catalog / system-table SQL reads. `atlas/store.py` (`GovernanceStore`) — governance workflow state in Delta tables under `<GOVAT_CATALOG>.<GOVAT_SCHEMA>`. Schema changes go through versioned entries in `atlas/migrations.py`, never ad-hoc DDL. Build SQL identifiers/literals with `atlas/util.py` (`quote_ident`, `quote_uc_3part`, `sql_literal`).
-- Workspace-specific values are never committed: `databricks.yml` targets read them from `BUNDLE_VAR_*` env vars (template: `.env.example`; local values in gitignored `.env.<target>`). The frontend gets the workspace host from bootstrap `workspaceHost`, never a constant. QA scripts require `GOVAT_BASE_URL`.
-- `atlas/config.py` — env config (`DATABRICKS_WAREHOUSE_ID`, `GOVAT_CATALOG`, `GOVAT_SCHEMA`, `GOVAT_ADMIN_EMAILS`, `GOVAT_ATLAS_AI_PROVIDER`, `GOVAT_LAKEBASE_*`, …). In-repo `app.yaml` holds portable neutral defaults; per-target values come from `BUNDLE_VAR_*` and are baked into the packaged `app.yaml` only by `prepare_bundle.py --target`.
+- `runtime_app.py` — FastAPI app, lifespan, middleware, static serving; mounts routers built by `axiom/api/build_*_router()` (discovery, catalog, assets, lineage, governance, classification, export, admin, insights, axiom/axiom-ai, cde, emet, runtime).
+- `axiom/api/` — HTTP layer. `identity.py` resolves the caller: on-behalf-of (OBO) user token from `x-forwarded-access-token`, else app service principal. `cache.py` holds the TTL cache + OBO client cache — cache keys **must** be partitioned by acting credentials (a prior bug leaked per-user UC reads across users). `response.py` is the shared response-envelope helper.
+- `axiom/services/` — domain logic (lineage, live_metadata, inventory, governance, quality, classification, genie, lakebase, emet, …).
+- `axiom/uc.py` — Unity Catalog / system-table SQL reads. `axiom/store.py` (`GovernanceStore`) — governance workflow state in Delta tables under `<AXIOM_CATALOG>.<AXIOM_SCHEMA>`. Schema changes go through versioned entries in `axiom/migrations.py`, never ad-hoc DDL. Build SQL identifiers/literals with `axiom/util.py` (`quote_ident`, `quote_uc_3part`, `sql_literal`).
+- Workspace-specific values are never committed: `databricks.yml` targets read them from `BUNDLE_VAR_*` env vars (template: `.env.example`; local values in gitignored `.env.<target>`). The frontend gets the workspace host from bootstrap `workspaceHost`, never a constant. QA scripts require `AXIOM_BASE_URL`.
+- `axiom/config.py` — env config (`DATABRICKS_WAREHOUSE_ID`, `AXIOM_CATALOG`, `AXIOM_SCHEMA`, `AXIOM_ADMIN_EMAILS`, `AXIOM_AI_PROVIDER`, `AXIOM_LAKEBASE_*`, …). In-repo `app.yaml` holds portable neutral defaults; per-target values come from `BUNDLE_VAR_*` and are baked into the packaged `app.yaml` only by `prepare_bundle.py --target`.
 - Frontend (`frontend/src`, React 18 + react-query + react-router + @xyflow/react): `app-shell/` (shell, rail, command palette, AI dock, `SurfaceRoutes.jsx`) → `surfaces/<area>/` pages → `hooks/use*.js` data hooks → `lib/api.js` (single fetch client + payload normalization; `lib/envelope.js` unwraps the backend envelope). Components never call `fetch` directly.
 - `docs/runtime_api_openapi_snapshot.json` is generated by `scripts/generate_runtime_api_openapi_snapshot.py`. `IMPLEMENTATION_STATUS.md` has the latest remediation checkpoints; `docs/northstar_gap_analysis` ledgers are historical/stale.
 - `.github/workflows/deploy.yml` authenticates with GitHub OIDC (workload identity federation, no PAT). The deploy job is manual-dispatch only and reads per-target values from GitHub Environment variables (`GOV_CATALOG`, `GENIE_SPACE_ID`, `LAKEBASE_*`, …) as `BUNDLE_VAR_*`. `staging`/`prod` are `mode: production` and deploy only from CI as the service principal; the local deploy steps below are for `dev`.
@@ -64,21 +64,21 @@ For each item the user surfaces (whether one bug or a list of ten):
    ```bash
    cd "$(git rev-parse --show-toplevel)"   # repo root
    set -a; . ./.env.dev; set +a   # gitignored; copy from .env.example. Supplies BUNDLE_VAR_* (warehouse, catalogs, Genie, Lakebase…)
-   BUNDLE=/tmp/atlas_bundle   # MUST be OUTSIDE the repo tree — see below
-   PROFILE="${ATLAS_PROFILE:-DEFAULT}"
+   BUNDLE=/tmp/axiom_bundle   # MUST be OUTSIDE the repo tree — see below
+   PROFILE="${AXIOM_PROFILE:-DEFAULT}"
    # Must be the user the profile authenticates as: databricks.yml uploads to
-   # /Workspace/Users/${workspace.current_user.userName}/.bundle/atlas/<target>.
-   DEPLOY_USER="${ATLAS_DEPLOY_USER:-$(databricks current-user me --profile "$PROFILE" -o json | python3 -c 'import json,sys; print(json.load(sys.stdin)["userName"])')}"
+   # /Workspace/Users/${workspace.current_user.userName}/.bundle/axiom/<target>.
+   DEPLOY_USER="${AXIOM_DEPLOY_USER:-$(databricks current-user me --profile "$PROFILE" -o json | python3 -c 'import json,sys; print(json.load(sys.stdin)["userName"])')}"
    python3 scripts/prepare_bundle.py --output "$BUNDLE" --target dev --profile "$PROFILE"
    cd "$BUNDLE" && databricks bundle deploy -t dev --profile "$PROFILE"
-   databricks apps deploy "${BUNDLE_VAR_app_name:-atlas}" --source-code-path "/Workspace/Users/$DEPLOY_USER/.bundle/atlas/dev/files" --profile "$PROFILE"
+   databricks apps deploy "${BUNDLE_VAR_app_name:-axiom}" --source-code-path "/Workspace/Users/$DEPLOY_USER/.bundle/axiom/dev/files" --profile "$PROFILE"
    ```
    Two non-obvious rules, both learned the hard way:
    - The packaged bundle dir MUST live OUTSIDE the repo (`/tmp/...`, not
-     `build/atlas-app`). `databricks bundle deploy` walks up to the nearest `.git`
+     `build/axiom-app`). `databricks bundle deploy` walks up to the nearest `.git`
      and honors its `.gitignore`; the repo `.gitignore` ignores `build/`, so
-     deploying from `build/atlas-app` silently uploads ONLY the force-included
-     `frontend/dist` and drops `app.yaml`/`run_app.py`/`atlas/` — the app then
+     deploying from `build/axiom-app` silently uploads ONLY the force-included
+     `frontend/dist` and drops `app.yaml`/`run_app.py`/`axiom/` — the app then
      fails to start with "No command to run and no Python file found."
    - `bundle deploy` must run from the packaged dir, not the repo root: the in-repo
      `app.yaml` is the portable default (no dev catalogs/emails/Genie/Lakebase);
@@ -154,11 +154,11 @@ Same rule for asset openability: backend's `isOpenable: false` / `openabilitySta
 
 - `scripts/prepare_bundle.py` requires `--output` AND `--target`. The `--target dev` flag bakes the right env vars from `databricks.yml` into the packaged `app.yaml` (the `databricks_app` Terraform resource has no `config.env` attribute and silently drops env values from `databricks.yml`).
 - The script copies `<ROOT>` into the output dir. `build/` and `chrome-profile-*` dirs at any level are skipped to prevent recursion / socket-copy failures.
-- Apps deploy reads from the workspace-uploaded snapshot at `/Workspace/Users/<deploying user>/.bundle/atlas/dev/files`. The user comes from `ATLAS_DEPLOY_USER`, else from `databricks current-user me` for `ATLAS_PROFILE` (default `DEFAULT`), and it must match the identity that ran `bundle deploy`. Never hard-code a person's email here.
+- Apps deploy reads from the workspace-uploaded snapshot at `/Workspace/Users/<deploying user>/.bundle/axiom/dev/files`. The user comes from `AXIOM_DEPLOY_USER`, else from `databricks current-user me` for `AXIOM_PROFILE` (default `DEFAULT`), and it must match the identity that ran `bundle deploy`. Never hard-code a person's email here.
 
 ### Palette + tokens
 
-- Old `gh-*` cream tokens are gradually being replaced by `ga-*` Entrada dark tokens. Some `gh-*` selectors still exist for layout; they're acceptable as long as they don't pull cream values. New CSS should use `--ga-*` design tokens (`--ga-bright-blue`, `--ga-text-strong`, etc.) — never hard-coded hex colors.
+- Old `gh-*` cream tokens are gradually being replaced by `ax-*` dark tokens. Some `gh-*` selectors still exist for layout; they're acceptable as long as they don't pull cream values. New CSS should use `--ax-*` design tokens (`--ax-bright-blue`, `--ax-text-strong`, etc.) — never hard-coded hex colors.
 - Any UI surface that has cream backgrounds, white card surfaces, or dark-on-light text is a bug.
 
 ## Files NOT to touch in parallel agent work
@@ -176,5 +176,5 @@ When spawning subagents that may conflict with parallel work, explicitly list:
 - Never claim metadata exists when the API doesn't return it. Render "Unavailable" honestly.
 - Never wire a button that does nothing on click. If the workflow isn't built yet, surface a toast staging the intent so the click is visibly responsive.
 - Never put a `useState` or `useEffect` after an early `return`.
-- Never hard-code a palette color where a `--ga-*` design token exists.
+- Never hard-code a palette color where a `--ax-*` design token exists.
 - Never click a link in an email or message via computer-use; use the Playwright MCP (over CDP :9223) and verify the URL first.

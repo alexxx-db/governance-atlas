@@ -23,8 +23,8 @@ from unittest.mock import patch
 
 import pandas as pd
 
-from atlas.services import lineage as lineage_service
-from atlas.uc import UCSQLClient
+from axiom.services import lineage as lineage_service
+from axiom.uc import UCSQLClient
 
 
 class _SQLCapture:
@@ -49,7 +49,7 @@ class BatchLineageSQLShapeTests(unittest.TestCase):
         capture = _SQLCapture()
         UCSQLClient.get_table_lineage_edges_batch(
             capture,
-            ["main.datapact.run_history"],
+            ["main.emet.run_history"],
             directions=("upstream", "downstream"),
             per_seed_limit=40,
         )
@@ -107,7 +107,7 @@ class BatchLineageSQLShapeTests(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             UCSQLClient.get_table_lineage_edges_batch(
                 capture,
-                ["main.datapact.run_history"],
+                ["main.emet.run_history"],
                 directions=("upstream",),
                 per_seed_limit=40,
             )
@@ -161,9 +161,9 @@ class BuildHonestyTests(unittest.TestCase):
         lineage_service._TTL_CACHE.clear()
 
     def test_failed_query_marks_branch_and_graph_degraded(self) -> None:
-        with patch("atlas.services.lineage.graph_node_for_asset", side_effect=_fake_node):
+        with patch("axiom.services.lineage.graph_node_for_asset", side_effect=_fake_node):
             graph = lineage_service.build_data_graph(
-                _GraphUC(raise_error=True), object(), "main.datapact.run_history"
+                _GraphUC(raise_error=True), object(), "main.emet.run_history"
             )
         meta = graph["meta"]
         self.assertTrue(meta["lineageQueryFailed"])
@@ -171,7 +171,7 @@ class BuildHonestyTests(unittest.TestCase):
         self.assertEqual(meta["emptyReason"], "lineage-query-failed")
 
     def test_true_empty_graph_reports_no_lineage_rows(self) -> None:
-        with patch("atlas.services.lineage.graph_node_for_asset", side_effect=_fake_node):
+        with patch("axiom.services.lineage.graph_node_for_asset", side_effect=_fake_node):
             graph = lineage_service.build_data_graph(
                 _GraphUC(raise_error=False), object(), "main.empty.asset"
             )
@@ -188,15 +188,15 @@ class BuildHonestyTests(unittest.TestCase):
         # hop limit trims to LINEAGE_GRAPH_PER_HOP_LIMIT (16) shown.
         rows = [
             {
-                "target_table_full_name": "main.datapact.run_history",
+                "target_table_full_name": "main.emet.run_history",
                 "source_table_full_name": f"main.demo.partner_{idx:03d}",
                 "seed_total_edges": 655,
             }
             for idx in range(20)
         ]
-        with patch("atlas.services.lineage.graph_node_for_asset", side_effect=_fake_node):
+        with patch("axiom.services.lineage.graph_node_for_asset", side_effect=_fake_node):
             graph = lineage_service.build_data_graph(
-                _GraphUC(upstream_rows=rows), object(), "main.datapact.run_history"
+                _GraphUC(upstream_rows=rows), object(), "main.emet.run_history"
             )
         truncation = graph["meta"]["truncation"]
         shown = lineage_service.LINEAGE_GRAPH_PER_HOP_LIMIT
@@ -217,7 +217,7 @@ class BuildHonestyTests(unittest.TestCase):
                 "buildState": "degraded" if len(calls) == 1 else "ok",
             }
 
-        with patch("atlas.services.lineage._build_lineage_payload", side_effect=fake_build):
+        with patch("axiom.services.lineage._build_lineage_payload", side_effect=fake_build):
             first = lineage_service.lineage_payload(uc, object(), "main.a.b")
             self.assertEqual(first["buildState"], "degraded")
             # Within the 15s degraded TTL the cached failure is reused
@@ -245,7 +245,7 @@ class BuildHonestyTests(unittest.TestCase):
             calls.append(1)
             return {"fqn": "main.a.b", "buildState": "ok"}
 
-        with patch("atlas.services.lineage._build_lineage_payload", side_effect=fake_build):
+        with patch("axiom.services.lineage._build_lineage_payload", side_effect=fake_build):
             lineage_service.lineage_payload(uc, object(), "main.a.b")
             key = lineage_service.lineage_cache_key(uc, "main.a.b")
             fetched_at, value = lineage_service._TTL_CACHE[key]
@@ -287,16 +287,16 @@ class ColumnTableContradictionTests(unittest.TestCase):
         }
         operational_payload = {"nodes": [], "edges": [], "meta": {}}
         with patch(
-            "atlas.services.lineage.graph_node_for_asset", side_effect=_fake_node
+            "axiom.services.lineage.graph_node_for_asset", side_effect=_fake_node
         ), patch(
-            "atlas.services.lineage._column_lineage_payload",
+            "axiom.services.lineage._column_lineage_payload",
             return_value=column_payload,
         ), patch(
-            "atlas.services.lineage.build_operational_graph",
+            "axiom.services.lineage.build_operational_graph",
             return_value=operational_payload,
         ):
             return lineage_service._build_lineage_payload(
-                uc, object(), "main.datapact.run_history"
+                uc, object(), "main.emet.run_history"
             )
 
     def test_failed_table_graph_with_column_upstream_is_marked_degraded(self) -> None:
@@ -325,7 +325,7 @@ class ColumnTableContradictionTests(unittest.TestCase):
             batch_fails=False,
             upstream_rows=[
                 {
-                    "target_table_full_name": "main.datapact.run_history",
+                    "target_table_full_name": "main.emet.run_history",
                     "source_table_full_name": "main.demo.users",
                     "seed_total_edges": 1,
                 }

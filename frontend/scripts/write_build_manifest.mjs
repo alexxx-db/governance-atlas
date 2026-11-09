@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename);
 const FRONTEND_ROOT = path.resolve(__dirname, "..");
 const PROJECT_ROOT = path.resolve(FRONTEND_ROOT, "..");
 const DIST_DIR = path.join(FRONTEND_ROOT, "dist");
-const OUTPUT_PATH = path.join(DIST_DIR, "atlas-build-manifest.json");
+const OUTPUT_PATH = path.join(DIST_DIR, "axiom-build-manifest.json");
 
 const FRONTEND_HASH_FILE_PATHS = [
   "frontend/index.html",
@@ -19,6 +19,10 @@ const FRONTEND_HASH_FILE_PATHS = [
   "frontend/vite.config.js",
 ];
 const FRONTEND_HASH_DIRS = ["frontend/src"];
+// OS metadata files never reach the packaged bundle (scripts/prepare_bundle.py
+// drops them), so hashing them would make the deployed bundle look stale.
+// Keep in sync with FRONTEND_HASH_IGNORED_NAMES in axiom/runtime_contract.py.
+const FRONTEND_HASH_IGNORED_NAMES = new Set([".DS_Store", "Thumbs.db"]);
 
 async function existingFile(relativePath) {
   const absolutePath = path.join(PROJECT_ROOT, relativePath);
@@ -48,7 +52,7 @@ async function collectDirFiles(relativeDir) {
         await visit(nextPath);
         continue;
       }
-      if (entry.isFile()) files.push(nextPath);
+      if (entry.isFile() && !FRONTEND_HASH_IGNORED_NAMES.has(entry.name)) files.push(nextPath);
     }
   }
 
@@ -95,7 +99,7 @@ async function frontendSourceHash() {
 await fs.mkdir(DIST_DIR, { recursive: true });
 
 const sourceHash = await frontendSourceHash();
-const buildId = process.env.GOVAT_BUILD_ID || `frontend-${sourceHash.slice(0, 12)}`;
+const buildId = process.env.AXIOM_BUILD_ID || `frontend-${sourceHash.slice(0, 12)}`;
 const manifest = {
   buildId,
   generatedAt: new Date().toISOString(),

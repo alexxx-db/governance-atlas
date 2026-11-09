@@ -44,11 +44,11 @@ current, structured evidence metadata.
 - Shell: prototype rail bottom user is `Marisol Reyes / Finance · Steward`; current local capture uses `Skyler Myers / Admin`.
 - Shell: prototype Lineage active nav has a subtler selected fill; current selected rail has stronger cyan outline and icon emphasis.
 - Shell: prototype rail groups are quieter and closer to the left edge; current group spacing and icon rhythm feel heavier.
-- Topbar: prototype workspace breadcrumb is `entrada-prod`; current is `Dev`.
+- Topbar: prototype workspace breadcrumb is `prod`; current is `Dev`.
 - Topbar: prototype search is centered and wider relative to the content frame; current search is narrower and pushed right by the wider rail/content layout.
 - Topbar: prototype UC chip reads `UC connected · 87.4% coverage`; current local mock matches the text but still differs in height, spacing, and right-edge alignment.
 - Topbar: prototype notification/help controls are light icon affordances; current help is a bordered square button.
-- Topbar: prototype `Atlas AI` button is active but does not open a rail on Lineage; current capture opens the rail, changing the route balance.
+- Topbar: prototype `Axiom AI` button is active but does not open a rail on Lineage; current capture opens the rail, changing the route balance.
 - Header: prototype header starts farther left in the content frame; current header is more centered and leaves more dark unused space.
 - Header: prototype title fits the visual hierarchy as a page headline; current title is similar text but larger/heavier and starts from a different x-origin.
 - Header: prototype subtitle is a two-line permission-aware end-to-end statement; current copy is shorter and less operationally specific.
@@ -74,7 +74,7 @@ current, structured evidence metadata.
 - Edges: prototype shows dim/hidden paths for unavailable segments; current does not preserve the same permission-limited continuation shape.
 - Edges: prototype has multiple edge crossings around the notebook/job node; current edges mostly connect lane centers.
 - Right context: prototype has an in-graph `Lineage Details` inspector for `payments`.
-- Right context: current replaces that inspector with the global Atlas AI rail.
+- Right context: current replaces that inspector with the global Axiom AI rail.
 - Right context: prototype inspector includes last refresh, row count, owner, sources, consumers, and recent activity.
 - Right context: current AI rail includes greeting, suggestions, and an input, but no selected-node lineage details.
 - Right context: prototype global AI affordance is a small floating launcher; current has both a rail and launcher.

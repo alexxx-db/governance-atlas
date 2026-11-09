@@ -1,7 +1,7 @@
 import { renderHook, waitFor } from "@testing-library/react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { atlasQueryClient } from "../lib/queryClient";
+import { axiomQueryClient } from "../lib/queryClient";
 import {
   LINEAGE_POLL_ATTEMPT_LIMIT,
   lineageRefetchInterval,
@@ -16,7 +16,7 @@ vi.mock("../lib/api", () => ({
 }));
 
 function Wrapper({ children }) {
-  return <QueryClientProvider client={atlasQueryClient}>{children}</QueryClientProvider>;
+  return <QueryClientProvider client={axiomQueryClient}>{children}</QueryClientProvider>;
 }
 
 function liveLineagePayload({ fqn = "main.sales.orders", id, profile = "initial" }) {
@@ -41,7 +41,7 @@ function liveLineagePayload({ fqn = "main.sales.orders", id, profile = "initial"
 describe("useLineage", () => {
   beforeEach(() => {
     fetchLineageMock.mockReset();
-    atlasQueryClient.clear();
+    axiomQueryClient.clear();
   });
 
   it("starts without provisional seeded lineage and resolves to the bounded initial payload", async () => {

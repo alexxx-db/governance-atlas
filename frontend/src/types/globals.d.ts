@@ -1,5 +1,5 @@
 interface Window {
-  __GOVAT_BOOTSTRAP__?: {
+  __AXIOM_BOOTSTRAP__?: {
     apiBase?: string;
     apiContract?: Record<string, string>;
     [key: string]: unknown;
@@ -7,7 +7,7 @@ interface Window {
 }
 
 interface ImportMetaEnv {
-  readonly VITE_GOVAT_API_BASE?: string;
+  readonly VITE_AXIOM_API_BASE?: string;
 }
 
 interface ImportMeta {

@@ -13,30 +13,30 @@ import { relativeTimeLabel } from "../format.js";
 export function CdeCard({ cdes, liveEvidence }) {
   return (
     <SectionCard
-      className="ga-home-cde-card"
+      className="ax-home-cde-card"
       title="Critical data elements"
       subtitle={liveEvidence ? "Backed CDE registry rows" : "CDE rows unavailable until live evidence is returned"}
       tooltip="CDE rows require backed registry data or asset-level critical-element metadata."
       actions={
-        <Link className="ga-home-link" to={hrefForRef({ surface: "glossary", params: { tab: "cdes" } })}>
+        <Link className="ax-home-link" to={hrefForRef({ surface: "glossary", params: { tab: "cdes" } })}>
           View all
         </Link>
       }
     >
-      <div className="ga-home-cde-grid">
+      <div className="ax-home-cde-grid">
         {cdes.map((item) => (
-          <article className="ga-home-cde" key={item.id || item.name}>
+          <article className="ax-home-cde" key={item.id || item.name}>
             <header>
               <EntityChip
                 appearance="inline"
                 entity={{ kind: "cde", id: item.id, label: item.name }}
               />
-              {item.sox ? <em className="ga-home-cde-flag">SOX</em> : null}
+              {item.sox ? <em className="ax-home-cde-flag">SOX</em> : null}
             </header>
             {item.assetFqn ? (
               <EntityChip
                 appearance="inline"
-                className="ga-home-cde-asset"
+                className="ax-home-cde-asset"
                 entity={{ kind: "asset", fqn: item.assetFqn }}
               />
             ) : null}
@@ -47,14 +47,14 @@ export function CdeCard({ cdes, liveEvidence }) {
                   entity={{ kind: "owner", email: item.owner, label: item.owner }}
                 />
               ) : (
-                <span className="ga-home-muted">Owner unavailable</span>
+                <span className="ax-home-muted">Owner unavailable</span>
               )}
               <i>{item.status || "Status unavailable"}</i>
             </footer>
           </article>
         ))}
         {!cdes.length ? (
-          <p className="ga-home-inline-unavailable">
+          <p className="ax-home-inline-unavailable">
             No assets are tagged as Critical Data Elements yet. Flag an asset as a CDE to build the registry.
           </p>
         ) : null}
@@ -66,7 +66,7 @@ export function CdeCard({ cdes, liveEvidence }) {
 export function RequestsCard({ requests, openCount }) {
   return (
     <SectionCard
-      className="ga-home-requests-card"
+      className="ax-home-requests-card"
       title="Open governance requests"
       subtitle={
         openCount === null
@@ -75,12 +75,12 @@ export function RequestsCard({ requests, openCount }) {
       }
       tooltip="Pending governance change requests from the governed workflow store."
       actions={
-        <Link className="ga-home-link" to={hrefForRef({ surface: "stewardship" })}>
+        <Link className="ax-home-link" to={hrefForRef({ surface: "stewardship" })}>
           Open queue
         </Link>
       }
     >
-      <ul className="ga-home-request-list">
+      <ul className="ax-home-request-list">
         {requests.slice(0, 5).map((request) => (
           <li key={request.id || request.assetFqn}>
             {request.id ? (
@@ -91,7 +91,7 @@ export function RequestsCard({ requests, openCount }) {
             ) : (
               <span>{request.summary}</span>
             )}
-            <span className="ga-home-request-meta">
+            <span className="ax-home-request-meta">
               {request.assetFqn ? (
                 <EntityChip appearance="inline" entity={{ kind: "asset", fqn: request.assetFqn }} />
               ) : null}
@@ -106,7 +106,7 @@ export function RequestsCard({ requests, openCount }) {
           </li>
         ))}
         {!requests.length ? (
-          <p className="ga-home-inline-unavailable">
+          <p className="ax-home-inline-unavailable">
             {openCount === null
               ? "Governance requests are unavailable for the current visibility scope."
               : "No open governance requests right now."}
@@ -120,7 +120,7 @@ export function RequestsCard({ requests, openCount }) {
 export function ActivityCard({ events, liveEvidence }) {
   return (
     <SectionCard
-      className="ga-home-activity-card"
+      className="ax-home-activity-card"
       title="Activity stream"
       subtitle={
         liveEvidence
@@ -129,12 +129,12 @@ export function ActivityCard({ events, liveEvidence }) {
       }
       tooltip="Recent activity uses audit events returned by the command-center API; each row links to its evidence ledger entry."
     >
-      <ul className="ga-home-activity-list">
+      <ul className="ax-home-activity-list">
         {events.map((event) => (
           <li className={`tone-${event.tone}`} key={event.id}>
             <b aria-hidden="true" />
             <span>
-              <span className="ga-home-activity-line">
+              <span className="ax-home-activity-line">
                 {event.actor ? (
                   <EntityChip
                     appearance="inline"
@@ -162,7 +162,7 @@ export function ActivityCard({ events, liveEvidence }) {
                 /^[\w-]+\.[\w-]+\.[\w-]+$/.test(event.detail) ? (
                   <EntityChip
                     appearance="inline"
-                    className="ga-home-activity-target"
+                    className="ax-home-activity-target"
                     entity={{ kind: "asset", fqn: event.detail }}
                   />
                 ) : (
@@ -174,7 +174,7 @@ export function ActivityCard({ events, liveEvidence }) {
           </li>
         ))}
         {!events.length ? (
-          <p className="ga-home-inline-unavailable">
+          <p className="ax-home-inline-unavailable">
             No recent governance activity is available for the current visibility scope.
           </p>
         ) : null}

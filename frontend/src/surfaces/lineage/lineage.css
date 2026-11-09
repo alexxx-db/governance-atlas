@@ -1,6 +1,6 @@
 /*
  * surfaces/lineage/lineage.css — layout-only rules for the Lineage Atlas
- * surface (Wave C7). ga-lin-* prefixed, --ga-* tokens only. The canvas /
+ * surface (Wave C7). ax-lin-* prefixed, --ax-* tokens only. The canvas /
  * node-card / rail chrome stays in styles/lineage-v2.css (the lineage-v2
  * kit's stylesheet, loaded globally from main.jsx because the kit is also
  * mounted by the Asset 360 lineage tab). This file only carries what the
@@ -9,11 +9,11 @@
  */
 
 /* Section eyebrow inside zero/degraded states and the rail head (replaces
-   the deleted .ga-lineage-eyebrow from styles/lineage.css). */
-.ga-lin-eyebrow {
+   the deleted .ax-lineage-eyebrow from styles/lineage.css). */
+.ax-lin-eyebrow {
   display: block;
   margin-bottom: 8px;
-  color: var(--ga-bright-blue);
+  color: var(--ax-bright-blue);
   font-size: 0.68rem;
   font-weight: 760;
   letter-spacing: 0.22em;
@@ -21,7 +21,7 @@
 }
 
 /* Hero evidence chip row (sits under the PageShell hero band). */
-.ga-lin-chips {
+.ax-lin-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
@@ -30,89 +30,89 @@
 
 /* Honest non-control for restricted/unresolvable rail nodes (matches the
    legacy disabled rail-row rendering). */
-.ga-lin-rail-row-static {
+.ax-lin-rail-row-static {
   display: grid;
   gap: 2px;
   padding: 8px 10px;
   border-radius: 8px;
-  border: 1px dashed var(--ga-border-muted);
-  color: var(--ga-text-muted);
+  border: 1px dashed var(--ax-border-muted);
+  color: var(--ax-text-muted);
   opacity: 0.72;
 }
-.ga-lin-rail-row-static strong {
-  color: var(--ga-text-strong);
+.ax-lin-rail-row-static strong {
+  color: var(--ax-text-strong);
   font-size: 0.82rem;
 }
-.ga-lin-rail-row-static span {
+.ax-lin-rail-row-static span {
   font-size: 0.74rem;
 }
 
 /* ---------- Search-first picker (bare /lineage) ---------- */
 
-.ga-lin-picker {
+.ax-lin-picker {
   display: grid;
   gap: 22px;
   max-width: 720px;
 }
 
-.ga-lin-picker-search {
+.ax-lin-picker-search {
   display: grid;
   gap: 8px;
 }
 
-.ga-lin-picker-label {
-  color: var(--ga-text-strong);
+.ax-lin-picker-label {
+  color: var(--ax-text-strong);
   font-size: 0.82rem;
   font-weight: 640;
 }
 
-.ga-lin-search-input {
+.ax-lin-search-input {
   width: 100%;
   padding: 10px 12px;
-  background: var(--ga-navy-950);
-  border: 1px solid var(--ga-border);
+  background: var(--ax-navy-950);
+  border: 1px solid var(--ax-border);
   border-radius: 8px;
-  color: var(--ga-white);
+  color: var(--ax-white);
   font: inherit;
   font-size: 0.92rem;
   transition: border-color 140ms ease, box-shadow 140ms ease;
 }
-.ga-lin-search-input:focus,
-.ga-lin-search-input:focus-visible {
+.ax-lin-search-input:focus,
+.ax-lin-search-input:focus-visible {
   outline: none;
-  border-color: var(--ga-bright-blue);
-  box-shadow: var(--ga-shadow-focus);
+  border-color: var(--ax-bright-blue);
+  box-shadow: var(--ax-shadow-focus);
 }
-.ga-lin-search-input::placeholder {
-  color: var(--ga-text-muted);
+.ax-lin-search-input::placeholder {
+  color: var(--ax-text-muted);
 }
 
-.ga-lin-picker-results {
+.ax-lin-picker-results {
   display: grid;
   gap: 4px;
 }
 
-.ga-lin-picker-status {
+.ax-lin-picker-status {
   padding: 10px 2px;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   font-size: 0.86rem;
 }
 
-.ga-lin-picker-recommendations {
+.ax-lin-picker-recommendations {
   display: grid;
   gap: 10px;
 }
 
 /* Ranked candidate / search-result rows — EntityChip rows stretched to a
    full-width list row inside the picker and the zero-edge state. */
-.ga-lin-recommendations {
+.ax-lin-recommendations {
   display: grid;
   gap: 6px;
 }
-.ga-lineage-zero-state .ga-lin-recommendations {
+.ax-lineage-zero-state .ax-lin-recommendations {
   margin-top: 12px;
 }
-.ga-lin-rec-row.ga-sys-entity-chip.is-row {
+.ax-lin-rec-row.ax-sys-entity-chip.is-row {
   width: 100%;
 }
 
@@ -121,45 +121,45 @@
    ranked rich cards + recent journeys) and a live featured mini-graph rail,
    with a "how lineage works" strip beneath.
    ========================================================================== */
-.ga-lin-home {
+.ax-lin-home {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(360px, 460px);
   gap: 22px;
   align-items: start;
 }
-.ga-lin-home-main {
+.ax-lin-home-main {
   display: grid;
   gap: 22px;
   min-width: 0;
 }
 @media (max-width: 1080px) {
-  .ga-lin-home {
+  .ax-lin-home {
     grid-template-columns: 1fr;
   }
 }
 
 /* ---------- Ranked rich cards ---------- */
-.ga-lin-ranked {
+.ax-lin-ranked {
   display: grid;
   gap: 12px;
 }
-.ga-lin-rank-grid {
+.ax-lin-rank-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
 }
 @media (max-width: 640px) {
-  .ga-lin-rank-grid {
+  .ax-lin-rank-grid {
     grid-template-columns: 1fr;
   }
 }
-.ga-lin-rank-card {
+.ax-lin-rank-card {
   display: grid;
   grid-template-columns: 30px minmax(0, 1fr);
   gap: 12px;
   padding: 14px;
   border-radius: 12px;
-  border: 1px solid var(--ga-border);
+  border: 1px solid var(--ax-border);
   background: linear-gradient(180deg, rgba(17, 44, 72, 0.72), rgba(8, 23, 42, 0.72));
   cursor: pointer;
   transition:
@@ -167,105 +167,105 @@
     box-shadow 160ms cubic-bezier(0.22, 1, 0.36, 1),
     transform 160ms cubic-bezier(0.22, 1, 0.36, 1);
 }
-.ga-lin-rank-card:hover {
-  border-color: rgba(102, 197, 255, 0.55);
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.4), 0 0 0 3px rgba(102, 197, 255, 0.12);
+.ax-lin-rank-card:hover {
+  border-color: rgba(116, 151, 220, 0.55);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.4), 0 0 0 3px rgba(116, 151, 220, 0.12);
   transform: translateY(-2px);
 }
-.ga-lin-rank-card:focus-visible {
+.ax-lin-rank-card:focus-visible {
   outline: none;
-  border-color: rgba(102, 197, 255, 0.55);
-  box-shadow: 0 0 0 2px var(--ga-focus);
+  border-color: rgba(116, 151, 220, 0.55);
+  box-shadow: 0 0 0 2px var(--ax-focus);
 }
-.ga-lin-rank-card.is-skeleton {
+.ax-lin-rank-card.is-skeleton {
   min-height: 128px;
   cursor: default;
   background:
-    linear-gradient(100deg, rgba(17, 44, 72, 0.5) 30%, rgba(102, 197, 255, 0.14) 50%, rgba(17, 44, 72, 0.5) 70%);
+    linear-gradient(100deg, rgba(17, 44, 72, 0.5) 30%, rgba(116, 151, 220, 0.14) 50%, rgba(17, 44, 72, 0.5) 70%);
   background-size: 200% 100%;
-  animation: ga-lin-shimmer 1.4s ease-in-out infinite;
+  animation: ax-lin-shimmer 1.4s ease-in-out infinite;
 }
-@keyframes ga-lin-shimmer {
+@keyframes ax-lin-shimmer {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .ga-lin-rank-card.is-skeleton { animation: none; }
+  .ax-lin-rank-card.is-skeleton { animation: none; }
 }
-.ga-lin-rank-badge {
+.ax-lin-rank-badge {
   display: grid;
   place-items: center;
   width: 30px;
   height: 30px;
   border-radius: 8px;
-  background: rgba(102, 197, 255, 0.12);
-  border: 1px solid rgba(102, 197, 255, 0.3);
-  color: var(--ga-bright-blue);
-  font-family: var(--ga-font-mono, "JetBrains Mono", monospace);
+  background: rgba(116, 151, 220, 0.12);
+  border: 1px solid rgba(116, 151, 220, 0.3);
+  color: var(--ax-bright-blue);
+  font-family: var(--ax-font-mono, "JetBrains Mono", monospace);
   font-size: 13px;
   font-weight: 700;
 }
-.ga-lin-rank-body {
+.ax-lin-rank-body {
   display: grid;
   gap: 8px;
   min-width: 0;
 }
-.ga-lin-rank-head {
+.ax-lin-rank-head {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: baseline;
   gap: 8px;
 }
-.ga-lin-rank-title.ga-sys-entity-chip {
-  font-family: var(--ga-font-mono, "JetBrains Mono", monospace);
+.ax-lin-rank-title.ax-sys-entity-chip {
+  font-family: var(--ax-font-mono, "JetBrains Mono", monospace);
   font-size: 14px;
   font-weight: 700;
-  color: var(--ga-white);
+  color: var(--ax-white);
   min-width: 0;
   max-width: 100%;
   overflow: hidden;
 }
 /* The FQN text sits in the chip's label span — ellipsize THAT so a long
    name can never push the object-type pill outside the card. */
-.ga-lin-rank-title.ga-sys-entity-chip .ga-sys-entity-chip-label {
+.ax-lin-rank-title.ax-sys-entity-chip .ax-sys-entity-chip-label {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.ga-lin-rank-type {
+.ax-lin-rank-type {
   flex: none;
   padding: 1px 7px;
   border-radius: 999px;
-  background: rgba(178, 189, 194, 0.12);
-  border: 1px solid rgba(178, 189, 194, 0.28);
-  color: var(--ga-gray);
+  background: rgba(200, 200, 200, 0.12);
+  border: 1px solid rgba(200, 200, 200, 0.28);
+  color: var(--ax-gray);
   font-size: 9.5px;
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   white-space: nowrap;
 }
-.ga-lin-rank-path {
-  color: var(--ga-text-muted);
+.ax-lin-rank-path {
+  color: var(--ax-text-muted);
   font-size: 11.5px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.ga-lin-rank-edges {
+.ax-lin-rank-edges {
   display: grid;
   gap: 6px;
 }
-.ga-lin-rank-edgecount {
-  color: var(--ga-text-muted);
+.ax-lin-rank-edgecount {
+  color: var(--ax-text-muted);
   font-size: 11.5px;
 }
-.ga-lin-rank-edgecount strong {
-  color: var(--ga-white);
+.ax-lin-rank-edgecount strong {
+  color: var(--ax-white);
   font-size: 15px;
-  font-family: var(--ga-font-mono, "JetBrains Mono", monospace);
+  font-family: var(--ax-font-mono, "JetBrains Mono", monospace);
 }
-.ga-lin-rank-split {
+.ax-lin-rank-split {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
@@ -273,26 +273,26 @@
   font-size: 10.5px;
   font-weight: 700;
 }
-.ga-lin-rank-up { color: var(--ga-teal); }
-.ga-lin-rank-down { color: var(--ga-bright-blue); }
-.ga-lin-rank-splitbar {
+.ax-lin-rank-up { color: var(--ax-teal); }
+.ax-lin-rank-down { color: var(--ax-bright-blue); }
+.ax-lin-rank-splitbar {
   height: 5px;
   border-radius: 999px;
-  background: rgba(102, 197, 255, 0.28);
+  background: rgba(116, 151, 220, 0.28);
   overflow: hidden;
 }
-.ga-lin-rank-splitbar > span {
+.ax-lin-rank-splitbar > span {
   display: block;
   height: 100%;
-  background: var(--ga-teal);
+  background: var(--ax-teal);
 }
-.ga-lin-rank-chips {
+.ax-lin-rank-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
   align-items: center;
 }
-.ga-lin-rank-tag {
+.ax-lin-rank-tag {
   padding: 1px 8px;
   border-radius: 999px;
   font-size: 9.5px;
@@ -300,105 +300,105 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
-.ga-lin-rank-tag.tone-good { background: rgba(46, 230, 166, 0.12); color: var(--ga-success); border: 1px solid rgba(46, 230, 166, 0.32); }
-.ga-lin-rank-tag.tone-warn { background: rgba(255, 181, 71, 0.12); color: var(--ga-warning); border: 1px solid rgba(255, 181, 71, 0.32); }
+.ax-lin-rank-tag.tone-good { background: rgba(46, 230, 166, 0.12); color: var(--ax-success); border: 1px solid rgba(46, 230, 166, 0.32); }
+.ax-lin-rank-tag.tone-warn { background: rgba(255, 181, 71, 0.12); color: var(--ax-warning); border: 1px solid rgba(255, 181, 71, 0.32); }
 
 /* ---------- Featured mini-graph rail ---------- */
-.ga-lin-feature {
+.ax-lin-feature {
   display: grid;
   gap: 10px;
   padding: 14px;
   border-radius: 14px;
-  border: 1px solid var(--ga-border);
+  border: 1px solid var(--ax-border);
   background: linear-gradient(180deg, rgba(17, 44, 72, 0.6), rgba(8, 23, 42, 0.6));
   position: sticky;
   top: 12px;
 }
-.ga-lin-feature-frame {
+.ax-lin-feature-frame {
   height: 340px;
   border-radius: 12px;
   overflow: hidden;
 }
-.ga-lin-feature-frame .ga-lineage-v2-canvas {
+.ax-lin-feature-frame .ax-lineage-v2-canvas {
   min-height: 0;
   height: 100%;
   border-radius: 12px;
 }
 /* Compact preview: hide the filter/legend bar so the mini-graph stays clean. */
-.ga-lin-feature-frame .ga-lineage-v2-legend { display: none; }
-.ga-lin-feature-open {
+.ax-lin-feature-frame .ax-lineage-v2-legend { display: none; }
+.ax-lin-feature-open {
   padding: 9px 12px;
   border-radius: 8px;
-  border: 1px solid rgba(102, 197, 255, 0.4);
-  background: rgba(102, 197, 255, 0.12);
-  color: var(--ga-bright-blue);
+  border: 1px solid rgba(116, 151, 220, 0.4);
+  background: rgba(116, 151, 220, 0.12);
+  color: var(--ax-bright-blue);
   font: inherit;
   font-size: 12.5px;
   font-weight: 700;
   cursor: pointer;
   transition: background 140ms ease, border-color 140ms ease, color 140ms ease;
 }
-.ga-lin-feature-open:hover {
-  background: rgba(102, 197, 255, 0.2);
-  border-color: rgba(102, 197, 255, 0.6);
-  color: var(--ga-white);
+.ax-lin-feature-open:hover {
+  background: rgba(116, 151, 220, 0.2);
+  border-color: rgba(116, 151, 220, 0.6);
+  color: var(--ax-white);
 }
-.ga-lin-feature-open:focus-visible {
+.ax-lin-feature-open:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px var(--ga-focus);
+  box-shadow: 0 0 0 2px var(--ax-focus);
 }
 
 /* ---------- Recent journeys ---------- */
-.ga-lin-recent {
+.ax-lin-recent {
   display: grid;
   gap: 10px;
 }
-.ga-lin-recent-rows {
+.ax-lin-recent-rows {
   display: grid;
   gap: 6px;
 }
 
 /* ---------- How lineage works strip ---------- */
-.ga-lin-how {
+.ax-lin-how {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
   margin-top: 24px;
   padding-top: 20px;
-  border-top: 1px solid var(--ga-border-muted);
+  border-top: 1px solid var(--ax-border-muted);
 }
 @media (max-width: 860px) {
-  .ga-lin-how {
+  .ax-lin-how {
     grid-template-columns: 1fr;
   }
 }
-.ga-lin-how-step {
+.ax-lin-how-step {
   display: grid;
   grid-template-columns: 28px minmax(0, 1fr);
   gap: 12px;
   align-items: start;
 }
-.ga-lin-how-num {
+.ax-lin-how-num {
   display: grid;
   place-items: center;
   width: 28px;
   height: 28px;
   border-radius: 999px;
-  background: rgba(102, 197, 255, 0.12);
-  border: 1px solid rgba(102, 197, 255, 0.32);
-  color: var(--ga-bright-blue);
+  background: rgba(116, 151, 220, 0.12);
+  border: 1px solid rgba(116, 151, 220, 0.32);
+  color: var(--ax-bright-blue);
   font-weight: 700;
   font-size: 13px;
 }
-.ga-lin-how-step strong {
+.ax-lin-how-step strong {
   display: block;
-  color: var(--ga-white);
+  color: var(--ax-white);
   font-size: 13.5px;
   margin-bottom: 3px;
 }
-.ga-lin-how-step p {
+.ax-lin-how-step p {
   margin: 0;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   font-size: 12px;
   line-height: 1.5;
 }

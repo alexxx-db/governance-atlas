@@ -31,7 +31,7 @@ function Spark({ values = [], width = 96, height = 32, label = "Trend" }) {
   return (
     <svg
       aria-label={label}
-      className="ga-sys-sparkline"
+      className="ax-sys-sparkline"
       role="img"
       viewBox={`0 0 ${width} ${height}`}
     >
@@ -47,11 +47,11 @@ function Donut({ percent = 0, size = 112 }) {
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (pct / 100) * circumference;
   return (
-    <span className="ga-sys-donut" style={{ width: size, height: size }} aria-hidden="true">
+    <span className="ax-sys-donut" style={{ width: size, height: size }} aria-hidden="true">
       <svg viewBox="0 0 110 110">
-        <circle className="ga-sys-donut-track" cx="55" cy="55" r={radius} />
+        <circle className="ax-sys-donut-track" cx="55" cy="55" r={radius} />
         <circle
-          className="ga-sys-donut-value"
+          className="ax-sys-donut-value"
           cx="55"
           cy="55"
           r={radius}
@@ -92,7 +92,7 @@ export function StatTile({
   const resolvedDeltaTone = DELTA_TONES.has(deltaTone) ? deltaTone : "neutral";
 
   const classes = [
-    "ga-sys-stat-tile",
+    "ax-sys-stat-tile",
     `tone-${tone}`,
     isDonut ? "is-donut" : "",
     href ? "is-link" : "",
@@ -104,37 +104,37 @@ export function StatTile({
 
   const body = (
     <>
-      <span className="ga-sys-stat-tile-head">
+      <span className="ax-sys-stat-tile-head">
         {icon ? (
-          <span className="ga-sys-stat-tile-icon" aria-hidden="true">
+          <span className="ax-sys-stat-tile-icon" aria-hidden="true">
             {icon}
           </span>
         ) : null}
-        <span className="ga-sys-stat-tile-label" title={hint || undefined}>
+        <span className="ax-sys-stat-tile-label" title={hint || undefined}>
           {label}
         </span>
         {hint ? (
           // Not a nested <button>: tile roots can be anchors/buttons, and
           // interactive content inside them is invalid HTML.
-          <span className="ga-sys-info-tip" role="img" aria-label={hint}>
+          <span className="ax-sys-info-tip" role="img" aria-label={hint}>
             i
           </span>
         ) : null}
       </span>
-      <span className="ga-sys-stat-tile-main">
+      <span className="ax-sys-stat-tile-main">
         {isDonut ? <Donut percent={percent ?? value} /> : null}
-        <strong className="ga-sys-stat-tile-value">
+        <strong className="ax-sys-stat-tile-value">
           {value ?? (isDonut && percent != null ? `${clampPercent(percent)}%` : "—")}
         </strong>
         {!isDonut && trend.length ? <Spark values={trend} label={`${label} trend`} /> : null}
       </span>
       {hasProgress ? (
-        <span className="ga-sys-progress" aria-label={`${label} progress`}>
+        <span className="ax-sys-progress" aria-label={`${label} progress`}>
           <span style={{ width: `${clampPercent(progress)}%` }} />
         </span>
       ) : null}
-      {delta ? <span className={`ga-sys-stat-tile-delta tone-${resolvedDeltaTone}`}>{delta}</span> : null}
-      {meta ? <span className="ga-sys-stat-tile-meta">{meta}</span> : null}
+      {delta ? <span className={`ax-sys-stat-tile-delta tone-${resolvedDeltaTone}`}>{delta}</span> : null}
+      {meta ? <span className="ax-sys-stat-tile-meta">{meta}</span> : null}
     </>
   );
 

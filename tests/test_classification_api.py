@@ -12,8 +12,8 @@ import pandas as pd
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from atlas.api import classification as classification_api
-from atlas.services import classification as classification_service
+from axiom.api import classification as classification_api
+from axiom.services import classification as classification_service
 
 
 class FakeStore:

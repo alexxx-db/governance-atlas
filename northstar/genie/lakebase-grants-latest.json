@@ -1,22 +1,22 @@
 {
-  "endpoint": "projects/governance-atlas-state/branches/production/endpoints/primary",
+  "endpoint": "projects/axiom-state/branches/production/endpoints/primary",
   "grants": [
     {
-      "statement": "GRANT USAGE, CREATE ON SCHEMA \"atlas_app\" TO PUBLIC",
+      "statement": "GRANT USAGE, CREATE ON SCHEMA \"axiom_app\" TO PUBLIC",
       "status": "ok"
     },
     {
-      "statement": "GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA \"atlas_app\" TO PUBLIC",
+      "statement": "GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA \"axiom_app\" TO PUBLIC",
       "status": "ok"
     },
     {
-      "statement": "ALTER DEFAULT PRIVILEGES IN SCHEMA \"atlas_app\" GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO PUBLIC",
+      "statement": "ALTER DEFAULT PRIVILEGES IN SCHEMA \"axiom_app\" GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO PUBLIC",
       "status": "ok"
     },
     {
       "currentUserCreate": true,
-      "schema": "atlas_app"
+      "schema": "axiom_app"
     }
   ],
-  "schema": "atlas_app"
+  "schema": "axiom_app"
 }

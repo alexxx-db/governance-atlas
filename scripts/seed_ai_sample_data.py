@@ -3,14 +3,14 @@
 
 Decision D1: only *real*, labeled sample objects, never fabricated
 observation rows. Everything created carries a sample marker the collector
-recognizes (endpoint tag ``atlas_sample_run_id`` or ``[atlas-sample:<run>]``
+recognizes (endpoint tag ``axiom_sample_run_id`` or ``[axiom-sample:<run>]``
 in the comment), and intake rows are written with ``provenance_class=sample``.
-The scenario and its expected findings live in atlas/ai/sample.py
+The scenario and its expected findings live in axiom/ai/sample.py
 (verified by tests/test_ai_sample_scenario.py).
 
 Creates (``--live``):
-  - schema <catalog>.atlas_ai_samples
-  - secret scope atlas-ai-sample with a placeholder (not a credential)
+  - schema <catalog>.axiom_ai_samples
+  - secret scope axiom-ai-sample with a placeholder (not a credential)
   - two external-model serving endpoints (no compute; never queried)
   - one HTTP connection flagged is_mcp_connection=true (placeholder host)
   - one UC SQL function (tool) tagged with an intake id
@@ -40,12 +40,12 @@ from typing import Any, Dict, List
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from atlas.ai import sample  # noqa: E402
-from atlas.util import quote_ident, sql_literal  # noqa: E402
+from axiom.ai import sample  # noqa: E402
+from axiom.util import quote_ident, sql_literal  # noqa: E402
 
 
 def _run_id() -> str:
-    return f"ga-ai-sample-{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}-{uuid.uuid4().hex[:7]}"
+    return f"ax-ai-sample-{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}-{uuid.uuid4().hex[:7]}"
 
 
 def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
@@ -53,11 +53,11 @@ def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--live", action="store_true", help="Create the sample objects and intake rows.")
     mode.add_argument("--cleanup", action="store_true", help="Remove all sample objects and purge sample rows.")
-    parser.add_argument("--profile", default=os.environ.get("ATLAS_PROFILE", "DEFAULT"))
+    parser.add_argument("--profile", default=os.environ.get("AXIOM_PROFILE", "DEFAULT"))
     parser.add_argument("--catalog", default="main", help="Catalog for the sample schema (objects are created here).")
     parser.add_argument("--warehouse-id", default=os.environ.get("BUNDLE_VAR_warehouse_id") or os.environ.get("DATABRICKS_WAREHOUSE_ID") or "")
-    parser.add_argument("--gov-catalog", default=os.environ.get("BUNDLE_VAR_gov_catalog") or os.environ.get("GOVAT_CATALOG") or "")
-    parser.add_argument("--gov-schema", default=os.environ.get("BUNDLE_VAR_gov_schema") or os.environ.get("GOVAT_SCHEMA") or "")
+    parser.add_argument("--gov-catalog", default=os.environ.get("BUNDLE_VAR_gov_catalog") or os.environ.get("AXIOM_CATALOG") or "")
+    parser.add_argument("--gov-schema", default=os.environ.get("BUNDLE_VAR_gov_schema") or os.environ.get("AXIOM_SCHEMA") or "")
     parser.add_argument("--run-id", default="", help="Sample run id (default: generated). --cleanup purges every sample run.")
     return parser.parse_args(argv)
 
@@ -80,12 +80,12 @@ def _ai_store(args: argparse.Namespace) -> Any:
     if not (args.warehouse_id and args.gov_catalog and args.gov_schema):
         raise SystemExit("--warehouse-id, --gov-catalog, and --gov-schema are required (or source .env.dev).")
     os.environ.setdefault("DATABRICKS_CONFIG_PROFILE", args.profile)
-    os.environ.update({"DATABRICKS_WAREHOUSE_ID": args.warehouse_id, "GOVAT_CATALOG": args.gov_catalog, "GOVAT_SCHEMA": args.gov_schema})
+    os.environ.update({"DATABRICKS_WAREHOUSE_ID": args.warehouse_id, "AXIOM_CATALOG": args.gov_catalog, "AXIOM_SCHEMA": args.gov_schema})
     # Same construction as the app and jobs (Lakebase dual-write included when
     # enabled), so registry deletes in --cleanup reach the mirror too.
-    from atlas.ai.jobs import common
-    from atlas.ai.store import AiStore
-    from atlas.config import AppConfig
+    from axiom.ai.jobs import common
+    from axiom.ai.store import AiStore
+    from axiom.config import AppConfig
 
     store, _ = common.build_store(AppConfig.from_env())
     return AiStore(store)
@@ -142,7 +142,7 @@ def seed(args: argparse.Namespace, run_id: str) -> Dict[str, Any]:
             tags=[
                 serving.EndpointTag(key=sample.INTAKE_TAG_KEY, value=ep.intake_id),
                 serving.EndpointTag(key=sample.TIER_TAG_KEY, value=ep.tier),
-                serving.EndpointTag(key="atlas_sample_run_id", value=run_id),
+                serving.EndpointTag(key="axiom_sample_run_id", value=run_id),
             ],
             ai_gateway=serving.AiGatewayConfig(usage_tracking_config=serving.AiGatewayUsageTrackingConfig(enabled=True))
             if ep.usage_tracking
@@ -157,7 +157,7 @@ def seed(args: argparse.Namespace, run_id: str) -> Dict[str, Any]:
             "host": "https://mcp.example.invalid",
             "port": "443",
             "base_path": "/mcp",
-            "bearer_token": "not-a-real-token-atlas-sample",
+            "bearer_token": "not-a-real-token-axiom-sample",
             "is_mcp_connection": "true",
         },
         comment=sample.sample_comment(run_id, "Sample MCP server connection"),
@@ -184,7 +184,7 @@ def seed(args: argparse.Namespace, run_id: str) -> Dict[str, Any]:
     )
     created["steps"].append(f"registered model {sample.SCENARIO.registered_model}")
 
-    from atlas.ai.intake import load_field_map, map_row
+    from axiom.ai.intake import load_field_map, map_row
 
     ai = _ai_store(args)
     records = []
@@ -219,7 +219,7 @@ def cleanup(args: argparse.Namespace) -> Dict[str, Any]:
             report["errors"].append(f"{label}: {type(exc).__name__}: {str(exc).split(' Config:')[0][:200]}")
 
     for endpoint in w.serving_endpoints.list():
-        if any(t.key == "atlas_sample_run_id" for t in (endpoint.tags or [])):
+        if any(t.key == "axiom_sample_run_id" for t in (endpoint.tags or [])):
             attempt(f"endpoint {endpoint.name}", lambda name=endpoint.name: w.serving_endpoints.delete(name))
     attempt(f"connection {sample.SCENARIO.mcp_connection}", lambda: w.connections.delete(sample.SCENARIO.mcp_connection))
     attempt(

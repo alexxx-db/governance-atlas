@@ -13,7 +13,7 @@
 import { PRODUCT } from "../config/product";
 import { isNonAuthoritativeMockEvidence } from "../lib/nonAuthoritativeEvidence";
 import { refHref } from "../nav/refs.js";
-import { useAtlasNavigate } from "../nav/useAtlasNavigate.js";
+import { useAxiomNavigate } from "../nav/useAxiomNavigate.js";
 import { SHELL_CLASSNAMES } from "./legacyShellContract.js";
 
 const BellIcon = () => (
@@ -126,7 +126,7 @@ export function Header({
   onOpenPalette,
   onOpenAiCopilot,
 }) {
-  const navigate = useAtlasNavigate();
+  const navigate = useAxiomNavigate();
   const productName = resolveProductName(shell);
   const environmentTitle = resolveEnvironmentTitle(shell);
   const workspaceLabel = resolveWorkspaceLabel(shell);
@@ -155,26 +155,26 @@ export function Header({
   };
 
   return (
-    <div className={`ga-topbar ${SHELL_CLASSNAMES.topbar}`}>
+    <div className={`ax-topbar ${SHELL_CLASSNAMES.topbar}`}>
       <a
         aria-label={`Open ${productName} Command Center`}
-        className="ga-workspace-breadcrumb"
+        className="ax-workspace-breadcrumb"
         href={refHref({ surface: "home" })}
         onClick={anchorNav({ surface: "home" })}
         title={shellDisabledReason || "Open Command Center"}
       >
         <WorkspaceIcon />
         <span>Workspace</span>
-        <span aria-hidden="true" className="ga-workspace-breadcrumb-separator">›</span>
+        <span aria-hidden="true" className="ax-workspace-breadcrumb-separator">›</span>
         <strong>{workspaceLabel}</strong>
       </a>
-      <div className="ga-topbar-search-slot">
+      <div className="ax-topbar-search-slot">
         {/* Search and ⌘K are one system now: the box opens the palette with
             focus, so typing continues seamlessly. */}
         <button
           aria-haspopup="dialog"
           aria-label="Search assets, glossary terms, and owners"
-          className="ga-shell-search-trigger"
+          className="ax-shell-search-trigger"
           disabled={shellDisabled}
           onClick={() => onOpenPalette?.()}
           title={shellDisabled ? shellDisabledReason : "Search (⌘K)"}
@@ -182,31 +182,31 @@ export function Header({
         >
           <SearchIcon />
           <span>Search assets, terms, owners…</span>
-          <span aria-hidden="true" className="ga-shell-search-kbd">
+          <span aria-hidden="true" className="ax-shell-search-kbd">
             <kbd>⌘</kbd>
             <kbd>K</kbd>
           </span>
         </button>
       </div>
-      <div className="ga-topbar-actions">
+      <div className="ax-topbar-actions">
         <span
-          className={`ga-env-chip ${environmentTone ? `tone-${environmentTone}` : ""}`.trim()}
+          className={`ax-env-chip ${environmentTone ? `tone-${environmentTone}` : ""}`.trim()}
           title={environmentTitle}
         >
-          {environmentTone ? <span aria-hidden="true" className="ga-status-dot" /> : null}
+          {environmentTone ? <span aria-hidden="true" className="ax-status-dot" /> : null}
           <span>{environmentLabel}</span>
         </span>
         {showInbox ? (
           <a
             aria-label={notificationsLabel}
-            className={`ga-icon-button ga-notifications-button ${inboxUnavailable ? "is-unavailable" : ""}`.trim()}
+            className={`ax-icon-button ax-notifications-button ${inboxUnavailable ? "is-unavailable" : ""}`.trim()}
             href={refHref(inboxTarget)}
             onClick={anchorNav(inboxTarget)}
             title={notificationsTitle}
           >
             <BellIcon />
             {inboxUnreadCount > 0 ? (
-              <span aria-hidden="true" className="ga-notification-count">
+              <span aria-hidden="true" className="ax-notification-count">
                 {inboxUnreadCount > 9 ? "9+" : inboxUnreadCount}
               </span>
             ) : null}
@@ -214,7 +214,7 @@ export function Header({
         ) : null}
         <a
           aria-label="Help"
-          className="ga-icon-button ga-help-button"
+          className="ax-icon-button ax-help-button"
           href={refHref(helpTarget)}
           onClick={anchorNav(helpTarget)}
           title="Help"
@@ -223,13 +223,13 @@ export function Header({
         </a>
         <button
           aria-disabled={!aiCopilotAvailable}
-          className="ga-ai-chip is-primary"
+          className="ax-ai-chip is-primary"
           disabled={!aiCopilotAvailable}
           onClick={aiCopilotAvailable ? onOpenAiCopilot : undefined}
           title={
             aiCopilotAvailable
-              ? "Open Atlas AI"
-              : aiUnavailableReason || "Atlas AI requires an evidence-backed endpoint before activation."
+              ? "Open Axiom AI"
+              : aiUnavailableReason || "Axiom AI requires an evidence-backed endpoint before activation."
           }
           type="button"
         >

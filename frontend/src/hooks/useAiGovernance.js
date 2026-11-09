@@ -1,6 +1,6 @@
 // AI governance data hooks (docs/ai_extension/DESIGN.md 10).
 //
-// Every read goes through useAtlasQuery, so the shared envelope contract
+// Every read goes through useAxiomQuery, so the shared envelope contract
 // decides loading / degraded / unavailable from the backend's meta. The
 // backend builds each view from the latest *succeeded* reconciliation run
 // and reports a failed later run or an unavailable source as `degraded`
@@ -15,9 +15,9 @@ import {
   importAiIntake,
   patchAiFinding,
 } from "../lib/api";
-import { useAtlasMutation, useAtlasQuery } from "./useAtlasQuery";
+import { useAxiomMutation, useAxiomQuery } from "./useAxiomQuery";
 
-export const AI_KEY = ["atlas", "ai"];
+export const AI_KEY = ["axiom", "ai"];
 
 const READ_OPTIONS = {
   placeholderData: (previousData) => previousData,
@@ -26,7 +26,7 @@ const READ_OPTIONS = {
 };
 
 export function useAiSummary(options = {}) {
-  return useAtlasQuery({
+  return useAxiomQuery({
     key: [...AI_KEY, "summary"],
     enabled: options.enabled !== false,
     fetch: (signal) => fetchAiSummary({ signal }),
@@ -48,7 +48,7 @@ export function useAiInventory(filters = {}, options = {}) {
     limit: filters.limit || 200,
     offset: filters.offset || 0,
   };
-  return useAtlasQuery({
+  return useAxiomQuery({
     key: [...AI_KEY, "inventory", normalized],
     enabled: options.enabled !== false,
     fetch: (signal) => fetchAiInventory(normalized, { signal }),
@@ -58,7 +58,7 @@ export function useAiInventory(filters = {}, options = {}) {
 
 export function useAiAsset(entityId, options = {}) {
   const id = String(entityId || "").trim();
-  return useAtlasQuery({
+  return useAxiomQuery({
     key: [...AI_KEY, "asset", id],
     enabled: Boolean(id) && options.enabled !== false,
     fetch: (signal) => fetchAiAsset(id, { signal }),
@@ -77,7 +77,7 @@ export function useAiFindings(filters = {}, options = {}) {
     limit: filters.limit || 200,
     offset: filters.offset || 0,
   };
-  return useAtlasQuery({
+  return useAxiomQuery({
     key: [...AI_KEY, "findings", normalized],
     enabled: options.enabled !== false,
     fetch: (signal) => fetchAiFindings(normalized, { signal }),
@@ -86,7 +86,7 @@ export function useAiFindings(filters = {}, options = {}) {
 }
 
 export function useAiIntake(options = {}) {
-  return useAtlasQuery({
+  return useAxiomQuery({
     key: [...AI_KEY, "intake"],
     enabled: options.enabled !== false,
     fetch: (signal) => fetchAiIntake({ signal }),
@@ -101,7 +101,7 @@ export function useAiIntake(options = {}) {
  * the backend audits before writing and may reject).
  */
 export function useAiFindingAction() {
-  return useAtlasMutation({
+  return useAxiomMutation({
     mutate: ({ findingId, action, intakeId = "", note = "", reason = "", assigneeEmail = "" }) =>
       action === "confirm-match"
         ? confirmAiFindingMatch(findingId, { intakeId, note })
@@ -112,7 +112,7 @@ export function useAiFindingAction() {
 
 /** variables: {csvText, mode: "dry_run" | "commit"} */
 export function useAiIntakeImport() {
-  return useAtlasMutation({
+  return useAxiomMutation({
     mutate: ({ csvText, mode }) => importAiIntake(csvText, mode),
     invalidates: [AI_KEY],
   });

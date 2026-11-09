@@ -10,7 +10,7 @@
  *     palette can never disagree with the rail again.
  *   - Every result row is a REAL <a href> resolved via nav/refs (EntityChip
  *     semantics: middle-click/copy work); left-click routes through
- *     useAtlasNavigate.
+ *     useAxiomNavigate.
  *   - "Search Discover for …" row carries the old header-search submit
  *     behavior (Enter on a free-text query lands on Discovery results).
  */
@@ -31,9 +31,9 @@ const SURFACE_SUBTITLES = {
   lineage: "Connected asset graph",
   evidence: "Immutable governance event log",
   admin: "Runtime, integrations, and policy",
-  help: "How Governance Atlas works",
+  help: "How Axiom works",
   ai: "AI assets, intake, and findings",
-  datapact: "DataPact validation results",
+  emet: "emet validation results",
 };
 
 function ownerDisplayName(owner) {
@@ -244,13 +244,13 @@ export function CommandPalette({ seedAssets = [], onNavigateRef, onSearchDiscove
   }, [items]);
 
   return (
-    <div aria-label="Search and commands" aria-modal="true" className="ga-cmdk-backdrop" onMouseDown={onClose} role="dialog">
-      <div className="ga-cmdk" onMouseDown={(event) => event.stopPropagation()}>
-        <div className="ga-cmdk-input-row">
-          <span aria-hidden="true" className="ga-cmdk-prefix">⌘</span>
+    <div aria-label="Search and commands" aria-modal="true" className="ax-cmdk-backdrop" onMouseDown={onClose} role="dialog">
+      <div className="ax-cmdk" onMouseDown={(event) => event.stopPropagation()}>
+        <div className="ax-cmdk-input-row">
+          <span aria-hidden="true" className="ax-cmdk-prefix">⌘</span>
           <input
             aria-label="Search assets, glossary terms, and owners"
-            className="ga-cmdk-input"
+            className="ax-cmdk-input"
             onChange={(event) => setQuery(event.target.value)}
             onKeyDown={handleKey}
             placeholder="Search assets, glossary terms, owners…"
@@ -258,18 +258,18 @@ export function CommandPalette({ seedAssets = [], onNavigateRef, onSearchDiscove
             type="search"
             value={query}
           />
-          <span aria-hidden="true" className="ga-cmdk-hint">Esc to close</span>
+          <span aria-hidden="true" className="ax-cmdk-hint">Esc to close</span>
         </div>
-        <div className="ga-cmdk-list" role="listbox">
+        <div className="ax-cmdk-list" role="listbox">
           {items.length === 0 ? (
             searching ? (
               // Honest in-flight state: never claim "no matches" while the
               // live query is still out.
-              <div aria-busy="true" className="ga-cmdk-empty is-loading" role="status">
+              <div aria-busy="true" className="ax-cmdk-empty is-loading" role="status">
                 Searching assets, glossary terms, and owners…
               </div>
             ) : (
-              <div className="ga-cmdk-empty">
+              <div className="ax-cmdk-empty">
                 {query.trim()
                   ? `No matches for "${query.trim()}"`
                   : "Type to search assets, glossary terms, and owners."}
@@ -278,11 +278,11 @@ export function CommandPalette({ seedAssets = [], onNavigateRef, onSearchDiscove
           ) : (
             grouped.map(([group, groupItems]) => (
               <div key={group}>
-                <div className="ga-cmdk-group">{group}</div>
+                <div className="ax-cmdk-group">{group}</div>
                 {groupItems.map((item) => (
                   <a
                     aria-selected={cursor === item._idx}
-                    className={`ga-cmdk-item ${cursor === item._idx ? "is-active" : ""}`.trim()}
+                    className={`ax-cmdk-item ${cursor === item._idx ? "is-active" : ""}`.trim()}
                     href={refHref(item.ref)}
                     key={item.id}
                     onClick={(event) => {
@@ -293,19 +293,19 @@ export function CommandPalette({ seedAssets = [], onNavigateRef, onSearchDiscove
                     onMouseEnter={() => setCursor(item._idx)}
                     role="option"
                   >
-                    <span aria-hidden="true" className="ga-cmdk-item-glyph">
+                    <span aria-hidden="true" className="ax-cmdk-item-glyph">
                       {item.asset ? (
                         <AssetTypeIcon asset={item.asset} size="sm" />
                       ) : (
-                        <span className="ga-cmdk-generic-glyph">›</span>
+                        <span className="ax-cmdk-generic-glyph">›</span>
                       )}
                     </span>
-                    <span className="ga-cmdk-item-text">
-                      <span className="ga-cmdk-item-title">{item.title}</span>
-                      <span className="ga-cmdk-item-subtitle">{item.subtitle}</span>
+                    <span className="ax-cmdk-item-text">
+                      <span className="ax-cmdk-item-title">{item.title}</span>
+                      <span className="ax-cmdk-item-subtitle">{item.subtitle}</span>
                     </span>
                     {item.badge ? (
-                      <span aria-hidden="true" className="ga-cmdk-item-badge">{item.badge}</span>
+                      <span aria-hidden="true" className="ax-cmdk-item-badge">{item.badge}</span>
                     ) : null}
                   </a>
                 ))}
@@ -313,15 +313,15 @@ export function CommandPalette({ seedAssets = [], onNavigateRef, onSearchDiscove
             ))
           )}
           {items.length > 0 && searching ? (
-            <div aria-busy="true" className="ga-cmdk-live-status" role="status">
+            <div aria-busy="true" className="ax-cmdk-live-status" role="status">
               Searching the live catalog…
             </div>
           ) : null}
         </div>
-        <div className="ga-cmdk-footer">
-          <span className="ga-cmdk-footer-hint"><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
-          <span className="ga-cmdk-footer-hint"><kbd>↵</kbd> open</span>
-          <span className="ga-cmdk-footer-hint"><kbd>esc</kbd> close</span>
+        <div className="ax-cmdk-footer">
+          <span className="ax-cmdk-footer-hint"><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+          <span className="ax-cmdk-footer-hint"><kbd>↵</kbd> open</span>
+          <span className="ax-cmdk-footer-hint"><kbd>esc</kbd> close</span>
         </div>
       </div>
     </div>

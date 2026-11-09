@@ -7,8 +7,8 @@ import unittest
 
 import pandas as pd
 
-from atlas.api import assets as assets_api
-from atlas.services import assets as asset_service
+from axiom.api import assets as assets_api
+from axiom.services import assets as asset_service
 
 
 class AssetDetailSectionTests(unittest.TestCase):
@@ -189,7 +189,7 @@ class AssetDetailMalformedFqnTests(unittest.TestCase):
         sys.modules["runtime_app"] = module
         try:
             request = types.SimpleNamespace(headers={}, state=types.SimpleNamespace())
-            response = assets_api.api_asset_detail("datapact.enterprise_metadata_ops", request)
+            response = assets_api.api_asset_detail("emet.enterprise_metadata_ops", request)
         finally:
             if previous is None:
                 sys.modules.pop("runtime_app", None)

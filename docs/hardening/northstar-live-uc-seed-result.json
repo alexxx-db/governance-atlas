@@ -377,7 +377,7 @@
       "table_catalog": "finance_prod",
       "table_schema": "curated",
       "table_name": "revenue_daily",
-      "comment": "North Star synthetic certified revenue daily table used to validate Governance Atlas lineage and discovery workflows."
+      "comment": "North Star synthetic certified revenue daily table used to validate Axiom lineage and discovery workflows."
     },
     {
       "table_catalog": "finance_prod",
@@ -389,25 +389,25 @@
       "table_catalog": "finance_prod",
       "table_schema": "raw",
       "table_name": "netsuite_invoices",
-      "comment": "Synthetic North Star invoice source for Governance Atlas validation."
+      "comment": "Synthetic North Star invoice source for Axiom validation."
     },
     {
       "table_catalog": "finance_prod",
       "table_schema": "raw",
       "table_name": "salesforce_orders",
-      "comment": "Synthetic North Star source orders for Governance Atlas validation."
+      "comment": "Synthetic North Star source orders for Axiom validation."
     },
     {
       "table_catalog": "finance_prod",
       "table_schema": "raw",
       "table_name": "stripe_charges",
-      "comment": "Synthetic North Star payment source for Governance Atlas validation."
+      "comment": "Synthetic North Star payment source for Axiom validation."
     },
     {
       "table_catalog": "finance_prod",
       "table_schema": "silver",
       "table_name": "payments",
-      "comment": "Silver synthetic payment facts for Governance Atlas lineage validation."
+      "comment": "Silver synthetic payment facts for Axiom lineage validation."
     },
     {
       "table_catalog": "hr_secure",
@@ -1160,7 +1160,7 @@
       "table_schema": "curated",
       "table_name": "revenue_daily",
       "table_type": "MANAGED",
-      "comment": "North Star synthetic certified revenue daily table used to validate Governance Atlas lineage and discovery workflows."
+      "comment": "North Star synthetic certified revenue daily table used to validate Axiom lineage and discovery workflows."
     }
   ]
 }

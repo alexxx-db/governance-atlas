@@ -14,7 +14,7 @@ Built:
   exposes `shell.aiGovernance.enabled`.
 - Migrations 19 to 22: observations, intake plus history, runs plus findings,
   and control results. 23 and 24 are reserved.
-- `atlas/ai`:
+- `axiom/ai`:
   - models, allowlist redaction, and never-raise probes;
   - `AiStore`, which audits before mutating and goes through the store wrapper
     so writes reach the Lakebase mirror;
@@ -23,7 +23,7 @@ Built:
   - reconciliation (M1 to M3, five finding rules);
   - controls AIC-01, 03, 04, 06 and 09;
   - job entry points, sample scenario, and stress scenarios.
-- Bundle job `atlas-ai-collect-and-reconcile`: two serverless tasks, paused
+- Bundle job `axiom-ai-collect-and-reconcile`: two serverless tasks, paused
   schedule, `run_as` the collector SP in staging/prod.
 - `/api/ai` routes: summary, inventory, asset, controls, findings,
   finding actions, confirm-match, intake, import, and runs.
@@ -36,11 +36,11 @@ Validation evidence:
 - Frontend: 724 vitest OK (up from 706). Typecheck is clean, check-css passes,
   and the build succeeds.
 - Live stress, `run_synthetic_stress_validation.py --scenario ai` in
-  run-scoped schema `atlas_ga_stress_20260924175926_dc3ccfe4`: 9 of 9 checks
+  run-scoped schema `axiom_ax_stress_20260924175926_dc3ccfe4`: 9 of 9 checks
   pass. Audit and event rows pair 53 to 53, with 0 organic leaks and 0
   leftovers. An earlier run caught sample control results stored as organic;
   that is fixed.
-- Dev app `atlas-alex` is deployed with the flag on. The job ran live:
+- Dev app `axiom-alex` is deployed with the flag on. The job ran live:
   - `dbx-879840517064763`: 99 findings opened.
   - `dbx-835023281092064`: 99 unchanged, 99 distinct IDs, `last_seen`
     advanced, 0 registry writes.
@@ -76,7 +76,7 @@ Branch review fixes (after the checkpoint above, not yet redeployed):
 - Backend 859 unittest OK. Frontend 727 vitest OK, and the build succeeds.
 
 Remaining before sign-off:
-- Redeploy `atlas-alex` and re-run the job with the review fixes.
+- Redeploy `axiom-alex` and re-run the job with the review fixes.
 - The `CLAUDE.md` browser walk-through and independent subagent sign-off have
   **not** run. They need an authenticated Chrome session on CDP `:9223`.
   - The walk-through covers inventory, Asset 360, the findings confirm,
@@ -114,7 +114,7 @@ Fixed and validated (442 backend pytest, 486 frontend vitest, clean build):
   instead of resetting), hydrating live-lineage payload renders instead of
   showing "No lineage edges", stable `refresh` closure (no relayout storm).
 - **P1/UX** Dark-brand preboot splash (was the old light/cream shell on every
-  load), favicon, legible ga-token tone chips, resilient error boundary (a stray
+  load), favicon, legible ax-token tone chips, resilient error boundary (a stray
   global reject no longer replaces the app), removed fabricated Command Center
   narrative constants, de-creamed the load-order-fragile masked `!important` CSS.
 - **Build/tests** Restored portable `app.yaml` (dev values baked only into the
@@ -132,9 +132,9 @@ Fixed and validated (442 backend pytest, 486 frontend vitest, clean build):
   bare authority-false evidence fail closed before customer-facing render paths. Real
   Databricks degraded envelopes may render only as degraded/provisional state when
   they carry trusted live-source provenance and a degraded/unavailable/error state.
-- Active all-route current screenshot capture-health evidence is `docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/prototype-current-report.json` for build `frontend-39d0070a8f87`. It is local runtime evidence with `mockApi=false`, `captureCount=32`, and `liveDatabricksCapture=false`; it is not visual parity, deployed browser proof, or live Databricks App proof.
-- Active side-by-side/palette blocker evidence is `docs/northstar_visual_qa/live-runtime-current-v220-reference-current-datapact-test-audit-2026-05-04/audit-artifact-manifest.json`. It records `10` route/state pairs and `10` blocked pairs; max changed-pixel percentage above threshold `8` is `39.74`, and max sampled palette delta is `28.6`.
-- Active functional-control evidence is local-runtime only: `docs/northstar_visual_qa/live-runtime-current-v215-full-functional-datapact-test-2026-05-04/prototype-current-report.json`. It has `mockApi=false`, `interactionCount=48`, and only the expected invalid structured-search `400` checks. Local runtime performance evidence is `docs/northstar_visual_qa/live-runtime-current-v216-performance-datapact-test-2026-05-04/performance-report.json` with `budgetPassed=true`. These reports do not close deployed proof, visual parity, or remaining open control rows.
+- Active all-route current screenshot capture-health evidence is `docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/prototype-current-report.json` for build `frontend-39d0070a8f87`. It is local runtime evidence with `mockApi=false`, `captureCount=32`, and `liveDatabricksCapture=false`; it is not visual parity, deployed browser proof, or live Databricks App proof.
+- Active side-by-side/palette blocker evidence is `docs/northstar_visual_qa/live-runtime-current-v220-reference-current-emet-test-audit-2026-05-04/audit-artifact-manifest.json`. It records `10` route/state pairs and `10` blocked pairs; max changed-pixel percentage above threshold `8` is `39.74`, and max sampled palette delta is `28.6`.
+- Active functional-control evidence is local-runtime only: `docs/northstar_visual_qa/live-runtime-current-v215-full-functional-emet-test-2026-05-04/prototype-current-report.json`. It has `mockApi=false`, `interactionCount=48`, and only the expected invalid structured-search `400` checks. Local runtime performance evidence is `docs/northstar_visual_qa/live-runtime-current-v216-performance-emet-test-2026-05-04/performance-report.json` with `budgetPassed=true`. These reports do not close deployed proof, visual parity, or remaining open control rows.
 - Older v415/v416/v419 and v88-v93 artifacts are historical comparison, truth, or prior-build evidence only unless a specific open row explicitly cites them as historical context. They are not the active current epoch and cannot close product-readiness rows for this tranche.
 - The failed stricter MIP downstream probe at `docs/northstar_visual_qa/lineage-truth-v418-databricks/lineage-truth-report.json` and the earlier failed v400 probe are not closure evidence. The closed restricted-downstream row uses `main.mdm_schema.mdm_manual_overrides` in the passing v419 report.
 - Capture reports prove route/capture health only. They do not by themselves prove visual parity, functional completion, live Databricks truth, or reviewer signoff.
@@ -158,7 +158,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Run focused backend tests for fail-closed write auditing, request IDs, text sanitization, API error contracts, and synthetic stress workflow contracts.
   - Run the run-scoped synthetic Databricks stress validator in live mode with `DEFAULT` and the dev SQL warehouse to prove synthetic workflow mutation/audit/Lakebase/Genie paths without leaking into organic evidence.
   - Run Databricks bundle validation and `bundle summary` with `DEFAULT`.
-  - Deploy the current app snapshot if validation passes, then run live route/API and browser interaction validation without `GOVAT_PROTOTYPE_MOCK_API`.
+  - Deploy the current app snapshot if validation passes, then run live route/API and browser interaction validation without `AXIOM_PROTOTYPE_MOCK_API`.
 - Current blockers:
   - No live validation from this tranche has run yet.
   - `267` visual/page/shared gaps remain open in `full_page_audit.md`; no visual signoff is available.
@@ -181,9 +181,9 @@ explicitly revalidates them against the active ledgers and current evidence.
 
 - Scope:
   - Execute `scripts/run_synthetic_stress_validation.py` in live mode against the `DEFAULT` profile and dev SQL warehouse `da02d15a9490650b`.
-  - Use the run-scoped schema prefix `atlas_ga_stress`; the script marks all rows app-owned/test-scoped/cleanup-safe/excluded-from-organic-evidence and drops the run schema after validation.
+  - Use the run-scoped schema prefix `axiom_ax_stress`; the script marks all rows app-owned/test-scoped/cleanup-safe/excluded-from-organic-evidence and drops the run schema after validation.
 - Preconditions:
-  - `databricks current-user me --profile DEFAULT` succeeded for `skyler@entrada.ai`.
+  - `databricks current-user me --profile DEFAULT` succeeded for `abarreto@shorecp.com`.
   - `databricks warehouses get da02d15a9490650b --profile DEFAULT` succeeded; warehouse `cotality_dais` is `RUNNING` and `HEALTHY`.
 - Current blockers:
   - Live stress execution is in progress next; results will be recorded before the deploy gate.
@@ -191,11 +191,11 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Live Synthetic Stress Mutation Run Passed
 
 - Validation:
-  - `./.venv/bin/python scripts/run_synthetic_stress_validation.py --live --profile DEFAULT --warehouse-id da02d15a9490650b --catalog datapact --schema-prefix atlas_ga_stress --rows-per-scenario 2 --output docs/northstar_visual_qa/live-synthetic-stress-latest.json` -> passed.
+  - `./.venv/bin/python scripts/run_synthetic_stress_validation.py --live --profile DEFAULT --warehouse-id da02d15a9490650b --catalog emet --schema-prefix axiom_ax_stress --rows-per-scenario 2 --output docs/northstar_visual_qa/live-synthetic-stress-latest.json` -> passed.
 - Evidence:
   - Artifact: `docs/northstar_visual_qa/live-synthetic-stress-latest.json`.
-  - Run ID: `ga-stress-20260429210542-e95f5b0a`.
-  - Run-scoped schema: `atlas_ga_stress_20260429210542_e95f5b0a`.
+  - Run ID: `ax-stress-20260429210542-e95f5b0a`.
+  - Run-scoped schema: `axiom_ax_stress_20260429210542_e95f5b0a`.
   - Marker validation: `16` expected/observed rows across Discovery, Governance, Lakebase, Quality, Lineage, Taxonomy, Genie, and cleanup; `0` marker failures.
   - Workflow validation: `2` expected workflows; `30` expected/observed immutable audit events; `30` distinct immutable event IDs.
   - Mutation coverage: approved and rejected governance paths, taxonomy association approvals, degraded and unavailable lineage cases, completed quality runs, Genie grounded answers, Lakebase mirror success records.
@@ -217,7 +217,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 
 - Validation:
   - `databricks bundle validate --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> passed, `Validation OK!`.
-  - `databricks bundle summary --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> passed; workspace root `/Workspace/Users/skyler@entrada.ai/.bundle/atlas/dev`, app resource `atlas`.
+  - `databricks bundle summary --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> passed; workspace root `/Workspace/Users/abarreto@shorecp.com/.bundle/axiom/dev`, app resource `axiom`.
 - Notes:
   - `bundle summary` reports the Apps URL as `(not deployed)`, consistent with prior logged behavior when the active app snapshot is deployed via the Apps API. This is not being counted as live app proof.
 - Current blockers:
@@ -237,7 +237,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Validation:
   - `npm run build` from `frontend/` -> passed.
 - Evidence:
-  - `frontend/dist/atlas-build-manifest.json` build ID: `frontend-7c7d062bb864`.
+  - `frontend/dist/axiom-build-manifest.json` build ID: `frontend-7c7d062bb864`.
   - Source hash: `7c7d062bb864ba2fb52a4e456c6b31e2d47e3340e80f0471ee1959e3fc8722ef`.
 - Current blockers:
   - Deploying the rebuilt app snapshot is pending.
@@ -256,11 +256,11 @@ explicitly revalidates them against the active ledgers and current evidence.
 
 - Validation:
   - `databricks apps deploy --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b --skip-validation --timeout 20m -o json` -> passed; app started successfully.
-  - `databricks apps get atlas --profile DEFAULT -o json` -> app `RUNNING`, compute `ACTIVE`, active deployment `SUCCEEDED`.
+  - `databricks apps get axiom --profile DEFAULT -o json` -> app `RUNNING`, compute `ACTIVE`, active deployment `SUCCEEDED`.
 - Evidence:
   - Active deployment ID: `01f1441075861f65aaaabf7a93e30ddd`.
   - App URL: `https://atlas-2543889327043640.aws.databricksapps.com`.
-  - Source code path: `/Workspace/Users/skyler@entrada.ai/.bundle/atlas/dev/files`.
+  - Source code path: `/Workspace/Users/abarreto@shorecp.com/.bundle/axiom/dev/files`.
   - Attached resources: SQL warehouse `da02d15a9490650b`, Genie space `01f1406a11221afa985d3fe64c9fbea1`, Lakebase branch/database resource.
   - Effective user scopes include `sql`, Unity Catalog read scopes, `catalog.connections`, `dashboards.genie`, and implicit IAM read scopes.
 - Current blockers:
@@ -270,7 +270,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Live Route/API Validation Started
 
 - Scope:
-  - Run `frontend/scripts/atlas_route_live_validation.mjs` against `https://atlas-2543889327043640.aws.databricksapps.com` with a `DEFAULT` profile OAuth token.
+  - Run `frontend/scripts/axiom_route_live_validation.mjs` against `https://atlas-2543889327043640.aws.databricksapps.com` with a `DEFAULT` profile OAuth token.
   - Require deployed endpoints to report build ID `frontend-7c7d062bb864`.
   - Validate runtime/bootstrap, Asset 360, lineage, governance workbench/detail, insights, taxonomy, CDE dashboard/detail, audit evidence/detail, admin control-center, Genie, and Lakebase mirror state.
 - Current blockers:
@@ -280,7 +280,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Live Route/API Validation Passed
 
 - Validation:
-  - `frontend/scripts/atlas_route_live_validation.mjs` against `https://atlas-2543889327043640.aws.databricksapps.com` -> passed.
+  - `frontend/scripts/axiom_route_live_validation.mjs` against `https://atlas-2543889327043640.aws.databricksapps.com` -> passed.
 - Evidence:
   - Artifact: `docs/hardening/live-route-validation-reopened-functional.json`.
   - Deployment ID: `01f1441075861f65aaaabf7a93e30ddd`.
@@ -288,7 +288,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Runtime, bootstrap, Asset 360, lineage, governance workbench/detail, insights, taxonomy, CDE dashboard/detail, audit evidence/detail, admin control-center, and Genie endpoints all returned build `frontend-7c7d062bb864`.
   - Lakebase write mirror: `active`, `delta-primary-lakebase-shadow`, `3` attempted / `3` succeeded / `0` failed.
   - Genie: provider `genie`, confidence `genie-grounded`, evidence count `1`, no sentinel SQL fallback, no sentinel row fallback, no sentinel warning.
-  - Governance detail: `5` workbench requests, selected request `ga-home-seed-request-01`, `4` diff rows, `2` approver steps.
+  - Governance detail: `5` workbench requests, selected request `ax-home-seed-request-01`, `4` diff rows, `2` approver steps.
   - Audit evidence: `25` events, authoritative metadata-audit source, numeric summary, before/after keys, linked request evidence.
 - Current blockers:
   - Live browser screenshot/interaction validation is still pending.
@@ -297,7 +297,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Live Browser Screenshot/Interaction Validation Started
 
 - Scope:
-  - Run `frontend/scripts/atlas_prototype_current_capture.mjs` against the deployed app without `GOVAT_PROTOTYPE_MOCK_API`.
+  - Run `frontend/scripts/axiom_prototype_current_capture.mjs` against the deployed app without `AXIOM_PROTOTYPE_MOCK_API`.
   - Capture Command Center, Discover, Stewardship, Glossary, CDE Registry, Lineage Atlas, Audit Evidence, and Control Center at `1536x1024`, `1440x900`, and `1280x720`.
   - Exercise route interaction harnesses with live APIs and record artifacts under `docs/northstar_visual_qa/prototype-live-reopened-functional`.
 - Current blockers:
@@ -307,12 +307,12 @@ explicitly revalidates them against the active ledgers and current evidence.
 
 - Implemented:
   - Reconciled the Discover functional ledger with the latest local prototype-mock interaction evidence in `docs/northstar_visual_qa/prototype-current-discover-functional-local/prototype-current-report.json`.
-  - Discover now has `3` open functional controls: topbar search preload from Discover, explicit loading-state proof for Discover search, and the bottom-card Atlas AI Recommendations `View all` behavior.
+  - Discover now has `3` open functional controls: topbar search preload from Discover, explicit loading-state proof for Discover search, and the bottom-card Axiom AI Recommendations `View all` behavior.
 - Validation:
   - `npm run test -- src/components/DiscoveryWorkspace.test.jsx src/hooks/useDiscoveryResults.test.jsx` from `frontend/` -> passed, `42` tests.
   - Local prototype-mock Discover functional capture passed at `1536x1024` with `7` Discover interaction specs, `0` page errors, and no unexpected request failures.
   - `npm run northstar:audit-contract` from `frontend/` -> passed.
-  - `git diff --check -- IMPLEMENTATION_STATUS.md AGENT_CHANGELOG.md docs/northstar_gap_analysis/functional_control_audit.md frontend/scripts/atlas_prototype_current_capture.mjs frontend/src/components/DiscoveryWorkspace.jsx frontend/src/components/DiscoveryWorkspace.test.jsx frontend/src/styles/northstar.css` -> passed.
+  - `git diff --check -- IMPLEMENTATION_STATUS.md AGENT_CHANGELOG.md docs/northstar_gap_analysis/functional_control_audit.md frontend/scripts/axiom_prototype_current_capture.mjs frontend/src/components/DiscoveryWorkspace.jsx frontend/src/components/DiscoveryWorkspace.test.jsx frontend/src/styles/northstar.css` -> passed.
 - Current blockers:
   - `267` visual/page/shared gaps remain open in `docs/northstar_gap_analysis/full_page_audit.md`.
   - `53` functional controls remain open in `docs/northstar_gap_analysis/functional_control_audit.md`.
@@ -324,12 +324,12 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Discover Functional Controls Closed Locally
 
 - Implemented:
-  - Aligned Atlas AI availability so prototype-mock Atlas AI can be exercised consistently by the Discover bottom-card recommendation flow and the shared shell chat.
+  - Aligned Axiom AI availability so prototype-mock Axiom AI can be exercised consistently by the Discover bottom-card recommendation flow and the shared shell chat.
   - Added a visible `Loading discovery results` banner while Discover searches are pending.
-  - Added direct Discover unit coverage for loading state, bottom-card Atlas AI recommendations, and disabled bottom-card Atlas AI when no backed endpoint exists.
-  - Expanded the local prototype-mock Discover interaction harness to validate topbar search preload, search loading, and bottom-card Atlas AI Recommendations request/evidence routing.
+  - Added direct Discover unit coverage for loading state, bottom-card Axiom AI recommendations, and disabled bottom-card Axiom AI when no backed endpoint exists.
+  - Expanded the local prototype-mock Discover interaction harness to validate topbar search preload, search loading, and bottom-card Axiom AI Recommendations request/evidence routing.
 - Validation:
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
   - `npm run test -- src/components/DiscoveryWorkspace.test.jsx src/hooks/useDiscoveryResults.test.jsx` from `frontend/` -> passed, `45` tests.
   - `docs/northstar_visual_qa/prototype-current-discover-functional-local/prototype-current-report.json` -> passed with `1` capture, `8` Discover interactions, `0` page errors, and `0` unexpected request failures.
 - Current blockers:
@@ -348,7 +348,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Scope:
   - Exercise or truthfully disable the remaining Stewardship controls: affected
     asset opening, suggested actions, Comment, Resolve, Bulk assign, New work item,
-    pagination, and route-specific Atlas AI prompt/evidence routing.
+    pagination, and route-specific Axiom AI prompt/evidence routing.
   - Do not claim backed workflow persistence unless the UI/API evidence proves it.
 - Subagent input:
   - Existing reviewers continue to block signoff on visual parity and live-proof
@@ -367,9 +367,9 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Implemented:
   - Added disabled pagination rationale for one-page Stewardship queues.
   - Added Stewardship component coverage for affected asset opening and Archive suggested-action unavailable state.
-  - Expanded the local prototype-mock Stewardship interaction harness to validate affected asset routing, suggested action unavailable panels, Comment/Resolve PATCH payloads, disabled pagination rationale, Lineage routing, and route-specific Atlas AI prompt/evidence.
+  - Expanded the local prototype-mock Stewardship interaction harness to validate affected asset routing, suggested action unavailable panels, Comment/Resolve PATCH payloads, disabled pagination rationale, Lineage routing, and route-specific Axiom AI prompt/evidence.
 - Validation:
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
   - `npm run test -- src/components/GovernanceWorkspace.test.jsx` from `frontend/` -> passed, `10` tests.
   - `docs/northstar_visual_qa/prototype-current-stewardship-functional-local/prototype-current-report.json` -> passed with `1` capture, `4` Stewardship interactions, `0` page errors, and `0` unexpected request failures.
 - Current blockers:
@@ -388,7 +388,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Scope:
   - Exercise or truthfully disable linked asset association browsing, zero-asset
     controls, version history, hierarchy/nested term browsing, global shell controls,
-    Atlas AI, and responsive card control visibility.
+    Axiom AI, and responsive card control visibility.
   - Preserve the prototype shape without inventing backed glossary workflows.
 - Validation target:
   - Focused Glossary/Taxonomy tests for any behavior changed.
@@ -403,9 +403,9 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Displayed source FQNs inside the association browser so the linked Unity Catalog object is inspectable before routing.
   - Added zero-asset disabled-state rationale for card and detail actions.
   - Added Glossary detail coverage for reviewer workflow, version history, hierarchy/unavailable state, and association browsing.
-  - Expanded the prototype interaction harness to validate Glossary global search, help, profile menu, Atlas AI prompt/evidence, lineage routing, and responsive card control containment.
+  - Expanded the prototype interaction harness to validate Glossary global search, help, profile menu, Axiom AI prompt/evidence, lineage routing, and responsive card control containment.
 - Validation:
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
   - `npm run test -- src/components/TaxonomyWorkspace.test.jsx` from `frontend/` -> passed, `7` tests.
   - `docs/northstar_visual_qa/prototype-current-glossary-functional-local/prototype-current-report.json` -> passed with `3` captures, `12` Glossary interactions, `0` page errors, and `0` request failures across `1536x1024`, `1440x900`, and `1280x720`.
 - Current blockers:
@@ -423,7 +423,7 @@ explicitly revalidates them against the active ledgers and current evidence.
     `docs/northstar_gap_analysis/functional_control_audit.md`.
 - Scope:
   - Exercise or truthfully disable reviewer/owner workflow, sort/filter behavior,
-    `+ New term` semantics from the CDE tab, Atlas AI prompt/evidence routing, and
+    `+ New term` semantics from the CDE tab, Axiom AI prompt/evidence routing, and
     responsive table control visibility.
   - Preserve source-of-record column truth and do not invent CDE recertification or
     owner mutations.
@@ -439,9 +439,9 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Added CDE Registry search, status filter, and sort controls backed by local table state.
   - Made the shared `+ New term` control clarify CDE request semantics when the CDE tab is active.
   - Added explicit CDE owner workflow unavailable feedback without inventing an owner mutation.
-  - Expanded the local prototype-mock harness to validate CDE source detail, owner/recertification unavailable workflows, Lineage routing, search/filter/sort, Atlas AI prompt/evidence, and responsive table/control containment.
+  - Expanded the local prototype-mock harness to validate CDE source detail, owner/recertification unavailable workflows, Lineage routing, search/filter/sort, Axiom AI prompt/evidence, and responsive table/control containment.
 - Validation:
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
   - `npm run test -- src/components/TaxonomyWorkspace.test.jsx` from `frontend/` -> passed, `8` tests.
   - `docs/northstar_visual_qa/prototype-current-cde-functional-local/prototype-current-report.json` -> passed with `3` captures, `12` CDE Registry interactions, `0` page errors, and `0` request failures across `1536x1024`, `1440x900`, and `1280x720`.
 - Current blockers:
@@ -460,7 +460,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Scope:
   - Exercise or truthfully disable graph zoom controls, node detail selection,
     restricted-node affordance, impact-row navigation, Notify owners, column-lineage
-    row/tree interactions, and Atlas AI prompt/evidence routing.
+    row/tree interactions, and Axiom AI prompt/evidence routing.
   - Preserve permission boundaries and do not invent hidden downstream assets or
     notification delivery.
 - Validation target:
@@ -474,9 +474,9 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Implemented:
   - Made column-lineage rows selectable so the advertised column tree/list is interactive.
   - Added unit coverage for graph node selection, impact rows, restricted rows, and column lineage row selection.
-  - Expanded the local prototype-mock harness to validate version/impact/table-column/search/export controls, absence of unimplemented zoom controls, graph node selection, restricted-boundary affordance, impact rows, Notify owners routing, selected asset routing, column-lineage rows, and Atlas AI prompt/evidence.
+  - Expanded the local prototype-mock harness to validate version/impact/table-column/search/export controls, absence of unimplemented zoom controls, graph node selection, restricted-boundary affordance, impact rows, Notify owners routing, selected asset routing, column-lineage rows, and Axiom AI prompt/evidence.
 - Validation:
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
   - `npm run test -- src/components/LineageStage.test.jsx` from `frontend/` -> passed, `6` tests.
   - `docs/northstar_visual_qa/prototype-current-lineage-functional-local/prototype-current-report.json` -> passed with `3` captures, `15` Lineage Atlas interactions, `0` page errors, and `0` request failures across `1536x1024`, `1440x900`, and `1280x720`.
 - Current blockers:
@@ -493,7 +493,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Audit Evidence still has `2` open visible-control rows in
     `docs/northstar_gap_analysis/functional_control_audit.md`.
 - Scope:
-  - Exercise row evidence-link behavior and route-specific Atlas AI prompt/evidence.
+  - Exercise row evidence-link behavior and route-specific Axiom AI prompt/evidence.
   - Preserve append-only/provenance truth; local artifacts must remain labeled local
     prototype-mock evidence.
 - Validation target:
@@ -507,9 +507,9 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Implemented:
   - Added accessible labels and titles to inline audit evidence target buttons.
   - Expanded unit coverage to assert inline evidence target routing is discoverable and backed by the selected entity FQN.
-  - Expanded the local prototype-mock harness to validate inline evidence target routing and route-specific Atlas AI prompt/evidence in addition to the existing audit filters, exports, row detail, and selected-detail asset routing.
+  - Expanded the local prototype-mock harness to validate inline evidence target routing and route-specific Axiom AI prompt/evidence in addition to the existing audit filters, exports, row detail, and selected-detail asset routing.
 - Validation:
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
   - `npm run test -- src/components/AuditBrowserWorkspace.test.jsx` from `frontend/` -> passed, `6` tests.
   - `docs/northstar_visual_qa/prototype-current-audit-functional-local/prototype-current-report.json` -> passed with `3` captures, `12` Audit Evidence interactions, `0` page errors, and `0` request failures across `1536x1024`, `1440x900`, and `1280x720`.
 - Current blockers:
@@ -527,7 +527,7 @@ explicitly revalidates them against the active ledgers and current evidence.
     `docs/northstar_gap_analysis/functional_control_audit.md`.
 - Scope:
   - Exercise job/run URL behavior where available, global search/help/profile controls
-    from Control Center, notifications state, route-specific Atlas AI prompt/evidence,
+    from Control Center, notifications state, route-specific Axiom AI prompt/evidence,
     and responsive job/integration/policy control containment.
   - Keep unavailable linked resources disabled with rationale rather than faking
     external Databricks URLs.
@@ -550,10 +550,10 @@ explicitly revalidates them against the active ledgers and current evidence.
     a prior signoff misses obvious visual differences, and so reviewer signoff cannot
     precede a page-by-page gap ledger refresh.
   - Add Control Center evidence for backed job URL opening, no-URL disabled state,
-    topbar search/help/profile controls, notifications, route-specific Atlas AI, and
+    topbar search/help/profile controls, notifications, route-specific Axiom AI, and
     responsive control containment.
 - Validation target:
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs`
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs`
   - `npm run test -- src/components/AdminWorkspace.test.jsx`
   - Local prototype-mock Control Center interaction capture at `1536x1024`,
     `1440x900`, and `1280x720`.
@@ -567,12 +567,12 @@ explicitly revalidates them against the active ledgers and current evidence.
     diagnostics payload and verified `Open linked resource` opens it only when present.
   - Preserved the no-URL job disabled state with a truthful diagnostic rationale.
   - Expanded Control Center browser interaction evidence for topbar search,
-    notifications, help, profile menu, route-specific Atlas AI prompt/evidence, and
+    notifications, help, profile menu, route-specific Axiom AI prompt/evidence, and
     responsive job/integration/policy/detail containment.
   - Tightened `AGENTS.md` and `full_page_audit.md` with explicit false-signoff failure
     analysis and page-by-page audit requirements.
 - Validation:
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
   - `npm run test -- src/components/AdminWorkspace.test.jsx` from `frontend/` ->
     passed, `8` tests.
   - `docs/northstar_visual_qa/control-functional-controls-v2-local/prototype-current-report.json`
@@ -593,7 +593,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 
 - Validation:
   - `npm run northstar:audit-contract` from `frontend/` -> passed.
-  - `git diff --check -- AGENTS.md IMPLEMENTATION_STATUS.md docs/northstar_gap_analysis/full_page_audit.md docs/northstar_gap_analysis/functional_control_audit.md frontend/src/components/AdminWorkspace.test.jsx frontend/scripts/atlas_prototype_current_capture.mjs`
+  - `git diff --check -- AGENTS.md IMPLEMENTATION_STATUS.md docs/northstar_gap_analysis/full_page_audit.md docs/northstar_gap_analysis/functional_control_audit.md frontend/src/components/AdminWorkspace.test.jsx frontend/scripts/axiom_prototype_current_capture.mjs`
     -> passed.
 - Current blockers:
   - `267` visual/page/shared gaps remain open in
@@ -611,11 +611,11 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `docs/northstar_gap_analysis/functional_control_audit.md` still has `15` open
     rows: Command Center `6` and Cross-Page Shared `9`.
 - Scope:
-  - Exercise or implement truthful behavior for Command Center Atlas AI
+  - Exercise or implement truthful behavior for Command Center Axiom AI
     loading/answer/evidence/error states, chart/info affordances, domain posture,
     risk/open-exposure, activity-stream, and lower-scroll regions.
   - Reconcile shared open rows for visible-control inventory, no-op prevention,
-    navigation, Atlas AI state coverage, mutation/backing, loading states,
+    navigation, Axiom AI state coverage, mutation/backing, loading states,
     responsive controls, and separate live Databricks validation.
 - Validation target:
   - Focused Home/AppFrame tests for changed behavior.
@@ -631,13 +631,13 @@ explicitly revalidates them against the active ledgers and current evidence.
     signal is unavailable.
   - Expanded the Command Center browser interaction harness to validate info tooltip
     affordances, domain/risk/activity routing, lower-scroll regions, global North Star
-    navigation, Atlas AI suggestion click, typed prompt, loading, answer, evidence, and
+    navigation, Axiom AI suggestion click, typed prompt, loading, answer, evidence, and
     error states.
-  - Added a deliberate prototype-mock Atlas AI `503` error path to prove the visible
+  - Added a deliberate prototype-mock Axiom AI `503` error path to prove the visible
     error transcript without treating the error-path requests as unexpected failures.
 - Validation:
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
-  - `npm run test -- src/components/HomePage.test.jsx src/components/AppFrame.test.jsx src/hooks/useAtlasAiConversation.test.jsx`
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
+  - `npm run test -- src/components/HomePage.test.jsx src/components/AppFrame.test.jsx src/hooks/useAxiomAiConversation.test.jsx`
     from `frontend/` -> passed, `33` tests.
   - `docs/northstar_visual_qa/prototype-current-command-functional-local/prototype-current-report.json`
     -> passed with `3` captures, `3` main-bottom screenshots, `24` interactions, `0`
@@ -675,7 +675,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Trigger:
   - Fresh prototype-mock screenshots in `docs/northstar_visual_qa/prototype-current-ai-responsive-local/` show the AI rail no longer covers narrow pages at `1280x720` and `1440x900`, but it still collides with the Discover selected drawer at `1536x1024`.
 - Planned change:
-  - Keep the Atlas AI topbar control and floating/resizable chat available at all widths.
+  - Keep the Axiom AI topbar control and floating/resizable chat available at all widths.
   - Stop auto-opening the docked AI rail until wide desktop viewports where it can reserve space without hiding route-specific panels.
   - Keep this as a shared shell change, not a route-specific workaround.
 - Validation target:
@@ -688,7 +688,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - AI Responsive Auto-Open Unit Validation Passed
 
 - Implemented:
-  - Raised the shared Atlas AI auto-open/reserved-layout breakpoint from `1500px` to `1800px`.
+  - Raised the shared Axiom AI auto-open/reserved-layout breakpoint from `1500px` to `1800px`.
   - The AI Copilot topbar button still opens the floating chat at narrower widths, but the rail no longer auto-opens where it can collide with page-specific drawers or tables.
 - Validation:
   - `npm run test -- src/components/AppFrame.test.jsx` from `frontend/` -> passed, `1` file, `16` tests.
@@ -711,7 +711,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Current open gap count:
   - `267` open gaps: Command Center `33`, Discover `44`, Stewardship `30`, Glossary `30`, CDE Registry `27`, Lineage Atlas `34`, Audit Evidence `28`, Control Center `24`, Cross-Page Shared `17`.
 - Important limitation:
-  - This closes only the responsive AI occlusion problem. The Atlas AI rail still has open visual/content/functionality rows, and no page is signed off.
+  - This closes only the responsive AI occlusion problem. The Axiom AI rail still has open visual/content/functionality rows, and no page is signed off.
 - Exact next action:
   - Run the audit guard, then start the next tranche: control-level interaction evidence for every visible control before marking functional rows complete.
 
@@ -744,8 +744,8 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Functional Interaction Harness Implementation In Progress
 
 - Planned script changes:
-  - Extend `frontend/scripts/atlas_prototype_current_capture.mjs` with reusable Playwright helpers for visible-control clicks, dialogs, downloads, route assertions, and text/status assertions.
-  - Add route-specific interaction specs for Command Center, Discover, Stewardship, Glossary, CDE Registry, Lineage Atlas, Audit Evidence, Control Center, and shared Atlas AI shell behavior.
+  - Extend `frontend/scripts/axiom_prototype_current_capture.mjs` with reusable Playwright helpers for visible-control clicks, dialogs, downloads, route assertions, and text/status assertions.
+  - Add route-specific interaction specs for Command Center, Discover, Stewardship, Glossary, CDE Registry, Lineage Atlas, Audit Evidence, Control Center, and shared Axiom AI shell behavior.
   - Save interaction screenshots and structured validation results into the existing `prototype-current-report.json` so control-level evidence is reviewable beside visual captures.
 - Guardrail:
   - This harness will not close rows by itself. A control remains open unless the report proves the visible control has a useful, truthful outcome or the app explicitly marks an unavailable workflow as disabled/degraded.
@@ -769,10 +769,10 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Updated `docs/northstar_gap_analysis/functional_control_audit.md` to record the functional evidence and check off only the rows proven by the local interaction report.
   - Functional controls now have `75` open rows: Command Center `11`, Discover `17`, Stewardship `9`, Glossary `7`, CDE Registry `5`, Lineage Atlas `7`, Audit Evidence `2`, Control Center `5`, Cross-Page Shared `12`.
 - Validation:
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
   - `npm run test -- src/hooks/useAppRouteState.test.jsx` -> passed, `31` tests.
   - `npm run test -- src/App.test.jsx src/hooks/useAppRouteState.test.jsx` -> failed only in existing/adjacent `App > uses command center estate for the home route over bootstrap seed values`, which remained on the `Loading home` fallback and did not find expected command-center text. This remains an open risk, not signoff.
-  - `git diff --check -- IMPLEMENTATION_STATUS.md frontend/scripts/atlas_prototype_current_capture.mjs frontend/src/App.jsx frontend/src/hooks/useAppRouteState.js frontend/src/styles/northstar.css` -> passed before this status update.
+  - `git diff --check -- IMPLEMENTATION_STATUS.md frontend/scripts/axiom_prototype_current_capture.mjs frontend/src/App.jsx frontend/src/hooks/useAppRouteState.js frontend/src/styles/northstar.css` -> passed before this status update.
 - Exact next actions:
   - Run the North Star audit-contract guard against the updated functional ledger.
   - Fix or isolate the failing `App.test.jsx` home-route loading test.
@@ -868,12 +868,12 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `130` open visible-control workflow gaps.
   - No page is signed off.
 - Exact next action:
-  - Implement the first shared remediation tranche: prevent the Atlas AI rail from occluding primary page content at responsive widths, then add control-level interaction capture coverage that can begin reducing functional rows.
+  - Implement the first shared remediation tranche: prevent the Axiom AI rail from occluding primary page content at responsive widths, then add control-level interaction capture coverage that can begin reducing functional rows.
 
 ### Checkpoint - Shared AI Responsive Remediation Started
 
 - Target:
-  - Prevent the open Atlas AI panel from covering page content at `1536x1024`, `1440x900`, and `1280x720`.
+  - Prevent the open Axiom AI panel from covering page content at `1536x1024`, `1440x900`, and `1280x720`.
   - Keep the current floating/drag/resizable behavior, but reserve layout space for the panel whenever it is open in the North Star shell.
 - Planned edits:
   - Centralize the reservation in shared shell CSS instead of applying page-specific offsets.
@@ -887,7 +887,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 
 - Implemented:
   - Added a shell `data-active-module` attribute for future page-specific inspection hooks.
-  - Updated shared North Star shell CSS so an open Atlas AI panel reserves right-side main-content space at all prototype viewports, not only wide desktop.
+  - Updated shared North Star shell CSS so an open Axiom AI panel reserves right-side main-content space at all prototype viewports, not only wide desktop.
   - Kept the floating, draggable, resizable panel behavior intact.
 - Validation:
   - `npm run test -- src/components/AppFrame.test.jsx` from `frontend/` -> passed, `1` file, `16` tests.
@@ -901,9 +901,9 @@ explicitly revalidates them against the active ledgers and current evidence.
 
 - Trigger:
   - Fresh page audit found that the prototype AI rail was absent from current prototype-mock screenshots even though the `northstar/*` reference has it open on every page.
-  - The topbar Atlas AI control also appeared disabled or low-confidence in prototype-mock captures, which made visual comparison structurally invalid.
+  - The topbar Axiom AI control also appeared disabled or low-confidence in prototype-mock captures, which made visual comparison structurally invalid.
 - Implemented before this checkpoint:
-  - Updated the shell AI availability gate so explicitly labeled `prototype_mock` / `prototype-mock` evidence can render the Atlas AI rail in local prototype visual captures without presenting it as live Databricks evidence.
+  - Updated the shell AI availability gate so explicitly labeled `prototype_mock` / `prototype-mock` evidence can render the Axiom AI rail in local prototype visual captures without presenting it as live Databricks evidence.
   - Added a focused `AppFrame` test for prototype-mock AI visibility and the non-live grounding label.
 - Validation target:
   - Rerun `npm run test -- src/components/AppFrame.test.jsx`.
@@ -915,7 +915,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Validation:
   - `npm run test -- src/components/AppFrame.test.jsx` from `frontend/` -> passed, `1` file, `15` tests.
 - Important limitation:
-  - This proves the shell renders and labels prototype-mock Atlas AI in component tests. It does not prove the rail appears correctly in page screenshots or matches the prototype.
+  - This proves the shell renders and labels prototype-mock Axiom AI in component tests. It does not prove the rail appears correctly in page screenshots or matches the prototype.
 - Exact next action:
   - Regenerate current-app Playwright screenshots with prototype mock API enabled and inspect whether the AI rail is visible on every screenshot-backed `northstar/*` page without being mislabeled as live Databricks evidence.
 
@@ -1213,7 +1213,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Discover Selected-State Evidence Added
 
 - Implemented:
-  - Added optional `GOVAT_PROTOTYPE_INTERACTIONS=1` interaction capture support to `frontend/scripts/atlas_prototype_current_capture.mjs`.
+  - Added optional `AXIOM_PROTOTYPE_INTERACTIONS=1` interaction capture support to `frontend/scripts/axiom_prototype_current_capture.mjs`.
   - Added a Discover selected-result interaction that clicks the first result and captures the asset preview pane.
 - Evidence:
   - `docs/northstar_visual_qa/prototype-current-continuation-interactions/discover-selected-3037x1269.png`
@@ -1222,7 +1222,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `docs/northstar_visual_qa/prototype-current-continuation-interactions/discover-selected-1280x720.png`
   - Interaction report loaded `finance_prod.curated.revenue_daily` and exposed preview controls: close, `Open Asset 360`, `Lineage unavailable`, and `Start Stewardship Review`.
 - Validation:
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
   - Interaction capture report -> passed with `4` route captures, `4` interaction captures, `0` page errors, and `0` request failures.
 - Important limitation:
   - This closes evidence collection for Discover selected-state existence only. It does not prove visual equivalence or functional completion for the selected preview controls.
@@ -1275,7 +1275,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Make prototype mock capture payloads explicitly non-authoritative with `state=prototype_mock` and warning copy.
 - Validation target:
   - `npm run northstar:audit-contract`
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs`
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs`
   - focused tests for affected provenance surfaces after UI/capture changes
 
 ### Checkpoint - Process And Truth Gate Repair Validated
@@ -1288,7 +1288,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Tightened Discovery, Lineage, and Audit provenance handling so `local-prototype-mock` evidence cannot be treated as live authoritative Databricks evidence.
   - Preserved ordinary live lineage API payloads as authoritative unless explicitly marked false or prototype mock.
 - Validation:
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
   - `npm run northstar:audit-contract` from `frontend/` -> passed.
   - `npm run test -- src/hooks/useDiscoveryResults.test.jsx src/hooks/useLineage.test.jsx src/components/AuditBrowserWorkspace.test.jsx` -> passed, `3` files, `13` tests.
   - Scoped `git diff --check` for the process/truth files -> passed.
@@ -1327,13 +1327,13 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Narrowed Audit Evidence copy from append-only claims to source-scoped audit evidence, and added authoritative/mock flags to generated report payloads.
   - Preserved live lineage authority while retaining local/mock source provenance.
 - Validation:
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
-  - `npm run test -- src/components/TaxonomyWorkspace.test.jsx src/components/AuditBrowserWorkspace.test.jsx src/components/AdminWorkspace.test.jsx src/hooks/useLineage.test.jsx src/hooks/useAtlasAiConversation.test.jsx src/components/AppFrame.test.jsx` -> passed for existing files, `5` files, `30` tests. `useAtlasAiConversation.test.jsx` is not present in this checkout.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
+  - `npm run test -- src/components/TaxonomyWorkspace.test.jsx src/components/AuditBrowserWorkspace.test.jsx src/components/AdminWorkspace.test.jsx src/hooks/useLineage.test.jsx src/hooks/useAxiomAiConversation.test.jsx src/components/AppFrame.test.jsx` -> passed for existing files, `5` files, `30` tests. `useAxiomAiConversation.test.jsx` is not present in this checkout.
   - `npm run northstar:audit-contract` from `frontend/` -> passed.
   - Scoped `git diff --check` for touched files -> passed.
 - Reviewer findings still open:
   - Discover selected asset preview is hidden by prototype CSS and must be restored.
-  - Atlas AI open/closed visual matrix still needs deterministic Playwright evidence.
+  - Axiom AI open/closed visual matrix still needs deterministic Playwright evidence.
   - Functional QA scripts are stale against active `northstar/*` routes.
   - Control Center row iconography and Audit action iconography still trail the prototype.
 
@@ -1440,7 +1440,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 
 ## Active Tranche - Prototype North Star Rebase
 
-- New active contract: `/Users/entrada-mac/repos/governance_atlas/northstar/Governance Atlas.html` and screenshots under `northstar/screenshots/*`.
+- New active contract: `/Users/axbo/Development/alexxx-db/axiom/axiom/northstar/Axiom.html` and screenshots under `northstar/screenshots/*`.
 - Current owner clarification: the active prototype scope is the `northstar/*` product, not the older Home/Asset 360 mockup set. Asset 360 work is preserved in the repo for possible future reuse, but it is not part of the current prototype signoff because no Asset 360 screenshot exists under `northstar/screenshots/`.
 - Required scope:
   - Decompose every prototype page into explicit visual and functional checklist items before page edits.
@@ -1453,13 +1453,13 @@ explicitly revalidates them against the active ledgers and current evidence.
 
 - Trigger: user clarified that the new North Star lives under `northstar/*` and that Asset 360 is not part of this prototype. The active goal is exact-or-better parity with the prototype screenshots and behavior, with unanimous subagent review before signoff.
 - Prototype files confirmed:
-  - `northstar/Governance Atlas.html`
+  - `northstar/Axiom.html`
   - `northstar/app.jsx`, `northstar/pages/*.jsx`, `northstar/components/*.jsx`, `northstar/styles/*.css`, `northstar/data/mock.js`
   - screenshots: `prototype_home1.png`, `prototype_home2.png`, `prototype_discover.png`, `prototype_stewardship1.png`, `prototype_stewardship2.png`, `prototype_glossary1.png`, `prototype_lineage.png`, `prototype_audit1.png`, `prototype_cc.png`
   - Genie/Lakebase/live validation artifacts under `northstar/genie/` and hardening artifacts under `northstar/hardening/`
 - Completed in this checkpoint:
   - Confirmed the stale Asset 360 capture session is not running.
-  - Confirmed the repo tracker already contains earlier Command Center, Stewardship, Glossary/CDE, Lineage, Audit, Control Center, and Atlas AI dock work.
+  - Confirmed the repo tracker already contains earlier Command Center, Stewardship, Glossary/CDE, Lineage, Audit, Control Center, and Axiom AI dock work.
 - Pending immediate work:
   - Read and summarize all `northstar/*` implementation files and screenshots into a fresh prototype contract checklist.
   - Remove Asset 360 from the current capture/signoff route set while preserving existing code.
@@ -1475,7 +1475,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 
 - Implemented:
   - Updated `docs/northstar_gap_analysis/prototype_contract.md` so Asset 360 is explicitly classified as a supporting drawer/workflow, not a standalone current visual signoff page.
-  - Kept the Asset 360 truth/functionality requirements for routes that open asset context from Discover, Stewardship, Lineage, Command Center, or Atlas AI evidence.
+  - Kept the Asset 360 truth/functionality requirements for routes that open asset context from Discover, Stewardship, Lineage, Command Center, or Axiom AI evidence.
 - Validation:
   - No runtime validation needed for this documentation-only scope correction.
 - Exact next action:
@@ -1483,24 +1483,24 @@ explicitly revalidates them against the active ledgers and current evidence.
 
 ### Checkpoint - Prototype Capture Route Scope Fix Started
 
-- Trigger: `frontend/scripts/atlas_prototype_current_capture.mjs` still includes `asset360` in the default route set, even though the current screenshot-backed North Star excludes a standalone Asset 360 page.
+- Trigger: `frontend/scripts/axiom_prototype_current_capture.mjs` still includes `asset360` in the default route set, even though the current screenshot-backed North Star excludes a standalone Asset 360 page.
 - Planned edit:
   - Split screenshot-backed routes from supporting routes.
   - Make the default all-route capture cover only Command Center, Discover, Stewardship, Glossary, CDE Registry, Lineage Atlas, Audit Evidence, and Control Center.
-  - Preserve explicit `GOVAT_PROTOTYPE_ROUTES=asset360` support for drawer/entity workflow debugging.
+  - Preserve explicit `AXIOM_PROTOTYPE_ROUTES=asset360` support for drawer/entity workflow debugging.
 - Planned validation:
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs`
-  - `git diff --check frontend/scripts/atlas_prototype_current_capture.mjs IMPLEMENTATION_STATUS.md docs/northstar_gap_analysis/prototype_contract.md`
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs`
+  - `git diff --check frontend/scripts/axiom_prototype_current_capture.mjs IMPLEMENTATION_STATUS.md docs/northstar_gap_analysis/prototype_contract.md`
   - run narrowed mock-API Playwright capture.
 
 ### Checkpoint - Prototype Capture Route Scope Fix Validated
 
 - Implemented:
-  - Split `SCREENSHOT_ROUTES` from `SUPPORTING_ROUTES` in `frontend/scripts/atlas_prototype_current_capture.mjs`.
-  - Default captures now exclude `asset360`; `GOVAT_PROTOTYPE_ROUTES=asset360` still works for supporting drawer/entity workflow debugging.
+  - Split `SCREENSHOT_ROUTES` from `SUPPORTING_ROUTES` in `frontend/scripts/axiom_prototype_current_capture.mjs`.
+  - Default captures now exclude `asset360`; `AXIOM_PROTOTYPE_ROUTES=asset360` still works for supporting drawer/entity workflow debugging.
 - Validation:
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
-  - `git diff --check frontend/scripts/atlas_prototype_current_capture.mjs IMPLEMENTATION_STATUS.md docs/northstar_gap_analysis/prototype_contract.md` -> passed.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
+  - `git diff --check frontend/scripts/axiom_prototype_current_capture.mjs IMPLEMENTATION_STATUS.md docs/northstar_gap_analysis/prototype_contract.md` -> passed.
 - Exact next action:
   - Run the narrowed screenshot-backed local Playwright mock-API capture and inspect the report for request/page/console failures and layout overflows.
 
@@ -1509,7 +1509,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Trigger: local Vite server was not running on `127.0.0.1:3000`.
 - Planned action:
   - Start the frontend Vite server locally.
-  - Run the default screenshot-backed capture set with `GOVAT_PROTOTYPE_MOCK_API=1`.
+  - Run the default screenshot-backed capture set with `AXIOM_PROTOTYPE_MOCK_API=1`.
   - Inspect current app evidence against the `northstar/screenshots/*` contract before additional implementation.
 - Validation target:
   - Capture report has no route failures, request failures, page errors, console errors, or horizontal overflow.
@@ -1517,7 +1517,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Screenshot-Backed Capture Completed
 
 - Validation:
-  - `GOVAT_BASE_URL=http://127.0.0.1:3000 GOVAT_PROTOTYPE_MOCK_API=1 GOVAT_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-screenshot-backed ... node frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `AXIOM_BASE_URL=http://127.0.0.1:3000 AXIOM_PROTOTYPE_MOCK_API=1 AXIOM_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-screenshot-backed ... node frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
 - Evidence:
   - `docs/northstar_visual_qa/prototype-screenshot-backed/prototype-current-report.json`
   - 24 screenshots across Command Center, Discover, Stewardship, Glossary, CDE Registry, Lineage Atlas, Audit Evidence, and Control Center at `1536x1024`, `1440x900`, and `1280x720`.
@@ -1527,7 +1527,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - no console errors
   - `mockApi=true`
 - Manual inspection finding:
-  - The default 1536-wide Command Center capture is not a direct visual-comparison frame for the 3037x1269 prototype screenshots. The current open Atlas AI dock consumes horizontal room immediately, causing the hero/title to wrap and the app to look narrower than the reference.
+  - The default 1536-wide Command Center capture is not a direct visual-comparison frame for the 3037x1269 prototype screenshots. The current open Axiom AI dock consumes horizontal room immediately, causing the hero/title to wrap and the app to look narrower than the reference.
 - Exact next action:
   - Add an explicit viewport override to the capture script and capture at the prototype's native `3037x1269` dimensions before deciding whether the app needs layout changes or only comparison-frame changes.
 
@@ -1541,12 +1541,12 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `frontend/src/components/GovernanceWorkspace.jsx`: `Assigned to me` filtering/counting uses hardcoded names, creating synthetic workflow-count risk.
 - Planned implementation:
   - Replace overclaimed production fallbacks with explicit unavailable/degraded states unless backed data is present.
-  - Keep mock-API visual evidence rich only when `GOVAT_PROTOTYPE_MOCK_API=1`.
+  - Keep mock-API visual evidence rich only when `AXIOM_PROTOTYPE_MOCK_API=1`.
   - Tie `Assigned to me` to the actual signed-in user identity or disable/degrade the filter when identity cannot be matched.
 - Planned validation:
   - Focused tests for Lineage, Audit, Admin, and Governance.
   - `npm run lint -- --quiet`
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs`
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs`
   - narrowed Playwright capture after fixes.
 
 ### Checkpoint - Truth/Provenance Test Alignment Started
@@ -1620,7 +1620,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `npm run lint -- --quiet` -> passed.
   - `npm test -- --run` -> failed on `2` stale expectations:
     - Discovery parity test still expected old heading `Discover Trusted Data`; current/new prototype heading is `Find trusted, governed data`.
-    - Design token test still expected old `--ga-bg: #0a263d`; current token is `#0b3451`.
+    - Design token test still expected old `--ax-bg: #0a263d`; current token is `#0b3451`.
 - Planned edit:
   - Update tests to lock the new `northstar/*` prototype contract instead of the retired Home/Discovery mockup contract.
 - Planned validation:
@@ -1630,7 +1630,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 
 - Implemented:
   - Updated the Discovery parity test to the active prototype heading `Find trusted, governed data`.
-  - Updated the design-token test to lock current `--ga-bg: #0b3451`.
+  - Updated the design-token test to lock current `--ax-bg: #0b3451`.
 - Validation:
   - `npm test -- --run src/components/DiscoveryWorkspace.identity.test.jsx src/design/tokens/tokens.test.js` -> passed, `2` files, `13` tests.
   - `npm test -- --run` -> passed, `53` files, `379` tests passed, `27` skipped.
@@ -1669,7 +1669,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Glossary/CDE Native Capture Passed
 
 - Validation:
-  - `GOVAT_PROTOTYPE_ROUTES=glossary,cde-registry GOVAT_PROTOTYPE_VIEWPORTS=3037x1269 ... node frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `AXIOM_PROTOTYPE_ROUTES=glossary,cde-registry AXIOM_PROTOTYPE_VIEWPORTS=3037x1269 ... node frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
 - Evidence:
   - `docs/northstar_visual_qa/prototype-taxonomy-title-pass/glossary-3037x1269.png`
   - `docs/northstar_visual_qa/prototype-taxonomy-title-pass/cde-registry-3037x1269.png`
@@ -1680,7 +1680,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 
 ### Checkpoint - Command Center Wide Rail Fix Started
 
-- Trigger: manual inspection of `docs/northstar_visual_qa/prototype-all-routes-native/command-center-3037x1269.png` against `northstar/screenshots/prototype_home1.png` and `prototype_home2.png` found the Command Center content still capped to the old narrow rail. The prototype uses a broader centered command rail before the right Atlas AI dock.
+- Trigger: manual inspection of `docs/northstar_visual_qa/prototype-all-routes-native/command-center-3037x1269.png` against `northstar/screenshots/prototype_home1.png` and `prototype_home2.png` found the Command Center content still capped to the old narrow rail. The prototype uses a broader centered command rail before the right Axiom AI dock.
 - Planned edit:
   - Apply the same native/wide prototype rail width to the Command Center shell and preserve existing card content.
 - Planned validation:
@@ -1702,7 +1702,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 
 - Trigger: recaptured `docs/northstar_visual_qa/prototype-command-center-rail-pass/command-center-3037x1269.png` shows the shell width now matches the prototype, but the AI-open responsive rule still collapses `What changed today` below the posture hero. The prototype uses a three-column hero summary at the native width.
 - Planned edit:
-  - At `min-width: 2200px`, restore the posture hero to score/narrative/change columns even when the Atlas AI dock is open.
+  - At `min-width: 2200px`, restore the posture hero to score/narrative/change columns even when the Axiom AI dock is open.
 - Planned validation:
   - focused Command Center frontend tests.
   - `git diff --check -- frontend/src/styles/northstar.css IMPLEMENTATION_STATUS.md`
@@ -1711,7 +1711,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Command Center Hero Column Unit Gate Passed
 
 - Implemented:
-  - Restored the Command Center posture hero to score, narrative, and `What changed today` columns at the native prototype breakpoint when Atlas AI is open.
+  - Restored the Command Center posture hero to score, narrative, and `What changed today` columns at the native prototype breakpoint when Axiom AI is open.
 - Validation:
   - `npm test -- --run src/components/HomePage.test.jsx src/hooks/useCommandCenter.test.jsx` -> passed, `2` files, `15` tests.
   - `git diff --check -- frontend/src/styles/northstar.css IMPLEMENTATION_STATUS.md` -> passed.
@@ -1721,11 +1721,11 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Command Center Native Capture Passed
 
 - Validation:
-  - `GOVAT_PROTOTYPE_ROUTES=command-center GOVAT_PROTOTYPE_VIEWPORTS=3037x1269 ... node frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `AXIOM_PROTOTYPE_ROUTES=command-center AXIOM_PROTOTYPE_VIEWPORTS=3037x1269 ... node frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
 - Evidence:
   - `docs/northstar_visual_qa/prototype-command-center-hero-pass/command-center-3037x1269.png`
 - Manual inspection:
-  - The Command Center now uses the wide prototype rail, preserves the three-column posture hero, keeps four KPI cards on one row, and aligns the Atlas AI dock with the `prototype_home2.png` side-panel rhythm.
+  - The Command Center now uses the wide prototype rail, preserves the three-column posture hero, keeps four KPI cards on one row, and aligns the Axiom AI dock with the `prototype_home2.png` side-panel rhythm.
 - Exact next action:
   - Inspect remaining native captures for Discover, Stewardship, Lineage, Audit, and Control Center against their reference screenshots before running the full refreshed route capture.
 
@@ -1792,7 +1792,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Lineage Native Capture With Edges Passed
 
 - Validation:
-  - `GOVAT_PROTOTYPE_ROUTES=lineage GOVAT_PROTOTYPE_VIEWPORTS=3037x1269 ... node frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `AXIOM_PROTOTYPE_ROUTES=lineage AXIOM_PROTOTYPE_VIEWPORTS=3037x1269 ... node frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
 - Evidence:
   - `docs/northstar_visual_qa/prototype-lineage-edge-pass/lineage-3037x1269.png`
 - Manual inspection:
@@ -1824,18 +1824,18 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Prototype Viewport Capture Support Added
 
 - Implemented:
-  - Added `GOVAT_PROTOTYPE_VIEWPORTS` parsing to `frontend/scripts/atlas_prototype_current_capture.mjs` so captures can run at exact prototype dimensions such as `3037x1269`.
+  - Added `AXIOM_PROTOTYPE_VIEWPORTS` parsing to `frontend/scripts/axiom_prototype_current_capture.mjs` so captures can run at exact prototype dimensions such as `3037x1269`.
   - Capture reports now include the viewport list used for the run.
 - Validation:
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
-  - `git diff --check -- frontend/scripts/atlas_prototype_current_capture.mjs IMPLEMENTATION_STATUS.md` -> passed.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
+  - `git diff --check -- frontend/scripts/axiom_prototype_current_capture.mjs IMPLEMENTATION_STATUS.md` -> passed.
 - Exact next action:
   - Run a fresh mock-API capture for screenshot-backed routes at `3037x1269`, `1536x1024`, `1440x900`, and `1280x720`.
 
 ### Checkpoint - Refreshed Prototype Screenshot Capture Passed
 
 - Validation:
-  - `GOVAT_BASE_URL=http://127.0.0.1:3000 GOVAT_PROTOTYPE_MOCK_API=1 GOVAT_PROTOTYPE_VIEWPORTS=3037x1269,1536x1024,1440x900,1280x720 GOVAT_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-screenshot-backed-refresh ... node frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `AXIOM_BASE_URL=http://127.0.0.1:3000 AXIOM_PROTOTYPE_MOCK_API=1 AXIOM_PROTOTYPE_VIEWPORTS=3037x1269,1536x1024,1440x900,1280x720 AXIOM_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-screenshot-backed-refresh ... node frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
 - Evidence:
   - `docs/northstar_visual_qa/prototype-screenshot-backed-refresh/prototype-current-report.json`
   - `32` screenshots across `8` screenshot-backed routes and `4` viewports.
@@ -1854,7 +1854,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Manual inspection against `northstar/screenshots/*`:
   - Command Center is close to the prototype's centered executive layout.
   - Discover, Stewardship, Lineage Atlas, Audit Evidence, and Control Center are too far left at `3037x1269`; their content starts immediately after the sidebar instead of using the prototype's centered work rail.
-  - Atlas AI dock and right-side reserved area are present, but the main content rail is not consistently constrained or centered across pages.
+  - Axiom AI dock and right-side reserved area are present, but the main content rail is not consistently constrained or centered across pages.
 - Planned edit:
   - Add shared prototype page-frame constraints for the screenshot-backed non-command pages so their primary content width and horizontal offset match the North Star layout at native size while remaining responsive at smaller viewports.
 - Planned validation:
@@ -1880,14 +1880,14 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Shared Prototype Work Rail Focused Tests Passed
 
 - Implemented:
-  - Added shared wide-viewport frame variables for the open Atlas AI dock and prototype rail width.
+  - Added shared wide-viewport frame variables for the open Axiom AI dock and prototype rail width.
   - Constrained and centered the Discover grid at native prototype width.
   - Centered the Lineage Atlas hero, workbench, graph, and status rail at native prototype width.
   - Widened and centered the Audit Evidence and Control Center prototype shells at native prototype width.
   - Added Lineage Atlas prototype rects to the Playwright capture report.
 - Validation:
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
-  - `git diff --check -- frontend/src/styles/northstar.css frontend/src/styles/lineage.css frontend/src/styles/operations-pages.css frontend/scripts/atlas_prototype_current_capture.mjs IMPLEMENTATION_STATUS.md` -> passed.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
+  - `git diff --check -- frontend/src/styles/northstar.css frontend/src/styles/lineage.css frontend/src/styles/operations-pages.css frontend/scripts/axiom_prototype_current_capture.mjs IMPLEMENTATION_STATUS.md` -> passed.
   - `npm test -- --run src/components/DiscoveryWorkspace.test.jsx src/components/LineageStage.test.jsx src/components/AuditBrowserWorkspace.test.jsx src/components/AdminWorkspace.test.jsx` -> `4` files passed, `48` tests passed.
 - Exact next action:
   - Run targeted native-size Playwright capture for `discover,lineage,audit,control-center` and inspect the resulting screenshots/rects before any broader route capture.
@@ -1895,7 +1895,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Shared Prototype Work Rail Screenshot Evidence Refreshed
 
 - Validation:
-  - `GOVAT_BASE_URL=http://127.0.0.1:3000 GOVAT_PROTOTYPE_MOCK_API=1 GOVAT_PROTOTYPE_ROUTES=discover,lineage,audit,control-center GOVAT_PROTOTYPE_VIEWPORTS=3037x1269 ... node frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `AXIOM_BASE_URL=http://127.0.0.1:3000 AXIOM_PROTOTYPE_MOCK_API=1 AXIOM_PROTOTYPE_ROUTES=discover,lineage,audit,control-center AXIOM_PROTOTYPE_VIEWPORTS=3037x1269 ... node frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
   - `npm test -- --run src/components/DiscoveryWorkspace.test.jsx` -> `1` file passed, `34` tests passed after the Discover-specific control/horizontal-frame adjustment.
 - Evidence:
   - `docs/northstar_visual_qa/prototype-wide-rail-targeted/prototype-current-report.json`
@@ -1903,7 +1903,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - focused Discover recapture: `docs/northstar_visual_qa/prototype-discover-wide-rail/discover-3037x1269.png`
 - Result:
   - Discover, Lineage Atlas, Audit Evidence, and Control Center primary content now measures at approximately `left=867/868`, `right=2411/2412`, `width=1544`, matching the prototype centered work rail at native width.
-  - Removed obsolete prototype Discover top filter dropdown row and page-local `Ask Atlas AI` control from the visual layout; the global Atlas AI dock remains the assistant surface.
+  - Removed obsolete prototype Discover top filter dropdown row and page-local `Ask Axiom AI` control from the visual layout; the global Axiom AI dock remains the assistant surface.
 - Remaining visual/product issues found during inspection:
   - topbar coverage still falls back to `UC connected · 0% coverage` outside Command Center in the mock-API capture.
   - Discover result cards are close structurally but still carry older card/action/chip rhythm compared with `northstar/screenshots/prototype_discover.png`.
@@ -1916,8 +1916,8 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `App.jsx` now derives the shell UC coverage score from the bootstrap/discovery summary when present, then governance summary, then the visible asset coverage values instead of depending only on the Command Center API query.
   - The prototype Playwright mock bootstrap now guarantees a discovery summary while preserving any real fixture fields.
 - Validation:
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
-  - `git diff --check -- frontend/src/App.jsx frontend/scripts/atlas_prototype_current_capture.mjs frontend/src/styles/northstar.css IMPLEMENTATION_STATUS.md` -> passed.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
+  - `git diff --check -- frontend/src/App.jsx frontend/scripts/axiom_prototype_current_capture.mjs frontend/src/styles/northstar.css IMPLEMENTATION_STATUS.md` -> passed.
   - `npm test -- --run src/App.test.jsx src/components/DiscoveryWorkspace.test.jsx` -> `2` files passed, `59` tests passed.
   - Refreshed Discover native-size capture -> passed, `requestFailures=0`, and text evidence contains `UC connected · 87.4% coverage`.
 - Evidence:
@@ -1941,7 +1941,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `npm test -- --run src/components/DiscoveryWorkspace.test.jsx`
   - `npm run typecheck`
   - `git diff --check`
-  - recapture `discover` at `3037x1269` with `GOVAT_PROTOTYPE_MOCK_API=1`.
+  - recapture `discover` at `3037x1269` with `AXIOM_PROTOTYPE_MOCK_API=1`.
 
 ### Checkpoint - Discover Result Row Focused Validation Passed
 
@@ -1952,22 +1952,22 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Updated local Playwright mock-API Discover data to use the explicit North Star result fixtures and `Trust score` sort option while keeping the fixture source marked `local-prototype-mock`.
 - Validation:
   - `npm test -- --run src/components/DiscoveryWorkspace.test.jsx` -> passed, `34` tests.
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
-  - `git diff --check -- frontend/src/components/DiscoveryWorkspace.jsx frontend/src/styles/northstar.css frontend/scripts/atlas_prototype_current_capture.mjs IMPLEMENTATION_STATUS.md` -> passed.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
+  - `git diff --check -- frontend/src/components/DiscoveryWorkspace.jsx frontend/src/styles/northstar.css frontend/scripts/axiom_prototype_current_capture.mjs IMPLEMENTATION_STATUS.md` -> passed.
 - Exact next action:
   - Re-run the Discover native-size Playwright capture and inspect the current screenshot against `northstar/screenshots/prototype_discover.png`.
 
 ### Checkpoint - Discover Native Recapture Found Shared AI Dock Gap
 
 - Validation:
-  - `GOVAT_BASE_URL=http://127.0.0.1:3000 GOVAT_PROTOTYPE_MOCK_API=1 GOVAT_PROTOTYPE_ROUTES=discover GOVAT_PROTOTYPE_VIEWPORTS=3037x1269 GOVAT_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-discover-row-pass ... node frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `AXIOM_BASE_URL=http://127.0.0.1:3000 AXIOM_PROTOTYPE_MOCK_API=1 AXIOM_PROTOTYPE_ROUTES=discover AXIOM_PROTOTYPE_VIEWPORTS=3037x1269 AXIOM_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-discover-row-pass ... node frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
 - Evidence:
   - `docs/northstar_visual_qa/prototype-discover-row-pass/discover-3037x1269.png`
 - Result:
   - Discover rows now use North Star fixture content, varied trust scores, compact asset-card hierarchy, `Trust score` sort, and prototype result count.
-  - Remaining blocker from screenshot inspection is shared, not Discover-specific: the floating Atlas AI dock defaults too low at the native prototype viewport. The prototype places it mid-right beside the work rail, while the current default uses a low bottom offset.
+  - Remaining blocker from screenshot inspection is shared, not Discover-specific: the floating Axiom AI dock defaults too low at the native prototype viewport. The prototype places it mid-right beside the work rail, while the current default uses a low bottom offset.
 - Planned edit:
-  - Adjust only the default wide-screen Atlas AI dock placement so `3037x1269` prototype captures align with the North Star while preserving the lower placement on smaller viewports.
+  - Adjust only the default wide-screen Axiom AI dock placement so `3037x1269` prototype captures align with the North Star while preserving the lower placement on smaller viewports.
 - Planned validation:
   - `npm test -- --run src/components/AppFrame.test.jsx src/components/DiscoveryWorkspace.test.jsx`
   - `npm run typecheck`
@@ -1976,25 +1976,25 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Shared AI Dock Wide-Viewport Placement Validated
 
 - Implemented:
-  - `AppFrame.jsx` now uses a higher default Atlas AI dock position only on very wide prototype-class viewports (`>=2200px`), while preserving the previous lower default on smaller desktop and responsive viewports.
+  - `AppFrame.jsx` now uses a higher default Axiom AI dock position only on very wide prototype-class viewports (`>=2200px`), while preserving the previous lower default on smaller desktop and responsive viewports.
 - Validation:
   - `npm test -- --run src/components/AppFrame.test.jsx src/components/DiscoveryWorkspace.test.jsx` -> passed, `48` tests.
   - `npm run typecheck` -> passed.
-  - `git diff --check -- frontend/src/components/AppFrame.jsx frontend/src/components/DiscoveryWorkspace.jsx frontend/src/styles/northstar.css frontend/scripts/atlas_prototype_current_capture.mjs IMPLEMENTATION_STATUS.md` -> passed.
+  - `git diff --check -- frontend/src/components/AppFrame.jsx frontend/src/components/DiscoveryWorkspace.jsx frontend/src/styles/northstar.css frontend/scripts/axiom_prototype_current_capture.mjs IMPLEMENTATION_STATUS.md` -> passed.
 - Exact next action:
   - Recapture Discover after the wide-dock placement fix and compare the dock/results frame with the prototype.
 
 ### Checkpoint - Discover Native Row/Dock Recapture Passed
 
 - Validation:
-  - `GOVAT_BASE_URL=http://127.0.0.1:3000 GOVAT_PROTOTYPE_MOCK_API=1 GOVAT_PROTOTYPE_ROUTES=discover GOVAT_PROTOTYPE_VIEWPORTS=3037x1269 GOVAT_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-discover-row-pass ... node frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `AXIOM_BASE_URL=http://127.0.0.1:3000 AXIOM_PROTOTYPE_MOCK_API=1 AXIOM_PROTOTYPE_ROUTES=discover AXIOM_PROTOTYPE_VIEWPORTS=3037x1269 AXIOM_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-discover-row-pass ... node frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
 - Evidence:
   - `docs/northstar_visual_qa/prototype-discover-row-pass/prototype-current-report.json`
   - `docs/northstar_visual_qa/prototype-discover-row-pass/discover-3037x1269.png`
 - Result:
-  - Discover now matches the prototype’s core structure: centered rail, left filter rail, compact result cards, varied trust scores, `Trust score` sort, global Atlas AI dock at the prototype vertical position, and `UC connected · 87.4% coverage`.
+  - Discover now matches the prototype’s core structure: centered rail, left filter rail, compact result cards, varied trust scores, `Trust score` sort, global Axiom AI dock at the prototype vertical position, and `UC connected · 87.4% coverage`.
 - Remaining visual deltas to watch in broader route review:
-  - workspace label remains environment-driven (`Dev`) instead of the prototype fixture `entrada-prod`; this is an accepted truth-based data difference unless local mock evidence specifically needs prototype branding.
+  - workspace label remains environment-driven (`Dev`) instead of the prototype fixture `prod`; this is an accepted truth-based data difference unless local mock evidence specifically needs prototype branding.
   - result-card typography is slightly denser/smaller than the static prototype but preserves the same hierarchy and gains real overflow resilience.
 - Exact next action:
   - Run a full screenshot-backed capture across all current `northstar/*` routes with the corrected Discover fixture and shared dock placement, then inspect the next largest route-level gaps.
@@ -2002,12 +2002,12 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Full Native Capture Found Stewardship Rail Width Gap
 
 - Validation:
-  - `GOVAT_BASE_URL=http://127.0.0.1:3000 GOVAT_PROTOTYPE_MOCK_API=1 GOVAT_PROTOTYPE_VIEWPORTS=3037x1269 GOVAT_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-all-routes-native ... node frontend/scripts/atlas_prototype_current_capture.mjs` -> passed across all `8` screenshot-backed routes.
+  - `AXIOM_BASE_URL=http://127.0.0.1:3000 AXIOM_PROTOTYPE_MOCK_API=1 AXIOM_PROTOTYPE_VIEWPORTS=3037x1269 AXIOM_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-all-routes-native ... node frontend/scripts/axiom_prototype_current_capture.mjs` -> passed across all `8` screenshot-backed routes.
 - Evidence:
   - `docs/northstar_visual_qa/prototype-all-routes-native/prototype-current-report.json`
   - `docs/northstar_visual_qa/prototype-all-routes-native/stewardship-3037x1269.png`
 - Current blocker:
-  - Stewardship content is still capped around the older `1120px` layout width, leaving a large blank gap before the Atlas AI rail. The North Star stewardship screenshot uses the same centered `1544px` rail as Discover, Audit, Control Center, and Lineage.
+  - Stewardship content is still capped around the older `1120px` layout width, leaving a large blank gap before the Axiom AI rail. The North Star stewardship screenshot uses the same centered `1544px` rail as Discover, Audit, Control Center, and Lineage.
 - Planned edit:
   - Add a wide-viewport rail override for `.gh-governance-ns` hero, filter pills, queue/detail layout, and status/action panels only.
 - Planned validation:
@@ -2027,7 +2027,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `docs/northstar_visual_qa/prototype-stewardship-rail-pass/prototype-current-report.json`
   - `docs/northstar_visual_qa/prototype-stewardship-rail-pass/stewardship-3037x1269.png`
 - Result:
-  - Stewardship work queue and detail panel now align to the prototype-wide rail and no longer leave the large blank gap before the Atlas AI dock.
+  - Stewardship work queue and detail panel now align to the prototype-wide rail and no longer leave the large blank gap before the Axiom AI dock.
 - Exact next action:
   - Continue route-by-route visual inspection, starting with Glossary/CDE and Lineage captures from `docs/northstar_visual_qa/prototype-all-routes-native/`.
 
@@ -2052,12 +2052,12 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `frontend/src/components/LineageStage.jsx`
   - `frontend/src/components/LineageStage.test.jsx`
   - `frontend/src/styles/lineage.css`
-  - `frontend/scripts/atlas_prototype_current_capture.mjs`
+  - `frontend/scripts/axiom_prototype_current_capture.mjs`
 - Planned validation after edit:
   - `npm test -- --run src/components/LineageStage.test.jsx src/components/LineageWorkspace.test.jsx`
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs`
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs`
   - `npm run lint -- --quiet`
-  - local Playwright mock-API capture for `GOVAT_PROTOTYPE_ROUTES=lineage`
+  - local Playwright mock-API capture for `AXIOM_PROTOTYPE_ROUTES=lineage`
   - send refreshed Lineage evidence to visual/product, functional/regression, and truth/provenance review lanes before any signoff
 
 ### Checkpoint - Lineage Atlas Component Patch Validated Locally
@@ -2069,8 +2069,8 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Realigned `LineageStage` tests to the prototype layout and retained embedded Asset 360 graph behavior.
 - Validation:
   - `npm test -- --run src/components/LineageStage.test.jsx src/components/LineageWorkspace.test.jsx` -> `2` files passed, `13` tests passed.
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
-  - `git diff --check frontend/src/components/LineageStage.jsx frontend/src/components/LineageStage.test.jsx frontend/src/styles/lineage.css frontend/scripts/atlas_prototype_current_capture.mjs IMPLEMENTATION_STATUS.md` -> passed.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
+  - `git diff --check frontend/src/components/LineageStage.jsx frontend/src/components/LineageStage.test.jsx frontend/src/styles/lineage.css frontend/scripts/axiom_prototype_current_capture.mjs IMPLEMENTATION_STATUS.md` -> passed.
 - Next action:
   - Run lint and refreshed local Playwright mock-API lineage screenshots at `1536x1024`, `1440x900`, and `1280x720`; inspect the output before sending it to review lanes.
 
@@ -2082,8 +2082,8 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Validation:
   - `npm test -- --run src/components/LineageStage.test.jsx src/components/LineageWorkspace.test.jsx` -> `2` files passed, `13` tests passed.
   - `npm run lint -- --quiet` -> passed.
-  - `git diff --check frontend/src/components/LineageStage.jsx frontend/src/components/LineageStage.test.jsx frontend/src/styles/lineage.css frontend/scripts/atlas_prototype_current_capture.mjs IMPLEMENTATION_STATUS.md` -> passed.
-  - `GOVAT_BASE_URL=http://127.0.0.1:3000 GOVAT_PROTOTYPE_MOCK_API=1 GOVAT_PROTOTYPE_ROUTES=lineage GOVAT_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-lineage-functional ... node frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `git diff --check frontend/src/components/LineageStage.jsx frontend/src/components/LineageStage.test.jsx frontend/src/styles/lineage.css frontend/scripts/axiom_prototype_current_capture.mjs IMPLEMENTATION_STATUS.md` -> passed.
+  - `AXIOM_BASE_URL=http://127.0.0.1:3000 AXIOM_PROTOTYPE_MOCK_API=1 AXIOM_PROTOTYPE_ROUTES=lineage AXIOM_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-lineage-functional ... node frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
 - Evidence:
   - `docs/northstar_visual_qa/prototype-lineage-functional/prototype-current-report.json`
   - `docs/northstar_visual_qa/prototype-lineage-functional/lineage-1536x1024.png`
@@ -2104,11 +2104,11 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Planned edit scope if gaps are confirmed:
   - `frontend/src/components/AuditBrowserWorkspace.jsx`
   - `frontend/src/components/AdminWorkspace.jsx`
-  - page-specific tests and `frontend/scripts/atlas_prototype_current_capture.mjs` mock data as needed
+  - page-specific tests and `frontend/scripts/axiom_prototype_current_capture.mjs` mock data as needed
 - Planned validation after each page edit:
   - focused component tests
   - `npm run lint -- --quiet`
-  - local Playwright screenshots with `GOVAT_PROTOTYPE_MOCK_API=1`
+  - local Playwright screenshots with `AXIOM_PROTOTYPE_MOCK_API=1`
   - reviewer-lane evidence before signoff
 
 ### Checkpoint - Audit Evidence Prototype Width Remediation Started
@@ -2122,7 +2122,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Planned validation:
   - `npm test -- --run src/components/AuditBrowserWorkspace.test.jsx`
   - `npm run lint -- --quiet`
-  - local mock-API Playwright capture for `GOVAT_PROTOTYPE_ROUTES=audit`
+  - local mock-API Playwright capture for `AXIOM_PROTOTYPE_ROUTES=audit`
   - manual screenshot inspection before sending refreshed evidence to review lanes.
 
 ### Checkpoint - Audit Evidence Prototype Width Remediation Validated
@@ -2131,21 +2131,21 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Forced `.gh-audit-ns` and `.gh-audit-shell` to stretch to the available `.gh-main` width.
   - Overrode the older two-column audit media-query shell for the prototype audit page.
   - Protected the prototype audit table from old seven-column audit rules.
-  - Added audit/admin element rects to `frontend/scripts/atlas_prototype_current_capture.mjs` so future screenshot reports expose layout constraints directly.
+  - Added audit/admin element rects to `frontend/scripts/axiom_prototype_current_capture.mjs` so future screenshot reports expose layout constraints directly.
 - Validation:
   - `npm test -- --run src/components/AuditBrowserWorkspace.test.jsx` -> `1` file passed, `4` tests passed.
   - `npm run lint -- --quiet` -> passed.
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
-  - `git diff --check frontend/src/styles/operations-pages.css frontend/scripts/atlas_prototype_current_capture.mjs IMPLEMENTATION_STATUS.md` -> passed.
-  - `GOVAT_BASE_URL=http://127.0.0.1:3000 GOVAT_PROTOTYPE_MOCK_API=1 GOVAT_PROTOTYPE_ROUTES=audit ... node frontend/scripts/atlas_prototype_current_capture.mjs` -> passed for `1536x1024`, `1440x900`, and `1280x720`.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
+  - `git diff --check frontend/src/styles/operations-pages.css frontend/scripts/axiom_prototype_current_capture.mjs IMPLEMENTATION_STATUS.md` -> passed.
+  - `AXIOM_BASE_URL=http://127.0.0.1:3000 AXIOM_PROTOTYPE_MOCK_API=1 AXIOM_PROTOTYPE_ROUTES=audit ... node frontend/scripts/axiom_prototype_current_capture.mjs` -> passed for `1536x1024`, `1440x900`, and `1280x720`.
 - Evidence:
   - `docs/northstar_visual_qa/prototype-audit-functional/prototype-current-report.json`
   - `docs/northstar_visual_qa/prototype-audit-functional/audit-1536x1024.png`
   - `docs/northstar_visual_qa/prototype-audit-functional/audit-1440x900.png`
   - `docs/northstar_visual_qa/prototype-audit-functional/audit-1280x720.png`
 - Manual inspection result:
-  - The page now renders the prototype Audit Evidence structure with the hero, action buttons, KPI row, filter pills, wide immutable event table, Delta evidence note, and Atlas AI dock visible.
-  - Remaining review judgment item: the current shell still uses the app's 240px rail and DEFAULT workspace labels rather than the prototype's narrower rail and `entrada-prod` labels; this is cross-shell/data-context drift, not an Audit page-only defect.
+  - The page now renders the prototype Audit Evidence structure with the hero, action buttons, KPI row, filter pills, wide immutable event table, Delta evidence note, and Axiom AI dock visible.
+  - Remaining review judgment item: the current shell still uses the app's 240px rail and DEFAULT workspace labels rather than the prototype's narrower rail and `prod` labels; this is cross-shell/data-context drift, not an Audit page-only defect.
 - Next action:
   - Send refreshed Audit Evidence evidence to review lanes and start the Control Center prototype remediation.
 
@@ -2153,7 +2153,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 
 - Trigger: baseline Playwright evidence showed `/control-center` still rendering the older `Administration & Control Center` diagnostics/workspace surface instead of `northstar/screenshots/prototype_control_center.png`.
 - Required prototype structure:
-  - Eyebrow `Control Center`, title `Atlas runtime, integrations, and policy`, and Databricks Apps/workspace-scoped explanatory copy.
+  - Eyebrow `Control Center`, title `Axiom runtime, integrations, and policy`, and Databricks Apps/workspace-scoped explanatory copy.
   - `Scheduled jobs` table with job, schedule, last run, and status.
   - `Integrations` status list.
   - `Policy coverage` bars.
@@ -2162,12 +2162,12 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `frontend/src/components/AdminWorkspace.jsx`
   - `frontend/src/components/AdminWorkspace.test.jsx`
   - `frontend/src/styles/operations-pages.css`
-  - `frontend/scripts/atlas_prototype_current_capture.mjs`
+  - `frontend/scripts/axiom_prototype_current_capture.mjs`
 - Planned validation:
   - `npm test -- --run src/components/AdminWorkspace.test.jsx`
   - `npm run lint -- --quiet`
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs`
-  - local mock-API Playwright capture for `GOVAT_PROTOTYPE_ROUTES=control-center`
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs`
+  - local mock-API Playwright capture for `AXIOM_PROTOTYPE_ROUTES=control-center`
   - send refreshed Control Center evidence to review lanes.
 
 ### Checkpoint - Control Center Prototype Remediation Validated
@@ -2176,20 +2176,20 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Replaced the old `Administration & Control Center` diagnostics/workspace layout with the prototype `Control Center` surface.
   - Added truthful-backed sections for scheduled Lakeflow jobs, integrations, and policy coverage; missing live signals remain as unavailable rows.
   - Added deterministic local mock-API Control Center payload for Playwright visual evidence.
-  - Tightened the scheduled-jobs grid so job, schedule, last run, and status remain visible at `1440x900` with the Atlas AI dock open.
+  - Tightened the scheduled-jobs grid so job, schedule, last run, and status remain visible at `1440x900` with the Axiom AI dock open.
 - Validation:
   - `npm test -- --run src/components/AdminWorkspace.test.jsx` -> `1` file passed, `5` tests passed.
   - `npm run lint -- --quiet` -> passed.
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
-  - `git diff --check frontend/src/components/AdminWorkspace.jsx frontend/src/components/AdminWorkspace.test.jsx frontend/src/styles/operations-pages.css frontend/scripts/atlas_prototype_current_capture.mjs IMPLEMENTATION_STATUS.md` -> passed.
-  - `GOVAT_BASE_URL=http://127.0.0.1:3000 GOVAT_PROTOTYPE_MOCK_API=1 GOVAT_PROTOTYPE_ROUTES=control-center ... node frontend/scripts/atlas_prototype_current_capture.mjs` -> passed for `1536x1024`, `1440x900`, and `1280x720`.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
+  - `git diff --check frontend/src/components/AdminWorkspace.jsx frontend/src/components/AdminWorkspace.test.jsx frontend/src/styles/operations-pages.css frontend/scripts/axiom_prototype_current_capture.mjs IMPLEMENTATION_STATUS.md` -> passed.
+  - `AXIOM_BASE_URL=http://127.0.0.1:3000 AXIOM_PROTOTYPE_MOCK_API=1 AXIOM_PROTOTYPE_ROUTES=control-center ... node frontend/scripts/axiom_prototype_current_capture.mjs` -> passed for `1536x1024`, `1440x900`, and `1280x720`.
 - Evidence:
   - `docs/northstar_visual_qa/prototype-control-center-functional/prototype-current-report.json`
   - `docs/northstar_visual_qa/prototype-control-center-functional/control-center-1536x1024.png`
   - `docs/northstar_visual_qa/prototype-control-center-functional/control-center-1440x900.png`
   - `docs/northstar_visual_qa/prototype-control-center-functional/control-center-1280x720.png`
 - Manual inspection result:
-  - The page now renders the prototype runtime/integrations/policy structure with the scheduled jobs table, integrations list, policy bars, and Atlas AI dock visible.
+  - The page now renders the prototype runtime/integrations/policy structure with the scheduled jobs table, integrations list, policy bars, and Axiom AI dock visible.
   - Remaining review judgment item: shared shell rail width and DEFAULT/local labels differ from the prototype data context, consistent with the broader shell/data-context caveat.
 - Next action:
   - Send refreshed Control Center evidence to review lanes, then run an all-route mock-API screenshot pass to find remaining prototype-page regressions before final signoff.
@@ -2213,12 +2213,12 @@ explicitly revalidates them against the active ledgers and current evidence.
 
 ### Checkpoint - Asset 360 Mock-API Regression Fix Started
 
-- Trigger: the all-route prototype regression pass reported `404` request failures for `/api/atlas/assets/finance_prod.curated.revenue_daily/360` at all viewports. The page loaded from fallback data, but the exact Asset 360 composite endpoint used by the UI was not mocked, leaving a functional validation gap.
+- Trigger: the all-route prototype regression pass reported `404` request failures for `/api/axiom/assets/finance_prod.curated.revenue_daily/360` at all viewports. The page loaded from fallback data, but the exact Asset 360 composite endpoint used by the UI was not mocked, leaving a functional validation gap.
 - Current edit scope:
-  - `frontend/scripts/atlas_prototype_current_capture.mjs`
+  - `frontend/scripts/axiom_prototype_current_capture.mjs`
 - Planned validation:
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs`
-  - local mock-API Playwright capture for `GOVAT_PROTOTYPE_ROUTES=asset360`
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs`
+  - local mock-API Playwright capture for `AXIOM_PROTOTYPE_ROUTES=asset360`
   - repeat all-route regression summary and confirm request failures are gone.
 
 ### Checkpoint - Command Center Short-Viewport Remediation Started
@@ -2226,28 +2226,28 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Trigger: reviewer evidence blocker found the hydrated Command Center screenshots at `1280x720` did not expose the lower prototype sections; `.gh-main` reported no scroll despite the lower content being clipped.
 - Current edit scope:
   - `frontend/src/styles/northstar.css`
-  - `frontend/scripts/atlas_prototype_current_capture.mjs` only if additional scroll evidence instrumentation is needed.
+  - `frontend/scripts/axiom_prototype_current_capture.mjs` only if additional scroll evidence instrumentation is needed.
 - Constraint: preserve the prototype compact density and do not hide sections or mark visual signoff until refreshed `1280x720`, `1440x900`, and `1536x1024` screenshots prove the Command Center lower sections are reachable.
 - Planned validation after edit:
   - focused Home/Command Center tests
   - lint/typecheck if CSS or script changes affect app/runtime assumptions
-  - local Playwright capture with `GOVAT_PROTOTYPE_MOCK_API=1`, `GOVAT_PROTOTYPE_SCROLL_MAIN=1`, and Command Center route only
+  - local Playwright capture with `AXIOM_PROTOTYPE_MOCK_API=1`, `AXIOM_PROTOTYPE_SCROLL_MAIN=1`, and Command Center route only
   - send refreshed evidence to visual/product, functional/regression, and truth/provenance review lanes
 
 ### Checkpoint - Command Center Short-Viewport CSS Fix
 
-- Implemented a scoped override for `.gh-command-center-page.gh-home-page.ga-page` so legacy Home short-height rules can no longer force the prototype Command Center root to `height: 100%` with clipped overflow.
+- Implemented a scoped override for `.gh-command-center-page.gh-home-page.ax-page` so legacy Home short-height rules can no longer force the prototype Command Center root to `height: 100%` with clipped overflow.
 - Added a small short-height density adjustment for the Command Center shell, hero title, state card, and KPI cards to keep the `1280x720` view compact without deleting lower sections.
 - Validation:
   - `npm test -- --run src/components/HomePage.test.jsx` -> `1` file passed, `9` tests passed.
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
   - `git diff --check frontend/src/styles/northstar.css IMPLEMENTATION_STATUS.md` -> passed.
 - Next action: rerun the hydrated Command Center Playwright capture with internal-main scroll evidence and confirm `1280x720` now exposes lower Command Center sections.
 
 ### Checkpoint - Command Center Short-Viewport Evidence Refreshed
 
 - Refreshed hydrated mock-API Command Center screenshots:
-  - `GOVAT_BASE_URL=http://127.0.0.1:3000 GOVAT_PROTOTYPE_MOCK_API=1 GOVAT_PROTOTYPE_SCROLL_MAIN=1 GOVAT_PROTOTYPE_ROUTES=command-center GOVAT_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-command-center-functional ...`
+  - `AXIOM_BASE_URL=http://127.0.0.1:3000 AXIOM_PROTOTYPE_MOCK_API=1 AXIOM_PROTOTYPE_SCROLL_MAIN=1 AXIOM_PROTOTYPE_ROUTES=command-center AXIOM_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-command-center-functional ...`
 - Evidence:
   - `docs/northstar_visual_qa/prototype-command-center-functional/prototype-current-report.json`
   - `docs/northstar_visual_qa/prototype-command-center-functional/command-center-1280x720-main-bottom.png`
@@ -2269,7 +2269,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `frontend/src/components/GovernanceWorkspace.jsx`
   - `frontend/src/components/GovernanceWorkspace.test.jsx`
   - `frontend/src/styles/operations-pages.css`
-  - `frontend/scripts/atlas_prototype_current_capture.mjs` for deterministic local workbench API evidence.
+  - `frontend/scripts/axiom_prototype_current_capture.mjs` for deterministic local workbench API evidence.
 - Prototype-specific requirements for this pass:
   - header title with open work items and SLA breaches
   - action buttons: Filter, Bulk assign, New work item
@@ -2305,20 +2305,20 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Validation:
   - `npm test -- --run src/components/GovernanceWorkspace.test.jsx` -> `1` file passed, `9` tests passed.
 - Next action:
-  - Add hydrated Stewardship mock-API coverage to `frontend/scripts/atlas_prototype_current_capture.mjs`, run syntax/lint checks, and capture `/stewardship` screenshots for review.
+  - Add hydrated Stewardship mock-API coverage to `frontend/scripts/axiom_prototype_current_capture.mjs`, run syntax/lint checks, and capture `/stewardship` screenshots for review.
 
 ### Checkpoint - Stewardship Hydrated Screenshot Evidence Captured
 
 - Added deterministic mock-API coverage for the Stewardship visual run:
-  - `/api/atlas/governance/workbench`
-  - `/api/atlas/governance/requests/{request_id}`
+  - `/api/axiom/governance/workbench`
+  - `/api/axiom/governance/requests/{request_id}`
   - `/api/governance/requests/{request_id}` mutation echo for local interaction paths
 - Validation:
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
-  - `git diff --check frontend/src/components/GovernanceWorkspace.jsx frontend/src/components/GovernanceWorkspace.test.jsx frontend/scripts/atlas_prototype_current_capture.mjs IMPLEMENTATION_STATUS.md` -> passed.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
+  - `git diff --check frontend/src/components/GovernanceWorkspace.jsx frontend/src/components/GovernanceWorkspace.test.jsx frontend/scripts/axiom_prototype_current_capture.mjs IMPLEMENTATION_STATUS.md` -> passed.
   - `npm run lint -- --quiet` -> passed.
   - Local Vite probe at `http://127.0.0.1:3000` -> passed.
-  - `GOVAT_BASE_URL=http://127.0.0.1:3000 GOVAT_PROTOTYPE_MOCK_API=1 GOVAT_PROTOTYPE_ROUTES=stewardship GOVAT_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-stewardship-functional ... node frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `AXIOM_BASE_URL=http://127.0.0.1:3000 AXIOM_PROTOTYPE_MOCK_API=1 AXIOM_PROTOTYPE_ROUTES=stewardship AXIOM_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-stewardship-functional ... node frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
 - Evidence:
   - `docs/northstar_visual_qa/prototype-stewardship-functional/prototype-current-report.json`
   - `docs/northstar_visual_qa/prototype-stewardship-functional/stewardship-1536x1024.png`
@@ -2329,7 +2329,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - no page errors, no request failures, no horizontal overflow in all three viewports
   - visual page now renders prototype-like Stewardship header, queue pills, 8-row work queue, selected detail pane, affected asset, why-open evidence, suggested actions, Comment/Resolve controls, and implementation provenance.
 - Open cross-page visual issue found during manual screenshot inspection:
-  - The prototype shows the Atlas AI dock open as a right-side panel on most pages, while the current local capture shows only the persistent bottom-right FAB unless Atlas AI is explicitly opened. This is a global shell/Atlas AI parity item, not a Stewardship-only issue.
+  - The prototype shows the Axiom AI dock open as a right-side panel on most pages, while the current local capture shows only the persistent bottom-right FAB unless Axiom AI is explicitly opened. This is a global shell/Axiom AI parity item, not a Stewardship-only issue.
 - Next action:
   - Send the Stewardship evidence to visual/product, functional/regression, and truth/provenance review lanes; incorporate blockers before treating the page as complete.
 
@@ -2343,7 +2343,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `frontend/src/components/TaxonomyWorkspace.jsx`
   - `frontend/src/components/TaxonomyWorkspace.test.jsx` if existing coverage needs prototype alignment
   - `frontend/src/styles/operations-pages.css` / `frontend/src/styles/northstar.css` only where required for layout parity
-  - `frontend/scripts/atlas_prototype_current_capture.mjs` for deterministic glossary/CDE mock-API evidence if needed
+  - `frontend/scripts/axiom_prototype_current_capture.mjs` for deterministic glossary/CDE mock-API evidence if needed
 - Prototype-specific requirements for this pass:
   - Header: `Glossary & CDE Registry`, title `Shared business meaning, anchored to data`, and `New term` action.
   - Tabs: `Glossary` and `CDE Registry`.
@@ -2373,16 +2373,16 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Glossary & CDEs Playwright Evidence Started
 
 - Added deterministic local Playwright mock responses for:
-  - `/api/atlas/taxonomy/overview`
-  - `/api/atlas/cde`
+  - `/api/axiom/taxonomy/overview`
+  - `/api/axiom/cde`
 - Updated prototype capture routes so:
   - `glossary` captures `/glossary-cdes`
   - `cde-registry` captures `/glossary-cdes?tab=cdes`
   - both settle on `.gh-taxonomy-ns` so they evaluate the new prototype registry page rather than the legacy standalone CDE workspace.
 - Validation before screenshots:
   - `npm test -- --run src/components/TaxonomyWorkspace.test.jsx` -> `1` file passed, `4` tests passed.
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
-  - `git diff --check frontend/src/components/TaxonomyWorkspace.jsx frontend/src/components/TaxonomyWorkspace.test.jsx frontend/scripts/atlas_prototype_current_capture.mjs frontend/src/styles/operations-pages.css IMPLEMENTATION_STATUS.md` -> passed.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
+  - `git diff --check frontend/src/components/TaxonomyWorkspace.jsx frontend/src/components/TaxonomyWorkspace.test.jsx frontend/scripts/axiom_prototype_current_capture.mjs frontend/src/styles/operations-pages.css IMPLEMENTATION_STATUS.md` -> passed.
 - Exact next action:
   - Probe local Vite, run hydrated Playwright capture for `glossary,cde-registry`, inspect report/screenshots, then send evidence to review lanes.
 
@@ -2391,7 +2391,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Validation:
   - `npm run lint -- --quiet` -> passed.
   - Local Vite probe at `http://127.0.0.1:3000` -> passed.
-  - `GOVAT_BASE_URL=http://127.0.0.1:3000 GOVAT_PROTOTYPE_MOCK_API=1 GOVAT_PROTOTYPE_ROUTES=glossary,cde-registry GOVAT_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-glossary-functional ... node frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `AXIOM_BASE_URL=http://127.0.0.1:3000 AXIOM_PROTOTYPE_MOCK_API=1 AXIOM_PROTOTYPE_ROUTES=glossary,cde-registry AXIOM_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-glossary-functional ... node frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
 - Evidence:
   - `docs/northstar_visual_qa/prototype-glossary-functional/prototype-current-report.json`
   - `docs/northstar_visual_qa/prototype-glossary-functional/glossary-1536x1024.png`
@@ -2405,23 +2405,23 @@ explicitly revalidates them against the active ledgers and current evidence.
   - no page errors, no request failures, and no horizontal overflow in all three viewports
   - prototype page shape is present: hero, `New term`, tabs, glossary cards, and CDE table.
 - Manual screenshot blocker:
-  - The global Atlas AI dock is still missing from these page captures; the current shell shows only the bottom-right Atlas AI FAB. This remains a global cross-page parity blocker before any visual signoff can be claimed.
+  - The global Axiom AI dock is still missing from these page captures; the current shell shows only the bottom-right Axiom AI FAB. This remains a global cross-page parity blocker before any visual signoff can be claimed.
 - Next action:
-  - Send the screenshots and report to reviewer lanes, then continue with the global Atlas AI dock or the next prototype page based on blockers.
+  - Send the screenshots and report to reviewer lanes, then continue with the global Axiom AI dock or the next prototype page based on blockers.
 
-### Checkpoint - Global Atlas AI Dock Remediation Started
+### Checkpoint - Global Axiom AI Dock Remediation Started
 
 - Trigger:
-  - Manual inspection of Command Center, Stewardship, and Glossary/CDE captures shows the prototype expects an open Atlas AI right-side assistant on most pages, but the current shell only renders a bottom-right FAB until the user opens the floating chat.
+  - Manual inspection of Command Center, Stewardship, and Glossary/CDE captures shows the prototype expects an open Axiom AI right-side assistant on most pages, but the current shell only renders a bottom-right FAB until the user opens the floating chat.
 - Planned code scope:
   - `frontend/src/components/AppFrame.jsx`
   - `frontend/src/components/AppFrame.test.jsx`
   - `frontend/src/styles/northstar.css`
-  - `frontend/scripts/atlas_prototype_current_capture.mjs` only if screenshot settling needs an Atlas AI selector.
+  - `frontend/scripts/axiom_prototype_current_capture.mjs` only if screenshot settling needs an Axiom AI selector.
 - Prototype/functional requirements:
-  - Atlas AI opens by default when the shell reports a live, evidence-backed AI provider.
+  - Axiom AI opens by default when the shell reports a live, evidence-backed AI provider.
   - The user can still close, reopen from the topbar/FAB, drag, resize, and use Escape.
-  - The dialog remains grounded in the existing `useAtlasAiConversation` path and API; no local fake AI answers in production.
+  - The dialog remains grounded in the existing `useAxiomAiConversation` path and API; no local fake AI answers in production.
   - Suggested prompts should leave room for the answer after a question is asked.
 - Planned validation:
   - focused `AppFrame` tests
@@ -2429,10 +2429,10 @@ explicitly revalidates them against the active ledgers and current evidence.
   - refreshed Playwright capture for at least `glossary,cde-registry,stewardship` to verify the dock is visible without opening it manually
   - reviewer lane re-check for visual/product, functional/regression, and truth/provenance
 
-### Checkpoint - Global Atlas AI Dock Focused Tests Passed
+### Checkpoint - Global Axiom AI Dock Focused Tests Passed
 
 - Implemented:
-  - Atlas AI now opens by default when the shell is live and the AI provider state is available/configured.
+  - Axiom AI now opens by default when the shell is live and the AI provider state is available/configured.
   - Closing the dock persists a user dismissal in local storage; topbar/FAB reopening clears that dismissal.
   - Existing topbar/FAB open, close, Escape-close, drag, resize, and API-backed conversation paths remain in `AppFrame`.
   - The default assistant message now describes governed UC metadata grounding and raw-row avoidance.
@@ -2442,26 +2442,26 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `npm test -- --run src/components/AppFrame.test.jsx src/components/primitives/__tests__/ShellTopbarIdentity.test.jsx` -> `2` files passed, `21` tests passed.
   - `git diff --check frontend/src/components/AppFrame.jsx frontend/src/components/AppFrame.test.jsx frontend/src/styles/northstar.css IMPLEMENTATION_STATUS.md` -> passed.
 - Next action:
-  - Run lint and refreshed hydrated Playwright captures for affected prototype routes to confirm the Atlas AI dock appears by default.
+  - Run lint and refreshed hydrated Playwright captures for affected prototype routes to confirm the Axiom AI dock appears by default.
 
-### Checkpoint - Global Atlas AI Dock Hydrated Evidence Captured
+### Checkpoint - Global Axiom AI Dock Hydrated Evidence Captured
 
 - Additional implementation:
   - Added mock responses for `/api/governance/summary` and `/api/classification-recommendations` in the prototype Playwright harness so local screenshot evidence has no avoidable 404 noise.
-  - Added focused test coverage that Atlas AI is open by default, can be closed, and can be reopened without route changes.
+  - Added focused test coverage that Axiom AI is open by default, can be closed, and can be reopened without route changes.
 - Validation:
   - `npm test -- --run src/components/AppFrame.test.jsx src/components/primitives/__tests__/ShellTopbarIdentity.test.jsx` -> `2` files passed, `21` tests passed.
   - `npm run lint -- --quiet` -> passed.
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
-  - `git diff --check frontend/src/components/AppFrame.jsx frontend/src/components/AppFrame.test.jsx frontend/src/styles/northstar.css frontend/scripts/atlas_prototype_current_capture.mjs IMPLEMENTATION_STATUS.md` -> passed.
-  - `GOVAT_BASE_URL=http://127.0.0.1:3000 GOVAT_PROTOTYPE_MOCK_API=1 GOVAT_PROTOTYPE_ROUTES=command-center,stewardship,glossary,cde-registry GOVAT_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-global-ai-dock ... node frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
+  - `git diff --check frontend/src/components/AppFrame.jsx frontend/src/components/AppFrame.test.jsx frontend/src/styles/northstar.css frontend/scripts/axiom_prototype_current_capture.mjs IMPLEMENTATION_STATUS.md` -> passed.
+  - `AXIOM_BASE_URL=http://127.0.0.1:3000 AXIOM_PROTOTYPE_MOCK_API=1 AXIOM_PROTOTYPE_ROUTES=command-center,stewardship,glossary,cde-registry AXIOM_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-global-ai-dock ... node frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
 - Evidence:
   - `docs/northstar_visual_qa/prototype-global-ai-dock/prototype-current-report.json`
   - refreshed screenshots for `command-center`, `stewardship`, `glossary`, and `cde-registry` at `1536x1024`, `1440x900`, and `1280x720`
 - Result:
   - report `passed=true`, `mockApi=true`
   - no page errors, no request failures, and no horizontal overflow
-  - all captured routes expose the open Atlas AI dialog close control by default.
+  - all captured routes expose the open Axiom AI dialog close control by default.
 - Manual screenshot note:
   - The dock is now visible and positioned close to the prototype, but the reserved right-side area creates a visible background tone change on some pages. This needs visual reviewer judgment before claiming final parity.
 - Next action:
@@ -2477,7 +2477,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Planned code scope:
   - `frontend/src/components/LineageWorkspace.jsx`
   - lineage styles only if existing component shape can be adapted safely
-  - `frontend/scripts/atlas_prototype_current_capture.mjs` for deterministic lineage mock evidence
+  - `frontend/scripts/axiom_prototype_current_capture.mjs` for deterministic lineage mock evidence
   - focused lineage tests if current assertions no longer cover the prototype path
 - Constraints:
   - Do not fake production lineage. Use live/system lineage where available; local mock graph is only for Playwright evidence.
@@ -2506,7 +2506,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Lineage Atlas
   - Audit Evidence
   - Control Center
-  - Asset 360 and Atlas AI cross-surface behavior
+  - Asset 360 and Axiom AI cross-surface behavior
 - Decide the first implementation tranche after the side-by-side audit and subagent findings.
 
 ### Validation Status
@@ -2531,7 +2531,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Prototype Checklist Created
 
 - Added `docs/northstar_gap_analysis/prototype_contract.md`.
-- The checklist covers global shell, Command Center, Discover, Stewardship, Glossary & CDEs, Lineage Atlas, Audit Evidence, Control Center, Asset 360, Atlas AI, validation matrix, and truth constraints.
+- The checklist covers global shell, Command Center, Discover, Stewardship, Glossary & CDEs, Lineage Atlas, Audit Evidence, Control Center, Asset 360, Axiom AI, validation matrix, and truth constraints.
 - Required review lanes are running:
   - visual fidelity / product structure
   - truth / provenance / Databricks feasibility
@@ -2541,10 +2541,10 @@ explicitly revalidates them against the active ledgers and current evidence.
 
 ### Checkpoint - Current App Prototype Baseline Captured
 
-- Added `frontend/scripts/atlas_prototype_current_capture.mjs`.
+- Added `frontend/scripts/axiom_prototype_current_capture.mjs`.
 - Validation:
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
-  - Active deployed app readback: `atlas` is `RUNNING`, compute `ACTIVE`, deployment `01f142bd851310689d54f2f264850a47`, deployment state `SUCCEEDED`.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
+  - Active deployed app readback: `axiom` is `RUNNING`, compute `ACTIVE`, deployment `01f142bd851310689d54f2f264850a47`, deployment state `SUCCEEDED`.
   - Live Playwright baseline capture against the deployed app with `DEFAULT` token -> passed.
 - Evidence:
   - Report: `docs/northstar_visual_qa/prototype-current/prototype-current-report.json`.
@@ -2554,17 +2554,17 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Architecture: adapt production app; do not transplant `northstar` source or global CSS.
   - Visual/product: shell/nav/token authority blocks page parity and should be first.
   - Truth/provenance: preserve prototype structure, but unsupported prototype claims must be live-backed, seeded through real stores, or rendered degraded/unavailable.
-  - Workflow: add deterministic E2E coverage for saved searches, advanced search, stewardship mutations, exports, evidence links, and cross-page Atlas AI before broad signoff.
+  - Workflow: add deterministic E2E coverage for saved searches, advanced search, stewardship mutations, exports, evidence links, and cross-page Axiom AI before broad signoff.
 - Next implementation checkpoint:
-  - Shell and route taxonomy convergence first: prototype nav labels/groups, `Atlas AI` naming, route aliases, no broken existing routes.
-  - Then global Atlas AI dock behavior and Command Center page structure.
+  - Shell and route taxonomy convergence first: prototype nav labels/groups, `Axiom AI` naming, route aliases, no broken existing routes.
+  - Then global Axiom AI dock behavior and Command Center page structure.
 
 ### Checkpoint - Shell Implementation Started
 
 - Starting global shell/navigation/header tranche.
 - Planned code scope: `SideIconRail`, `GlobalHeader`, shell CSS, route aliases, shell tests, and the current screenshot capture route list.
 - Validation planned immediately after: targeted Vitest for shell primitives and route behavior, focused lint/typecheck/build smoke as needed, then refreshed Playwright screenshots for affected shell routes.
-- Risk: legacy tests encode old nav labels (`Home`, `Discovery`, `Governance`, `Admin`, `AI Copilot`); these will be updated to the prototype contract (`Command Center`, `Discover`, `Stewardship`, `Control Center`, `Atlas AI`) rather than preserving stale labels.
+- Risk: legacy tests encode old nav labels (`Home`, `Discovery`, `Governance`, `Admin`, `AI Copilot`); these will be updated to the prototype contract (`Command Center`, `Discover`, `Stewardship`, `Control Center`, `Axiom AI`) rather than preserving stale labels.
 
 ### Checkpoint - Shell Implementation Functional Validation
 
@@ -2572,12 +2572,12 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Sidebar now uses grouped prototype modules: Govern, Knowledge, Trust.
   - Primary labels now match the prototype taxonomy: `Command Center`, `Discover`, `Stewardship`, `Glossary & CDEs`, `Lineage Atlas`, `Audit Evidence`, `Control Center`.
   - Legacy `Asset 360` remains routable/deep-linkable but is no longer shown as a primary rail item because the prototype exposes it from search/results/drawers.
-  - Topbar now uses a workspace breadcrumb and `Atlas AI` naming.
+  - Topbar now uses a workspace breadcrumb and `Axiom AI` naming.
   - Prototype route aliases now canonicalize to production routes: `/command-center`, `/discover`, `/stewardship`, `/glossary-cdes`, `/lineage-atlas`, `/audit-evidence`, `/control-center`.
   - Legacy footer is visually hidden to match the prototype chrome; collapse remains functional through the sidebar user footer.
 - Validation:
   - `npm test -- --run src/components/primitives/__tests__/SideIconRail.test.jsx src/components/primitives/__tests__/ShellTopbarIdentity.test.jsx src/hooks/useAppRouteState.test.jsx` -> `3` files passed, `48` tests passed.
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
   - Focused `git diff --check` on shell/navigation/route/capture files -> passed.
 - Next action: run lint/typecheck for the shell tranche, then start a local server and capture current screenshots against the prototype alias routes before subagent review.
 
@@ -2589,9 +2589,9 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Post-width focused shell tests -> `2` files passed, `18` tests passed.
 - Local screenshot evidence:
   - Started local Vite server at `http://127.0.0.1:3000`.
-  - Captured prototype alias route set with `frontend/scripts/atlas_prototype_current_capture.mjs` into `docs/northstar_visual_qa/prototype-local-shell/`.
+  - Captured prototype alias route set with `frontend/scripts/axiom_prototype_current_capture.mjs` into `docs/northstar_visual_qa/prototype-local-shell/`.
   - Report: `18` captures, `0` page errors. Local API calls return expected `404` because the standalone Vite server is not connected to the backend; screenshots use shell fallback and are visual-shell evidence only, not data parity evidence.
-  - Manually inspected `docs/northstar_visual_qa/prototype-local-shell/command-center-1440x900.png`; shell now has prototype-style grouped sidebar, 56px topbar, workspace breadcrumb, `Atlas AI` button, and no visible footer.
+  - Manually inspected `docs/northstar_visual_qa/prototype-local-shell/command-center-1440x900.png`; shell now has prototype-style grouped sidebar, 56px topbar, workspace breadcrumb, `Axiom AI` button, and no visible footer.
 - Review lanes:
   - Visual shell review and functional/regression shell review are running.
   - Product/truth shell review is running after closing completed earlier discovery agents to free agent capacity.
@@ -2602,7 +2602,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Starting Command Center/Home page structure tranche against `northstar/screenshots/prototype_command_center*`.
 - Planned code scope: `frontend/src/components/HomePage.jsx`, supporting `northstar.css`, and Home/Command Center tests.
 - Data contract decision:
-  - Use existing `useCommandCenter`/`/atlas/command-center` payload fields (`estate`, `kpis`, `posture`, `topDomains`, `recentEvents`, `recentAssets`, `meta`) and visible asset seeds.
+  - Use existing `useCommandCenter`/`/axiom/command-center` payload fields (`estate`, `kpis`, `posture`, `topDomains`, `recentEvents`, `recentAssets`, `meta`) and visible asset seeds.
   - Derive catalog health only from visible asset records when available.
   - Render unsupported prototype claims (quality SLA, cryptographic audit readiness, risk-clean score, scheduled target confidence) as unavailable/degraded rather than inventing values.
 - Validation planned immediately after: focused Home tests, lint/typecheck/build smoke, local Playwright screenshot update, then review-lane incorporation.
@@ -2611,17 +2611,17 @@ explicitly revalidates them against the active ledgers and current evidence.
 
 - Visual shell review returned blockers, so Command Center implementation is paused until global chrome is corrected.
 - Shell blockers to address before page continuation:
-  - Topbar action cluster must match prototype order: UC status, notification, help, primary `Atlas AI`; the topbar avatar should move out of the topbar.
+  - Topbar action cluster must match prototype order: UC status, notification, help, primary `Axiom AI`; the topbar avatar should move out of the topbar.
   - Status pill must be prototype-shaped and truth-backed or explicitly degraded, not generic `Workspace`.
-  - Global Atlas AI needs prototype persistent bottom-right FAB plus docked panel behavior; current floating dialog alone is insufficient.
+  - Global Axiom AI needs prototype persistent bottom-right FAB plus docked panel behavior; current floating dialog alone is insufficient.
   - Sidebar icon semantics need to match the prototype (`gauge`, `list-checks`, `book`, `shield-check`, `sliders` equivalents).
   - Sidebar footer must be user/account chrome, not a disguised collapse toggle.
   - `/glossary` should route to Glossary & CDEs, not Stewardship/Governance.
 - Truth/provenance shell review also returned blockers:
   - Loading/unknown bootstrap state must not be coerced into green `live` shell status.
-  - `Atlas AI` must not enable when provider state is unknown or backend/runtime status is unavailable.
+  - `Axiom AI` must not enable when provider state is unknown or backend/runtime status is unavailable.
   - Stewardship badge must not use truncated backlog length as a total open-work count.
-- Validation after fixes: focused shell tests, lint/typecheck, local screenshots including closed/open Atlas AI global chrome, then re-review.
+- Validation after fixes: focused shell tests, lint/typecheck, local screenshots including closed/open Axiom AI global chrome, then re-review.
 
 ### Checkpoint - Shell Blocker Remediation Started
 
@@ -2629,23 +2629,23 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Code scope:
   - Route `/glossary` to Glossary & CDEs rather than Stewardship/Governance.
   - Remove the topbar profile chip and make the sidebar footer a real user/account menu.
-  - Reorder the topbar to prototype shape: UC status, notifications, help, primary `Atlas AI`.
+  - Reorder the topbar to prototype shape: UC status, notifications, help, primary `Axiom AI`.
   - Prevent loading/unknown runtime state from rendering as green live status.
-  - Disable `Atlas AI` unless the runtime reports a known evidence-backed AI provider state.
-  - Add persistent bottom-right Atlas AI FAB behavior and update tests/accessible labels.
+  - Disable `Axiom AI` unless the runtime reports a known evidence-backed AI provider state.
+  - Add persistent bottom-right Axiom AI FAB behavior and update tests/accessible labels.
 - Validation planned before page work resumes:
   - Focused AppFrame, shell primitive, topbar, route, and search tests.
   - Lint/typecheck after the focused tests pass.
-  - Refreshed local Playwright shell screenshots, including closed/open Atlas AI chrome.
+  - Refreshed local Playwright shell screenshots, including closed/open Axiom AI chrome.
 
 ### Checkpoint - Shell Blocker Focused Tests Passed
 
 - Implemented the first shell-blocker remediation pass:
   - `/glossary` and nested glossary paths now canonicalize to the Glossary & CDEs workspace (`/taxonomy`).
-  - The topbar action cluster now follows the prototype order: UC status, notifications, help, primary `Atlas AI`.
+  - The topbar action cluster now follows the prototype order: UC status, notifications, help, primary `Axiom AI`.
   - The topbar profile chip was removed; the sidebar footer now owns the user/account menu and avatar upload affordance.
   - Loading/degraded/unavailable boot states no longer render as a green live UC status.
-  - `Atlas AI` and the persistent bottom-right FAB are disabled unless the runtime reports a known available AI provider state.
+  - `Axiom AI` and the persistent bottom-right FAB are disabled unless the runtime reports a known available AI provider state.
   - The topbar search accessible label now matches the prototype placeholder text.
 - Validation:
   - `npm test -- --run src/components/AppFrame.test.jsx src/components/primitives/__tests__/SideIconRail.test.jsx src/components/primitives/__tests__/ShellTopbarIdentity.test.jsx src/hooks/useAppRouteState.test.jsx` -> `4` files passed, `63` tests passed.
@@ -2657,7 +2657,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `npm run lint` -> passed after removing stale Home imports from the paused Command Center edit.
   - `npm run typecheck` -> passed after making optional shell callback props explicit.
 - Local Vite server remains active at `http://127.0.0.1:3000` for refreshed browser evidence.
-- Next action: capture the prototype alias route set locally and manually inspect closed/open Atlas AI chrome before requesting shell re-review.
+- Next action: capture the prototype alias route set locally and manually inspect closed/open Axiom AI chrome before requesting shell re-review.
 
 ### Checkpoint - Shell Local Screenshot Evidence Refreshed
 
@@ -2670,7 +2670,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Expected local Vite API `404` request failures remain because this capture intentionally used shell fallback without the backend.
   - Hidden footer controls are no longer counted as visible controls by the capture script.
 - Manual screenshot inspection:
-  - Sidebar grouping, labels, active state, profile footer, topbar status/search/help/Atlas AI order, disabled Atlas AI state, and persistent bottom-right FAB now match the prototype shell shape much more closely.
+  - Sidebar grouping, labels, active state, profile footer, topbar status/search/help/Axiom AI order, disabled Axiom AI state, and persistent bottom-right FAB now match the prototype shell shape much more closely.
   - Local screenshots still show the shell loading fallback instead of hydrated page content; live deployed evidence is still required for page/content signoff.
 - Next action: send refreshed shell evidence to the review lanes and incorporate any remaining blockers before resuming Command Center page work.
 
@@ -2723,17 +2723,17 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Local request failures are expected API `404`s because this was Vite-only shell fallback evidence, not hydrated backend evidence.
 - Review blocker follow-up:
   - Functional/regression review found the public deployed QA commands still pointed at legacy selector scripts.
-  - Remediation started: convert `atlas_comprehensive_qa.mjs` and `atlas_structural_identity.mjs` into compatibility wrappers over the current live route validator and prototype capture.
+  - Remediation started: convert `axiom_comprehensive_qa.mjs` and `axiom_structural_identity.mjs` into compatibility wrappers over the current live route validator and prototype capture.
 
 ### Checkpoint - Deployed QA Wrapper Remediation Started
 
 - Code scope:
-  - `frontend/scripts/atlas_comprehensive_qa.mjs`
-  - `frontend/scripts/atlas_structural_identity.mjs`
+  - `frontend/scripts/axiom_comprehensive_qa.mjs`
+  - `frontend/scripts/axiom_structural_identity.mjs`
 - Decision: keep `npm run qa:deployed` and `npm run identity:deployed` command names stable, but remove retired selector assertions by delegating to the current validators.
 - Validation planned: `node --check` for both wrappers, focused npm script smoke with local fallback for `identity:deployed`, and route-validator syntax check.
 
-### Checkpoint - Atlas AI Open-State Evidence Started
+### Checkpoint - Axiom AI Open-State Evidence Started
 
 ### Checkpoint - Command Center Functional Remediation Started
 
@@ -2771,21 +2771,21 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Timestamp: 2026-04-28 07:03 EDT.
 - Problem with existing evidence: local Vite screenshots without a backend only show shell/loading states, which is not valid page-content visual QA.
 - Planned support-code scope:
-  - Add an explicit mock-API mode to `frontend/scripts/atlas_prototype_current_capture.mjs`.
+  - Add an explicit mock-API mode to `frontend/scripts/axiom_prototype_current_capture.mjs`.
   - Keep this mode opt-in and clearly reported as synthetic local evidence, separate from live Databricks evidence.
   - Add route filtering so focused page screenshots can be refreshed quickly after each tranche.
 - Validation planned:
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs`
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs`
   - Focused Command Center capture at `1440x900`, `1280x720`, and `1536x1024` with hydrated deterministic data.
 
 ### Checkpoint - Hydrated Command Center Evidence Captured
 
 - Support-code changes:
-  - `frontend/scripts/atlas_prototype_current_capture.mjs` now supports opt-in `GOVAT_PROTOTYPE_MOCK_API=1` and `GOVAT_PROTOTYPE_ROUTES=...`.
+  - `frontend/scripts/axiom_prototype_current_capture.mjs` now supports opt-in `AXIOM_PROTOTYPE_MOCK_API=1` and `AXIOM_PROTOTYPE_ROUTES=...`.
   - The report records `mockApi: true` so synthetic local visual evidence cannot be confused with live Databricks evidence.
 - Validation:
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
-  - `GOVAT_BASE_URL=http://127.0.0.1:3000 GOVAT_PROTOTYPE_MOCK_API=1 GOVAT_PROTOTYPE_ROUTES=command-center GOVAT_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-command-center-functional GOVAT_PROTOTYPE_SETTLE_TIMEOUT_MS=30000 GOVAT_PROTOTYPE_TEXT_SETTLE_TIMEOUT_MS=30000 node frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
+  - `AXIOM_BASE_URL=http://127.0.0.1:3000 AXIOM_PROTOTYPE_MOCK_API=1 AXIOM_PROTOTYPE_ROUTES=command-center AXIOM_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-command-center-functional AXIOM_PROTOTYPE_SETTLE_TIMEOUT_MS=30000 AXIOM_PROTOTYPE_TEXT_SETTLE_TIMEOUT_MS=30000 node frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
 - Evidence:
   - `docs/northstar_visual_qa/prototype-command-center-functional/prototype-current-report.json`.
   - `docs/northstar_visual_qa/prototype-command-center-functional/command-center-1536x1024.png`.
@@ -2834,7 +2834,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `npm test -- --run src/components/DiscoveryWorkspace.test.jsx` -> `1` file passed, `34` tests passed after the responsive change.
   - `npm run lint` -> passed after the responsive change.
   - `npm run typecheck` -> passed after the responsive change.
-  - `GOVAT_BASE_URL=http://127.0.0.1:3000 GOVAT_PROTOTYPE_MOCK_API=1 GOVAT_PROTOTYPE_ROUTES=discover GOVAT_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-discover-functional GOVAT_PROTOTYPE_SETTLE_TIMEOUT_MS=30000 GOVAT_PROTOTYPE_TEXT_SETTLE_TIMEOUT_MS=30000 node frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `AXIOM_BASE_URL=http://127.0.0.1:3000 AXIOM_PROTOTYPE_MOCK_API=1 AXIOM_PROTOTYPE_ROUTES=discover AXIOM_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-discover-functional AXIOM_PROTOTYPE_SETTLE_TIMEOUT_MS=30000 AXIOM_PROTOTYPE_TEXT_SETTLE_TIMEOUT_MS=30000 node frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
 - Evidence:
   - `docs/northstar_visual_qa/prototype-discover-functional/prototype-current-report.json`.
   - `docs/northstar_visual_qa/prototype-discover-functional/discover-1536x1024.png`.
@@ -2850,142 +2850,142 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Command Center code/functionality was not blocked, but visual evidence did not prove lower-section parity against `prototype_home2.png`.
   - Root cause: the page uses an internal `.gh-main` scroll container, so viewport and full-page screenshots were byte-equivalent and did not capture lower Command Center rows.
 - Planned support-code scope:
-  - Add opt-in internal main-scroll screenshot capture to `frontend/scripts/atlas_prototype_current_capture.mjs`.
+  - Add opt-in internal main-scroll screenshot capture to `frontend/scripts/axiom_prototype_current_capture.mjs`.
   - Rerun hydrated Command Center capture with bottom-scroll screenshots.
 
-- Visual review blocker: closed shell chrome was accepted, but no open global Atlas AI screenshot existed.
-- Code scope: add a dedicated Playwright QA capture for the Atlas AI open shell state using local fixture bootstrap data only.
+- Visual review blocker: closed shell chrome was accepted, but no open global Axiom AI screenshot existed.
+- Code scope: add a dedicated Playwright QA capture for the Axiom AI open shell state using local fixture bootstrap data only.
 - Truth note: this fixture proves UI behavior/geometry only; it is not live Databricks or Genie evidence.
 - Validation planned: script syntax check, local capture with the current Vite server, and report/screenshot inspection.
 
 ### Checkpoint - Shell Review Blockers Remediated Locally
 
 - Deployed QA wrapper remediation:
-  - `frontend/scripts/atlas_comprehensive_qa.mjs` now delegates to `atlas_route_live_validation.mjs`.
-  - `frontend/scripts/atlas_structural_identity.mjs` now delegates to `atlas_prototype_current_capture.mjs`.
-  - `node --check` passed for both wrappers plus `atlas_route_live_validation.mjs`, `atlas_prototype_current_capture.mjs`, and `atlas_shell_ai_open_capture.mjs`.
+  - `frontend/scripts/axiom_comprehensive_qa.mjs` now delegates to `axiom_route_live_validation.mjs`.
+  - `frontend/scripts/axiom_structural_identity.mjs` now delegates to `axiom_prototype_current_capture.mjs`.
+  - `node --check` passed for both wrappers plus `axiom_route_live_validation.mjs`, `axiom_prototype_current_capture.mjs`, and `axiom_shell_ai_open_capture.mjs`.
   - Stale selector scan found no retired shell selectors in the two public wrapper scripts.
 - Public command smoke:
-  - `cd frontend && GOVAT_BASE_URL=http://127.0.0.1:3000 GOVAT_PROTOTYPE_CAPTURE_OUT=../docs/northstar_visual_qa/prototype-identity-wrapper-smoke GOVAT_PROTOTYPE_SHELL_FALLBACK=1 GOVAT_PROTOTYPE_SETTLE_TIMEOUT_MS=1500 GOVAT_PROTOTYPE_TEXT_SETTLE_TIMEOUT_MS=1500 npm run identity:deployed -- http://127.0.0.1:3000` -> passed with `18` captures.
-- Atlas AI open-state fixture evidence:
-  - Added `frontend/scripts/atlas_shell_ai_open_capture.mjs`.
-  - `GOVAT_BASE_URL=http://127.0.0.1:3000 GOVAT_AI_OPEN_CAPTURE_OUT=docs/northstar_visual_qa/prototype-ai-open node frontend/scripts/atlas_shell_ai_open_capture.mjs` -> passed.
-  - Evidence: `docs/northstar_visual_qa/prototype-ai-open/atlas-ai-open-report.json` and `docs/northstar_visual_qa/prototype-ai-open/atlas-ai-open-1440x900.png`.
-  - Report confirms open dialog, enabled Atlas AI trigger, no console warnings, no page errors, and no request failures.
+  - `cd frontend && AXIOM_BASE_URL=http://127.0.0.1:3000 AXIOM_PROTOTYPE_CAPTURE_OUT=../docs/northstar_visual_qa/prototype-identity-wrapper-smoke AXIOM_PROTOTYPE_SHELL_FALLBACK=1 AXIOM_PROTOTYPE_SETTLE_TIMEOUT_MS=1500 AXIOM_PROTOTYPE_TEXT_SETTLE_TIMEOUT_MS=1500 npm run identity:deployed -- http://127.0.0.1:3000` -> passed with `18` captures.
+- Axiom AI open-state fixture evidence:
+  - Added `frontend/scripts/axiom_shell_ai_open_capture.mjs`.
+  - `AXIOM_BASE_URL=http://127.0.0.1:3000 AXIOM_AI_OPEN_CAPTURE_OUT=docs/northstar_visual_qa/prototype-ai-open node frontend/scripts/axiom_shell_ai_open_capture.mjs` -> passed.
+  - Evidence: `docs/northstar_visual_qa/prototype-ai-open/axiom-ai-open-report.json` and `docs/northstar_visual_qa/prototype-ai-open/axiom-ai-open-1440x900.png`.
+  - Report confirms open dialog, enabled Axiom AI trigger, no console warnings, no page errors, and no request failures.
 - Next action: send these artifacts back to the review lanes and incorporate any final shell blocker before page-by-page implementation continues.
 
-### Checkpoint - Atlas AI Docked Default Fix Started
+### Checkpoint - Axiom AI Docked Default Fix Started
 
 - Visual re-review kept one blocker open:
-  - The Atlas AI panel opened as a top-right floating dialog.
+  - The Axiom AI panel opened as a top-right floating dialog.
   - The prototype opens as a right-side, bottom-docked AI rail/popover above the FAB and avoids covering primary content.
 - Code scope:
   - `frontend/src/components/AppFrame.jsx`: set the default AI chat geometry to the prototype dock position and expose `data-ai-open`.
-  - `frontend/src/styles/northstar.css`: widen/tall the panel and reserve a desktop right gutter while Atlas AI is open.
+  - `frontend/src/styles/northstar.css`: widen/tall the panel and reserve a desktop right gutter while Axiom AI is open.
 - Validation planned immediately after:
   - Focused AppFrame tests.
   - Lint/typecheck.
-  - Refreshed `atlas_shell_ai_open_capture.mjs` screenshot/report.
+  - Refreshed `axiom_shell_ai_open_capture.mjs` screenshot/report.
 
-### Checkpoint - Atlas AI Docked Default Validated Locally
+### Checkpoint - Axiom AI Docked Default Validated Locally
 
 - Implemented:
   - Default open panel geometry is now `440px` wide, `640px` tall, bottom-anchored above the FAB.
   - The app root exposes `data-ai-open`.
-  - Desktop `.gh-main` reserves a right gutter while Atlas AI is open so the panel is a docked rail/popover rather than a modal covering primary content.
+  - Desktop `.gh-main` reserves a right gutter while Axiom AI is open so the panel is a docked rail/popover rather than a modal covering primary content.
   - Command Center state-card layout adapts while the AI rail is open.
 - Validation:
   - `cd frontend && npm test -- --run src/components/AppFrame.test.jsx` -> `1` file passed, `14` tests passed.
   - `cd frontend && npm run lint` -> passed.
   - `cd frontend && npm run typecheck` -> passed.
-  - `GOVAT_BASE_URL=http://127.0.0.1:3000 GOVAT_AI_OPEN_CAPTURE_OUT=docs/northstar_visual_qa/prototype-ai-open-docked node frontend/scripts/atlas_shell_ai_open_capture.mjs` -> passed.
+  - `AXIOM_BASE_URL=http://127.0.0.1:3000 AXIOM_AI_OPEN_CAPTURE_OUT=docs/northstar_visual_qa/prototype-ai-open-docked node frontend/scripts/axiom_shell_ai_open_capture.mjs` -> passed.
 - Evidence:
-  - `docs/northstar_visual_qa/prototype-ai-open-docked/atlas-ai-open-report.json`
-  - `docs/northstar_visual_qa/prototype-ai-open-docked/atlas-ai-open-1440x900.png`
+  - `docs/northstar_visual_qa/prototype-ai-open-docked/axiom-ai-open-report.json`
+  - `docs/northstar_visual_qa/prototype-ai-open-docked/axiom-ai-open-1440x900.png`
 - Next action: ask visual review to re-check the docked open-state evidence.
 
 ### Checkpoint - Identity Gate Hardening Started
 
-- Functional/regression review cleared stale selector remediation but found that `identity:deployed` could still false-green because `atlas_prototype_current_capture.mjs` wrote `passed=false` without exiting nonzero.
-- Code scope: `frontend/scripts/atlas_prototype_current_capture.mjs`.
+- Functional/regression review cleared stale selector remediation but found that `identity:deployed` could still false-green because `axiom_prototype_current_capture.mjs` wrote `passed=false` without exiting nonzero.
+- Code scope: `frontend/scripts/axiom_prototype_current_capture.mjs`.
 - Change: after the final report flush, the script exits nonzero when `report.passed` is false.
 - Validation planned: syntax check plus public `identity:deployed` smoke.
 
 ### Checkpoint - Identity Gate Hardened
 
 - Validation:
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
-  - `node --check frontend/scripts/atlas_structural_identity.mjs` -> passed.
-  - `cd frontend && GOVAT_BASE_URL=http://127.0.0.1:3000 GOVAT_PROTOTYPE_CAPTURE_OUT=../docs/northstar_visual_qa/prototype-identity-wrapper-smoke-hardened GOVAT_PROTOTYPE_SHELL_FALLBACK=1 GOVAT_PROTOTYPE_SETTLE_TIMEOUT_MS=1500 GOVAT_PROTOTYPE_TEXT_SETTLE_TIMEOUT_MS=1500 npm run identity:deployed -- http://127.0.0.1:3000` -> passed with `18` captures.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
+  - `node --check frontend/scripts/axiom_structural_identity.mjs` -> passed.
+  - `cd frontend && AXIOM_BASE_URL=http://127.0.0.1:3000 AXIOM_PROTOTYPE_CAPTURE_OUT=../docs/northstar_visual_qa/prototype-identity-wrapper-smoke-hardened AXIOM_PROTOTYPE_SHELL_FALLBACK=1 AXIOM_PROTOTYPE_SETTLE_TIMEOUT_MS=1500 AXIOM_PROTOTYPE_TEXT_SETTLE_TIMEOUT_MS=1500 npm run identity:deployed -- http://127.0.0.1:3000` -> passed with `18` captures.
 - Next action: send hardening evidence back to functional/regression review.
 
-### Checkpoint - Open Atlas AI Rail Clipping Fix Started
+### Checkpoint - Open Axiom AI Rail Clipping Fix Started
 
-- Visual re-review accepted the docked Atlas AI geometry, but still blocks shell signoff because the open-state screenshot clips the far-left rail/logo/nav text.
+- Visual re-review accepted the docked Axiom AI geometry, but still blocks shell signoff because the open-state screenshot clips the far-left rail/logo/nav text.
 - Initial inspection found legacy `shell-rail.css` selectors still declaring `.gh-side-rail.gh-side-rail { overflow: visible !important; }` after the North Star rail block, which can override the intended fixed-width, clipped, left-anchored rail geometry.
 - Code scope:
   - `frontend/src/styles/northstar.css`: add a final high-specificity rail authority block after legacy shell rules so the rail stays left anchored, full width, and clipped inside its grid column.
-  - `frontend/scripts/atlas_shell_ai_open_capture.mjs`: add measurable rail/logo/nav rectangles and pass criteria so the screenshot cannot false-green while the rail is clipped.
+  - `frontend/scripts/axiom_shell_ai_open_capture.mjs`: add measurable rail/logo/nav rectangles and pass criteria so the screenshot cannot false-green while the rail is clipped.
 - Validation planned:
-  - `node --check frontend/scripts/atlas_shell_ai_open_capture.mjs`
+  - `node --check frontend/scripts/axiom_shell_ai_open_capture.mjs`
   - focused AppFrame/shell tests if CSS behavior changed enough to warrant component coverage
   - refreshed `docs/northstar_visual_qa/prototype-ai-open-docked/` screenshot/report
   - visual review re-check before resuming page-by-page implementation.
 
-### Checkpoint - Open Atlas AI Rail Clipping Fix Validated Locally
+### Checkpoint - Open Axiom AI Rail Clipping Fix Validated Locally
 
 - Root cause confirmed by instrumented Playwright capture:
-  - Opening Atlas AI made the root `.gh-app` scroll horizontally to `scrollLeft=66` while `window.scrollX` stayed `0`, clipping the rail at `left=-66`.
+  - Opening Axiom AI made the root `.gh-app` scroll horizontally to `scrollLeft=66` while `window.scrollX` stayed `0`, clipping the rail at `left=-66`.
   - The logo image, first nav icon, and first nav label were therefore partially or fully off-screen even though the previous report passed.
 - Implemented:
   - The North Star app grid now uses `overflow: clip !important` so the root shell cannot become a horizontal scroll container.
   - The rail has a final high-specificity North Star authority block: left anchored, fixed to the rail grid area, `240px` wide, clipped inside its column, and not affected by legacy sticky rail rules.
-  - The open Atlas AI capture now records html/body/root/app/rail/logo/nav rectangles, root/app/main scroll metrics, and fails if the rail is clipped, if `.gh-app.scrollLeft` is nonzero, or if the page content overlaps the docked AI panel.
-  - The right AI-open content gutter was increased so the Command Center content ends before the docked Atlas AI panel.
+  - The open Axiom AI capture now records html/body/root/app/rail/logo/nav rectangles, root/app/main scroll metrics, and fails if the rail is clipped, if `.gh-app.scrollLeft` is nonzero, or if the page content overlaps the docked AI panel.
+  - The right AI-open content gutter was increased so the Command Center content ends before the docked Axiom AI panel.
 - Validation:
-  - `node --check frontend/scripts/atlas_shell_ai_open_capture.mjs` -> passed.
+  - `node --check frontend/scripts/axiom_shell_ai_open_capture.mjs` -> passed.
   - `npm test -- --run src/components/AppFrame.test.jsx src/components/primitives/__tests__/SideIconRail.test.jsx src/components/primitives/__tests__/ShellTopbarIdentity.test.jsx` -> `3` files passed, `32` tests passed.
   - `npm run lint` -> passed.
   - `npm run typecheck` -> passed.
-  - `GOVAT_BASE_URL=http://127.0.0.1:3000 GOVAT_AI_OPEN_CAPTURE_OUT=docs/northstar_visual_qa/prototype-ai-open-docked node frontend/scripts/atlas_shell_ai_open_capture.mjs` -> passed.
+  - `AXIOM_BASE_URL=http://127.0.0.1:3000 AXIOM_AI_OPEN_CAPTURE_OUT=docs/northstar_visual_qa/prototype-ai-open-docked node frontend/scripts/axiom_shell_ai_open_capture.mjs` -> passed.
 - Evidence:
-  - `docs/northstar_visual_qa/prototype-ai-open-docked/atlas-ai-open-report.json`
-  - `docs/northstar_visual_qa/prototype-ai-open-docked/atlas-ai-open-1440x900.png`
+  - `docs/northstar_visual_qa/prototype-ai-open-docked/axiom-ai-open-report.json`
+  - `docs/northstar_visual_qa/prototype-ai-open-docked/axiom-ai-open-1440x900.png`
   - Report confirms rail `left=0`, first nav label `left=51`, main `left=240`, content `right=952`, AI panel `left=978`, and `.gh-app.scrollLeft=0`.
 - Next action: send refreshed evidence to the visual/product review lane and resume page-by-page prototype implementation only after shell signoff or a recorded deferral.
 
 ### Checkpoint - Prototype Route Screenshot Refresh Started
 
-- Added the required compact `1280x720` viewport to `frontend/scripts/atlas_prototype_current_capture.mjs` so prototype route evidence covers `1536x1024`, `1440x900`, and `1280x720`.
+- Added the required compact `1280x720` viewport to `frontend/scripts/axiom_prototype_current_capture.mjs` so prototype route evidence covers `1536x1024`, `1440x900`, and `1280x720`.
 - Spawned/readied page audit lanes:
   - Command Center/Home
   - Discover/Asset 360
   - Stewardship/Glossary/CDE
   - Lineage/Audit/Control via the existing truth/provenance reviewer because the agent thread cap was reached.
 - Validation planned:
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs`
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs`
   - local prototype route capture with shell fallback into a fresh evidence directory.
 
 ## Superseded Tranche - Home Second Reopen (Closed)
 
 - Home fidelity has been reopened again from fresh product-owner screenshots. Previous Home evidence remains useful history, but it is not accepted as closeout for this second pass.
 - Scope for this pass is limited to the eight latest Home defects:
-  - replace the custom wordmark with the actual Entrada logo asset from `/Users/entrada-mac/Documents/branding/Entrada_2026_Logo.png`
+  - replace the custom wordmark with the actual logo asset 
   - reduce the excessive vertical gap between the subtitle and KPI cards
   - make Home cards darker while keeping the overall background lighter and shell chrome/borders darkest
   - unify the collapse border, bottom border, top border, and left menu color
-  - repair the Atlas AI rail width/layout so the input is larger and bottom-anchored, remove the ready-state chip, make `More suggestions` functional, and keep suggestions out of the way after a question
+  - repair the Axiom AI rail width/layout so the input is larger and bottom-anchored, remove the ready-state chip, make `More suggestions` functional, and keep suggestions out of the way after a question
   - repair floating `AI Copilot` answer formatting, remove awkward `Genie said... please review` phrasing from the displayed text, and add corner resize behavior
   - restore KPI sparkline and change-rhythm visibility wherever backed data exists, without inventing unsupported values
   - replace the current drawn globe with a more realistic rotating globe with continents/lights if feasible in React/Vite
 - Subagent review lanes assigned for feedback coverage, visual/product, regression/ripple, and truth/provenance. They are read-only and will provide blockers/signoff criteria while implementation proceeds.
 - Frontend checkpoint completed for the second reopened Home pass:
-  - Copied the actual Entrada 2026 logo asset into the frontend brand assets and wired the side rail to use it.
+  - Copied the actual 2026 logo asset into the frontend brand assets and wired the side rail to use it.
   - Replaced the decorative Home SVG globe with a native React canvas globe that rotates slowly and draws simplified real continent shapes, city lights, latitude/longitude lines, and governed-network arcs.
   - Reduced Home hero height/gaps so the subtitle and KPI row sit closer together.
   - Darkened card surfaces and normalized the chrome/footer/side-rail/collapse colors back to the same darkest navy token.
-  - Widened the Home Atlas AI rail, removed the ready-state message, bottom-anchored a larger input, made `More suggestions` cycle prompts, and reduces suggestions to one once a conversation starts.
-  - Updated Home and floating Atlas AI messages to render the existing safe Markdown subset instead of exposing raw Markdown symbols.
+  - Widened the Home Axiom AI rail, removed the ready-state message, bottom-anchored a larger input, made `More suggestions` cycle prompts, and reduces suggestions to one once a conversation starts.
+  - Updated Home and floating Axiom AI messages to render the existing safe Markdown subset instead of exposing raw Markdown symbols.
   - Cleaned displayed Genie boilerplate such as `Genie returned... Review generated SQL...` while preserving evidence counts and grounded answer content.
   - Added CSS resize support to the floating `AI Copilot` dialog.
   - Restored visible truthful KPI rhythm by showing neutral trend-unavailable status when a backed trend is absent and preserving sparklines for backed metric histories.
@@ -2995,28 +2995,28 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `git diff --check` on the focused Home/logo/chat/style files -> passed.
 - Broader frontend validation after the frontend checkpoint:
   - `npm run lint` -> passed.
-  - `npm run build` -> passed and emitted the new Entrada logo asset in `dist/assets/entrada-2026-logo-*.png`.
+  - `npm run build` -> passed and emitted the new logo asset in `dist/assets/*-2026-logo-*.png`.
 - Next checkpoint in progress:
-  - Update the Home Playwright QA gate for the actual Entrada PNG logo, canvas-based rotating globe, cleaned Markdown-rendered Atlas AI answers, functional `More suggestions`, prompt reduction after a question, and floating chat resize contract before deploying this second reopened Home pass.
+  - Update the Home Playwright QA gate for the actual PNG logo, canvas-based rotating globe, cleaned Markdown-rendered Axiom AI answers, functional `More suggestions`, prompt reduction after a question, and floating chat resize contract before deploying this second reopened Home pass.
 - Home QA gate update validation:
-  - `node --check frontend/scripts/atlas_home_live_qa.mjs` -> passed.
+  - `node --check frontend/scripts/axiom_home_live_qa.mjs` -> passed.
   - `npm test -- --run src/components/HomePage.test.jsx src/components/AppFrame.test.jsx src/hooks/useCommandCenter.test.jsx` -> `3` files passed, `34` tests passed.
 - Local browser visual checkpoint in progress:
-  - Start a local Vite server with intercepted live-shaped Home/Atlas AI API payloads.
-  - Capture Home screenshots and verify logo asset loading, canvas-globe pixels, spacing/color token order, Atlas rail prompt/input behavior, and floating AI resize/Markdown cleanup before the Databricks deploy cycle.
+  - Start a local Vite server with intercepted live-shaped Home/Axiom AI API payloads.
+  - Capture Home screenshots and verify logo asset loading, canvas-globe pixels, spacing/color token order, Axiom rail prompt/input behavior, and floating AI resize/Markdown cleanup before the Databricks deploy cycle.
 - Globe fidelity escalation in progress:
   - Replace the hand-simplified canvas land shapes with real low-resolution world-atlas land geometry so the Home globe has actual rotating continent outlines and can still render lights/arcs without external image loading.
 - Globe fidelity escalation validation:
   - Added `world-atlas` and `topojson-client` so the canvas globe renders real land geometry instead of hand-simplified continent polygons.
   - `npm test -- --run src/components/HomePage.test.jsx src/components/AppFrame.test.jsx src/hooks/useCommandCenter.test.jsx` -> `3` files passed, `34` tests passed.
   - `npm run lint` -> passed.
-  - `npm run build` -> passed; Home bundle now includes the geography-backed globe code and the actual Entrada PNG logo asset.
+  - `npm run build` -> passed; Home bundle now includes the geography-backed globe code and the actual PNG logo asset.
 - Local browser visual checkpoint completed after the compact-rail input fix:
   - Initial local Playwright probe failed because it was launched from the repo root where Playwright is not installed; rerun from `frontend` succeeded.
-  - The local browser gate also found and fixed a real compact-height regression where the 1280x720 media rule overrode `margin-top: auto` and shrank the Atlas input.
+  - The local browser gate also found and fixed a real compact-height regression where the 1280x720 media rule overrode `margin-top: auto` and shrank the Axiom input.
   - `docs/northstar_visual_qa/home-current/home-local-second-pass-report.json` -> passed.
   - Screenshots captured: `home-local-second-pass-1536x1024.png`, `home-local-second-pass-1440x900.png`, `home-local-second-pass-1280x720.png`, `home-local-second-pass-ai-1440x900.png`, and `home-local-second-pass-floating-ai.png`.
-  - Local metrics passed for actual logo asset loading, nonblank geography-backed canvas globe, subtitle-to-KPI gap, six KPI sparklines, prompt cycling, prompt reduction after answer, cleaned Atlas AI answer formatting, and resizable floating AI chat.
+  - Local metrics passed for actual logo asset loading, nonblank geography-backed canvas globe, subtitle-to-KPI gap, six KPI sparklines, prompt cycling, prompt reduction after answer, cleaned Axiom AI answer formatting, and resizable floating AI chat.
 - Post-local frontend validation after the CSS/dependency fixes:
   - `npm test -- --run src/components/HomePage.test.jsx src/components/AppFrame.test.jsx src/hooks/useCommandCenter.test.jsx` -> `3` files passed, `34` tests passed.
   - `npm run lint` -> passed.
@@ -3027,7 +3027,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Added the 2026-04-27 second Home pass to `docs/northstar_gap_analysis/home_todo.md` with S01-S08 mapped to code/evidence, SV01-SV07 validation gates, local screenshot paths, remaining live gates, and no local deferrals.
 - Review/deploy checkpoint in progress:
   - Recheck prompts sent to the required review lanes after the current implementation, replacing the stale pre-patch blocker findings.
-  - Starting Databricks `DEFAULT` bundle validation, summary, deploy, and app deploy for the second Home pass. The project-target app deploy form must be used; direct `apps deploy atlas` is rejected for this repo because it can drop bundle target environment injection.
+  - Starting Databricks `DEFAULT` bundle validation, summary, deploy, and app deploy for the second Home pass. The project-target app deploy form must be used; direct `apps deploy axiom` is rejected for this repo because it can drop bundle target environment injection.
 - Databricks pre-deploy gates:
   - Focused `git diff --check` on the current Home/logo/chat/style/package/docs/status files -> passed.
   - `databricks bundle validate --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> passed.
@@ -3036,10 +3036,10 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `databricks bundle deploy --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> passed.
   - `databricks apps deploy --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b --skip-validation --timeout 20m -o json` -> passed; app started successfully.
   - Active deployment: `01f142b60f8e1725a06a980d1436665a`; app state `RUNNING`; compute state `ACTIVE`; local frontend build manifest `frontend-fba50e31cace`.
-  - Runtime readback confirms `GOVAT_CATALOG=datapact`, `GOVAT_SCHEMA=atlas`, warehouse `da02d15a9490650b`, runtime `live`, store `live`, Lakebase dual-write state `active`, and failed Lakebase writes `0`.
+  - Runtime readback confirms `AXIOM_CATALOG=emet`, `AXIOM_SCHEMA=axiom`, warehouse `da02d15a9490650b`, runtime `live`, store `live`, Lakebase dual-write state `active`, and failed Lakebase writes `0`.
   - Authenticated command-center readback passed: state `available`, governed assets `792`, certified critical assets `13`, metadata coverage `11.7`, open stewardship actions `5` with sparkline `[0,0,0,0,0,5]`, policy exceptions `4` with sparkline `[0,0,0,0,0,4]`, audit readiness unavailable, top-domain scores `95.8/91.7/87.5/87.5/83.3`, and varied heatmap values `[0.0,6.1,9.3,9.7,54.0,66.7,100.0]`.
 - Live Home QA on deployment `01f142b60f8e1725a06a980d1436665a` passed before final compact polish:
-  - `GOVAT_DEPLOYMENT_ID=01f142b60f8e1725a06a980d1436665a GOVAT_BUILD_ID=frontend-fba50e31cace node frontend/scripts/atlas_home_live_qa.mjs` -> passed.
+  - `AXIOM_DEPLOYMENT_ID=01f142b60f8e1725a06a980d1436665a AXIOM_BUILD_ID=frontend-fba50e31cace node frontend/scripts/axiom_home_live_qa.mjs` -> passed.
   - Fresh live screenshots/report captured for `1536x1024`, `1440x900`, `1280x720`, collapsed rail, profile menu, Home AI response, floating AI response, and side-by-side mockup comparison.
   - Manual review then caught a compact 1280-only visual polish issue that the mechanical gate did not fail: the posture title could truncate and the heatmap row height was too tall. A scoped 1280 CSS patch is in progress and must be rebuilt/redeployed/revalidated before final signoff.
 - Compact 1280 polish validation:
@@ -3054,21 +3054,21 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `databricks bundle deploy --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> passed.
   - `databricks apps deploy --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b --skip-validation --timeout 20m -o json` -> passed; app started successfully.
   - Active deployment: `01f142b7ed06163dabe62bfe99ba3285`; app state `RUNNING`; compute state `ACTIVE`; final build `frontend-54a9bb1f2807`.
-  - Runtime readback remains `live` / `live`, `datapact.atlas`, Lakebase dual-write state `active`, failed writes `0`.
+  - Runtime readback remains `live` / `live`, `emet.axiom`, Lakebase dual-write state `active`, failed writes `0`.
   - Command-center readback remains available with backed open-stewardship and policy-exception sparklines, audit readiness unavailable, and varied top-domain scores.
 - Intermediate live Home QA on deployment `01f142b7ed06163dabe62bfe99ba3285`, superseded by deployment `01f142bd851310689d54f2f264850a47`:
-  - `GOVAT_DEPLOYMENT_ID=01f142b7ed06163dabe62bfe99ba3285 GOVAT_BUILD_ID=frontend-54a9bb1f2807 node frontend/scripts/atlas_home_live_qa.mjs` -> passed.
+  - `AXIOM_DEPLOYMENT_ID=01f142b7ed06163dabe62bfe99ba3285 AXIOM_BUILD_ID=frontend-54a9bb1f2807 node frontend/scripts/axiom_home_live_qa.mjs` -> passed.
   - `docs/northstar_visual_qa/home-current/home-live-report.json` now records deployment `01f142b7ed06163dabe62bfe99ba3285`, build `frontend-54a9bb1f2807`, all three viewport captures passed, no page errors, no console warnings, and all scripted interactions passed.
-  - Final live evidence verifies actual logo asset loaded, canvas globe present/nonblank, footer-safe/no-scroll/no-horizontal-overflow layout, bottom alignment delta <= `0.015625`, collapsed rail icon centering, footer route behavior, profile avatar upload affordance, draggable/resizable floating AI chat, functional `More suggestions`, prompt collapse after answer, cleaned displayed answer text, and Genie-backed Atlas AI responses with `provider=genie`, `source=databricks-genie`, evidence count `1`.
+  - Final live evidence verifies actual logo asset loaded, canvas globe present/nonblank, footer-safe/no-scroll/no-horizontal-overflow layout, bottom alignment delta <= `0.015625`, collapsed rail icon centering, footer route behavior, profile avatar upload affordance, draggable/resizable floating AI chat, functional `More suggestions`, prompt collapse after answer, cleaned displayed answer text, and Genie-backed Axiom AI responses with `provider=genie`, `source=databricks-genie`, evidence count `1`.
   - This checkpoint exposed the need for a later reviewer re-check and is retained as history only; current SV07 state is complete below.
 - Regression recheck remediation in progress:
   - Current regression reviewer signoff is blocked on Git-visible reproducibility for new logo/QA evidence files and a stronger floating-chat resize containment proof.
   - Added floating-chat ResizeObserver/drag-size clamping in `AppFrame.jsx` so native corner resize keeps the dialog in viewport.
-  - Updated `frontend/scripts/atlas_home_live_qa.mjs` to physically drag the floating chat resize handle, verify width/height change, and assert right/bottom viewport containment.
+  - Updated `frontend/scripts/axiom_home_live_qa.mjs` to physically drag the floating chat resize handle, verify width/height change, and assert right/bottom viewport containment.
   - Marked the actual logo asset, live QA script, and local second-pass evidence artifacts with Git intent-to-add so reviewer `git ls-files`/diff checks can see the reproducibility-critical new files without staging a commit.
 - Regression remediation validation:
-  - `node --check frontend/scripts/atlas_home_live_qa.mjs` -> passed.
-  - Focused `git diff --check` for `AppFrame.jsx`, `atlas_home_live_qa.mjs`, status/checklist, logo, and local report files -> passed.
+  - `node --check frontend/scripts/axiom_home_live_qa.mjs` -> passed.
+  - Focused `git diff --check` for `AppFrame.jsx`, `axiom_home_live_qa.mjs`, status/checklist, logo, and local report files -> passed.
   - `npm test -- --run src/components/HomePage.test.jsx src/components/AppFrame.test.jsx src/hooks/useCommandCenter.test.jsx` -> `3` files passed, `34` tests passed.
   - `npm run lint` -> passed.
   - `npm run typecheck` -> passed.
@@ -3079,20 +3079,20 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `databricks bundle deploy --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> passed.
   - `databricks apps deploy --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b --skip-validation --timeout 20m -o json` -> passed; app started successfully.
   - Active deployment: `01f142ba8d3518979b00189e8944f2fb`; app state `RUNNING`; compute state `ACTIVE`; final build `frontend-34b8cda77d6d`.
-  - Runtime readback remains `live` / `live`, `datapact.atlas`, Lakebase dual-write state `active`, failed writes `0`.
+  - Runtime readback remains `live` / `live`, `emet.axiom`, Lakebase dual-write state `active`, failed writes `0`.
   - Command-center readback remains available with backed open-stewardship and policy-exception sparklines, audit readiness unavailable, and varied top-domain/heatmap scores.
 - Intermediate live Home QA on deployment `01f142ba8d3518979b00189e8944f2fb`, superseded by deployment `01f142bd851310689d54f2f264850a47`:
-  - `GOVAT_DEPLOYMENT_ID=01f142ba8d3518979b00189e8944f2fb GOVAT_BUILD_ID=frontend-34b8cda77d6d node frontend/scripts/atlas_home_live_qa.mjs` -> passed.
+  - `AXIOM_DEPLOYMENT_ID=01f142ba8d3518979b00189e8944f2fb AXIOM_BUILD_ID=frontend-34b8cda77d6d node frontend/scripts/axiom_home_live_qa.mjs` -> passed.
   - `docs/northstar_visual_qa/home-current/home-live-report.json` records deployment `01f142ba8d3518979b00189e8944f2fb`, build `frontend-34b8cda77d6d`, all three viewport captures passed, no page errors, no console warnings, and all scripted interactions passed.
-  - Final live evidence verifies actual logo asset loaded, canvas globe present/nonblank, footer-safe/no-scroll/no-horizontal-overflow layout, bottom alignment delta <= `0.015625`, collapsed rail icon centering, footer route behavior, profile avatar upload affordance, draggable/resizable floating AI chat, functional `More suggestions`, prompt collapse after answer, cleaned displayed answer text, and Genie-backed Atlas AI responses with `provider=genie`, `source=databricks-genie`, evidence count `1`.
+  - Final live evidence verifies actual logo asset loaded, canvas globe present/nonblank, footer-safe/no-scroll/no-horizontal-overflow layout, bottom alignment delta <= `0.015625`, collapsed rail icon centering, footer route behavior, profile avatar upload affordance, draggable/resizable floating AI chat, functional `More suggestions`, prompt collapse after answer, cleaned displayed answer text, and Genie-backed Axiom AI responses with `provider=genie`, `source=databricks-genie`, evidence count `1`.
   - Floating `AI Copilot` resize proof now physically drags the native corner resize handle: `resizeMode=both`, `resizeDelta=176`, bounds changed from `392x560` to `491x637`, and the resized dialog remains contained in the viewport.
   - Feedback/regression/truth reviewer re-checks passed against this exact deployment/build.
-  - Visual/product reviewer re-check found three concrete evidence defects at this intermediate checkpoint: right-rail Atlas AI long FQN wrapping, `1280x720` bottom-card title truncation, and the AI answer-state screenshot label/viewport mismatch. Those blockers are remediated in the final checkpoint below.
+  - Visual/product reviewer re-check found three concrete evidence defects at this intermediate checkpoint: right-rail Axiom AI long FQN wrapping, `1280x720` bottom-card title truncation, and the AI answer-state screenshot label/viewport mismatch. Those blockers are remediated in the final checkpoint below.
 - Visual-blocker remediation checkpoint:
-  - Added wrapping safeguards for Home rail and floating Atlas AI Markdown answer bodies so long FQNs cannot run into the right edge.
+  - Added wrapping safeguards for Home rail and floating Axiom AI Markdown answer bodies so long FQNs cannot run into the right edge.
   - Tuned the compact-height `Recent High-Priority Events` header so the title fits at `1280x720` without ellipsis.
-  - Hardened `frontend/scripts/atlas_home_live_qa.mjs` to fail if bottom-card header text overflows, to fail if the Atlas AI answer body overflows its rail container, and to capture `home-live-ai-1440x900.png` at a real `1440x900` viewport.
-  - `node --check frontend/scripts/atlas_home_live_qa.mjs` -> passed.
+  - Hardened `frontend/scripts/axiom_home_live_qa.mjs` to fail if bottom-card header text overflows, to fail if the Axiom AI answer body overflows its rail container, and to capture `home-live-ai-1440x900.png` at a real `1440x900` viewport.
+  - `node --check frontend/scripts/axiom_home_live_qa.mjs` -> passed.
   - Focused `git diff --check` for the current visual-blocker files -> passed.
   - `npm test -- --run src/components/HomePage.test.jsx src/components/AppFrame.test.jsx src/hooks/useCommandCenter.test.jsx` -> `3` files passed, `34` tests passed.
   - `npm run lint` -> passed.
@@ -3105,44 +3105,44 @@ explicitly revalidates them against the active ledgers and current evidence.
     - `databricks apps deploy --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b --skip-validation --timeout 20m -o json` -> passed; app started successfully.
     - Active deployment: `01f142bd851310689d54f2f264850a47`; app state `RUNNING`; compute state `ACTIVE`.
   - Final live Home QA after visual-blocker remediation:
-    - `GOVAT_DEPLOYMENT_ID=01f142bd851310689d54f2f264850a47 GOVAT_BUILD_ID=frontend-e11d3b7cac8f node frontend/scripts/atlas_home_live_qa.mjs` -> passed.
+    - `AXIOM_DEPLOYMENT_ID=01f142bd851310689d54f2f264850a47 AXIOM_BUILD_ID=frontend-e11d3b7cac8f node frontend/scripts/axiom_home_live_qa.mjs` -> passed.
     - `docs/northstar_visual_qa/home-current/home-live-report.json` records deployment `01f142bd851310689d54f2f264850a47`, build `frontend-e11d3b7cac8f`, all three viewport captures passed, no page errors, no console warnings, and all scripted interactions passed.
     - New hard gates passed: `headerTextFits.recentEvents=true` at `1280x720`, rail `assistantTextFits=true`, and the answer-state screenshot records viewport `{width: 1440, height: 900}`.
   - Final reviewer signoff passed against deployment `01f142bd851310689d54f2f264850a47`, build `frontend-e11d3b7cac8f`:
     - Feedback coverage: prior final signoff remains applicable; all S01-S08 items are mapped to code/evidence.
     - Regression/ripple: SIGNOFF after confirming Git-visible assets/scripts/evidence, resize containment, header-fit hard gates, focused validation, and live QA.
     - Visual/product fidelity: SIGNOFF after confirming the actual logo, geography-backed canvas globe, 1280 bottom-header fit, true 1440 AI answer screenshot, AI answer wrapping, and interaction evidence.
-    - Truth/provenance: SIGNOFF after confirming active deployment/build alignment, Genie-backed Atlas AI evidence, unsupported KPI histories remaining unavailable, and no fake metric/workflow claims.
+    - Truth/provenance: SIGNOFF after confirming active deployment/build alignment, Genie-backed Axiom AI evidence, unsupported KPI histories remaining unavailable, and no fake metric/workflow claims.
   - SV07 is complete; there are no remaining second-pass Home must-fix blockers.
 
 ## Previous Tranche State
 
 - Home visual/performance parity was reopened from live user evidence. The reopened Home defects are implemented, validated against the active Databricks app deployment, and signed off by the required review lanes.
 - Scope is limited to the current Home defects called out by the product owner:
-  - bottom-card and Atlas AI rail depth/alignment mismatch
+  - bottom-card and Axiom AI rail depth/alignment mismatch
   - slow initial data load without a credible loading state
   - weak or overly uniform real/synthetic governance quality signals
   - missing KPI sparkline/growth rhythm
   - globe position/fidelity gap
   - color-zone drift toward near-black instead of navy/ocean-blue layering
-  - Entrada wordmark scale/geometry mismatch
-  - Atlas AI rail not behaving like a real chat surface
-  - slow Atlas AI responses without visible progress
-  - top-right `AI Copilot` button must open a draggable, closable Atlas AI chat window
+  - wordmark scale/geometry mismatch
+  - Axiom AI rail not behaving like a real chat surface
+  - slow Axiom AI responses without visible progress
+  - top-right `AI Copilot` button must open a draggable, closable Axiom AI chat window
 - Feedback-coverage review criteria were incorporated: every product-owner complaint maps to `docs/northstar_gap_analysis/home_todo.md` reopened items with live evidence or truth-backed rationale.
 - Visual/product and regression/ripple review findings were implementation inputs:
   - `AI Copilot` must stop routing users to Home and instead open a fixed, draggable, closable chat from shell chrome.
   - Home rail must become a readable chat surface with separate response/transcript, prompt, input, progress, and disclaimer regions.
   - Home hydration must be visible when seed/bootstrap data is displayed while the live command-center request is still pending.
-  - Bottom-card and Atlas AI depth need a shared grid contract rather than fixed bottom-card heights plus a 100% rail.
+  - Bottom-card and Axiom AI depth need a shared grid contract rather than fixed bottom-card heights plus a 100% rail.
   - Color/globe/logo updates must be verified visually; old Home live report assertions are not accepted as closeout evidence.
 - Frontend checkpoint completed:
-  - Added shared Atlas AI conversation state with abort/stale-response protection.
+  - Added shared Axiom AI conversation state with abort/stale-response protection.
   - Home now displays seed-data hydration progress while preserving the North Star panels.
-  - Home Atlas AI rail now uses a transcript-style chat area, visible progress, prompt/input separation, and non-clamped answer text.
-  - Header `AI Copilot` now opens a fixed, draggable, closable Atlas AI chat dialog without routing away from the current surface.
+  - Home Axiom AI rail now uses a transcript-style chat area, visible progress, prompt/input separation, and non-clamped answer text.
+  - Header `AI Copilot` now opens a fixed, draggable, closable Axiom AI chat dialog without routing away from the current surface.
   - KPI cards now reserve sparkline/progress rhythm with truthful empty styling until backed data is present.
-  - Home card/rail layout now uses shared grid row heights so bottom-card and Atlas AI lower edges can align.
+  - Home card/rail layout now uses shared grid row heights so bottom-card and Axiom AI lower edges can align.
   - Color-zone, globe placement, and wordmark scale updates are validated in the final live screenshot report.
 - Backend/sample-data checkpoint completed:
   - command-center KPIs now emit backed `delta`, `deltaTone`, and `sparkline` for open stewardship actions and policy exceptions when governance request/audit timestamps are available.
@@ -3153,8 +3153,8 @@ explicitly revalidates them against the active ledgers and current evidence.
 
 ## Completed Changes
 
-- Lakebase readiness and the Atlas table split are implemented and deployed. Delta/Unity Catalog remains authoritative; Lakebase is the app-owned write mirror.
-- Atlas AI is routed through the configured Governance Atlas Genie space on the active dev deployment.
+- Lakebase readiness and the Axiom table split are implemented and deployed. Delta/Unity Catalog remains authoritative; Lakebase is the app-owned write mirror.
+- Axiom AI is routed through the configured Axiom Genie space on the active dev deployment.
 - Broad hardening has landed for request-id errors, markdown/payload sanitization, frontend avatar upload guardrails, write-action auditing, role-gating, optional Genie/Lakebase portability, fail-closed asset visibility, and page-shell preservation under loading/error/unavailable states.
 - Synthetic workflow stress validation now creates and mutates scoped customer-style workflows instead of marker-only rows:
   - Discovery searchable asset/count/deleted/inaccessible disposition evidence
@@ -3173,8 +3173,8 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Evidence-hygiene and portability blockers are patched:
   - generated Chrome profile directories were removed from `docs/northstar_visual_qa`
   - `.gitignore` excludes `docs/northstar_visual_qa/**/chrome-profile*/`
-  - `app.yaml` source defaults no longer encode `datapact` or `skyler@entrada.ai`
-  - `README.md` documents the `dev` bundle target as Entrada internal validation configuration, not the portable customer default
+  - `app.yaml` source defaults no longer encode `emet` or `abarreto@shorecp.com`
+  - `README.md` documents the `dev` bundle target as internal validation configuration, not the portable customer default
   - zero-byte app deploy evidence was replaced with current non-empty app status/deployment evidence
 
 ## Pending Tasks
@@ -3218,12 +3218,12 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Focused frontend validation after the frontend checkpoint:
     - `npm test -- --run src/components/HomePage.test.jsx src/components/AppFrame.test.jsx src/hooks/useCommandCenter.test.jsx` -> `3` files passed, `32` tests passed.
   - Focused backend validation after the backend/sample-data checkpoint:
-    - `./.venv/bin/python -m py_compile atlas/services/atlas_metrics.py scripts/seed_home_sample_data.py` -> passed.
-    - `./.venv/bin/python -m pytest -q tests/test_atlas_metrics.py tests/test_atlas_api.py` -> `34 passed`.
-    - `./.venv/bin/python scripts/seed_home_sample_data.py --dry-run` -> passed and produced `/tmp/govat-home-seed-dry-run.sql`.
+    - `./.venv/bin/python -m py_compile axiom/services/axiom_metrics.py scripts/seed_home_sample_data.py` -> passed.
+    - `./.venv/bin/python -m pytest -q tests/test_axiom_metrics.py tests/test_axiom_api.py` -> `34 passed`.
+    - `./.venv/bin/python scripts/seed_home_sample_data.py --dry-run` -> passed and produced `/tmp/axiom-home-seed-dry-run.sql`.
   - Focused validation after the Home micro-regression patch:
     - `npm test -- --run src/components/AppFrame.test.jsx src/components/HomePage.test.jsx src/hooks/useCommandCenter.test.jsx` -> `3` files passed, `32` tests passed.
-    - `./.venv/bin/python -m pytest -q tests/test_atlas_metrics.py tests/test_atlas_api.py` -> `34 passed`.
+    - `./.venv/bin/python -m pytest -q tests/test_axiom_metrics.py tests/test_axiom_api.py` -> `34 passed`.
   - Broader local validation before live seed/deploy:
     - `npm run lint` -> passed.
     - `npm run build` -> passed.
@@ -3244,10 +3244,10 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Next validation step is bundle deploy and Databricks App deploy.
   - `databricks bundle deploy --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> passed.
   - `databricks apps deploy --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b --skip-validation --timeout 20m -o json` -> bundle upload/resources passed, but app deployment failed because Databricks reports app compute `UPDATING` and management temporarily unavailable during infrastructure migration.
-  - `databricks apps get atlas --profile DEFAULT -o json` confirms the app object is `RUNNING`, active deployment remains `01f14266773e1c94a61aa2d3b3e22e43`, compute is `UPDATING`, and target resources for SQL warehouse, Genie, and Lakebase are present.
-  - Home live QA script updated so the live validation gate now checks bottom-card/Atlas-rail lower-edge alignment and the new floating `AI Copilot` contract: single draggable window, close/reopen, request spinner, and Genie-backed response.
+  - `databricks apps get axiom --profile DEFAULT -o json` confirms the app object is `RUNNING`, active deployment remains `01f14266773e1c94a61aa2d3b3e22e43`, compute is `UPDATING`, and target resources for SQL warehouse, Genie, and Lakebase are present.
+  - Home live QA script updated so the live validation gate now checks bottom-card/Axiom-rail lower-edge alignment and the new floating `AI Copilot` contract: single draggable window, close/reopen, request spinner, and Genie-backed response.
   - Validation after live QA script update:
-    - `node --check frontend/scripts/atlas_home_live_qa.mjs` -> passed.
+    - `node --check frontend/scripts/axiom_home_live_qa.mjs` -> passed.
     - `npm test -- --run src/components/AppFrame.test.jsx src/components/HomePage.test.jsx src/hooks/useCommandCenter.test.jsx` -> `3` files passed, `32` tests passed.
     - `npm run typecheck` -> passed.
   - Next step: retry Databricks App deploy once compute leaves `UPDATING`.
@@ -3256,17 +3256,17 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Local command-center API readback failed after live hydration with `ValueError: Out of range float values are not JSON compliant: nan`; patching the metrics payload sanitization before any deploy retry is accepted.
   - Added command-center JSON-safety sanitizer and regression test. First focused pytest rerun failed because the test incorrectly expected the existing missing-description fallback to be `None`; correcting the assertion to check strict JSON safety instead.
   - NaN serialization fix validation:
-    - `./.venv/bin/python -m py_compile atlas/services/atlas_metrics.py` -> passed.
-    - `./.venv/bin/python -m pytest -q tests/test_atlas_metrics.py tests/test_atlas_api.py` -> `35 passed`.
-    - `git diff --check atlas/services/atlas_metrics.py tests/test_atlas_metrics.py` -> passed.
+    - `./.venv/bin/python -m py_compile axiom/services/axiom_metrics.py` -> passed.
+    - `./.venv/bin/python -m pytest -q tests/test_axiom_metrics.py tests/test_axiom_api.py` -> `35 passed`.
+    - `git diff --check axiom/services/axiom_metrics.py tests/test_axiom_metrics.py` -> passed.
   - Next step: restart local runtime and rerun command-center readback against live data.
   - Local command-center readback after restart now serializes successfully and shows backed KPI trends from real governance request/audit timestamps, but domain scores remain too clustered (`Product=100.0`, several domains at `95.2`). Tightening the backed signal model and seed omissions before final screenshots.
   - Signal-variance patch completed locally:
     - Metadata coverage now counts the `data_product` field.
     - Home seed now omits a broader explicit set of real UC tags and owner assignments across Customer, Finance, Product, Operations, Marketing, and Risk assets.
-    - `./.venv/bin/python -m pytest -q tests/test_atlas_metrics.py tests/test_atlas_api.py` -> `35 passed`.
-    - `./.venv/bin/python -m py_compile atlas/services/atlas_metrics.py scripts/seed_home_sample_data.py` -> passed.
-    - `./.venv/bin/python scripts/seed_home_sample_data.py --dry-run` -> passed and produced `/tmp/govat-home-seed-dry-run.sql`.
+    - `./.venv/bin/python -m pytest -q tests/test_axiom_metrics.py tests/test_axiom_api.py` -> `35 passed`.
+    - `./.venv/bin/python -m py_compile axiom/services/axiom_metrics.py scripts/seed_home_sample_data.py` -> passed.
+    - `./.venv/bin/python scripts/seed_home_sample_data.py --dry-run` -> passed and produced `/tmp/axiom-home-seed-dry-run.sql`.
   - Next step: apply the updated Home seed live and rerun command-center readback.
   - Updated Home seed applied live and verify-only passed:
     - `./.venv/bin/python scripts/seed_home_sample_data.py --profile DEFAULT --warehouse-id da02d15a9490650b` -> passed.
@@ -3278,10 +3278,10 @@ explicitly revalidates them against the active ledgers and current evidence.
     - Heatmap values include multiple backed levels, including `66.7` and `100.0`, rather than a uniform all-100 grid.
   - The live API cold read still took roughly 175 seconds locally; Home loading/hydration UI remains a required visual gate, and backend narrowing/caching remains a separate performance-hardening follow-up unless final live UX still feels blocked.
   - Next step: rerun bundle validation/deploy with the latest backend/script changes and retry Databricks App deploy.
-  - Databricks app management is available again: `databricks apps get atlas --profile DEFAULT -o json` reports app `RUNNING`, compute `ACTIVE`, active deployment still `01f14266773e1c94a61aa2d3b3e22e43` before the retry.
+  - Databricks app management is available again: `databricks apps get axiom --profile DEFAULT -o json` reports app `RUNNING`, compute `ACTIVE`, active deployment still `01f14266773e1c94a61aa2d3b3e22e43` before the retry.
   - Final pre-deploy local checks:
     - `npm run build` -> passed.
-    - `./.venv/bin/python -m pytest -q tests/test_atlas_metrics.py tests/test_atlas_api.py` -> `35 passed`.
+    - `./.venv/bin/python -m pytest -q tests/test_axiom_metrics.py tests/test_axiom_api.py` -> `35 passed`.
     - `git diff --check` -> passed.
   - Next step: bundle validate/summary/deploy and Databricks App deploy retry.
   - Final Databricks deploy gates passed:
@@ -3301,31 +3301,31 @@ explicitly revalidates them against the active ledgers and current evidence.
     - open stewardship `5` with sparkline `[0,0,0,0,0,5]`
     - policy exceptions `4` with sparkline `[0,0,0,0,0,4]`
     - top-domain scores are non-uniform: `95.8`, `91.7`, `87.5`, `87.5`, `83.3`
-  - First live Home Playwright QA run failed because the script captured the intentional hydration state as if it were final visual evidence and still waited for the removed `.gh-home-ai-result` node. It did verify route, collapse, floating AI dialog, View all, quick actions, footer links, profile avatar upload, and two Genie-backed Atlas AI responses. Patching the QA gate to wait for live hydrated Home data and transcript messages before accepting final screenshots.
+  - First live Home Playwright QA run failed because the script captured the intentional hydration state as if it were final visual evidence and still waited for the removed `.gh-home-ai-result` node. It did verify route, collapse, floating AI dialog, View all, quick actions, footer links, profile avatar upload, and two Genie-backed Axiom AI responses. Patching the QA gate to wait for live hydrated Home data and transcript messages before accepting final screenshots.
   - Local validation after the 1280x720 density patch:
     - `npm run build` -> passed, build `frontend-8237a8b08757`.
     - `npm test -- --run src/components/HomePage.test.jsx src/components/AppFrame.test.jsx src/hooks/useCommandCenter.test.jsx` -> `3` files passed, `32` tests passed.
-    - `git diff --check frontend/src/styles/app.css frontend/scripts/atlas_home_live_qa.mjs IMPLEMENTATION_STATUS.md` -> passed.
+    - `git diff --check frontend/src/styles/app.css frontend/scripts/axiom_home_live_qa.mjs IMPLEMENTATION_STATUS.md` -> passed.
   - Databricks redeploy after the 1280x720 density patch:
     - `databricks bundle validate --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> passed.
     - `databricks bundle summary --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> passed.
     - `databricks bundle deploy --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> passed.
-    - `databricks apps deploy atlas --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b --skip-validation --timeout 20m -o json` -> passed mechanically but is rejected as final evidence because passing `APP_NAME` forces API-direct deployment and ignores bundle target env injection.
-    - Rejected deployment: `01f1429fa43719a1a218e363d51f487b`; runtime readback showed generic source defaults `main.atlas`, local AI provider defaults, and Home command-center values inconsistent with the live `datapact.atlas` seeded evidence.
-    - The corresponding live QA run was stopped; it was waiting on `datapact.atlas` Home values that the rejected deployment could not serve.
+    - `databricks apps deploy axiom --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b --skip-validation --timeout 20m -o json` -> passed mechanically but is rejected as final evidence because passing `APP_NAME` forces API-direct deployment and ignores bundle target env injection.
+    - Rejected deployment: `01f1429fa43719a1a218e363d51f487b`; runtime readback showed generic source defaults `main.axiom`, local AI provider defaults, and Home command-center values inconsistent with the live `emet.axiom` seeded evidence.
+    - The corresponding live QA run was stopped; it was waiting on `emet.axiom` Home values that the rejected deployment could not serve.
   - Next step: redeploy with the project-target form `databricks apps deploy --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b --skip-validation --timeout 20m -o json`, then rerun authenticated live Home Playwright QA.
   - Target-aware Databricks app redeploy accepted:
     - `databricks apps deploy --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b --skip-validation --timeout 20m -o json` -> passed via the project pipeline.
     - Active deployment: `01f142a1ce651ec8942132ea1308ffce`; app state `RUNNING`; compute state `ACTIVE`; frontend build `frontend-8237a8b08757`.
-    - Runtime status readback confirms dev target env injection: `GOVAT_CATALOG=datapact`, `GOVAT_SCHEMA=atlas`, warehouse `da02d15a9490650b`, runtime `live`, store `live`.
+    - Runtime status readback confirms dev target env injection: `AXIOM_CATALOG=emet`, `AXIOM_SCHEMA=axiom`, warehouse `da02d15a9490650b`, runtime `live`, store `live`.
     - Authenticated command-center readback passed: state `available`, governed assets `792`, certified critical assets `13`, metadata coverage `11.7`, open stewardship actions `5` with sparkline `[0,0,0,0,0,5]`, policy exceptions `4` with sparkline `[0,0,0,0,0,4]`, top-domain scores `95.8/91.7/87.5/87.5/83.3`, and varied heatmap values `[0.0,6.1,9.3,9.7,54.0,66.7,100.0]`.
   - Next step: rerun authenticated live Home Playwright QA on deployment `01f142a1ce651ec8942132ea1308ffce`, including 1280x720 no-scroll/bottom-alignment and floating `AI Copilot` interaction gates.
   - Live Home Playwright QA on accepted deployment `01f142a1ce651ec8942132ea1308ffce`:
     - 1536x1024 capture -> passed; no scroll; bottom alignment delta `0.015625`.
     - 1440x900 capture -> passed; no scroll; bottom alignment delta `0.015625`.
     - 1280x720 capture -> failed only the no-scroll gate: `.gh-main` scrollHeight `673` vs clientHeight `618`, while all region text, footer, interactions, Genie responses, and bottom-alignment checks passed.
-    - Interaction gates all passed: direct Home route, collapse-centered icons, draggable/closable floating `AI Copilot`, View all routes, quick-action routes, footer links, profile avatar upload, and Genie-backed Atlas AI evidence.
-  - Live CSS probe at 1280x720 found the dashboard row was `400px`, but `.gh-home-main-grid` and the Atlas AI rail expanded to roughly `467px` due min-content sizing. Applying a small-height CSS patch so `.gh-home-page`, `.gh-home-dashboard-grid`, and `.gh-home-main-grid` honor the available grid row and hide internal overflow instead of making the main pane scroll.
+    - Interaction gates all passed: direct Home route, collapse-centered icons, draggable/closable floating `AI Copilot`, View all routes, quick-action routes, footer links, profile avatar upload, and Genie-backed Axiom AI evidence.
+  - Live CSS probe at 1280x720 found the dashboard row was `400px`, but `.gh-home-main-grid` and the Axiom AI rail expanded to roughly `467px` due min-content sizing. Applying a small-height CSS patch so `.gh-home-page`, `.gh-home-dashboard-grid`, and `.gh-home-main-grid` honor the available grid row and hide internal overflow instead of making the main pane scroll.
   - Local validation after the final 1280x720 grid overflow patch:
     - `npm test -- --run src/components/HomePage.test.jsx src/components/AppFrame.test.jsx src/hooks/useCommandCenter.test.jsx` -> `3` files passed, `32` tests passed.
     - `npm run build` -> passed, build `frontend-c9fa13e965f9`.
@@ -3336,14 +3336,14 @@ explicitly revalidates them against the active ledgers and current evidence.
     - `databricks bundle deploy --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> passed.
     - `databricks apps deploy --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b --skip-validation --timeout 20m -o json` -> passed via the target-aware project pipeline.
     - Active deployment: `01f142a3894c17e0982d31dc89b788d0`; app state `RUNNING`; compute state `ACTIVE`; frontend build `frontend-c9fa13e965f9`.
-    - Runtime status readback confirms `GOVAT_CATALOG=datapact`, `GOVAT_SCHEMA=atlas`, warehouse `da02d15a9490650b`, runtime `live`, store `live`.
+    - Runtime status readback confirms `AXIOM_CATALOG=emet`, `AXIOM_SCHEMA=axiom`, warehouse `da02d15a9490650b`, runtime `live`, store `live`.
   - Authenticated live Home Playwright QA was rerun on deployment `01f142a3894c17e0982d31dc89b788d0` after this deploy.
   - Final authenticated live Home Playwright QA passed on deployment `01f142a3894c17e0982d31dc89b788d0`, build `frontend-c9fa13e965f9`:
     - `1536x1024`, `1440x900`, and `1280x720` captures all passed.
     - `1280x720` now reports `.gh-main` scrollHeight `618` and clientHeight `618`, `mainScrolls=false`, `horizontalOverflow=false`, footer-safe layout, and bottom alignment delta `0`.
     - 1536/1440 bottom alignment delta is `0.015625`; all captures have single-line copyright and footer-safe layout.
-    - Interaction gates passed: direct Home route, collapse-centered icons, draggable/closable header `AI Copilot`, View all routes, quick-action routes, footer links, profile avatar upload, and Home Atlas AI prompt.
-    - Atlas AI responses were `provider=genie`, `confidence=genie-grounded`, `evidenceCount=1`, with no page errors and no console warnings.
+    - Interaction gates passed: direct Home route, collapse-centered icons, draggable/closable header `AI Copilot`, View all routes, quick-action routes, footer links, profile avatar upload, and Home Axiom AI prompt.
+    - Axiom AI responses were `provider=genie`, `confidence=genie-grounded`, `evidenceCount=1`, with no page errors and no console warnings.
     - Evidence report: `docs/northstar_visual_qa/home-current/home-live-report.json`.
     - Side-by-side evidence: `docs/northstar_visual_qa/home-current/home-live-side-by-side-1536x1024.png`.
   - Home reopened checklist updated: R01-R11 and RV01-RV09 are complete.
@@ -3356,7 +3356,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - App URL: `https://atlas-2543889327043640.aws.databricksapps.com`
   - Deployment: `01f142a68ce31747ba493e3c752d09f2`
   - Frontend build: `frontend-62510a30c84f`
-  - App status evidence: `databricks apps get atlas --profile DEFAULT -o json` readback in this tranche and `docs/northstar_visual_qa/home-current/home-live-report.json`
+  - App status evidence: `databricks apps get axiom --profile DEFAULT -o json` readback in this tranche and `docs/northstar_visual_qa/home-current/home-live-report.json`
   - App state: `RUNNING`; compute state: `ACTIVE`
 - Prior residual-warning full local validation evidence, retained as historical context:
   - `./.venv/bin/python -m pytest -q` -> `365 passed`
@@ -3379,7 +3379,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `docs/hardening/live-app-deploy-hardening.json` -> `01f14257eebe1af6b2e06a582474815e SUCCEEDED`
 - Route/API validation on deployment `01f14257eebe1af6b2e06a582474815e` failed because the app-name deploy path used portable `app.yaml` defaults instead of the dev bundle target env overrides:
   - Lakebase reported disabled / `delta-primary`
-  - Atlas AI reported local evidence instead of Genie
+  - Axiom AI reported local evidence instead of Genie
   - Audit/Admin endpoints returned 403
   - This deployment is not accepted for final evidence.
 - Target-aware redeploy evidence:
@@ -3389,11 +3389,11 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Route/API validation passed on corrected deployment:
   - Artifact: `docs/hardening/live-route-validation-hardening.json`
   - All checked endpoints returned HTTP 200 on deployment `01f1425909d91aba8f4a6751c1bb4909`, build `frontend-b5fe86ae40b3`
-  - Atlas AI is `provider=genie`, `confidence=genie-grounded`, evidence count `1`, with no sentinel fallback SQL/row/warning
+  - Axiom AI is `provider=genie`, `confidence=genie-grounded`, evidence count `1`, with no sentinel fallback SQL/row/warning
   - Lakebase mirror is active: `3` attempted, `3` succeeded, `0` failed
 - Live workflow stress validation passed:
   - Artifact: `docs/hardening/synthetic-stress-latest.json`
-  - Run/schema: `ga-stress-20260427154845-e95f5b0a` / `datapact.atlas_ga_stress_20260427154845_e95f5b0a`
+  - Run/schema: `ax-stress-20260427154845-e95f5b0a` / `emet.axiom_ax_stress_20260427154845_e95f5b0a`
   - Workflow validation: `16` marker rows, `2` complete workflow sets, `2` approved governance requests, `2` rejected governance requests, `2` taxonomy approvals, `2` degraded lineage cases, `2` unavailable lineage cases, `2` completed quality runs, `2` Genie grounded answers, `2` Lakebase mirror successes, `30` unique audit events, `0` Genie sentinel fallbacks, `0` Lakebase failed writes, `0` organic evidence leaks
   - Cleanup validation: `DROP SCHEMA ... CASCADE` succeeded and post-cleanup `SHOW SCHEMAS` returned no rows
 - Live all-page Playwright QA passed on the same corrected deployment/build (`01f1425909d91aba8f4a6751c1bb4909` / `frontend-b5fe86ae40b3`):
@@ -3447,7 +3447,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `find docs/northstar_visual_qa -path '*chrome-profile*' -type f | wc -l` -> `0`
   - `git diff --check` -> passed
 - Regression blocker focused validation passed:
-  - `./.venv/bin/python -m py_compile atlas/api/catalog.py atlas/api/classification.py tests/test_backend_write_audit_contracts.py tests/test_classification_api.py`
+  - `./.venv/bin/python -m py_compile axiom/api/catalog.py axiom/api/classification.py tests/test_backend_write_audit_contracts.py tests/test_classification_api.py`
   - `./.venv/bin/python -m pytest -q tests/test_backend_write_audit_contracts.py tests/test_classification_api.py` -> `30 passed`
 - Full local validation passed after the regression fixes:
   - This pre-cleanup baseline is superseded by the current no-warning residual-risk validation above and below.
@@ -3463,21 +3463,21 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `git diff --check` -> passed
 - Residual-warning focused frontend stability check passed:
   - `npm test -- --run src/components/CdeWorkspace.test.jsx src/components/DiscoveryWorkspace.test.jsx src/components/EntityWorkspace.test.jsx src/components/LineageGraph.test.jsx` -> `4` files passed, `56` passed, `27` skipped
-  - Log scan of `/tmp/govat-focused-frontend-risk.log` found no `--localstorage-file`, `Warning:`, timeout, or failure text
+  - Log scan of `/tmp/axiom-focused-frontend-risk.log` found no `--localstorage-file`, `Warning:`, timeout, or failure text
 - Residual-warning full frontend validation passed:
   - `npm run lint` -> passed with no warnings
   - `npm run typecheck` -> passed
   - `npm test` -> `53` files passed, `376` passed, `27` skipped
-  - Log scan of `/tmp/govat-full-npm-test-risk.log` found no `--localstorage-file`, `Warning:`, timeout, or failure text
+  - Log scan of `/tmp/axiom-full-npm-test-risk.log` found no `--localstorage-file`, `Warning:`, timeout, or failure text
   - `npm run build` -> passed with no Vite large-chunk warning and no circular-chunk warning
 - Residual-warning full backend validation passed:
   - `rg -n "on_event" runtime_app.py` -> no matches
   - `./.venv/bin/python -m pytest -q` -> `365 passed`
-  - Log scan of `/tmp/govat-backend-risk.log` found no `on_event`, `DeprecationWarning`, warning, or failure text
+  - Log scan of `/tmp/axiom-backend-risk.log` found no `on_event`, `DeprecationWarning`, warning, or failure text
 - Residual-warning Databricks pre-deploy validation passed:
   - `databricks bundle validate --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> `Validation OK!` with no warnings after stale unmatched sync excludes were removed
   - `databricks bundle summary --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> completed with no warnings
-  - Log scan of `/tmp/govat-bundle-validate-risk.log` and `/tmp/govat-bundle-summary-risk.log` found no warnings or errors
+  - Log scan of `/tmp/axiom-bundle-validate-risk.log` and `/tmp/axiom-bundle-summary-risk.log` found no warnings or errors
   - `git diff --check` -> passed
 - Residual-warning deployment completed:
   - `databricks bundle deploy --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> deployment complete
@@ -3485,17 +3485,17 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Active deployment evidence: `docs/hardening/live-app-deploy-residual-warning-target.json`
   - Active deployment: `01f14266773e1c94a61aa2d3b3e22e43`; app state `RUNNING`; compute state `ACTIVE`
 - Live route validation found a tooling gap before product evidence:
-  - First run of `frontend/scripts/atlas_route_live_validation.mjs` hung before report creation because native `fetch` had no request timeout.
+  - First run of `frontend/scripts/axiom_route_live_validation.mjs` hung before report creation because native `fetch` had no request timeout.
   - The validator now applies a bounded `AbortController` timeout before falling back to curl or failing explicitly.
 - Live residual-warning validation passed on the new deployment:
-  - `frontend/scripts/atlas_route_live_validation.mjs` -> `passed=true`
+  - `frontend/scripts/axiom_route_live_validation.mjs` -> `passed=true`
   - Artifact: `docs/hardening/live-route-validation-residual-warning.json`
   - Deployment/build: `01f14266773e1c94a61aa2d3b3e22e43` / `frontend-8b1e24a8c498`
   - All checked endpoints returned HTTP 200 on the active build.
-  - Atlas AI is `provider=genie`, `confidence=genie-grounded`, evidence count `1`, with no sentinel fallback SQL/row/warning.
+  - Axiom AI is `provider=genie`, `confidence=genie-grounded`, evidence count `1`, with no sentinel fallback SQL/row/warning.
   - Lakebase mirror is active: `21` attempted, `21` succeeded, `0` failed; mode `delta-primary-lakebase-shadow`.
   - Active app evidence reports `01f14266773e1c94a61aa2d3b3e22e43 SUCCEEDED RUNNING ACTIVE`.
-  - `node --check frontend/scripts/atlas_route_live_validation.mjs` -> passed.
+  - `node --check frontend/scripts/axiom_route_live_validation.mjs` -> passed.
   - Precise residual-warning scan found no FastAPI `on_event`/deprecation warnings, no hook lint warnings, no Vitest localstorage warning, no Vite large-chunk/circular warning, no timed-out tests, and no bundle validation warning.
   - `git diff --check` -> passed.
 - Residual-warning reviewer signoff passed:
@@ -3522,10 +3522,10 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Current risk:
   - Do not claim North Star route signoff until Control Center is inspected, all prototype routes are recaptured together, and reviewer lanes unanimously sign off.
 
-### Checkpoint - Control Center And Atlas AI Dock Fix Started
+### Checkpoint - Control Center And Axiom AI Dock Fix Started
 
 - Control Center visual findings from `northstar/screenshots/prototype_cc.png` vs `docs/northstar_visual_qa/prototype-wide-rail-targeted/control-center-3037x1269.png`:
-  - The floating Atlas AI dock is still the compact app size; the prototype dock is wider/taller and reaches near the bottom input area.
+  - The floating Axiom AI dock is still the compact app size; the prototype dock is wider/taller and reaches near the bottom input area.
   - Control Center hero copy has drifted from the prototype.
   - The integrations and policy coverage cards are vertically compressed relative to the prototype card stack.
 - Planned edit:
@@ -3537,10 +3537,10 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `git diff --check -- frontend/src/components/AppFrame.jsx frontend/src/components/AdminWorkspace.jsx frontend/src/styles/northstar.css frontend/src/styles/operations-pages.css frontend/src/components/AdminWorkspace.test.jsx IMPLEMENTATION_STATUS.md`
   - Targeted `control-center` and representative `discover` capture at `3037x1269` to verify dock sizing and Control Center stack height.
 
-### Checkpoint - Control Center And Atlas AI Dock Unit Gate Passed
+### Checkpoint - Control Center And Axiom AI Dock Unit Gate Passed
 
 - Implemented:
-  - Added a prototype-native floating Atlas AI dock size (`440x640`) at wide viewports while preserving compact viewport sizing, drag, resize, and clamping behavior.
+  - Added a prototype-native floating Axiom AI dock size (`440x640`) at wide viewports while preserving compact viewport sizing, drag, resize, and clamping behavior.
   - Restored the Control Center hero description to the prototype copy.
   - Removed the extra Control Center environment pill from the hero because the workspace/environment is already represented in the global chrome.
   - Increased only the Control Center integration/policy stack vertical rhythm to better match `northstar/screenshots/prototype_cc.png`.
@@ -3548,15 +3548,15 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `npm test -- --run src/components/AdminWorkspace.test.jsx src/components/AppFrame.test.jsx` -> passed, `2` files, `19` tests.
   - `git diff --check -- frontend/src/components/AppFrame.jsx frontend/src/components/AdminWorkspace.jsx frontend/src/styles/northstar.css frontend/src/styles/operations-pages.css frontend/src/components/AdminWorkspace.test.jsx IMPLEMENTATION_STATUS.md` -> passed.
 - Exact next action:
-  - Recapture `control-center,discover` at `3037x1269` and inspect the updated Atlas AI dock and Control Center card stack against the prototype screenshots.
+  - Recapture `control-center,discover` at `3037x1269` and inspect the updated Axiom AI dock and Control Center card stack against the prototype screenshots.
 
 ### Checkpoint - Control Center Native Capture Follow-Up Started
 
 - Targeted capture:
-  - `GOVAT_PROTOTYPE_ROUTES=control-center,discover GOVAT_PROTOTYPE_VIEWPORTS=3037x1269 ... atlas_prototype_current_capture.mjs` -> passed.
+  - `AXIOM_PROTOTYPE_ROUTES=control-center,discover AXIOM_PROTOTYPE_VIEWPORTS=3037x1269 ... axiom_prototype_current_capture.mjs` -> passed.
   - Evidence: `docs/northstar_visual_qa/prototype-control-ai-dock-pass/control-center-3037x1269.png` and `discover-3037x1269.png`.
 - Manual inspection:
-  - The floating Atlas AI dock now matches the prototype width/height and bottom input placement closely.
+  - The floating Axiom AI dock now matches the prototype width/height and bottom input placement closely.
   - Control Center content rail is correct, but the page stack still starts slightly high and the integrations/policy column remains a little compressed versus `northstar/screenshots/prototype_cc.png`.
 - Planned edit:
   - Apply a CSS-only Control Center vertical rhythm follow-up: slightly lower the shell, increase shell gap, and expand integration/policy rows.
@@ -3571,19 +3571,19 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Validation:
   - `npm test -- --run src/components/AdminWorkspace.test.jsx` -> passed, `1` file, `5` tests.
   - `git diff --check -- frontend/src/styles/operations-pages.css IMPLEMENTATION_STATUS.md` -> passed.
-  - Targeted capture `GOVAT_PROTOTYPE_ROUTES=control-center GOVAT_PROTOTYPE_VIEWPORTS=3037x1269 ... atlas_prototype_current_capture.mjs` -> passed.
+  - Targeted capture `AXIOM_PROTOTYPE_ROUTES=control-center AXIOM_PROTOTYPE_VIEWPORTS=3037x1269 ... axiom_prototype_current_capture.mjs` -> passed.
 - Evidence:
   - `docs/northstar_visual_qa/prototype-control-center-final-pass/control-center-3037x1269.png`
   - `docs/northstar_visual_qa/prototype-control-center-final-pass/prototype-current-report.json`
 - Manual inspection:
-  - The header, card rail, right integrations/policy stack, and floating Atlas AI dock now closely match `northstar/screenshots/prototype_cc.png`.
+  - The header, card rail, right integrations/policy stack, and floating Axiom AI dock now closely match `northstar/screenshots/prototype_cc.png`.
 - Exact next action:
   - Run the full screenshot-backed prototype route capture set at native and responsive viewports.
 
 ### Checkpoint - Full Prototype Route Capture Passed
 
 - Validation:
-  - `GOVAT_PROTOTYPE_VIEWPORTS=3037x1269,1536x1024,1440x900,1280x720 GOVAT_PROTOTYPE_MOCK_API=1 ... atlas_prototype_current_capture.mjs` -> passed.
+  - `AXIOM_PROTOTYPE_VIEWPORTS=3037x1269,1536x1024,1440x900,1280x720 AXIOM_PROTOTYPE_MOCK_API=1 ... axiom_prototype_current_capture.mjs` -> passed.
 - Evidence:
   - `docs/northstar_visual_qa/prototype-all-routes-final/prototype-current-report.json`
   - 32 viewport screenshots covering `command-center`, `discover`, `stewardship`, `glossary`, `cde-registry`, `lineage`, `audit`, and `control-center`.
@@ -3621,7 +3621,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `npm run typecheck` -> passed.
   - `npm run lint -- --quiet` -> passed.
   - `git diff --check -- frontend/src/components/AppFrame.jsx frontend/src/components/AdminWorkspace.jsx frontend/src/styles/northstar.css frontend/src/styles/operations-pages.css frontend/src/components/AdminWorkspace.test.jsx IMPLEMENTATION_STATUS.md` -> passed.
-  - `./.venv/bin/python -m pytest -q tests/test_runtime_route_serving.py tests/test_runtime_api_contracts.py tests/test_api_error_contracts.py tests/test_api_text_sanitization.py tests/test_backend_write_audit_contracts.py tests/test_genie_service.py tests/test_genie_benchmark.py tests/test_lakebase_service.py tests/test_synthetic_stress_contract.py tests/test_lineage_api.py tests/test_atlas_api.py tests/test_atlas_metrics.py` -> passed, `122` tests.
+  - `./.venv/bin/python -m pytest -q tests/test_runtime_route_serving.py tests/test_runtime_api_contracts.py tests/test_api_error_contracts.py tests/test_api_text_sanitization.py tests/test_backend_write_audit_contracts.py tests/test_genie_service.py tests/test_genie_benchmark.py tests/test_lakebase_service.py tests/test_synthetic_stress_contract.py tests/test_lineage_api.py tests/test_axiom_api.py tests/test_axiom_metrics.py` -> passed, `122` tests.
 - Exact next action:
   - Run the full frontend Vitest suite.
 
@@ -3685,7 +3685,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Validation:
   - `databricks bundle validate --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> `Validation OK!`.
   - `databricks bundle summary --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> passed.
-  - Warning scan of `/tmp/govat-prototype-bundle-validate.log` and `/tmp/govat-prototype-bundle-summary.log` -> clean.
+  - Warning scan of `/tmp/axiom-prototype-bundle-validate.log` and `/tmp/axiom-prototype-bundle-summary.log` -> clean.
   - `git diff --check -- databricks.yml IMPLEMENTATION_STATUS.md docs/northstar_gap_analysis/prototype_contract.md` -> passed.
 - Exact next action:
   - Deploy bundle/app and run live route validation on the deployed Databricks App.
@@ -3707,14 +3707,14 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Active deployment: `01f14340869c13a5a75e2fdae896defe`; app state `RUNNING`; compute state `ACTIVE`.
   - Frontend build: `frontend-f69be7ba3216`.
 - Live validation attempt:
-  - First `frontend/scripts/atlas_route_live_validation.mjs` attempt returned HTTP `401` for all endpoints because no Databricks bearer token was supplied to the direct API validator.
+  - First `frontend/scripts/axiom_route_live_validation.mjs` attempt returned HTTP `401` for all endpoints because no Databricks bearer token was supplied to the direct API validator.
 - Planned remediation:
-  - Obtain a short-lived `DEFAULT` profile token through `databricks auth token` and rerun the same validator with `GOVAT_DATABRICKS_TOKEN` set.
+  - Obtain a short-lived `DEFAULT` profile token through `databricks auth token` and rerun the same validator with `AXIOM_DATABRICKS_TOKEN` set.
 
 ### Checkpoint - Live Route Validation Passed
 
 - Validation:
-  - Authenticated `frontend/scripts/atlas_route_live_validation.mjs` with `GOVAT_DATABRICKS_TOKEN` from the `DEFAULT` profile -> passed.
+  - Authenticated `frontend/scripts/axiom_route_live_validation.mjs` with `AXIOM_DATABRICKS_TOKEN` from the `DEFAULT` profile -> passed.
 - Evidence:
   - `docs/hardening/live-route-validation-prototype.json`
   - mirrored Asset 360 API report: `docs/northstar_visual_qa/asset360-current/asset360-live-api-report.json`
@@ -3729,7 +3729,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Lakebase write mirror `active`
   - Lakebase mode `delta-primary-lakebase-shadow`
   - Lakebase attempted/succeeded/failed: `3/3/0`
-  - Atlas AI `provider=genie`, `confidence=genie-grounded`, evidence count `1`
+  - Axiom AI `provider=genie`, `confidence=genie-grounded`, evidence count `1`
   - no Genie sentinel SQL fallback, row fallback, or warning fallback
   - Governance, Taxonomy/CDE, Audit, Admin, Lineage, and supporting Asset 360 API contracts passed.
 - Exact next action:
@@ -3778,7 +3778,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Validation:
   - `databricks bundle validate --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> `Validation OK!`.
   - `databricks bundle summary --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> passed.
-  - Warning scan of `/tmp/govat-prototype-routefix-bundle-validate.log` and `/tmp/govat-prototype-routefix-bundle-summary.log` -> clean.
+  - Warning scan of `/tmp/axiom-prototype-routefix-bundle-validate.log` and `/tmp/axiom-prototype-routefix-bundle-summary.log` -> clean.
 - Exact next action:
   - Deploy the bundle and app target, then confirm the active deployment ID before rerunning live validation.
 
@@ -3786,7 +3786,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 
 - Validation:
   - `databricks bundle deploy --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> deployment complete.
-  - `databricks apps deploy atlas --profile DEFAULT --target dev --var warehouse_id=da02d15a9490650b --skip-validation --timeout 20m -o json` -> app started successfully.
+  - `databricks apps deploy axiom --profile DEFAULT --target dev --var warehouse_id=da02d15a9490650b --skip-validation --timeout 20m -o json` -> app started successfully.
   - Active deployment readback: `docs/hardening/live-app-deploy-prototype-routefix.json`.
 - Active deployment/build:
   - Deployment `01f143456f4d17eab6651aa7f2e2dcb9`
@@ -3801,16 +3801,16 @@ explicitly revalidates them against the active ledgers and current evidence.
 
 - Trigger: live route validation against deployment `01f143456f4d17eab6651aa7f2e2dcb9` failed despite the runtime route patch.
 - Findings:
-  - `/api/runtime/status` reported `govCatalog=main`, `adminEmailsConfigured=false`, `GOVAT_ATLAS_AI_PROVIDER=local`, and Lakebase disabled.
+  - `/api/runtime/status` reported `govCatalog=main`, `adminEmailsConfigured=false`, `AXIOM_AI_PROVIDER=local`, and Lakebase disabled.
   - Audit and Control Center returned `403` because the generic direct-deploy defaults did not include the dev target admin email.
-  - Atlas AI returned `provider=local-evidence` and bootstrap reported `lakebase.writeMirror=disabled` for the same reason.
+  - Axiom AI returned `provider=local-evidence` and bootstrap reported `lakebase.writeMirror=disabled` for the same reason.
 - Root cause:
-  - `databricks apps deploy atlas ...` used the direct API deploy path and read generic `app.yaml` defaults instead of the dev target variables from `databricks.yml`.
+  - `databricks apps deploy axiom ...` used the direct API deploy path and read generic `app.yaml` defaults instead of the dev target variables from `databricks.yml`.
 - Planned remediation:
   - Redeploy through the Databricks Apps project pipeline without the `APP_NAME` argument:
     `databricks apps deploy --profile DEFAULT --target dev --var warehouse_id=da02d15a9490650b --skip-validation --timeout 20m`.
 - Validation:
-  - Re-run runtime status readback to confirm `govCatalog=datapact`, configured admin email, Genie provider, and Lakebase enabled.
+  - Re-run runtime status readback to confirm `govCatalog=emet`, configured admin email, Genie provider, and Lakebase enabled.
   - Re-run live route validation and deployed screenshots.
 
 ### Checkpoint - Target-Aware Project Redeploy Restored Dev Runtime Config
@@ -3823,10 +3823,10 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Deployment `01f14346de8f117aa46d04333202cbf3`
   - App state `RUNNING`
   - Compute state `ACTIVE`
-  - Source path `/Workspace/Users/skyler@entrada.ai/.bundle/atlas/dev/files`
+  - Source path `/Workspace/Users/abarreto@shorecp.com/.bundle/axiom/dev/files`
 - Runtime config now matches the dev target:
-  - `govCatalog=datapact`
-  - `govSchema=atlas`
+  - `govCatalog=emet`
+  - `govSchema=axiom`
   - `adminEmailsConfigured=true`
   - actor role `Admin`
 - Exact next action:
@@ -3835,7 +3835,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Live Route Validation Passed After Target-Aware Redeploy
 
 - Validation:
-  - Authenticated `frontend/scripts/atlas_route_live_validation.mjs` against deployment `01f14346de8f117aa46d04333202cbf3` -> passed.
+  - Authenticated `frontend/scripts/axiom_route_live_validation.mjs` against deployment `01f14346de8f117aa46d04333202cbf3` -> passed.
 - Evidence:
   - `docs/hardening/live-route-validation-prototype-project-routefix.json`
 - Report result:
@@ -3844,7 +3844,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Lakebase write mirror `active`
   - Lakebase mode `delta-primary-lakebase-shadow`
   - Lakebase attempted/succeeded/failed: `6/6/0`
-  - Atlas AI `provider=genie`, `confidence=genie-grounded`, evidence count `1`
+  - Axiom AI `provider=genie`, `confidence=genie-grounded`, evidence count `1`
   - no Genie sentinel SQL fallback, row fallback, or warning fallback
   - Governance workbench/detail, Insights, Taxonomy/CDE, Audit, Admin, Lineage, and supporting Asset 360 API contracts passed.
 - Exact next action:
@@ -3855,7 +3855,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Trigger: deployed screenshot capture rendered all pages but logged eight live request failures for `finance_prod.curated.revenue_daily`: four asset-detail `404`s and four lineage `404`s across the Lineage route viewports.
 - Decision:
   - Treat this as a real synthetic-data/workflow blocker. The prototype Lineage page names `finance_prod.curated.revenue_daily`; the live workspace needs a real UC asset there instead of relying on a local mock or accepting 404s.
-  - Seed app-owned North Star validation tables in the `DEFAULT` workspace using live SQL, with comments marking them as Governance Atlas North Star validation data.
+  - Seed app-owned North Star validation tables in the `DEFAULT` workspace using live SQL, with comments marking them as Axiom North Star validation data.
 - Planned validation:
   - Verify `finance_prod.curated.revenue_daily` exists through the live asset and lineage APIs.
   - Rerun deployed screenshot capture and require zero request failures.
@@ -3865,8 +3865,8 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Implemented:
   - Created North Star validation catalogs/schemas/tables for `finance_prod`, `sales_prod`, `customer_360`, `product_events`, `marketing_mart`, and `hr_secure`.
   - Created the prototype lineage target `finance_prod.curated.revenue_daily` from real synthetic upstream UC tables.
-  - Added table/column comments identifying the data as Governance Atlas North Star validation data.
-  - Granted read visibility for the validation actor `skyler@entrada.ai` on the synthetic catalogs/schemas.
+  - Added table/column comments identifying the data as Axiom North Star validation data.
+  - Granted read visibility for the validation actor `abarreto@shorecp.com` on the synthetic catalogs/schemas.
 - Validation:
   - First seed attempt failed before DDL because Statement Execution `wait_timeout` was set above the API maximum; rerun used `50s`.
   - Seed artifact: `docs/hardening/northstar-live-uc-seed-result.json`.
@@ -3881,7 +3881,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Final Deployed Prototype Screenshot Capture Passed
 
 - Validation:
-  - Authenticated deployed-app Playwright capture against `https://atlas-2543889327043640.aws.databricksapps.com` with `GOVAT_PROTOTYPE_MOCK_API` unset -> passed.
+  - Authenticated deployed-app Playwright capture against `https://atlas-2543889327043640.aws.databricksapps.com` with `AXIOM_PROTOTYPE_MOCK_API` unset -> passed.
 - Evidence:
   - `docs/northstar_visual_qa/prototype-live-deployed-final-clean/prototype-current-report.json`
   - Screenshots in `docs/northstar_visual_qa/prototype-live-deployed-final-clean/`
@@ -3906,7 +3906,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `stewardship-3037x1269.png` captured a loading screen instead of the prototype work queue/detail surface.
   - `glossary-3037x1269.png` still showed glossary loading/empty-state styling instead of the populated prototype glossary cards.
   - `cde-registry-3037x1269.png` rendered an empty CDE registry even though live route validation says CDE data exists.
-  - `command-center-3037x1269.png` captured unsettled global chrome (`UC status loading` / disabled-looking Atlas AI) instead of the settled prototype shell.
+  - `command-center-3037x1269.png` captured unsettled global chrome (`UC status loading` / disabled-looking Axiom AI) instead of the settled prototype shell.
   - `audit-3037x1269.png` over-truncated target column values to unusable fragments.
 - Decisions:
   - Treat the visual-review blockers as active must-fix items. The prior zero-open-must-fix status is superseded until these screenshots are recaptured and reviewers re-sign.
@@ -3922,12 +3922,12 @@ explicitly revalidates them against the active ledgers and current evidence.
 
 - Implemented:
   - Removed the old route-level governance-summary loading gate in `App.jsx` so `/stewardship` renders the North Star Stewardship Workbench while its own live workbench endpoint hydrates.
-  - Added live CDE dashboard hydration to `TaxonomyWorkspace.jsx` so the prototype `Glossary & CDEs` CDE tab can render backed CDE rows when `/api/atlas/taxonomy/overview` does not include CDE rows.
-  - Hardened `frontend/scripts/atlas_prototype_current_capture.mjs` to wait past `UC status loading`, page-level governance/glossary/CDE loading text, and the old Stewardship loading shell.
+  - Added live CDE dashboard hydration to `TaxonomyWorkspace.jsx` so the prototype `Glossary & CDEs` CDE tab can render backed CDE rows when `/api/axiom/taxonomy/overview` does not include CDE rows.
+  - Hardened `frontend/scripts/axiom_prototype_current_capture.mjs` to wait past `UC status loading`, page-level governance/glossary/CDE loading text, and the old Stewardship loading shell.
   - Widened/wrapped the prototype Audit target column so target values remain useful instead of collapsing to fragments.
 - Validation:
   - `npm test -- --run src/components/TaxonomyWorkspace.test.jsx src/components/GovernanceWorkspace.test.jsx src/components/AuditBrowserWorkspace.test.jsx` -> passed, `3` files / `19` tests.
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
 - Exact next action:
   - Run targeted local Playwright capture for `command-center,stewardship,glossary,cde-registry,audit` before redeploy.
 
@@ -3953,7 +3953,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `npm run lint -- --quiet` -> passed.
   - `npm run typecheck` -> passed.
   - `npm run build` -> passed.
-  - `git diff --check frontend/src/App.jsx frontend/src/components/TaxonomyWorkspace.jsx frontend/src/styles/operations-pages.css frontend/scripts/atlas_prototype_current_capture.mjs IMPLEMENTATION_STATUS.md` -> passed.
+  - `git diff --check frontend/src/App.jsx frontend/src/components/TaxonomyWorkspace.jsx frontend/src/styles/operations-pages.css frontend/scripts/axiom_prototype_current_capture.mjs IMPLEMENTATION_STATUS.md` -> passed.
 - Build:
   - Frontend build ID: `frontend-7bf5c531b234`.
 - Exact next action:
@@ -3966,7 +3966,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `databricks bundle summary --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> passed.
   - `databricks bundle deploy --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> passed.
   - `databricks apps deploy --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b --skip-validation --timeout 20m -o json` -> passed.
-  - `databricks apps get atlas --profile DEFAULT -o json` -> app `RUNNING`, compute `ACTIVE`.
+  - `databricks apps get axiom --profile DEFAULT -o json` -> app `RUNNING`, compute `ACTIVE`.
 - Evidence:
   - `docs/hardening/live-app-deploy-prototype-visual-blockers.json`
   - `docs/hardening/live-app-get-prototype-visual-blockers.json`
@@ -3979,7 +3979,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Live Route Validation Passed After Visual Fix Deploy
 
 - Validation:
-  - Authenticated `frontend/scripts/atlas_route_live_validation.mjs` against deployment `01f143530a9e15db9d945850ae8a1163` -> passed.
+  - Authenticated `frontend/scripts/axiom_route_live_validation.mjs` against deployment `01f143530a9e15db9d945850ae8a1163` -> passed.
 - Evidence:
   - `docs/hardening/live-runtime-status-prototype-visual-blockers.json`
   - `docs/hardening/live-route-validation-prototype-visual-blockers.json`
@@ -3989,7 +3989,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Lakebase write mirror `active`
   - Lakebase mode `delta-primary-lakebase-shadow`
   - Lakebase attempted/succeeded/failed: `6/6/0`
-  - Atlas AI `provider=genie`, `confidence=genie-grounded`, evidence count `1`
+  - Axiom AI `provider=genie`, `confidence=genie-grounded`, evidence count `1`
   - no Genie sentinel SQL fallback, row fallback, or warning fallback
   - Governance workbench/detail, Taxonomy/CDE, Audit, Admin, Lineage, Insights, and supporting Asset 360 API contracts passed.
 - Exact next action:
@@ -3998,7 +3998,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Clean Deployed Prototype Screenshot Capture Passed
 
 - Validation:
-  - Authenticated deployed-app Playwright capture against `https://atlas-2543889327043640.aws.databricksapps.com` with `GOVAT_PROTOTYPE_MOCK_API` unset -> passed after live inventory refresh for `finance_prod.curated.revenue_daily`.
+  - Authenticated deployed-app Playwright capture against `https://atlas-2543889327043640.aws.databricksapps.com` with `AXIOM_PROTOTYPE_MOCK_API` unset -> passed after live inventory refresh for `finance_prod.curated.revenue_daily`.
 - Evidence:
   - `docs/hardening/live-discovery-refresh-finance-prod-visual-blockers.json`
   - `docs/hardening/live-asset-finance-prod-before-refresh-check.json`
@@ -4028,7 +4028,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Validation:
   - Full frontend Vitest suite: `npm test` -> passed, `53` files / `379` tests passed / `27` skipped.
   - Backend/runtime/API/Genie/Lakebase/hardening subset:
-    `./.venv/bin/python -m pytest -q tests/test_runtime_route_serving.py tests/test_atlas_api.py tests/test_atlas_metrics.py tests/test_api_error_contracts.py tests/test_api_text_sanitization.py tests/test_backend_write_audit_contracts.py tests/test_genie_service.py tests/test_lakebase_service.py tests/test_genie_benchmark.py tests/test_synthetic_stress_contract.py` -> passed, `94` tests.
+    `./.venv/bin/python -m pytest -q tests/test_runtime_route_serving.py tests/test_axiom_api.py tests/test_axiom_metrics.py tests/test_api_error_contracts.py tests/test_api_text_sanitization.py tests/test_backend_write_audit_contracts.py tests/test_genie_service.py tests/test_lakebase_service.py tests/test_genie_benchmark.py tests/test_synthetic_stress_contract.py` -> passed, `94` tests.
   - Full `git diff --check` -> passed.
 - Exact next action:
   - Wait for review-lane signoff and remediate any blockers before final closeout.
@@ -4038,8 +4038,8 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Trigger: review lanes rejected the mechanically clean deployed prototype capture as insufficient for final signoff.
 - Active blockers to remediate:
   - Visual/product: Control Center integration status pills clip in the native-width screenshot; Stewardship work queue IDs wrap too heavily.
-  - Functional/regression: `frontend/scripts/atlas_prototype_current_capture.mjs` can pass when `GOVAT_PROTOTYPE_ROUTES` selects no valid routes, and it can mark captures as passed while shell readiness text or a disabled Atlas AI header is still visible.
-  - Truth/provenance: seeded validation workflow rows render as ordinary live work, Discovery copy still says results are ranked by `trust signal`, Discovery result authority ignores backend `meta.authoritative`, Discover-page Atlas AI can bypass shell AI availability, and Lineage hero copy overclaims end-to-end lineage when no graph edges are present.
+  - Functional/regression: `frontend/scripts/axiom_prototype_current_capture.mjs` can pass when `AXIOM_PROTOTYPE_ROUTES` selects no valid routes, and it can mark captures as passed while shell readiness text or a disabled Axiom AI header is still visible.
+  - Truth/provenance: seeded validation workflow rows render as ordinary live work, Discovery copy still says results are ranked by `trust signal`, Discovery result authority ignores backend `meta.authoritative`, Discover-page Axiom AI can bypass shell AI availability, and Lineage hero copy overclaims end-to-end lineage when no graph edges are present.
 - Planned implementation:
   - Make seeded validation work visible as validation workflow state and shorten row IDs while preserving full IDs in titles/detail.
   - Replace overclaimed `trust signal` and lineage wording with backend-backed governance/metadata coverage wording.
@@ -4047,7 +4047,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Fix the remaining Control Center/Stewardship native visual fit blockers.
 - Planned validation:
   - Focused frontend tests for Discovery, Governance, Lineage, Admin, and the capture script.
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs`
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs`
   - Negative route-filter harness check.
   - Local prototype recapture for affected routes, then full lint/typecheck/build and redeploy/live capture if focused validation passes.
 
@@ -4056,15 +4056,15 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Implemented:
   - Discovery result authority now requires backend `authoritative` or `meta.authoritative` evidence.
   - Discovery copy now says results are ranked by governed metadata coverage, not an unbacked trust signal.
-  - Discover-page Atlas AI now honors shell Genie availability before enabling or auto-running recommendations.
+  - Discover-page Axiom AI now honors shell Genie availability before enabling or auto-running recommendations.
   - Lineage hero copy now narrows to actor-visible lineage and conditionally avoids end-to-end claims when no backed graph edges exist.
   - Stewardship validation-seed work items now display shortened row IDs and visible `Validation sample` provenance while preserving full request IDs in titles/detail.
   - Control Center integration status pills no longer clip at the native prototype width.
-  - Prototype screenshot capture now fails closed on unknown route filters, empty selected routes, missing captures, unresolved shell-loading text, or disabled Atlas AI controls.
+  - Prototype screenshot capture now fails closed on unknown route filters, empty selected routes, missing captures, unresolved shell-loading text, or disabled Axiom AI controls.
 - Validation:
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
   - `npm test -- --run src/hooks/useDiscoveryResults.test.jsx src/components/DiscoveryWorkspace.identity.test.jsx src/components/GovernanceWorkspace.test.jsx src/components/LineageWorkspace.test.jsx src/components/AdminWorkspace.test.jsx` -> passed, `5` files / `41` tests.
-  - `GOVAT_PROTOTYPE_ROUTES=not-a-route ... node frontend/scripts/atlas_prototype_current_capture.mjs` -> failed as expected with `Unknown prototype route filter(s): not-a-route`.
+  - `AXIOM_PROTOTYPE_ROUTES=not-a-route ... node frontend/scripts/axiom_prototype_current_capture.mjs` -> failed as expected with `Unknown prototype route filter(s): not-a-route`.
   - scoped `git diff --check` for touched files -> passed.
 - Exact next action:
   - Run targeted local prototype captures for `stewardship`, `discover`, `lineage`, and `control-center`, then inspect the reports for shell readiness and visual fit.
@@ -4072,7 +4072,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Targeted Local Prototype Recapture Passed
 
 - Validation:
-  - `GOVAT_BASE_URL=http://127.0.0.1:3001 GOVAT_PROTOTYPE_MOCK_API=1 GOVAT_PROTOTYPE_ROUTES=stewardship,discover,lineage,control-center GOVAT_PROTOTYPE_VIEWPORTS=3037x1269,1536x1024 ... node frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `AXIOM_BASE_URL=http://127.0.0.1:3001 AXIOM_PROTOTYPE_MOCK_API=1 AXIOM_PROTOTYPE_ROUTES=stewardship,discover,lineage,control-center AXIOM_PROTOTYPE_VIEWPORTS=3037x1269,1536x1024 ... node frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
 - Evidence:
   - `docs/northstar_visual_qa/prototype-review-blocker-local-pass/prototype-current-report.json`
   - screenshots in `docs/northstar_visual_qa/prototype-review-blocker-local-pass/`
@@ -4082,7 +4082,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - page errors: `0`
   - all captures `loaded=true`
   - shell readiness blockers: none
-  - disabled shell Atlas AI controls: none
+  - disabled shell Axiom AI controls: none
 - Inspection:
   - Discovery text now uses governed metadata coverage and `Coverage score`.
   - Control Center integration status pills render full labels at the native prototype width.
@@ -4109,7 +4109,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `databricks bundle validate --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> passed.
   - `databricks bundle summary --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> passed.
   - `databricks bundle deploy --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> passed.
-  - `databricks apps deploy atlas --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b --skip-validation --timeout 20m -o json` -> passed.
+  - `databricks apps deploy axiom --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b --skip-validation --timeout 20m -o json` -> passed.
 - Active deployment:
   - deployment id: `01f1435febf310a2a1db7cae86e88604`
   - app state: `RUNNING`
@@ -4122,27 +4122,27 @@ explicitly revalidates them against the active ledgers and current evidence.
 
 ### Checkpoint - Target-Aware App Deploy Remediation Started
 
-- Trigger: live route validation after deployment `01f1435febf310a2a1db7cae86e88604` showed the app running source `app.yaml` defaults (`main.atlas`, local AI, Lakebase disabled) instead of the dev bundle target (`datapact.atlas`, Genie, Lakebase enabled).
+- Trigger: live route validation after deployment `01f1435febf310a2a1db7cae86e88604` showed the app running source `app.yaml` defaults (`main.axiom`, local AI, Lakebase disabled) instead of the dev bundle target (`emet.axiom`, Genie, Lakebase enabled).
 - Root cause found:
   - `databricks apps deploy --help` confirms that passing an `APP_NAME` from a Databricks Apps project directory uses direct API deploy mode.
-  - The prior command passed `atlas`, so it bypassed the enhanced project/bundle deployment pipeline and did not apply `databricks.yml` target config.
+  - The prior command passed `axiom`, so it bypassed the enhanced project/bundle deployment pipeline and did not apply `databricks.yml` target config.
 - Planned action:
   - Redeploy with the target-aware project command: `databricks apps deploy --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b --skip-validation --timeout 20m -o json`.
-  - Re-read live runtime/bootstrap config and require `datapact.atlas`, Genie, and Lakebase-enabled state before route/screenshot signoff.
+  - Re-read live runtime/bootstrap config and require `emet.axiom`, Genie, and Lakebase-enabled state before route/screenshot signoff.
 - Planned validation:
   - `databricks apps deploy` project-mode deploy.
-  - `databricks apps get atlas`.
+  - `databricks apps get axiom`.
   - Authenticated `/api/runtime/status` and `/api/bootstrap` readback.
-  - `frontend/scripts/atlas_route_live_validation.mjs`.
+  - `frontend/scripts/axiom_route_live_validation.mjs`.
   - Deployed screenshot-backed prototype capture.
 
 ### Checkpoint - Target-Aware App Deploy Remediation Readback Passed
 
 - Validation:
   - `databricks apps deploy --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b --skip-validation --timeout 20m -o json` -> passed using project-mode deploy.
-  - `databricks apps get atlas --profile DEFAULT -o json` -> app `RUNNING`, compute `ACTIVE`, active deployment `01f14362af3416b0a0de4d3a0044bfd8`, source path `/Workspace/Users/skyler@entrada.ai/.bundle/atlas/dev/files`.
+  - `databricks apps get axiom --profile DEFAULT -o json` -> app `RUNNING`, compute `ACTIVE`, active deployment `01f14362af3416b0a0de4d3a0044bfd8`, source path `/Workspace/Users/abarreto@shorecp.com/.bundle/axiom/dev/files`.
   - Authenticated `/api/runtime/status` readback -> runtime `live`, store `live`, Lakebase dual-write enabled with `delta-primary-lakebase-shadow` active tables.
-  - Authenticated `/api/bootstrap` readback -> shell environment `Dev · datapact.atlas`, role `Admin`, boot state `live`, authoritative `true`.
+  - Authenticated `/api/bootstrap` readback -> shell environment `Dev · emet.axiom`, role `Admin`, boot state `live`, authoritative `true`.
 - Evidence:
   - `docs/hardening/live-app-get-prototype-target-aware-redeploy.json`
   - `docs/hardening/live-runtime-status-prototype-target-aware-redeploy.json`
@@ -4153,7 +4153,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Live Route Validation Passed After Target-Aware Deploy
 
 - Validation:
-  - `GOVAT_DATABRICKS_TOKEN=... GOVAT_DEPLOYMENT_ID=01f14362af3416b0a0de4d3a0044bfd8 GOVAT_BUILD_ID=frontend-0915dd1ba7d4 GOVAT_ROUTE_OUT=docs/hardening/live-route-validation-prototype-target-aware-redeploy.json node frontend/scripts/atlas_route_live_validation.mjs` -> passed.
+  - `AXIOM_DATABRICKS_TOKEN=... AXIOM_DEPLOYMENT_ID=01f14362af3416b0a0de4d3a0044bfd8 AXIOM_BUILD_ID=frontend-0915dd1ba7d4 AXIOM_ROUTE_OUT=docs/hardening/live-route-validation-prototype-target-aware-redeploy.json node frontend/scripts/axiom_route_live_validation.mjs` -> passed.
 - Evidence:
   - `docs/hardening/live-route-validation-prototype-target-aware-redeploy.json`
 - Result summary:
@@ -4161,33 +4161,33 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Governance workbench/detail returned `5` requests with diff and approver evidence.
   - Audit, Admin, Taxonomy, CDE, Insights, Asset 360, and Lineage endpoint contracts passed.
   - Lakebase write mirror is `active`, mode `delta-primary-lakebase-shadow`, `6/6` writes succeeded, `0` failed.
-  - Atlas AI is provider `genie`, confidence `genie-grounded`, evidence count `1`, with no sentinel fallback SQL/rows/warnings.
+  - Axiom AI is provider `genie`, confidence `genie-grounded`, evidence count `1`, with no sentinel fallback SQL/rows/warnings.
 - Exact next action:
   - Capture the deployed app visually across the screenshot-backed prototype route set and viewport matrix.
 
 ### Checkpoint - Deployed Screenshot Capture Startup-State Fix Started
 
-- Trigger: deployed prototype screenshot capture after target-aware deploy failed on three frames even though content panels rendered. The common blocker was topbar shell readiness: `UC status loading` remained visible and the `.ga-ai-chip` was disabled.
+- Trigger: deployed prototype screenshot capture after target-aware deploy failed on three frames even though content panels rendered. The common blocker was topbar shell readiness: `UC status loading` remained visible and the `.ax-ai-chip` was disabled.
 - Root cause:
   - `/api/bootstrap?surface=...` may return a truthful `bootState: loading` route-bootstrap payload while the fast runtime probe warms a background SQL check.
-  - The frontend treated any non-inline bootstrap payload as final data and did not keep polling when `bootState` remained `loading`, so a cold or multi-worker app could leave the topbar status and Atlas AI disabled indefinitely.
+  - The frontend treated any non-inline bootstrap payload as final data and did not keep polling when `bootState` remained `loading`, so a cold or multi-worker app could leave the topbar status and Axiom AI disabled indefinitely.
   - The capture script also used the mock prototype `finance_prod.curated.revenue_daily` asset by default for live captures, causing avoidable live `404` requests when that prototype-only asset is not installed.
 - Planned edit:
   - Make `useBootstrap` poll route-bootstrap loading payloads until they become live/degraded/error.
-  - Keep mock captures on the prototype `finance_prod.curated.revenue_daily` asset, but default live captures to the seeded `datapact.governance_atlas_demo.customer_stewardship_queue` asset unless overridden.
+  - Keep mock captures on the prototype `finance_prod.curated.revenue_daily` asset, but default live captures to the seeded `emet.axiom_demo.customer_stewardship_queue` asset unless overridden.
 - Planned validation:
   - `npm test -- --run src/hooks/useBootstrap.test.jsx`
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs`
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs`
   - focused deployed recapture of the failed route/viewports.
 
 ### Checkpoint - Deployed Screenshot Startup-State Focused Gates Passed
 
 - Implemented:
   - `frontend/src/hooks/useBootstrap.js` now polls route-bootstrap payloads while `bootState` is `loading`, so cold or multi-worker `/api/bootstrap?surface=...` responses can hydrate the topbar to live state without a page reload.
-  - `frontend/scripts/atlas_prototype_current_capture.mjs` now defaults live captures to `datapact.governance_atlas_demo.customer_stewardship_queue` while preserving `finance_prod.curated.revenue_daily` for mock prototype captures.
+  - `frontend/scripts/axiom_prototype_current_capture.mjs` now defaults live captures to `emet.axiom_demo.customer_stewardship_queue` while preserving `finance_prod.curated.revenue_daily` for mock prototype captures.
 - Validation:
   - `npm test -- --run src/hooks/useBootstrap.test.jsx` -> passed, `4` tests.
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
   - scoped `git diff --check` for the touched hook/test/script/status files -> passed.
 - Exact next action:
   - Run frontend hygiene/build and redeploy so the startup-state fix is present in the live app before recapturing screenshots.
@@ -4200,7 +4200,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `npm test -- --run` -> passed, `53` files / `381` tests passed / `27` skipped.
   - `npm run build` -> passed.
 - Build artifact:
-  - `frontend/dist/atlas-build-manifest.json` build id `frontend-baf116f70e64`, generated `2026-04-29T01:21:15.345Z`.
+  - `frontend/dist/axiom-build-manifest.json` build id `frontend-baf116f70e64`, generated `2026-04-29T01:21:15.345Z`.
 - Exact next action:
   - Run Databricks bundle validate/summary/deploy and target-aware app deploy for build `frontend-baf116f70e64`.
 
@@ -4218,7 +4218,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - build id readback: `frontend-baf116f70e64`
 - Readback:
   - `/api/runtime/status` -> runtime `live`, store `live`, Lakebase mirror `active`.
-  - `/api/bootstrap?surface=taxonomy&asset=` -> build `frontend-baf116f70e64`, `bootState=live`, `mode=route-bootstrap`, shell environment `Dev · datapact.atlas`, AI provider `genie`.
+  - `/api/bootstrap?surface=taxonomy&asset=` -> build `frontend-baf116f70e64`, `bootState=live`, `mode=route-bootstrap`, shell environment `Dev · emet.axiom`, AI provider `genie`.
 - Evidence:
   - `docs/hardening/live-app-get-prototype-startup-fix.json`
   - `docs/hardening/live-runtime-status-prototype-startup-fix.json`
@@ -4229,13 +4229,13 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Startup-State Fix Live Route Validation Passed
 
 - Validation:
-  - `GOVAT_DATABRICKS_TOKEN=... GOVAT_DEPLOYMENT_ID=01f1436a328f180ab9729a5b2620035e GOVAT_BUILD_ID=frontend-baf116f70e64 GOVAT_ROUTE_OUT=docs/hardening/live-route-validation-prototype-startup-fix.json node frontend/scripts/atlas_route_live_validation.mjs` -> passed.
+  - `AXIOM_DATABRICKS_TOKEN=... AXIOM_DEPLOYMENT_ID=01f1436a328f180ab9729a5b2620035e AXIOM_BUILD_ID=frontend-baf116f70e64 AXIOM_ROUTE_OUT=docs/hardening/live-route-validation-prototype-startup-fix.json node frontend/scripts/axiom_route_live_validation.mjs` -> passed.
 - Evidence:
   - `docs/hardening/live-route-validation-prototype-startup-fix.json`
 - Result summary:
   - all endpoint build ids matched `frontend-baf116f70e64`.
   - Lakebase mirror remained `active`, `6/6` writes succeeded, `0` failed.
-  - Atlas AI remained `provider=genie`, `confidence=genie-grounded`, with no sentinel fallback SQL/rows/warnings.
+  - Axiom AI remained `provider=genie`, `confidence=genie-grounded`, with no sentinel fallback SQL/rows/warnings.
   - Governance, Audit, Admin, Taxonomy, CDE, Insights, Asset 360, and Lineage endpoint contracts passed.
 - Exact next action:
   - Re-run deployed screenshot-backed prototype capture with the corrected live default asset and startup-state polling fix.
@@ -4243,7 +4243,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Startup-State Fix Deployed Screenshot Capture Passed
 
 - Validation:
-  - `GOVAT_DATABRICKS_TOKEN=... GOVAT_DEPLOYMENT_ID=01f1436a328f180ab9729a5b2620035e GOVAT_BUILD_ID=frontend-baf116f70e64 GOVAT_PROTOTYPE_VIEWPORTS=3037x1269,1536x1024,1440x900,1280x720 GOVAT_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-live-deployed-startup-fix node frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `AXIOM_DATABRICKS_TOKEN=... AXIOM_DEPLOYMENT_ID=01f1436a328f180ab9729a5b2620035e AXIOM_BUILD_ID=frontend-baf116f70e64 AXIOM_PROTOTYPE_VIEWPORTS=3037x1269,1536x1024,1440x900,1280x720 AXIOM_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-live-deployed-startup-fix node frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
 - Evidence:
   - `docs/northstar_visual_qa/prototype-live-deployed-startup-fix/prototype-current-report.json`
   - `32` viewport screenshots plus `32` full-page screenshots under `docs/northstar_visual_qa/prototype-live-deployed-startup-fix/`.
@@ -4274,9 +4274,9 @@ explicitly revalidates them against the active ledgers and current evidence.
   - screenshots: `docs/northstar_visual_qa/prototype-live-deployed-startup-fix/*.png`
   - prototype contract: `docs/northstar_gap_analysis/prototype_contract.md`
 - Current truth/validation anchors:
-  - Runtime/store readback is live on `datapact.atlas`.
+  - Runtime/store readback is live on `emet.axiom`.
   - Lakebase dual-write mirror is `active`, mode `delta-primary-lakebase-shadow`, `6/6` validation writes succeeded, `0` failed.
-  - Atlas AI is Genie-backed with `provider=genie`, `confidence=genie-grounded`, and no sentinel fallback SQL/rows/warnings in live validation.
+  - Axiom AI is Genie-backed with `provider=genie`, `confidence=genie-grounded`, and no sentinel fallback SQL/rows/warnings in live validation.
   - Synthetic validation rows must remain visibly labeled as validation/sample provenance and must not be presented as organic customer workflow state.
 - Current closeout state:
   - Feedback/scope review initially blocked on stale contract evidence pointers and this missing continuation note; both are now remediated in this checkpoint.
@@ -4311,7 +4311,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `databricks bundle summary --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> passed.
   - `databricks bundle deploy --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> passed.
   - `databricks apps deploy --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b --skip-validation --timeout 20m -o json` -> passed.
-  - Live app readback -> deployment `01f1436f4b3c1e35a236f8d9154e7930`, app `RUNNING`, compute `ACTIVE`, build `frontend-97e174a8d5a6`, runtime `live`, store `live`, Lakebase mirror `active`, bootstrap `Dev · datapact.atlas`, AI provider `genie`.
+  - Live app readback -> deployment `01f1436f4b3c1e35a236f8d9154e7930`, app `RUNNING`, compute `ACTIVE`, build `frontend-97e174a8d5a6`, runtime `live`, store `live`, Lakebase mirror `active`, bootstrap `Dev · emet.axiom`, AI provider `genie`.
   - Live route validation -> passed on build `frontend-97e174a8d5a6`.
   - Deployed screenshot-backed prototype capture -> passed on build `frontend-97e174a8d5a6`.
 - Evidence:
@@ -4348,16 +4348,16 @@ explicitly revalidates them against the active ledgers and current evidence.
 - No Home R01-R11 blockers remain in the implementation checklist.
 - No second-pass Home S01-S08 blockers remain in the implementation checklist.
 - Regression-review blocker remediation:
-  - Marked `frontend/src/hooks/useAtlasAiConversation.js` intent-to-add so the new shared AI hook is visible in `git diff`.
+  - Marked `frontend/src/hooks/useAxiomAiConversation.js` intent-to-add so the new shared AI hook is visible in `git diff`.
   - Added a final `max-width: 980px` shell override after the desktop shell authority rules so mobile topbar layout is not forced back to desktop grid/min-width constraints.
   - Hardened command-center JSON serialization for pandas `Timestamp` and `datetime/date` values and sanitized row records at ingestion.
   - Added a regression test for timestamp-backed change request/audit rows.
 - Focused validation after regression-review blocker remediation:
-  - `./.venv/bin/python -m pytest -q tests/test_atlas_metrics.py tests/test_atlas_api.py` -> `36 passed`.
+  - `./.venv/bin/python -m pytest -q tests/test_axiom_metrics.py tests/test_axiom_api.py` -> `36 passed`.
   - `npm test -- --run src/components/HomePage.test.jsx src/components/AppFrame.test.jsx src/hooks/useCommandCenter.test.jsx` -> `3` files passed, `32` tests passed.
-  - `git diff --check atlas/services/atlas_metrics.py tests/test_atlas_metrics.py frontend/src/styles/northstar.css frontend/src/hooks/useAtlasAiConversation.js` -> passed.
+  - `git diff --check axiom/services/axiom_metrics.py tests/test_axiom_metrics.py frontend/src/styles/northstar.css frontend/src/hooks/useAxiomAiConversation.js` -> passed.
 - Broader local validation after regression-review blocker remediation:
-  - `./.venv/bin/python -m py_compile atlas/services/atlas_metrics.py` -> passed.
+  - `./.venv/bin/python -m py_compile axiom/services/axiom_metrics.py` -> passed.
   - `npm run lint` -> passed.
   - `npm run typecheck` -> passed.
   - `npm run build` -> passed, build `frontend-62510a30c84f`.
@@ -4368,13 +4368,13 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `databricks bundle deploy --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> passed.
   - `databricks apps deploy --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b --skip-validation --timeout 20m -o json` -> passed via the target-aware project pipeline.
   - Active deployment: `01f142a68ce31747ba493e3c752d09f2`; app state `RUNNING`; compute state `ACTIVE`; frontend build `frontend-62510a30c84f`.
-  - Runtime status readback confirms `GOVAT_CATALOG=datapact`, `GOVAT_SCHEMA=atlas`, warehouse `da02d15a9490650b`, runtime `live`, store `live`.
+  - Runtime status readback confirms `AXIOM_CATALOG=emet`, `AXIOM_SCHEMA=axiom`, warehouse `da02d15a9490650b`, runtime `live`, store `live`.
 - Final authenticated live Home Playwright QA passed on deployment `01f142a68ce31747ba493e3c752d09f2`, build `frontend-62510a30c84f`:
   - `1536x1024`, `1440x900`, and `1280x720` captures all passed.
   - `1280x720` reports `.gh-main` scrollHeight `618` and clientHeight `618`, `mainScrolls=false`, `horizontalOverflow=false`, footer-safe layout, and bottom alignment delta `0`.
   - 1536/1440 bottom alignment delta is `0.015625`; all captures have single-line copyright and footer-safe layout.
-  - Interaction gates passed: direct Home route, collapse-centered icons, draggable/closable header `AI Copilot`, View all routes, quick-action routes, footer links, profile avatar upload, and Home Atlas AI prompt.
-  - Atlas AI responses were `provider=genie`, `confidence=genie-grounded`, `evidenceCount=1`, with no page errors and no console warnings.
+  - Interaction gates passed: direct Home route, collapse-centered icons, draggable/closable header `AI Copilot`, View all routes, quick-action routes, footer links, profile avatar upload, and Home Axiom AI prompt.
+  - Axiom AI responses were `provider=genie`, `confidence=genie-grounded`, `evidenceCount=1`, with no page errors and no console warnings.
   - Evidence report: `docs/northstar_visual_qa/home-current/home-live-report.json`.
   - Side-by-side evidence: `docs/northstar_visual_qa/home-current/home-live-side-by-side-1536x1024.png`.
 - Final review lane signoff:
@@ -4397,7 +4397,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Trigger: final visual/product review of the deployed `northstar/*` evidence still blocks unanimous signoff on three responsive parity issues even though route validation and mechanical screenshot capture passed.
 - Active blockers:
   - Discover result rows collide/compress at `1440x900` and `1280x720`.
-  - Stewardship selected-work-item detail pane clips against the right Atlas AI area at `1440x900` and `1280x720`.
+  - Stewardship selected-work-item detail pane clips against the right Axiom AI area at `1440x900` and `1280x720`.
   - CDE Registry table columns overlap at `1440x900` and `1280x720`.
 - In-scope rules:
   - Keep the prototype route set limited to Command Center, Discover, Stewardship, Glossary, CDE Registry, Lineage Atlas, Audit Evidence, and Control Center.
@@ -4414,9 +4414,9 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Prototype Responsive Blocker Focused Gate Passed
 
 - Implemented:
-  - Discover prototype rows now reserve space for the trust/coverage score when the right Atlas AI dock is open and truncate long FQNs instead of allowing them to collide with score/chip content.
-  - Stewardship Workbench now stacks the queue and selected-detail pane at constrained widths when Atlas AI is open, avoiding clipped detail content while preserving the wide two-column prototype layout.
-  - Glossary/CDE Registry now converts CDE rows into compact readable rows at constrained widths when Atlas AI is open, preventing owner/source/status column overlap.
+  - Discover prototype rows now reserve space for the trust/coverage score when the right Axiom AI dock is open and truncate long FQNs instead of allowing them to collide with score/chip content.
+  - Stewardship Workbench now stacks the queue and selected-detail pane at constrained widths when Axiom AI is open, avoiding clipped detail content while preserving the wide two-column prototype layout.
+  - Glossary/CDE Registry now converts CDE rows into compact readable rows at constrained widths when Axiom AI is open, preventing owner/source/status column overlap.
 - Validation:
   - `npm test -- --run src/components/DiscoveryWorkspace.identity.test.jsx src/components/GovernanceWorkspace.test.jsx src/components/TaxonomyWorkspace.test.jsx src/components/CdeWorkspace.test.jsx` -> passed, `4` files / `30` tests.
   - `git diff --check -- IMPLEMENTATION_STATUS.md frontend/src/styles/northstar.css frontend/src/styles/operations-pages.css` -> passed.
@@ -4426,11 +4426,11 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Prototype Responsive Local Screenshot Gate Passed
 
 - Validation:
-  - `GOVAT_BASE_URL=http://127.0.0.1:3000 GOVAT_PROTOTYPE_MOCK_API=1 GOVAT_PROTOTYPE_ROUTES=discover,stewardship,cde-registry GOVAT_PROTOTYPE_VIEWPORTS=1440x900,1280x720 GOVAT_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-responsive-local-fix node frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `AXIOM_BASE_URL=http://127.0.0.1:3000 AXIOM_PROTOTYPE_MOCK_API=1 AXIOM_PROTOTYPE_ROUTES=discover,stewardship,cde-registry AXIOM_PROTOTYPE_VIEWPORTS=1440x900,1280x720 AXIOM_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-responsive-local-fix node frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
   - Follow-up `1280x720` spot captures after row-density tuning also passed under `docs/northstar_visual_qa/prototype-responsive-local-fix-2/` and `docs/northstar_visual_qa/prototype-responsive-local-fix-3/`.
 - Manual inspection:
   - Discover rows no longer allow FQN/title text to run into coverage values; chips move below the name line at constrained dock widths.
-  - Stewardship no longer clips the detail column under the Atlas AI dock; the work queue uses a compact readable table and detail stacks below.
+  - Stewardship no longer clips the detail column under the Axiom AI dock; the work queue uses a compact readable table and detail stacks below.
   - CDE Registry rows no longer overlap owner/source/status content; rows render as compact readable records at constrained dock widths.
 - Exact next action:
   - Re-run focused tests after the final density tweak, then execute full lint/typecheck/build before Databricks validation/deploy.
@@ -4444,31 +4444,31 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `npm test -- --run` -> passed, `53` files / `381` tests passed / `27` skipped.
   - `npm run build` -> passed.
 - Build artifact:
-  - `frontend/dist/atlas-build-manifest.json` build id `frontend-98b7193c36b1`, generated `2026-04-29T02:58:50.372Z`.
+  - `frontend/dist/axiom-build-manifest.json` build id `frontend-98b7193c36b1`, generated `2026-04-29T02:58:50.372Z`.
 - Exact next action:
   - Run Databricks bundle validate/summary/deploy and target-aware app deploy for build `frontend-98b7193c36b1`.
 
 ### Checkpoint - Stewardship Compact Priority Follow-Up Passed
 
-- Trigger: the first deployed responsive screenshot for `stewardship-1280x720` showed the priority column compressed in the constrained Atlas AI dock layout.
+- Trigger: the first deployed responsive screenshot for `stewardship-1280x720` showed the priority column compressed in the constrained Axiom AI dock layout.
 - Implemented:
   - Hid only the priority column in the constrained dock layout, preserving the wide prototype table shape while keeping the `1280x720` and `1440x900` work queue readable.
 - Validation:
   - `npm test -- --run src/components/GovernanceWorkspace.test.jsx src/components/TaxonomyWorkspace.test.jsx src/components/DiscoveryWorkspace.identity.test.jsx` -> passed, `3` files / `25` tests.
   - `npm run lint -- --quiet` -> passed.
   - `git diff --check -- IMPLEMENTATION_STATUS.md frontend/src/styles/northstar.css frontend/src/styles/operations-pages.css` -> passed.
-  - `GOVAT_BASE_URL=http://127.0.0.1:3000 GOVAT_PROTOTYPE_MOCK_API=1 GOVAT_PROTOTYPE_ROUTES=stewardship GOVAT_PROTOTYPE_VIEWPORTS=1280x720 GOVAT_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-responsive-local-fix-4 node frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `AXIOM_BASE_URL=http://127.0.0.1:3000 AXIOM_PROTOTYPE_MOCK_API=1 AXIOM_PROTOTYPE_ROUTES=stewardship AXIOM_PROTOTYPE_VIEWPORTS=1280x720 AXIOM_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-responsive-local-fix-4 node frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
   - `npm run build` -> passed.
 - Build artifact:
-  - `frontend/dist/atlas-build-manifest.json` build id `frontend-08b79b8a20aa`, generated `2026-04-29T03:24:37.715Z`.
+  - `frontend/dist/axiom-build-manifest.json` build id `frontend-08b79b8a20aa`, generated `2026-04-29T03:24:37.715Z`.
 - Exact next action:
   - Redeploy build `frontend-08b79b8a20aa`, re-run live route validation, and recapture deployed screenshots.
 
 ### Checkpoint - Prototype Topbar Responsive Follow-Up Started
 
-- Trigger: deployed `docs/northstar_visual_qa/prototype-live-deployed-responsive-final/discover-1440x900.png` showed the top-right Atlas AI header action clipped at the viewport edge, even though the route capture gate passed.
+- Trigger: deployed `docs/northstar_visual_qa/prototype-live-deployed-responsive-final/discover-1440x900.png` showed the top-right Axiom AI header action clipped at the viewport edge, even though the route capture gate passed.
 - Scope:
-  - Fix only the constrained-width prototype header elasticity so the workspace breadcrumb, search, UC status, notifications/help, and Atlas AI button fit at `1440x900` and nearby viewport widths.
+  - Fix only the constrained-width prototype header elasticity so the workspace breadcrumb, search, UC status, notifications/help, and Axiom AI button fit at `1440x900` and nearby viewport widths.
   - Preserve the approved prototype route set and the current page content/layout fixes.
 - Planned validation:
   - Focused topbar tests and `git diff --check`.
@@ -4479,7 +4479,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 
 - Implemented:
   - The prototype shell header now uses a more elastic grid between `1281px` and `1600px`, with a bounded search column, smaller header-control gaps, and truncation on long UC status labels.
-  - The fix is scoped to the constrained prototype-width band that clipped the Atlas AI button and leaves the existing `1280px` mobile-tablet header behavior intact.
+  - The fix is scoped to the constrained prototype-width band that clipped the Axiom AI button and leaves the existing `1280px` mobile-tablet header behavior intact.
 - Validation:
   - `npm test -- --run src/components/AppFrame.test.jsx src/components/primitives/__tests__/ShellTopbarIdentity.test.jsx` -> passed, `2` files / `21` tests.
   - `git diff --check -- IMPLEMENTATION_STATUS.md frontend/src/styles/northstar.css` -> passed.
@@ -4489,9 +4489,9 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Prototype Topbar Local Screenshot Gate Passed
 
 - Validation:
-  - `GOVAT_BASE_URL=http://127.0.0.1:3000 GOVAT_PROTOTYPE_MOCK_API=1 GOVAT_PROTOTYPE_ROUTES=discover GOVAT_PROTOTYPE_VIEWPORTS=1440x900,1280x720 GOVAT_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-topbar-local-fix node frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `AXIOM_BASE_URL=http://127.0.0.1:3000 AXIOM_PROTOTYPE_MOCK_API=1 AXIOM_PROTOTYPE_ROUTES=discover AXIOM_PROTOTYPE_VIEWPORTS=1440x900,1280x720 AXIOM_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-topbar-local-fix node frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
 - Manual inspection:
-  - `docs/northstar_visual_qa/prototype-topbar-local-fix/discover-1440x900.png` shows the UC status, notification/help controls, and full `Atlas AI` header button inside the viewport.
+  - `docs/northstar_visual_qa/prototype-topbar-local-fix/discover-1440x900.png` shows the UC status, notification/help controls, and full `Axiom AI` header button inside the viewport.
   - `docs/northstar_visual_qa/prototype-topbar-local-fix/discover-1280x720.png` preserved the already-working compact header.
 - Exact next action:
   - Run frontend hygiene/build, then redeploy the corrected build and recapture the full live prototype matrix.
@@ -4511,7 +4511,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Validation:
   - `npm run build` -> passed.
 - Build artifact:
-  - `frontend/dist/atlas-build-manifest.json` build id `frontend-9cc5e24ea7d4`, generated `2026-04-29T04:00:25.828Z`.
+  - `frontend/dist/axiom-build-manifest.json` build id `frontend-9cc5e24ea7d4`, generated `2026-04-29T04:00:25.828Z`.
 - Exact next action:
   - Run Databricks `bundle validate`, `bundle summary`, deploy, target-aware app deploy, runtime readback, live route validation, and full deployed screenshot capture for build `frontend-9cc5e24ea7d4`.
 
@@ -4521,7 +4521,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `databricks bundle validate --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> passed.
   - `databricks bundle summary --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> passed; app URL remains reported as `(not deployed)` by bundle summary, consistent with prior Databricks CLI behavior for this app resource.
   - `databricks bundle deploy --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> passed.
-  - `databricks apps deploy atlas --profile DEFAULT --source-code-path /Workspace/Users/skyler@entrada.ai/.bundle/atlas/dev/files --skip-validation --timeout 20m -o json` -> passed.
+  - `databricks apps deploy axiom --profile DEFAULT --source-code-path /Workspace/Users/abarreto@shorecp.com/.bundle/axiom/dev/files --skip-validation --timeout 20m -o json` -> passed.
 - Live deployment:
   - Deployment id `01f1438066af13dda5063215c95e789b`.
   - App status `SUCCEEDED`; message `App started successfully`.
@@ -4531,10 +4531,10 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Prototype Topbar First Live Route Gate Blocked
 
 - Validation:
-  - `GOVAT_DATABRICKS_TOKEN=... GOVAT_DEPLOYMENT_ID=01f1438066af13dda5063215c95e789b GOVAT_BUILD_ID=frontend-9cc5e24ea7d4 GOVAT_ROUTE_OUT=docs/hardening/live-route-validation-prototype-responsive-topbar-final.json GOVAT_ASSET360_API_OUT=docs/northstar_visual_qa/asset360-current/asset360-live-api-prototype-responsive-topbar-final.json node frontend/scripts/atlas_route_live_validation.mjs` -> failed.
+  - `AXIOM_DATABRICKS_TOKEN=... AXIOM_DEPLOYMENT_ID=01f1438066af13dda5063215c95e789b AXIOM_BUILD_ID=frontend-9cc5e24ea7d4 AXIOM_ROUTE_OUT=docs/hardening/live-route-validation-prototype-responsive-topbar-final.json AXIOM_ASSET360_API_OUT=docs/northstar_visual_qa/asset360-current/asset360-live-api-prototype-responsive-topbar-final.json node frontend/scripts/axiom_route_live_validation.mjs` -> failed.
 - Evidence:
   - All checked endpoints served build `frontend-9cc5e24ea7d4`, so the source build was live.
-  - Runtime truth regressed because the API-style deploy used source defaults from `app.yaml`: Lakebase reported `disabled`, Atlas AI provider reported `local-evidence`, and admin/audit routes returned `403`.
+  - Runtime truth regressed because the API-style deploy used source defaults from `app.yaml`: Lakebase reported `disabled`, Axiom AI provider reported `local-evidence`, and admin/audit routes returned `403`.
 - Decision:
   - Do not capture or sign off screenshots from this deployment state.
   - Re-run `databricks apps deploy` from the bundle project path without an explicit `APP_NAME` argument so the `dev` target config injects Genie/Lakebase/admin environment values.
@@ -4545,20 +4545,20 @@ explicitly revalidates them against the active ledgers and current evidence.
 
 - Validation:
   - `databricks apps deploy --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b --skip-validation --timeout 20m -o json` -> passed.
-  - `databricks apps get atlas --profile DEFAULT -o json` -> active deployment `01f143819c8a18d286a657964c7a2516`, status `SUCCEEDED`, app `RUNNING`, compute `ACTIVE`.
+  - `databricks apps get axiom --profile DEFAULT -o json` -> active deployment `01f143819c8a18d286a657964c7a2516`, status `SUCCEEDED`, app `RUNNING`, compute `ACTIVE`.
 - Evidence:
-  - Active deployment now lists the bundle-injected environment variable names and the configured `atlas-genie-space` and `atlas-lakebase` app resources.
+  - Active deployment now lists the bundle-injected environment variable names and the configured `axiom-genie-space` and `axiom-lakebase` app resources.
 - Exact next action:
   - Rerun live route validation against deployment `01f143819c8a18d286a657964c7a2516` and build `frontend-9cc5e24ea7d4`.
 
 ### Checkpoint - Prototype Topbar Live Route Gate Passed
 
 - Validation:
-  - `GOVAT_DATABRICKS_TOKEN=... GOVAT_DEPLOYMENT_ID=01f143819c8a18d286a657964c7a2516 GOVAT_BUILD_ID=frontend-9cc5e24ea7d4 GOVAT_ROUTE_OUT=docs/hardening/live-route-validation-prototype-responsive-topbar-final.json GOVAT_ASSET360_API_OUT=docs/northstar_visual_qa/asset360-current/asset360-live-api-prototype-responsive-topbar-final.json node frontend/scripts/atlas_route_live_validation.mjs` -> passed.
+  - `AXIOM_DATABRICKS_TOKEN=... AXIOM_DEPLOYMENT_ID=01f143819c8a18d286a657964c7a2516 AXIOM_BUILD_ID=frontend-9cc5e24ea7d4 AXIOM_ROUTE_OUT=docs/hardening/live-route-validation-prototype-responsive-topbar-final.json AXIOM_ASSET360_API_OUT=docs/northstar_visual_qa/asset360-current/asset360-live-api-prototype-responsive-topbar-final.json node frontend/scripts/axiom_route_live_validation.mjs` -> passed.
 - Evidence:
   - Every checked endpoint returned build id `frontend-9cc5e24ea7d4`.
   - Lakebase write mirror `active`, mode `delta-primary-lakebase-shadow`, attempted `3`, succeeded `3`, failed `0`.
-  - Atlas AI provider `genie`, confidence `genie-grounded`, evidence count `1`, with no sentinel SQL/row/warning fallback.
+  - Axiom AI provider `genie`, confidence `genie-grounded`, evidence count `1`, with no sentinel SQL/row/warning fallback.
   - Governance workbench/detail, audit evidence/detail, admin control center, insights, taxonomy, CDE dashboard/detail, lineage, asset detail, and supporting Asset 360 API routes all passed the live route contract.
 - Artifacts:
   - `docs/hardening/live-route-validation-prototype-responsive-topbar-final.json`
@@ -4571,7 +4571,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Prototype Live Screenshot Gate Reopened
 
 - Validation:
-  - `GOVAT_DATABRICKS_TOKEN=... GOVAT_DEPLOYMENT_ID=01f143819c8a18d286a657964c7a2516 GOVAT_BUILD_ID=frontend-9cc5e24ea7d4 GOVAT_PROTOTYPE_VIEWPORTS=3037x1269,1536x1024,1440x900,1280x720 GOVAT_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-live-deployed-responsive-topbar-final node frontend/scripts/atlas_prototype_current_capture.mjs` -> passed, `32` screenshots captured with no script-level page/request/console failures.
+  - `AXIOM_DATABRICKS_TOKEN=... AXIOM_DEPLOYMENT_ID=01f143819c8a18d286a657964c7a2516 AXIOM_BUILD_ID=frontend-9cc5e24ea7d4 AXIOM_PROTOTYPE_VIEWPORTS=3037x1269,1536x1024,1440x900,1280x720 AXIOM_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-live-deployed-responsive-topbar-final node frontend/scripts/axiom_prototype_current_capture.mjs` -> passed, `32` screenshots captured with no script-level page/request/console failures.
 - Manual inspection:
   - `discover-1440x900.png` confirms the topbar clipping is fixed in live deployment.
   - `discover-1280x720.png`, `stewardship-1440x900.png`, and `cde-registry-1280x720.png` preserve the prior responsive row/readability fixes.
@@ -4588,7 +4588,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Validation:
   - `npm test -- --run src/components/GovernanceWorkspace.test.jsx` -> passed, `1` file / `10` tests.
   - `git diff --check -- IMPLEMENTATION_STATUS.md frontend/src/styles/operations-pages.css` -> passed.
-  - `GOVAT_BASE_URL=http://127.0.0.1:3000 GOVAT_PROTOTYPE_MOCK_API=1 GOVAT_PROTOTYPE_ROUTES=stewardship GOVAT_PROTOTYPE_VIEWPORTS=1280x720 GOVAT_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-stewardship-scroll-local-fix-2 node frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `AXIOM_BASE_URL=http://127.0.0.1:3000 AXIOM_PROTOTYPE_MOCK_API=1 AXIOM_PROTOTYPE_ROUTES=stewardship AXIOM_PROTOTYPE_VIEWPORTS=1280x720 AXIOM_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-stewardship-scroll-local-fix-2 node frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
 - Exact next action:
   - Rebuild, deploy with the target-aware project deploy path, rerun live route validation, and recapture the deployed screenshot matrix.
 
@@ -4598,7 +4598,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `npm run lint -- --quiet` -> passed.
   - `npm run build` -> passed.
 - Build artifact:
-  - `frontend/dist/atlas-build-manifest.json` build id `frontend-ca2280f39a0f`, generated `2026-04-29T04:45:03.394Z`.
+  - `frontend/dist/axiom-build-manifest.json` build id `frontend-ca2280f39a0f`, generated `2026-04-29T04:45:03.394Z`.
 - Exact next action:
   - Run Databricks bundle validate/summary and target-aware project deploy for build `frontend-ca2280f39a0f`.
 
@@ -4608,19 +4608,19 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `databricks bundle validate --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> passed.
   - `databricks bundle summary --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b` -> passed; app URL remains reported as `(not deployed)` by bundle summary, consistent with prior CLI behavior.
   - `databricks apps deploy --profile DEFAULT -t dev --var warehouse_id=da02d15a9490650b --skip-validation --timeout 20m -o json` -> passed.
-  - `databricks apps get atlas --profile DEFAULT -o json` -> active deployment `01f143868f691f769c94fa616ce2e7cd`, status `SUCCEEDED`, app `RUNNING`, compute `ACTIVE`.
+  - `databricks apps get axiom --profile DEFAULT -o json` -> active deployment `01f143868f691f769c94fa616ce2e7cd`, status `SUCCEEDED`, app `RUNNING`, compute `ACTIVE`.
 - Exact next action:
   - Rerun live route validation and deployed screenshot capture against deployment `01f143868f691f769c94fa616ce2e7cd` / build `frontend-ca2280f39a0f`.
 
 ### Checkpoint - Prototype Stewardship Scroll Live Route Gate Passed
 
 - Validation:
-  - Initial live route attempt after deploy returned `401` for every endpoint because `/tmp/govat-default-token` had expired; the token was refreshed with `databricks auth token --profile DEFAULT -o json`.
-  - `GOVAT_DATABRICKS_TOKEN=... GOVAT_DEPLOYMENT_ID=01f143868f691f769c94fa616ce2e7cd GOVAT_BUILD_ID=frontend-ca2280f39a0f GOVAT_ROUTE_OUT=docs/hardening/live-route-validation-prototype-responsive-scroll-final.json GOVAT_ASSET360_API_OUT=docs/northstar_visual_qa/asset360-current/asset360-live-api-prototype-responsive-scroll-final.json node frontend/scripts/atlas_route_live_validation.mjs` -> passed.
+  - Initial live route attempt after deploy returned `401` for every endpoint because `/tmp/axiom-default-token` had expired; the token was refreshed with `databricks auth token --profile DEFAULT -o json`.
+  - `AXIOM_DATABRICKS_TOKEN=... AXIOM_DEPLOYMENT_ID=01f143868f691f769c94fa616ce2e7cd AXIOM_BUILD_ID=frontend-ca2280f39a0f AXIOM_ROUTE_OUT=docs/hardening/live-route-validation-prototype-responsive-scroll-final.json AXIOM_ASSET360_API_OUT=docs/northstar_visual_qa/asset360-current/asset360-live-api-prototype-responsive-scroll-final.json node frontend/scripts/axiom_route_live_validation.mjs` -> passed.
 - Evidence:
   - Every checked endpoint returned build id `frontend-ca2280f39a0f`.
   - Lakebase write mirror `active`, mode `delta-primary-lakebase-shadow`, attempted `3`, succeeded `3`, failed `0`.
-  - Atlas AI provider `genie`, confidence `genie-grounded`, evidence count `1`, with no sentinel SQL/row/warning fallback.
+  - Axiom AI provider `genie`, confidence `genie-grounded`, evidence count `1`, with no sentinel SQL/row/warning fallback.
 - Artifacts:
   - `docs/hardening/live-route-validation-prototype-responsive-scroll-final.json`
   - `docs/hardening/live-app-get-prototype-responsive-scroll-final.json`
@@ -4632,11 +4632,11 @@ explicitly revalidates them against the active ledgers and current evidence.
 ### Checkpoint - Prototype Final Deployed Screenshot Gate Passed
 
 - Validation:
-  - `GOVAT_DATABRICKS_TOKEN=... GOVAT_DEPLOYMENT_ID=01f143868f691f769c94fa616ce2e7cd GOVAT_BUILD_ID=frontend-ca2280f39a0f GOVAT_PROTOTYPE_VIEWPORTS=3037x1269,1536x1024,1440x900,1280x720 GOVAT_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-live-deployed-responsive-scroll-final node frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `AXIOM_DATABRICKS_TOKEN=... AXIOM_DEPLOYMENT_ID=01f143868f691f769c94fa616ce2e7cd AXIOM_BUILD_ID=frontend-ca2280f39a0f AXIOM_PROTOTYPE_VIEWPORTS=3037x1269,1536x1024,1440x900,1280x720 AXIOM_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-live-deployed-responsive-scroll-final node frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
   - Capture report `docs/northstar_visual_qa/prototype-live-deployed-responsive-scroll-final/prototype-current-report.json` has `passed=true`, `expectedCaptureCount=32`, `captures=32`, and no page/request/console failures.
-  - `GOVAT_DATABRICKS_TOKEN=... GOVAT_DEPLOYMENT_ID=01f143868f691f769c94fa616ce2e7cd GOVAT_BUILD_ID=frontend-ca2280f39a0f GOVAT_PROTOTYPE_ROUTES=stewardship GOVAT_PROTOTYPE_VIEWPORTS=1280x720 GOVAT_PROTOTYPE_SCROLL_MAIN=1 GOVAT_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-live-deployed-responsive-scroll-final-scrolled node frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `AXIOM_DATABRICKS_TOKEN=... AXIOM_DEPLOYMENT_ID=01f143868f691f769c94fa616ce2e7cd AXIOM_BUILD_ID=frontend-ca2280f39a0f AXIOM_PROTOTYPE_ROUTES=stewardship AXIOM_PROTOTYPE_VIEWPORTS=1280x720 AXIOM_PROTOTYPE_SCROLL_MAIN=1 AXIOM_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/prototype-live-deployed-responsive-scroll-final-scrolled node frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
 - Manual inspection:
-  - `discover-1440x900.png` shows the full topbar action set, including the full `Atlas AI` button, inside the viewport.
+  - `discover-1440x900.png` shows the full topbar action set, including the full `Axiom AI` button, inside the viewport.
   - `discover-1280x720.png` and `cde-registry-1280x720.png` keep rows readable without text collisions.
   - `stewardship-1440x900.png` shows the stacked queue and selected detail without clipping.
   - `stewardship-1280x720-main-bottom.png` in the scrolled capture proves the selected detail pane is reachable below the queue in the constrained viewport.
@@ -4651,7 +4651,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Re-polled runtime status until it recorded `runtime.state=live` and `store.state=live`.
 - Validation:
   - Runtime artifact now shows build `frontend-ca2280f39a0f`, Lakebase mirror `active`, mode `delta-primary-lakebase-shadow`, failed `0`.
-  - Bootstrap artifact now shows build `frontend-ca2280f39a0f`, Atlas AI provider `genie`, Lakebase mirror `active`, failed `0`, environment `Dev · datapact.atlas`.
+  - Bootstrap artifact now shows build `frontend-ca2280f39a0f`, Axiom AI provider `genie`, Lakebase mirror `active`, failed `0`, environment `Dev · emet.axiom`.
   - `git diff --check -- docs/hardening/live-runtime-status-prototype-responsive-scroll-final.json docs/hardening/live-bootstrap-prototype-responsive-scroll-final.json docs/northstar_gap_analysis/prototype_contract.md IMPLEMENTATION_STATUS.md frontend/src/styles/northstar.css frontend/src/styles/operations-pages.css` -> passed.
 - Exact next action:
   - Re-send refreshed evidence to truth/provenance review and wait for unanimous signoff.
@@ -4661,7 +4661,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Review signoff:
   - Visual/product reviewer: SIGNOFF. The final deployed screenshot matrix clears the Discover row collision, Stewardship detail clipping, and CDE Registry overlap blockers for the active `northstar/*` route set.
   - Functional/regression reviewer: SIGNOFF. Live routes, screenshot matrix, constrained Stewardship scroll proof, Lakebase mirror, and Genie grounding have no remaining blockers.
-  - Truth/provenance reviewer: SIGNOFF. Refreshed runtime/bootstrap artifacts prove live runtime/store state, build `frontend-ca2280f39a0f`, Lakebase mirror `active`, and Atlas AI `provider=genie` without unsupported synthetic workflow, lineage, quality, or AI claims.
+  - Truth/provenance reviewer: SIGNOFF. Refreshed runtime/bootstrap artifacts prove live runtime/store state, build `frontend-ca2280f39a0f`, Lakebase mirror `active`, and Axiom AI `provider=genie` without unsupported synthetic workflow, lineage, quality, or AI claims.
   - Feedback/scope reviewer: SIGNOFF. The contract and evidence now point at `prototype-live-deployed-responsive-scroll-final`; standalone Asset 360 remains excluded from the visual gate because it is not in the new `northstar/*` prototype scope.
 - Validation:
   - Final active deployment: `01f143868f691f769c94fa616ce2e7cd`.
@@ -4817,7 +4817,7 @@ explicitly revalidates them against the active ledgers and current evidence.
 - Trigger:
   - User requested a focused shared-shell pass while other page-specific work
     remains in flight. Ownership for this tranche is limited to the shared
-    shell/topbar, Atlas AI panel/dock, global palette tokens, markdown
+    shell/topbar, Axiom AI panel/dock, global palette tokens, markdown
     rendering, disabled/loading semantics, and related tests.
 - Inputs read:
   - `AGENTS.md`
@@ -4826,20 +4826,20 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `docs/northstar_gap_analysis/reference_manifest.json`
   - `northstar/components/shell.jsx`
   - `northstar/styles/tokens.css`
-  - `northstar/styles/atlas.css`
+  - `northstar/styles/axiom.css`
   - `.claude/skills/databricks-apps/SKILL.md`
 - Planned scoped changes:
   - Bring shared dark palette tokens and global shell backgrounds closer to the
     checked-in `northstar/*` shell.
   - Tighten the topbar search shortcut into the prototype-style single `⌘K`
     key hint.
-  - Improve floating Atlas AI grounding text, loading/readability, prompt
+  - Improve floating Axiom AI grounding text, loading/readability, prompt
     grouping, resize affordance, and input placeholder.
   - Normalize common Genie/Markdown table answers so raw pipe-table syntax does
     not leak into the chat transcript.
 - Validation plan:
   - Focused unit tests for `AppFrame`, shared shell primitives, `UserChip`,
-    markdown rendering, and Atlas AI normalization.
+    markdown rendering, and Axiom AI normalization.
   - `npm run typecheck`
   - `npm run lint -- --quiet`
   - `python3 scripts/check_northstar_audit_contract.py`
@@ -4854,14 +4854,14 @@ explicitly revalidates them against the active ledgers and current evidence.
     `functional_control_audit.md` has 75 unchecked functional-control rows.
 - Scope for this checkpoint:
   - Shared controls that block every page: topbar search routing, workspace
-    breadcrumb, notifications, help/profile menus, floating Atlas AI prompt/input
+    breadcrumb, notifications, help/profile menus, floating Axiom AI prompt/input
     states, markdown/evidence display, and evidence-routing semantics.
   - No page will be marked complete from this tranche; visual/page-specific rows
     remain open unless screenshot evidence explicitly proves otherwise.
 - Validation plan:
   - Focused component tests for `AppFrame`, `GlobalHeader`, `TopbarSearch`,
-    `UserChip`, and `useAtlasAiConversation`.
-  - Local Playwright interaction capture with `GOVAT_PROTOTYPE_MOCK_API=1` to
+    `UserChip`, and `useAxiomAiConversation`.
+  - Local Playwright interaction capture with `AXIOM_PROTOTYPE_MOCK_API=1` to
     record shared control behavior across prototype routes.
   - `npm run northstar:audit-contract` after ledger updates.
   - Diff whitespace check on touched files.
@@ -4877,18 +4877,18 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Changed topbar search submit behavior to search-first navigation: typed
     global searches now route to Discover with the query preserved instead of
     auto-opening the first direct asset result.
-  - Added routed Atlas AI evidence chips for asset, stewardship, audit, and
+  - Added routed Axiom AI evidence chips for asset, stewardship, audit, and
     lineage evidence where a supported surface exists.
-  - Added unit coverage for global search submit, Atlas AI evidence routing,
+  - Added unit coverage for global search submit, Axiom AI evidence routing,
     answer normalization, markdown-table cleanup, and error transcript state.
   - Expanded the prototype capture harness with shared shell interactions for
     keyboard and mouse search, workspace breadcrumb, notifications, help, and
     profile menu.
   - Updated `functional_control_audit.md` only for rows backed by this evidence.
 - Validation:
-  - `npm run test -- src/components/AppFrame.test.jsx src/hooks/useAtlasAiConversation.test.jsx`
+  - `npm run test -- src/components/AppFrame.test.jsx src/hooks/useAxiomAiConversation.test.jsx`
     -> passed (`20` tests).
-  - `node --check frontend/scripts/atlas_prototype_current_capture.mjs` -> passed.
+  - `node --check frontend/scripts/axiom_prototype_current_capture.mjs` -> passed.
   - Local prototype-mock Playwright capture:
     `docs/northstar_visual_qa/prototype-current-shared-shell-functional-local/prototype-current-report.json`
     -> passed with `1` route capture, `6` interactions, `0` failures, `0` page
@@ -4903,7 +4903,7 @@ explicitly revalidates them against the active ledgers and current evidence.
   - `full_page_audit.md` is unchanged at `267` open visual/page/shared gaps.
 - Risks:
   - Evidence is local `prototype_mock`, not live Databricks proof.
-  - Atlas AI prompt-suggestion and UI error-state capture remain open in the
+  - Axiom AI prompt-suggestion and UI error-state capture remain open in the
     cross-page ledger.
   - No page has signoff.
 - Exact next action:
@@ -4920,12 +4920,12 @@ explicitly revalidates them against the active ledgers and current evidence.
   - Search valid/invalid/empty/loading behavior, facet count changes, clear
     filters, sort state, row favorite/kebab actions, selected preview tabs,
     Open Asset, Governance/Certify, preview sticky actions, and route-specific
-    Atlas AI evidence behavior.
+    Axiom AI evidence behavior.
 - Validation plan:
   - Inspect existing `DiscoveryWorkspace` controls and tests before editing.
   - Add/adjust focused component tests where the behavior is local to the
     component.
-  - Extend `atlas_prototype_current_capture.mjs` Discover interaction specs to
+  - Extend `axiom_prototype_current_capture.mjs` Discover interaction specs to
     record each newly proven behavior.
   - Run focused Discover tests, local prototype-mock capture for Discover, audit
     contract, and scoped diff checks.
@@ -4947,7 +4947,7 @@ explicitly revalidates them against the active ledgers and current evidence.
     empty, and loading search states.
   - Add Discover interaction specs for facets, clear filters, sort, row actions,
     preview tabs, Open Asset 360, Governance/Certify routing, sticky footer
-    visibility, and Atlas AI recommendations.
+    visibility, and Axiom AI recommendations.
 - Validation still pending:
   - Focused Discover tests.
   - Discover-only local prototype-mock Playwright interaction capture.

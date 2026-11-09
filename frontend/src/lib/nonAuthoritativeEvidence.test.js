@@ -172,7 +172,7 @@ describe("nonAuthoritativeEvidence", () => {
       authoritative: false,
       state: "degraded",
       source: "unity-catalog-inventory",
-      assets: [{ fqn: "datapact.atlas.customer_dim" }],
+      assets: [{ fqn: "emet.axiom.customer_dim" }],
     })).toBe(true);
     expect(isNonAuthoritativeMockEvidence({
       authoritative: false,
@@ -190,7 +190,7 @@ describe("nonAuthoritativeEvidence", () => {
 
   it("separates envelope authority from non-authoritative nested rows", () => {
     const asset = {
-      fqn: "datapact.enterprise_metadata_ops.risk_data_quality_review",
+      fqn: "emet.enterprise_metadata_ops.risk_data_quality_review",
       authoritative: true,
       source: "unity-catalog-inventory",
       metadataAudit: [

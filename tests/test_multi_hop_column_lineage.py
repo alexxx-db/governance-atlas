@@ -3,7 +3,7 @@ from __future__ import annotations
 import unittest
 from typing import Dict, List
 
-from atlas.services import lineage as lineage_service
+from axiom.services import lineage as lineage_service
 
 
 def _graph_from_edges(edges: Dict[str, List[Dict[str, str]]]):

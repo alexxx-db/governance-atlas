@@ -130,7 +130,7 @@ describe("WorkspaceSetupWizard (app-shell, system kit)", () => {
 
     expect(screen.getByText("Workspace setup")).not.toBeNull();
     expect(screen.getByText("Loading workspace setup guidance...")).not.toBeNull();
-    expect(container.querySelector(".ga-shell-state-card")).not.toBeNull();
+    expect(container.querySelector(".ax-shell-state-card")).not.toBeNull();
     expect(container.querySelector('[class*="gh-"]')).toBeNull();
   });
 
@@ -140,7 +140,7 @@ describe("WorkspaceSetupWizard (app-shell, system kit)", () => {
     expect(screen.getByText("Workspace setup")).not.toBeNull();
     expect(screen.getByText("Workspace setup guidance could not be loaded.")).not.toBeNull();
     expect(screen.getByText("Runtime status request failed.")).not.toBeNull();
-    expect(container.querySelector(".ga-shell-state-card.tone-bad")).not.toBeNull();
+    expect(container.querySelector(".ax-shell-state-card.tone-bad")).not.toBeNull();
   });
 
   it("renders readiness, safe sharing, claim narrowing, and advanced diagnostics from the live payload", () => {

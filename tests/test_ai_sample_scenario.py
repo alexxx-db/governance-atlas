@@ -7,7 +7,7 @@ from __future__ import annotations
 import unittest
 from datetime import datetime, timezone
 
-from atlas.ai import models, reconcile, sample
+from axiom.ai import models, reconcile, sample
 
 OWNER = "seed-owner@example.com"
 NOW = datetime(2026, 9, 24, tzinfo=timezone.utc)
@@ -16,7 +16,7 @@ ALL = {s: {"state": "available"} for s in ("serving_endpoints", "registered_mode
 
 def _obs(kind, sid, **kw):
     row = {"entity_kind": kind, "source_system": "databricks", "source_entity_id": sid, "owner": OWNER,
-           "platform": kw.pop("platform", "databricks"), "provenance_class": "sample", "sample_run_id": "ga-ai-sample-1",
+           "platform": kw.pop("platform", "databricks"), "provenance_class": "sample", "sample_run_id": "ax-ai-sample-1",
            "run_id": "run-1", "collector": "dbx_ai_collector", "collector_version": "1.0.0", "observed_at": NOW.isoformat()}
     row.update(kw)
     return row

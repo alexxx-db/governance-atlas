@@ -33,7 +33,7 @@ function term(termId, name, overrides = {}) {
     definition: `${name} definition used by governed analytics.`,
     domain: "Finance",
     status: "approved",
-    ownerEmail: "owner@entrada.ai",
+    ownerEmail: "owner@shorecp.com",
     assetCount: 2,
     assetPreview: [
       {
@@ -50,7 +50,7 @@ function term(termId, name, overrides = {}) {
 // 21 governed terms — mirrors the live payload volume the legacy registry
 // once truncated to 4 cards (ported G1 regression).
 const manyTerms = [
-  term("atlas-test-term", "Atlas Test Term", {
+  term("axiom-test-term", "Axiom Test Term", {
     status: "draft",
     assetCount: 0,
     assetPreview: [],
@@ -75,7 +75,7 @@ function cdeItem(id, overrides = {}) {
     name: id.split(".").pop(),
     sourceColumn: `${id}.value`,
     domain: "Finance",
-    owner: "finance-steward@entrada.ai",
+    owner: "finance-steward@shorecp.com",
     certification: "Certified",
     sourceBacked: true,
     recert: "90d",
@@ -173,7 +173,7 @@ describe("GlossaryPage — glossary tab", () => {
     const grid = await cards();
     const headings = within(grid).getAllByRole("heading").map((node) => node.textContent);
     expect(headings[0]).toBe("Net Revenue");
-    expect(headings[headings.length - 1]).toBe("Atlas Test Term");
+    expect(headings[headings.length - 1]).toBe("Axiom Test Term");
   });
 
   it("term mentions are real anchors and card selection navigates to the durable path", async () => {
@@ -260,7 +260,7 @@ describe("GlossaryPage — term mini-hub", () => {
       overviewPayload([
         term("parent-term", "Revenue"),
         term("child-term", "Adjusted Revenue", { parentTermId: "parent-term" }),
-        term("orphan-term", "Deferred Revenue", { parentTermId: "ga-taxonomy-node-revenue" }),
+        term("orphan-term", "Deferred Revenue", { parentTermId: "ax-taxonomy-node-revenue" }),
       ]),
     );
     renderGlossary("/glossary/child-term");
@@ -281,7 +281,7 @@ describe("GlossaryPage — term mini-hub", () => {
     detail = await screen.findByLabelText("Deferred Revenue detail");
     hierarchy = within(detail).getByRole("heading", { name: "Hierarchy" }).closest("section");
     expect(within(hierarchy).getByText("Revenue")).toBeDefined();
-    expect(within(hierarchy).queryByText("ga-taxonomy-node-revenue")).toBeNull();
+    expect(within(hierarchy).queryByText("ax-taxonomy-node-revenue")).toBeNull();
   });
 
   it("assigns a reviewer through the governed glossary upsert", async () => {
@@ -291,7 +291,7 @@ describe("GlossaryPage — term mini-hub", () => {
     fireEvent.click(within(detail).getByRole("button", { name: "Assign reviewer" }));
     const form = within(detail).getByRole("form", { name: /Assign reviewer to/ });
     fireEvent.change(within(form).getByLabelText("Reviewer email"), {
-      target: { value: "reviewer@entrada.ai" },
+      target: { value: "reviewer@shorecp.com" },
     });
     fireEvent.submit(form);
     await waitFor(() => {
@@ -300,7 +300,7 @@ describe("GlossaryPage — term mini-hub", () => {
           termId: "net-revenue",
           name: "Net Revenue",
           reviewers: expect.arrayContaining([
-            expect.objectContaining({ email: "reviewer@entrada.ai" }),
+            expect.objectContaining({ email: "reviewer@shorecp.com" }),
           ]),
         }),
       );
@@ -417,13 +417,13 @@ describe("GlossaryPage — CDE registry tab", () => {
     fireEvent.click(within(detail).getByRole("button", { name: "Assign owner" }));
     const form = within(detail).getByRole("form", { name: /Assign owner for/ });
     fireEvent.change(within(form).getByLabelText("Owner email"), {
-      target: { value: "new-owner@entrada.ai" },
+      target: { value: "new-owner@shorecp.com" },
     });
     fireEvent.submit(form);
     await waitFor(() => {
       expect(api.upsertGovernanceOwner).toHaveBeenCalledWith({
         assetFqn: "main.finance.net_revenue_usd",
-        ownerEmail: "new-owner@entrada.ai",
+        ownerEmail: "new-owner@shorecp.com",
         ownerType: "steward",
       });
     });

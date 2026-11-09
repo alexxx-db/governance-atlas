@@ -34,7 +34,7 @@ import { InsightsBand } from "./sections/InsightsBand.jsx";
  *
  * Router-self-sufficient: no drilled callbacks — StatTile/EntityChip render
  * real anchors resolved through the system refs contract. Data comes from
- * useCommandCenter + useInsightsDashboard (both on useAtlasQuery; bounded
+ * useCommandCenter + useInsightsDashboard (both on useAxiomQuery; bounded
  * polling lives in the hooks, never here).
  */
 
@@ -55,7 +55,7 @@ export function HomePage() {
   useEffect(() => {
     if (typeof document === "undefined") return undefined;
     const previous = document.title;
-    document.title = "Command Center - Governance Atlas";
+    document.title = "Command Center - Axiom";
     return () => {
       document.title = previous;
     };
@@ -144,7 +144,7 @@ export function HomePage() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `governance-atlas-command-center-${new Date().toISOString().slice(0, 10)}.json`;
+    link.download = `axiom-command-center-${new Date().toISOString().slice(0, 10)}.json`;
     link.rel = "noopener";
     document.body.appendChild(link);
     link.click();
@@ -171,7 +171,7 @@ export function HomePage() {
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `atlas-board-report-${new Date().toISOString().slice(0, 10)}.html`;
+      link.download = `axiom-board-report-${new Date().toISOString().slice(0, 10)}.html`;
       link.rel = "noopener";
       document.body.appendChild(link);
       link.click();
@@ -187,7 +187,7 @@ export function HomePage() {
 
   return (
     <PageShell
-      className="ga-home-page"
+      className="ax-home-page"
       eyebrow="Executive overview"
       title="Command Center"
       subtitle={
@@ -197,9 +197,9 @@ export function HomePage() {
       }
       status={status}
       actions={
-        <div className="ga-home-actions">
+        <div className="ax-home-actions">
           {refreshedLabel ? (
-            <span className="ga-home-live" role="status">
+            <span className="ax-home-live" role="status">
               <span aria-hidden="true" />
               {refreshedLabel}
             </span>
@@ -234,7 +234,7 @@ export function HomePage() {
         <>
           <PostureHero data={data} kpis={kpis} loading={false} />
           <KpiRow kpis={kpis} />
-          <div className="ga-home-grid">
+          <div className="ax-home-grid">
             <TrendCard posture={data.posture || {}} />
             <CategoryTrendCard categoryTrends={data.categoryTrends} />
             <DomainPostureCard

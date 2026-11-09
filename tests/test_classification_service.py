@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Optional
 
 import pandas as pd
 
-from atlas.services import classification as classification_service
+from axiom.services import classification as classification_service
 
 
 class FakeUC:

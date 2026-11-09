@@ -1,5 +1,5 @@
 import { fetchAssetQuality } from "../lib/api";
-import { useAtlasQuery } from "./useAtlasQuery";
+import { useAxiomQuery } from "./useAxiomQuery";
 
 /**
  * Phase 10 — persisted quality results for an asset.
@@ -8,7 +8,7 @@ import { useAtlasQuery } from "./useAtlasQuery";
 export function useAssetQuality(assetFqn, options = {}) {
   const trimmed = String(assetFqn || "").trim();
   const enabled = options.enabled !== false && Boolean(trimmed);
-  const { query } = useAtlasQuery({
+  const { query } = useAxiomQuery({
     key: ["assetQuality", trimmed],
     enabled,
     fetch: (signal) => fetchAssetQuality(trimmed, { signal }),

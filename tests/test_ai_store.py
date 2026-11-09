@@ -9,8 +9,8 @@ from typing import Any, Dict, List
 
 import pandas as pd
 
-from atlas.ai import models
-from atlas.ai.store import AiStore, AuditEntry
+from axiom.ai import models
+from axiom.ai.store import AiStore, AuditEntry
 
 
 class FakeUC:
@@ -42,7 +42,7 @@ class FakeGovernanceStore:
         self.alias_calls: List[Dict[str, Any]] = []
 
     def _fq(self, table: str) -> str:
-        return f"`main`.`atlas`.`{table}`"
+        return f"`main`.`axiom`.`{table}`"
 
     def upsert_entity_registry(self, **kwargs: Any) -> Dict[str, Any]:
         self.registry_calls.append(kwargs)
@@ -98,14 +98,14 @@ class AuditOrderingTests(unittest.TestCase):
         self.assertFalse([sql for sql in uc.executed if "intake_records" in sql])
 
     def test_mutation_failure_records_failed_audit(self) -> None:
-        store, uc, _ = _store(fail_on="MERGE INTO `main`.`atlas`.`intake_records`")
+        store, uc, _ = _store(fail_on="MERGE INTO `main`.`axiom`.`intake_records`")
         with self.assertRaises(RuntimeError):
             store.upsert_intake_records([_intake()], actor_email="s@b.com", actor_role="steward")
-        audits = [sql for sql in uc.executed if "INSERT INTO `main`.`atlas`.`metadata_audit_log`" in sql]
+        audits = [sql for sql in uc.executed if "INSERT INTO `main`.`axiom`.`metadata_audit_log`" in sql]
         self.assertEqual(len(audits), 2)
         self.assertIn("'success'", audits[0])
         self.assertIn("'failed'", audits[1])
-        events = [sql for sql in uc.executed if "INSERT INTO `main`.`atlas`.`change_events`" in sql]
+        events = [sql for sql in uc.executed if "INSERT INTO `main`.`axiom`.`change_events`" in sql]
         self.assertIn("'emitted'", events[0])
         self.assertIn("'failed'", events[1])
 
@@ -122,7 +122,7 @@ class IntakeTests(unittest.TestCase):
         store, uc, _ = _store()
         counts = store.upsert_intake_records([_intake()], actor_email="s@b.com", actor_role="steward", request_id="r1")
         self.assertEqual(counts, {"created": 1, "updated": 0, "unchanged": 0})
-        merge = next(sql for sql in uc.executed if sql.startswith("MERGE INTO `main`.`atlas`.`intake_records`"))
+        merge = next(sql for sql in uc.executed if sql.startswith("MERGE INTO `main`.`axiom`.`intake_records`"))
         self.assertIn("'O''Brien \\\\ chatbot'", merge)
         self.assertIn("CAST(NULL AS STRING) AS business_unit", merge)
         self.assertIn("CAST(NULL AS TIMESTAMP) AS approved_at", merge)
@@ -144,7 +144,7 @@ class FindingTests(unittest.TestCase):
         store, uc, _ = _store()
         counts = store.upsert_findings([_finding()], run_id="run-1", actor_email="collector")
         self.assertEqual(counts["opened"], 1)
-        merge = next(sql for sql in uc.executed if sql.startswith("MERGE INTO `main`.`atlas`.`reconciliation_findings`"))
+        merge = next(sql for sql in uc.executed if sql.startswith("MERGE INTO `main`.`axiom`.`reconciliation_findings`"))
         update_clauses = merge.split("WHEN NOT MATCHED")[0]
         for steward_field in ("assignee_email =", "task_id =", "resolution_note =", "suppression_reason ="):
             self.assertNotIn(steward_field, update_clauses)
@@ -176,7 +176,7 @@ class FindingTests(unittest.TestCase):
     def test_auto_resolve_never_touches_suppressed(self) -> None:
         store, uc, _ = _store()
         store.auto_resolve_findings(["f1", "f2"], run_id="run-3", actor_email="collector")
-        update = next(sql for sql in uc.executed if sql.startswith("UPDATE `main`.`atlas`.`reconciliation_findings`"))
+        update = next(sql for sql in uc.executed if sql.startswith("UPDATE `main`.`axiom`.`reconciliation_findings`"))
         self.assertIn("AND state IN ('open', 'acknowledged')", update)
         self.assertIn("resolved_by = 'system'", update)
 
@@ -229,7 +229,7 @@ class RegistryAndControlsTests(unittest.TestCase):
             actor_email="s@b.com", actor_role="steward", request_id="r1",
         )
         self.assertTrue(any("'ai.finding.match_confirmed'" in sql for sql in uc.executed))
-        self.assertTrue(any("MERGE INTO `main`.`atlas`.`entity_relationships`" in sql and "'override'" in sql for sql in uc.executed))
+        self.assertTrue(any("MERGE INTO `main`.`axiom`.`entity_relationships`" in sql and "'override'" in sql for sql in uc.executed))
         self.assertEqual(gov.alias_calls[0]["alias_value"], "INT-7")
         self.assertEqual(gov.alias_calls[0]["source"], "intake_id")
         self.assertTrue(any("state = 'resolved'" in sql for sql in uc.executed))
@@ -251,7 +251,7 @@ class RegistryAndControlsTests(unittest.TestCase):
             run_id="run-1", actor_email="collector",
         )
         mutations = [sql for sql in uc.executed if "ai_control_results" in sql and "metadata_audit" not in sql and "change_events" not in sql]
-        self.assertTrue(mutations[0].startswith("DELETE FROM `main`.`atlas`.`ai_control_results` WHERE run_id = 'run-1'"))
+        self.assertTrue(mutations[0].startswith("DELETE FROM `main`.`axiom`.`ai_control_results` WHERE run_id = 'run-1'"))
         self.assertIn("'unknown'", mutations[1])
 
     def test_observations_batch_single_audit(self) -> None:
@@ -264,7 +264,7 @@ class RegistryAndControlsTests(unittest.TestCase):
             for i in range(450)
         ]
         self.assertEqual(store.append_observations(obs, run_id="run-1", actor_email="collector"), 450)
-        inserts = [sql for sql in uc.executed if sql.startswith("INSERT INTO `main`.`atlas`.`ai_asset_observations`")]
+        inserts = [sql for sql in uc.executed if sql.startswith("INSERT INTO `main`.`axiom`.`ai_asset_observations`")]
         self.assertEqual(len(inserts), 3)  # batches of 200
         # One audit row + one change event for the whole batch.
         self.assertEqual(sum("'ai.observation.appended'" in sql for sql in uc.executed), 2)
@@ -289,11 +289,11 @@ class ProvenanceRegressionTests(unittest.TestCase):
     def test_control_results_keep_sample_provenance(self) -> None:
         store, uc, _ = _store()
         store.replace_control_results_for_run(
-            [models.ControlResult("e1", "serving_endpoint", "AIC-04", "1", "pass", "s", provenance_class="sample", sample_run_id="ga-ai-1")],
+            [models.ControlResult("e1", "serving_endpoint", "AIC-04", "1", "pass", "s", provenance_class="sample", sample_run_id="ax-ai-1")],
             run_id="run-1", actor_email="collector",
         )
-        insert = next(sql for sql in uc.executed if sql.startswith("INSERT INTO `main`.`atlas`.`ai_control_results`"))
-        self.assertIn("'sample', 'ga-ai-1'", insert)
+        insert = next(sql for sql in uc.executed if sql.startswith("INSERT INTO `main`.`axiom`.`ai_control_results`"))
+        self.assertIn("'sample', 'ax-ai-1'", insert)
 
 
 class TransitionTests(unittest.TestCase):
@@ -343,7 +343,7 @@ class ConcurrencyAndAtomicityTests(unittest.TestCase):
         self.assertIn("AND state = 'open'", update)
 
     def test_concurrent_change_raises_conflict_and_audits_failure(self) -> None:
-        from atlas.ai.store import FindingConflict
+        from axiom.ai.store import FindingConflict
 
         store, uc, _ = self._store_with("open", 0)
         with self.assertRaises(FindingConflict):
@@ -351,7 +351,7 @@ class ConcurrencyAndAtomicityTests(unittest.TestCase):
         self.assertTrue(any("'failed'" in sql and "metadata_audit_log" in sql for sql in uc.executed))
 
     def test_confirm_match_conflict_writes_no_link_or_alias(self) -> None:
-        from atlas.ai.store import FindingConflict
+        from axiom.ai.store import FindingConflict
 
         store, uc, gov = self._store_with("open", 0)
         with self.assertRaises(FindingConflict):

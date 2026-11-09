@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { fetchAsset360 } from "../lib/api";
 import { envelopeHydrating } from "../lib/envelope";
 import { isNonAuthoritativeMockEvidence } from "../lib/nonAuthoritativeEvidence";
-import { useAtlasQuery } from "./useAtlasQuery";
+import { useAxiomQuery } from "./useAxiomQuery";
 
 export const EMPTY_ASSET_360 = {
   asset: null,
@@ -99,8 +99,8 @@ export function useAsset360(assetFqn, options = {}) {
   const resolvedOptions = options && typeof options === "object" ? options : {};
   const normalizedFqn = String(assetFqn || "").trim();
   const enabled = resolvedOptions.enabled !== false && Boolean(normalizedFqn);
-  const { query } = useAtlasQuery({
-    key: ["atlas", "asset360", normalizedFqn],
+  const { query } = useAxiomQuery({
+    key: ["axiom", "asset360", normalizedFqn],
     fetch: (signal) => fetchAsset360(normalizedFqn, { signal }),
     enabled,
     staleTime: resolvedOptions.staleTime ?? 60_000,

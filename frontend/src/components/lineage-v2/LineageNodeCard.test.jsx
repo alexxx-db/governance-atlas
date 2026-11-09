@@ -4,9 +4,9 @@ import { LineageNodeCard } from "./LineageNodeCard";
 
 const baseNode = {
   id: "n1",
-  fqn: "datapact.curated.revenue_daily",
+  fqn: "emet.curated.revenue_daily",
   label: "revenue_daily",
-  subtitle: "datapact / curated",
+  subtitle: "emet / curated",
   kind: "table",
   isOpenable: true,
   isCertified: true,
@@ -30,7 +30,7 @@ describe("LineageNodeCard", () => {
   it("renders the title, subtitle, and footer metadata in compact mode", () => {
     render(<LineageNodeCard node={baseNode} variant="compact" />);
     expect(screen.getByText("revenue_daily")).toBeTruthy();
-    expect(screen.getByText("datapact / curated")).toBeTruthy();
+    expect(screen.getByText("emet / curated")).toBeTruthy();
     expect(screen.getByText("1.2M rows")).toBeTruthy();
     expect(screen.getByText("2h ago")).toBeTruthy();
     // The owner footer now shows the owner's name (UC-equivalent), not
@@ -103,7 +103,7 @@ describe("LineageNodeCard", () => {
   it("does NOT mark the card navigable when isOpenable=false", () => {
     const lineageOnly = { ...baseNode, isOpenable: false };
     const { container } = render(<LineageNodeCard node={lineageOnly} onClick={() => {}} />);
-    const card = container.querySelector(".ga-lineage-v2-card");
+    const card = container.querySelector(".ax-lineage-v2-card");
     expect(card?.getAttribute("data-navigable")).toBe("false");
   });
 
@@ -139,7 +139,7 @@ describe("LineageNodeCard", () => {
 
   it("marks the focus card with is-focus and aria-current", () => {
     const { container } = render(<LineageNodeCard node={baseNode} isFocus />);
-    const card = container.querySelector(".ga-lineage-v2-card");
+    const card = container.querySelector(".ax-lineage-v2-card");
     expect(card?.classList.contains("is-focus")).toBe(true);
     expect(card?.getAttribute("aria-current")).toBe("true");
   });
@@ -149,16 +149,16 @@ describe("LineageNodeCard", () => {
     const onOpenAsset = vi.fn();
     render(
       <LineageNodeCard
-        databricksHref="https://dbc-x.cloud.databricks.com/explore/data/datapact/curated/revenue_daily"
+        databricksHref="https://dbc-x.cloud.databricks.com/explore/data/emet/curated/revenue_daily"
         node={baseNode}
         onClick={() => {}}
         onOpenAsset={onOpenAsset}
       />,
     );
     fireEvent.click(screen.getByText("Asset 360"));
-    expect(onOpenAsset).toHaveBeenCalledWith("datapact.curated.revenue_daily");
+    expect(onOpenAsset).toHaveBeenCalledWith("emet.curated.revenue_daily");
     const dbx = screen.getByText("Databricks").closest("a");
-    expect(dbx?.getAttribute("href")).toContain("/explore/data/datapact/curated/revenue_daily");
+    expect(dbx?.getAttribute("href")).toContain("/explore/data/emet/curated/revenue_daily");
     expect(dbx?.getAttribute("target")).toBe("_blank");
   });
 

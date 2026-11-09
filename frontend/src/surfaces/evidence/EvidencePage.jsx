@@ -58,7 +58,7 @@ export function EvidencePage({ shell = null }) {
   useEffect(() => {
     if (typeof document === "undefined") return undefined;
     const previous = document.title;
-    document.title = "Evidence - Governance Atlas";
+    document.title = "Evidence - Axiom";
     return () => {
       document.title = previous;
     };
@@ -66,7 +66,7 @@ export function EvidencePage({ shell = null }) {
 
   return (
     <PageShell
-      className="ga-evid-page"
+      className="ax-evid-page"
       eyebrow="Knowledge & Proof"
       title="Evidence"
       subtitle="The governed proof surface: an immutable audit event log and browsable quality-run findings, filterable and exportable for compliance review."

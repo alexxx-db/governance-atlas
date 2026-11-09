@@ -1,4 +1,4 @@
-# Governance Atlas — Target Product Architecture Blueprint
+# Axiom — Target Product Architecture Blueprint
 
 **Status: decided. This is the law for the cohesion rewrite.**
 Author: principal product architect pass, 2026-07-21. Grounded in the eight persona audits
@@ -41,7 +41,7 @@ The product exists for eight jobs. Every surface must justify itself against one
 
 | Surface | Route (canonical) | Mission (one sentence) | Primary persona | Absorbs / kills |
 |---|---|---|---|---|
-| **Command Center** | `/home` | The single executive answer to "what is the state of governance and what changed," with every number a door to its evidence. | CDO | **Absorbs Insights** (`/insights` → 301 to `/home`; its three honest widgets — Risk Heatmap, Metadata Coverage by Domain matrix, Certification by Tier — move into a "Risk & quality" band on Command Center). Kills Present mode, Governance ROI tiles, Atlas AI empty-slot fillers (see §7). |
+| **Command Center** | `/home` | The single executive answer to "what is the state of governance and what changed," with every number a door to its evidence. | CDO | **Absorbs Insights** (`/insights` → 301 to `/home`; its three honest widgets — Risk Heatmap, Metadata Coverage by Domain matrix, Certification by Tier — move into a "Risk & quality" band on Command Center). Kills Present mode, Governance ROI tiles, Axiom AI empty-slot fillers (see §7). |
 | **Discover** | `/discovery` | Find and evaluate governed data with permission-aware search, facets, and a preview that agrees with Asset 360. | Analyst | Unchanged scope; its preview drawer becomes a strict subset of the Asset 360 header (same component, `Asset360Header compact`), killing the three-owners contradiction class. |
 | **Asset 360** (the hub) | `/asset/<fqn>` (alias `/entity/…` kept) | Everything the estate knows about one asset, ordered by the trust decision a user is making. | all | Absorbs nothing; becomes the *destination* of every chip in the app. Not in left nav — see §3 hub-and-spoke decision. |
 | **Stewardship** | `/stewardship` (alias `/governance`) | The one queue for all governance work — requests, reviews, term approvals — triaged by team or by "me". | Steward | **Absorbs Inbox.** `/inbox` → 301 to `/stewardship?assignee=me`. Term reviews become work items of type `term-review` in the same queue. The bell becomes a popover (top-3 of my queue + count) whose "View all" lands on `/stewardship?assignee=me`. Kills InboxPage.jsx and the InboxPanel-as-page. |
@@ -187,7 +187,7 @@ KNOWLEDGE & PROOF Glossary & CDEs     /glossary
 
 ## 6. Feasibility gates (what each surface may claim, per the now-truthful backend)
 
-The backend (post PR #6) has: canonical semantics (`atlas/services/semantics.py` — CDE=49,
+The backend (post PR #6) has: canonical semantics (`axiom/services/semantics.py` — CDE=49,
 strict Certified=44), real lineage with `buildState`/`truncation`/`emptyReason`
 (lineage_backend.md), quality runs with evidence timestamps, an append-only Delta audit log with
 stable event ids, and daily posture snapshots **since 2026-07-20**. The architecture promises
@@ -213,16 +213,16 @@ any "AI recommendation" slot without an evidence-backed recommendation.
 
 ## 7. Kill list (remove, don't polish)
 
-1. **Insights as a surface** (`InsightsWorkspace.jsx` page shell, hero, filters bar) — merged per §2. Its unbacked widgets die with it: **Policy Compliance Trend**, **Time to Resolution trend**, **Governance ROI tiles** (all "Unavailable", walk_insights.png), **Atlas AI empty recommendation slots** (3 of 4 slots render "No additional evidence-backed recommendation" filler). One backed recommendation renders as one card on Command Center; zero render as nothing.
+1. **Insights as a surface** (`InsightsWorkspace.jsx` page shell, hero, filters bar) — merged per §2. Its unbacked widgets die with it: **Policy Compliance Trend**, **Time to Resolution trend**, **Governance ROI tiles** (all "Unavailable", walk_insights.png), **Axiom AI empty recommendation slots** (3 of 4 slots render "No additional evidence-backed recommendation" filler). One backed recommendation renders as one card on Command Center; zero render as nothing.
 2. **Inbox page** (`InboxPage.jsx`) and its nav entry — merged into Stewardship per §2. The bell popover replaces it.
 3. **Present mode** (Command Center header) — an untested projector toggle on a page whose numbers were still being disputed; no audit persona ever used it. Remove the button.
 4. **Capability dashboard as a standalone surface** (`CapabilityDashboard.jsx` route) — admins keep it as the Control Center Diagnostics tab; the orphan route dies.
-5. **The empty `/lineage` landing page** with "Atlas walks system.access.table_lineage outward…" jargon wall (WF2) — replaced by a search-first asset picker.
+5. **The empty `/lineage` landing page** with "Axiom walks system.access.table_lineage outward…" jargon wall (WF2) — replaced by a search-first asset picker.
 6. **Dead chrome:** `Workspace › Dev` crumb (dead click), dead "i" info glyphs (either a real tooltip or nothing — fix_plan says real tooltips; any glyph without content is removed), 12w/26w/52w toggles while only one snapshot exists, permanently-disabled CDE "Download" button (ship the CSV or remove — ship it: the data is client-side already).
 7. **Duplicate CDE filter chips** in Glossary & CDEs (one filter bar owned by the active tab; the second chip row goes).
 8. **The kebab "⋮ More asset actions"** on Asset 360 that only copies a share link (audit_ux #7) — replaced by a visible "Copy link" icon button; the fake menu dies.
 9. **Legacy dead weight already indicted by auditors 4/5** (all_findings): pre-React cream boot splash (replace with dark minimal shell), `shell-rail.css` light `!important` layer, dead `admin.css`/`cde.css`, v1 lineage CSS (~95% of 5,142 lines), orphaned workspaces/hooks (`useTheme`, unrendered EntityHero/Discovery card), `WorkspaceDiagnosticsSurface` jargon strings, `describe.skip` legacy Entity contract tests.
-10. **Jargon vocabulary, globally:** "actor-visible", "actor-scoped", "hydrating", "composite Asset 360 payload", "non-authoritative … rejected", "runtime payload", internal FQN footnotes (`datapact.atlas.metadata_audit_log`), client request ids in banner copy (audit_ux #10). Replaced by the copy registry (§8, principle 6).
+10. **Jargon vocabulary, globally:** "actor-visible", "actor-scoped", "hydrating", "composite Asset 360 payload", "non-authoritative … rejected", "runtime payload", internal FQN footnotes (`emet.axiom.metadata_audit_log`), client request ids in banner copy (audit_ux #10). Replaced by the copy registry (§8, principle 6).
 
 ---
 
@@ -230,7 +230,7 @@ any "AI recommendation" slot without an evidence-backed recommendation.
 
 1. **One entity model.** Nine entity types (§4), each with exactly one canonical route and one
    link component (`EntityLink`). Any mention anywhere is a link; the anchor is the text itself.
-2. **One number per concept, defined once.** Semantics live in `atlas/services/semantics.py`
+2. **One number per concept, defined once.** Semantics live in `axiom/services/semantics.py`
    (CDE, certified, open-request scope, coverage vs governance score, policy exception) and the
    frontend renders payload-provided labels/subtitles (`cdeSignal.subtitle`,
    `estate.estateLabel`, `riskBreakdown.label`) — never re-derives, never re-words. Two

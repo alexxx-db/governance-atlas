@@ -1,5 +1,5 @@
 /* eslint-disable */
-/** Governance Atlas — UI primitives shared across pages */
+/** Axiom — UI primitives shared across pages */
 const { useState, useEffect, useRef, useMemo } = React;
 
 const Icon = ({ name, size = 16, style, className }) => (
@@ -19,7 +19,7 @@ function Sparkline({ data, w = 86, h = 30, tone = 'good' }) {
   const step = w / (data.length - 1);
   const pts = data.map((v, i) => `${i * step},${h - ((v - min) / range) * h}`).join(' ');
   const color = tone === 'crit' ? 'var(--crit)' : tone === 'warn' ? 'var(--warn)' : 'var(--accent)';
-  const fillColor = tone === 'crit' ? 'rgba(244,113,116,0.18)' : tone === 'warn' ? 'rgba(244,183,64,0.18)' : 'rgba(61,132,173,0.22)';
+  const fillColor = tone === 'crit' ? 'rgba(244,113,116,0.18)' : tone === 'warn' ? 'rgba(244,183,64,0.18)' : 'rgba(91,127,208,0.22)';
   return (
     <svg width={w} height={h} className="spark" viewBox={`0 0 ${w} ${h}`}>
       <polyline points={`0,${h} ${pts} ${w},${h}`} fill={fillColor} stroke="none" />
@@ -178,13 +178,13 @@ function AreaChart({ data, w = 600, h = 200, accent = 'var(--accent)' }) {
     <svg width="100%" height={h} viewBox={`0 0 ${w} ${h}`} style={{ display: 'block' }}>
       <defs>
         <linearGradient id="ar" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="rgba(102,197,255,0.40)"/>
-          <stop offset="50%" stopColor="rgba(102,197,255,0.12)"/>
-          <stop offset="100%" stopColor="rgba(102,197,255,0.0)"/>
+          <stop offset="0%" stopColor="rgba(116,151,220,0.40)"/>
+          <stop offset="50%" stopColor="rgba(116,151,220,0.12)"/>
+          <stop offset="100%" stopColor="rgba(116,151,220,0.0)"/>
         </linearGradient>
         <linearGradient id="arLine" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#3D84AD"/>
-          <stop offset="100%" stopColor="#66C5FF"/>
+          <stop offset="0%" stopColor="#5B7FD0"/>
+          <stop offset="100%" stopColor="#7497DC"/>
         </linearGradient>
         <filter id="glowChart" x="-20%" y="-20%" width="140%" height="140%">
           <feGaussianBlur stdDeviation="3" result="b"/>
@@ -204,7 +204,7 @@ function AreaChart({ data, w = 600, h = 200, accent = 'var(--accent)' }) {
       <path d={path} fill="none" stroke="url(#arLine)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
       {pts.map((p,i) => i === pts.length - 1 ? (
         <g key={i}>
-          <circle cx={p[0]} cy={p[1]} r="8" fill="rgba(61,132,173,0.28)">
+          <circle cx={p[0]} cy={p[1]} r="8" fill="rgba(91,127,208,0.28)">
             <animate attributeName="r" values="6;12;6" dur="2.4s" repeatCount="indefinite"/>
             <animate attributeName="opacity" values="0.4;0;0.4" dur="2.4s" repeatCount="indefinite"/>
           </circle>
@@ -248,9 +248,9 @@ function TrustRing({ value = 87.4, size = 200, segments }) {
       <svg width={size} height={size}>
         <defs>
           <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#3D84AD"/>
-            <stop offset="60%" stopColor="#66C5FF"/>
-            <stop offset="100%" stopColor="#5CE1E6"/>
+            <stop offset="0%" stopColor="#5B7FD0"/>
+            <stop offset="60%" stopColor="#7497DC"/>
+            <stop offset="100%" stopColor="#C8C8C8"/>
           </linearGradient>
           <linearGradient id="ringTrack" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="rgba(255,255,255,0.04)"/>
@@ -258,14 +258,14 @@ function TrustRing({ value = 87.4, size = 200, segments }) {
           </linearGradient>
         </defs>
         {/* outer subtle ring */}
-        <circle cx={size/2} cy={size/2} r={r + 10} fill="none" stroke="rgba(61,132,173,0.12)" strokeWidth="1"/>
+        <circle cx={size/2} cy={size/2} r={r + 10} fill="none" stroke="rgba(91,127,208,0.12)" strokeWidth="1"/>
         {/* tick marks */}
         {Array.from({length: 60}).map((_, i) => {
           const a = (i / 60) * Math.PI * 2 - Math.PI / 2;
           const r1 = r + 14, r2 = r + (i % 5 === 0 ? 18 : 16);
           const x1 = size/2 + Math.cos(a) * r1, y1 = size/2 + Math.sin(a) * r1;
           const x2 = size/2 + Math.cos(a) * r2, y2 = size/2 + Math.sin(a) * r2;
-          return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke={i % 5 === 0 ? 'rgba(61,132,173,0.55)' : 'rgba(61,132,173,0.22)'} strokeWidth="1"/>;
+          return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke={i % 5 === 0 ? 'rgba(91,127,208,0.55)' : 'rgba(91,127,208,0.22)'} strokeWidth="1"/>;
         })}
         {/* track */}
         <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth={stroke}/>

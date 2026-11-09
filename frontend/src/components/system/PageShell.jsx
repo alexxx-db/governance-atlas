@@ -34,28 +34,28 @@ export function PageShell({
   const failed = norm?.status === "unavailable" || norm?.status === "error";
 
   return (
-    <div className={`ga-sys-page ${className}`.trim()} data-status={norm?.status || undefined}>
-      <header className="ga-sys-page-hero">
+    <div className={`ax-sys-page ${className}`.trim()} data-status={norm?.status || undefined}>
+      <header className="ax-sys-page-hero">
         {breadcrumbs ? (
-          <nav className="ga-sys-page-breadcrumbs" aria-label="Breadcrumb">
+          <nav className="ax-sys-page-breadcrumbs" aria-label="Breadcrumb">
             {breadcrumbs}
           </nav>
         ) : null}
-        <div className="ga-sys-page-hero-row">
-          <div className="ga-sys-page-hero-copy">
-            {eyebrow ? <div className="ga-sys-eyebrow">{eyebrow}</div> : null}
+        <div className="ax-sys-page-hero-row">
+          <div className="ax-sys-page-hero-copy">
+            {eyebrow ? <div className="ax-sys-eyebrow">{eyebrow}</div> : null}
             <h1>{title}</h1>
             {subtitle ? <p>{subtitle}</p> : null}
           </div>
-          <div className="ga-sys-page-hero-side">
+          <div className="ax-sys-page-hero-side">
             {hydrating ? (
               // Quiet refresh indicator: seed data is on screen, a refresh
               // is in flight — never a blocking spinner (A2 seed contract).
-              <span className="ga-sys-page-refreshing" role="status">
+              <span className="ax-sys-page-refreshing" role="status">
                 Refreshing
               </span>
             ) : null}
-            {actions ? <div className="ga-sys-page-actions">{actions}</div> : null}
+            {actions ? <div className="ax-sys-page-actions">{actions}</div> : null}
           </div>
         </div>
       </header>
@@ -76,10 +76,10 @@ export function PageShell({
           onRetry={retry}
         />
       ) : null}
-      {tabs ? <div className="ga-sys-page-tabs">{tabs}</div> : null}
-      <div className={`ga-sys-page-body ${rail ? "has-rail" : ""}`.trim()}>
-        <div className="ga-sys-page-content">{children}</div>
-        {rail ? <aside className="ga-sys-page-rail">{rail}</aside> : null}
+      {tabs ? <div className="ax-sys-page-tabs">{tabs}</div> : null}
+      <div className={`ax-sys-page-body ${rail ? "has-rail" : ""}`.trim()}>
+        <div className="ax-sys-page-content">{children}</div>
+        {rail ? <aside className="ax-sys-page-rail">{rail}</aside> : null}
       </div>
     </div>
   );

@@ -57,12 +57,12 @@ describe("termRef", () => {
 
 describe("ownerRef", () => {
   it("builds owner refs without regex prettifying", () => {
-    expect(ownerRef({ name: "product-steward@entrada.ai" })).toEqual({
+    expect(ownerRef({ name: "product-steward@shorecp.com" })).toEqual({
       kind: "owner",
-      email: "product-steward@entrada.ai",
-      label: "product-steward@entrada.ai",
+      email: "product-steward@shorecp.com",
+      label: "product-steward@shorecp.com",
     });
-    expect(ownerRef({ name: "skyler@entrada.ai", displayName: "Skyler" }).label).toBe("Skyler");
+    expect(ownerRef({ name: "abarreto@shorecp.com", displayName: "Skyler" }).label).toBe("Skyler");
     expect(ownerRef(null)).toBeNull();
   });
 });

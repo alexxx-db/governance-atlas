@@ -1,13 +1,13 @@
-// Governance Atlas live UI capture harness.
+// Axiom live UI capture harness.
 // Usage: node ui_capture.mjs <bearer-token> <outdir> [surface...]
 // Captures: loading state + hydrated full-page screenshot per surface,
 // plus hover screenshots of interactive controls on hydrated pages.
 import { chromium } from "playwright";
 import { mkdirSync } from "fs";
 
-// ATLAS_CAPTURE_BASE overrides the target (e.g. http://localhost:3100 for the
+// AXIOM_CAPTURE_BASE overrides the target (e.g. http://localhost:3100 for the
 // vite dev server with the /api live proxy — token can be "none" there).
-const BASE = process.env.ATLAS_CAPTURE_BASE || (() => { throw new Error("Set ATLAS_CAPTURE_BASE to the deployed Atlas app URL"); })();
+const BASE = process.env.AXIOM_CAPTURE_BASE || (() => { throw new Error("Set AXIOM_CAPTURE_BASE to the deployed Axiom app URL"); })();
 const token = process.argv[2];
 const outdir = process.argv[3] || "./shots";
 const only = process.argv.slice(4);

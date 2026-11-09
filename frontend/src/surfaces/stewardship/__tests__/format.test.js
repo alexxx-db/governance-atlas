@@ -21,7 +21,7 @@ describe("stewardship format helpers", () => {
     expect(workItemDisplayId({ requestId: "9f8e7d6c-5b4a-3921-8076-54efab321098" })).toBe(
       "GOV-9F8E7D6C",
     );
-    expect(workItemDisplayId({ requestId: "ga-home-evidence-request-09" })).toBe("GOV-09");
+    expect(workItemDisplayId({ requestId: "ax-home-evidence-request-09" })).toBe("GOV-09");
   });
 
   it("matches ?item= params against display AND full ids, case-insensitively", () => {
@@ -40,7 +40,7 @@ describe("stewardship format helpers", () => {
   });
 
   it("counts the my-work lens from real assignment fields only (no requester fallback)", () => {
-    const user = { email: "skyler@entrada.ai", name: "Skyler Myers" };
+    const user = { email: "abarreto@shorecp.com", name: "Skyler Myers" };
     const assigned = normalizeWorkItem({ requestId: "r1", assigned: "Skyler Myers" });
     const requesterOnly = normalizeWorkItem({ requestId: "r2", requester: "Skyler Myers" });
     const counts = lensCounts([assigned, requesterOnly], user);
@@ -49,7 +49,7 @@ describe("stewardship format helpers", () => {
   });
 
   it("rejects validation-seed rows", () => {
-    expect(isValidationWorkItem({ requestId: "ga-home-seed-request-9" })).toBe(true);
+    expect(isValidationWorkItem({ requestId: "ax-home-seed-request-9" })).toBe(true);
     expect(isValidationWorkItem({ requestId: "SI-2491", source: "governance-store" })).toBe(false);
   });
 

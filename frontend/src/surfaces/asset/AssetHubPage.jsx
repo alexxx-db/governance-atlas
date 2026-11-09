@@ -10,7 +10,7 @@ import { useAsset360 } from "../../hooks/useAsset360";
 import { invalidateAssetDetail, useAssetDetail } from "../../hooks/useAssetDetail";
 import { useAssetMetadataEditor } from "../../hooks/useAssetMetadataEditor";
 import { useLineageGraphV2 } from "../../components/lineage-v2/useLineageGraphV2";
-import { useAtlasNavigate } from "../../nav/useAtlasNavigate";
+import { useAxiomNavigate } from "../../nav/useAxiomNavigate";
 import { useSurfaceParams } from "../../nav/useSurfaceParams";
 import { pushRecentAsset, writeLastAsset } from "../../lib/prefs";
 import { AssetHeaderActions } from "./AssetHeaderActions";
@@ -132,7 +132,7 @@ export function AssetHubPage() {
   const routeParams = useParams();
   const fqn = decodeFqnParam(routeParams.fqn ?? routeParams["*"]);
   const [params, setParams] = useSurfaceParams(PARAMS_SCHEMA);
-  const navigate = useAtlasNavigate();
+  const navigate = useAxiomNavigate();
 
   const tab = TABS.some((entry) => entry.key === params.tab) ? params.tab : "overview";
   const sections = SECTIONS_BY_TAB[tab] || SECTIONS_BY_TAB.overview;
@@ -229,18 +229,18 @@ export function AssetHubPage() {
 
   return (
     <PageShell
-      className="ga-asset-page"
+      className="ax-asset-page"
       eyebrow="Asset 360"
       title={title}
       subtitle={identity || fqn}
       status={pageStatus}
       onRetry={detail.retry}
       breadcrumbs={
-        <span className="ga-asset-breadcrumbs">
+        <span className="ax-asset-breadcrumbs">
           {asset?.catalog ? (
             <EntityChip appearance="inline" entity={{ kind: "catalog", name: asset.catalog }} />
           ) : null}
-          <span className="ga-asset-breadcrumb-fqn" title={fqn}>
+          <span className="ax-asset-breadcrumb-fqn" title={fqn}>
             {fqn}
           </span>
         </span>

@@ -39,12 +39,12 @@ const TABS = [
 
 function ProvenanceChips({ items }) {
   return (
-    <div className="ga-ai-chips" role="group" aria-label="Provenance">
+    <div className="ax-ai-chips" role="group" aria-label="Provenance">
       {items
         .filter(([, value]) => value)
         .map(([label, value]) => (
-          <span className="ga-ai-chip" key={label}>
-            <span className="ga-ai-muted">{label}</span> {value}
+          <span className="ax-ai-chip" key={label}>
+            <span className="ax-ai-muted">{label}</span> {value}
           </span>
         ))}
     </div>
@@ -56,7 +56,7 @@ function Overview({ asset }) {
   const observedProvenance = asset.provenance || {};
   return (
     <>
-      <div className="ga-ai-compare">
+      <div className="ax-ai-compare">
         <SectionCard title="Declared (intake)" subtitle={declared ? `${declared.intakeId}: ${declared.title}` : "No linked intake record"}>
           {declared ? (
             <ProvenanceChips
@@ -69,7 +69,7 @@ function Overview({ asset }) {
               ]}
             />
           ) : (
-            <p className="ga-ai-muted">This asset is not linked to an intake record. A steward can confirm a match from its finding.</p>
+            <p className="ax-ai-muted">This asset is not linked to an intake record. A steward can confirm a match from its finding.</p>
           )}
         </SectionCard>
         <SectionCard title="Observed (platform)" subtitle={`${kindLabel(asset.entityKind)} · ${asset.sourceEntityId}`}>
@@ -85,8 +85,8 @@ function Overview({ asset }) {
         </SectionCard>
       </div>
       <SectionCard title="Declared versus observed">
-        <table className="ga-ai-diff">
-          <caption className="ga-ai-visually-hidden">Declared versus observed field comparison</caption>
+        <table className="ax-ai-diff">
+          <caption className="ax-ai-visually-hidden">Declared versus observed field comparison</caption>
           <thead>
             <tr>
               <th scope="col">Field</th>
@@ -99,7 +99,7 @@ function Overview({ asset }) {
               <tr className={row.differs ? "is-different" : ""} key={row.field}>
                 <td>
                   {row.field.replace(/_/g, " ")}
-                  {row.differs ? <span className="ga-ai-visually-hidden"> (differs)</span> : null}
+                  {row.differs ? <span className="ax-ai-visually-hidden"> (differs)</span> : null}
                 </td>
                 <td>{valueOrDash(row.declared)}</td>
                 <td>{valueOrDash(row.observed)}</td>
@@ -114,9 +114,9 @@ function Overview({ asset }) {
       >
         {asset.findings === null ? (
           // The API withholds findings from readers (null, not []), so don't claim there are none.
-          <p className="ga-ai-muted">Findings are visible to stewards and admins.</p>
+          <p className="ax-ai-muted">Findings are visible to stewards and admins.</p>
         ) : (asset.findings || []).length ? (
-          <ul className="ga-ai-list">
+          <ul className="ax-ai-list">
             {asset.findings.map((finding) => (
               <li key={finding.findingId}>
                 <Badge size="sm" tone={severityTone(finding.severity)}>
@@ -126,26 +126,26 @@ function Overview({ asset }) {
                   {findingTypeLabel(finding.findingType)}
                 </Link>{" "}
                 · {finding.state}
-                {finding.evidence?.reason ? <span className="ga-ai-muted"> · {finding.evidence.reason}</span> : null}
+                {finding.evidence?.reason ? <span className="ax-ai-muted"> · {finding.evidence.reason}</span> : null}
               </li>
             ))}
           </ul>
         ) : (
-          <p className="ga-ai-muted">No findings reference this asset.</p>
+          <p className="ax-ai-muted">No findings reference this asset.</p>
         )}
       </SectionCard>
       <SectionCard title="Relationships" subtitle="Observed and declared edges. The relationship graph is available in a later release.">
         {(asset.relationships || []).length ? (
-          <ul className="ga-ai-list">
+          <ul className="ax-ai-list">
             {asset.relationships.map((rel) => (
               <li key={`${rel.relationship_kind}-${rel.source_entity_id}-${rel.target_entity_id}`}>
                 {rel.relationship_kind}: {rel.source_entity_id} → {rel.target_entity_id}{" "}
-                <span className="ga-ai-muted">({rel.authority_source})</span>
+                <span className="ax-ai-muted">({rel.authority_source})</span>
               </li>
             ))}
           </ul>
         ) : (
-          <p className="ga-ai-muted">No relationships recorded for this asset.</p>
+          <p className="ax-ai-muted">No relationships recorded for this asset.</p>
         )}
       </SectionCard>
     </>
@@ -159,7 +159,7 @@ function Controls({ asset }) {
   }
   return (
     <SectionCard title="Controls" subtitle={`From run ${controls[0]?.runId || DASH}. Unknown results are excluded from posture.`}>
-      <table className="ga-ai-diff">
+      <table className="ax-ai-diff">
         <thead>
           <tr>
             <th scope="col">Control</th>
@@ -192,11 +192,11 @@ function History({ asset }) {
   if (!events.length) return <EmptyState title="No history yet" body="No governance events reference this asset or its findings." />;
   return (
     <SectionCard title="History" subtitle="Registry and finding events, newest first">
-      <ol className="ga-ai-timeline">
+      <ol className="ax-ai-timeline">
         {events.map((event) => (
           <li key={event.eventId}>
             <strong>{event.eventType}</strong>
-            <span className="ga-ai-muted">
+            <span className="ax-ai-muted">
               {" "}
               · {formatTimestamp(event.occurredAt)} · {valueOrDash(event.actorEmail)} · {event.source}
               {event.requestId ? ` · request ${event.requestId}` : ""}
@@ -220,13 +220,13 @@ export function AiAssetPage({ entityId = "", shell = null }) {
   return (
     <PageShell
       breadcrumbs={<Link to="/ai">AI Governance</Link>}
-      className="ga-ai-page"
+      className="ax-ai-page"
       eyebrow="AI Asset 360"
       status={notFound || badRequest ? null : query}
       subtitle={asset ? `${kindLabel(asset.entityKind)} · ${asset.sourceEntityId}` : ""}
       actions={
         asset ? (
-          <span className="ga-ai-subtitle">
+          <span className="ax-ai-subtitle">
             {asset.reconciliationState ? (
               <Badge size="sm" tone={reconciliationTone(asset.reconciliationState)}>
                 {reconciliationLabel(asset.reconciliationState)}
@@ -264,7 +264,7 @@ export function AiAssetPage({ entityId = "", shell = null }) {
           ) : null}
           {tab === "overview" && isSteward(shell) && asset.config && Object.keys(asset.config).length ? (
             <SectionCard title="Configuration (redacted)" subtitle="Allowlisted fields only. Credentials are never stored.">
-              <pre className="ga-ai-config">{JSON.stringify(asset.config, null, 2)}</pre>
+              <pre className="ax-ai-config">{JSON.stringify(asset.config, null, 2)}</pre>
             </SectionCard>
           ) : null}
         </>

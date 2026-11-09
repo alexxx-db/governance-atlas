@@ -6,7 +6,7 @@ import {
 
 function bootstrapConfig() {
   if (typeof window === "undefined") return null;
-  return window.__GOVAT_BOOTSTRAP__ || null;
+  return window.__AXIOM_BOOTSTRAP__ || null;
 }
 
 function arrayValue(value) {
@@ -515,9 +515,9 @@ class ApiError extends Error {
 }
 
 const REQUEST_ID_HEADER = "X-Request-ID";
-const CLIENT_REQUEST_ID_HEADER = "X-GOVAT-Client-Request-ID";
-const BUILD_ID_HEADER = "X-GOVAT-Build-ID";
-const DURATION_HEADER = "X-GOVAT-Request-Duration-Ms";
+const CLIENT_REQUEST_ID_HEADER = "X-AXIOM-Client-Request-ID";
+const BUILD_ID_HEADER = "X-AXIOM-Build-ID";
+const DURATION_HEADER = "X-AXIOM-Request-Duration-Ms";
 
 function nowMs() {
   if (typeof performance !== "undefined" && typeof performance.now === "function") {
@@ -536,35 +536,35 @@ function createClientRequestId() {
 function diagnosticsStore() {
   if (typeof window === "undefined") return null;
   const runtimeWindow = /** @type {Window & {
-    __GOVAT_DIAGNOSTICS__?: {
+    __AXIOM_DIAGNOSTICS__?: {
       initialNavigation: unknown,
       lastRequest: unknown,
       requests: unknown[]
     },
-    __GOVAT_NAVIGATION_DIAGNOSTICS_RECORDED__?: boolean
+    __AXIOM_NAVIGATION_DIAGNOSTICS_RECORDED__?: boolean
   }} */ (window);
-  if (runtimeWindow.__GOVAT_DIAGNOSTICS__ && typeof runtimeWindow.__GOVAT_DIAGNOSTICS__ === "object") {
-    return runtimeWindow.__GOVAT_DIAGNOSTICS__;
+  if (runtimeWindow.__AXIOM_DIAGNOSTICS__ && typeof runtimeWindow.__AXIOM_DIAGNOSTICS__ === "object") {
+    return runtimeWindow.__AXIOM_DIAGNOSTICS__;
   }
-  runtimeWindow.__GOVAT_DIAGNOSTICS__ = {
+  runtimeWindow.__AXIOM_DIAGNOSTICS__ = {
     initialNavigation: null,
     lastRequest: null,
     requests: [],
   };
-  return runtimeWindow.__GOVAT_DIAGNOSTICS__;
+  return runtimeWindow.__AXIOM_DIAGNOSTICS__;
 }
 
 function recordInitialNavigationTiming() {
   if (typeof window === "undefined") return;
   const runtimeWindow = /** @type {Window & {
-    __GOVAT_DIAGNOSTICS__?: {
+    __AXIOM_DIAGNOSTICS__?: {
       initialNavigation: unknown,
       lastRequest: unknown,
       requests: unknown[]
     },
-    __GOVAT_NAVIGATION_DIAGNOSTICS_RECORDED__?: boolean
+    __AXIOM_NAVIGATION_DIAGNOSTICS_RECORDED__?: boolean
   }} */ (window);
-  if (runtimeWindow.__GOVAT_NAVIGATION_DIAGNOSTICS_RECORDED__) return;
+  if (runtimeWindow.__AXIOM_NAVIGATION_DIAGNOSTICS_RECORDED__) return;
   const store = diagnosticsStore();
   if (!store || typeof performance === "undefined" || typeof performance.getEntriesByType !== "function") {
     return;
@@ -583,7 +583,7 @@ function recordInitialNavigationTiming() {
           duration: Number(entry?.duration || 0),
         })),
   };
-  runtimeWindow.__GOVAT_NAVIGATION_DIAGNOSTICS_RECORDED__ = true;
+  runtimeWindow.__AXIOM_NAVIGATION_DIAGNOSTICS_RECORDED__ = true;
 }
 
 function recordRequestDiagnostics(entry) {
@@ -602,7 +602,7 @@ recordInitialNavigationTiming();
 
 function apiBase() {
   return (
-    import.meta.env.VITE_GOVAT_API_BASE ||
+    import.meta.env.VITE_AXIOM_API_BASE ||
     bootstrapConfig()?.apiBase ||
     "/api"
   );
@@ -868,7 +868,7 @@ export function fetchCommandCenter(options = {}) {
   const params = new URLSearchParams();
   if (options.refresh) params.set("refresh", "1");
   const query = params.toString();
-  const path = contractPath("commandCenter") || "/atlas/command-center";
+  const path = contractPath("commandCenter") || "/axiom/command-center";
   return request(`${path}${query ? `?${query}` : ""}`, {
     signal: options.signal,
   }).then((payload) => normalizeCommandCenterPayload(payload));
@@ -923,8 +923,8 @@ function abortableDelay(ms, signal) {
   });
 }
 
-export async function fetchAtlasAiRecommendations(question = "", options = {}) {
-  const path = contractPath("atlasAiRecommendations") || "/atlas-ai/recommendations";
+export async function fetchAxiomAiRecommendations(question = "", options = {}) {
+  const path = contractPath("axiomAiRecommendations") || "/axiom-ai/recommendations";
   const body = { question: String(question || "").trim() };
   // Page-awareness: forward the surface + asset the user is viewing so the AI
   // resolves "this asset"/"this page" to a concrete entity (backend injects it
@@ -949,7 +949,7 @@ export async function fetchAtlasAiRecommendations(question = "", options = {}) {
         recommendations: [],
         authoritative: false,
         nonAuthoritative: true,
-        warning: "Atlas AI recommendations unavailable until live evidence-backed provider returns results.",
+        warning: "Axiom AI recommendations unavailable until live evidence-backed provider returns results.",
       };
     }
     return response;
@@ -957,13 +957,13 @@ export async function fetchAtlasAiRecommendations(question = "", options = {}) {
 
   const first = unwrapEnvelope(await requestJson(path, "POST", body, { signal: options.signal }));
   // Genie answers run asynchronously: the POST returns a "pending" handle
-  // (conversation + message id) immediately, and we poll /atlas-ai/message for
+  // (conversation + message id) immediately, and we poll /axiom-ai/message for
   // the REAL pipeline stages + the final answer — so the UI shows progress
   // instead of hanging on one indefinite request. Grounded (instant) answers
   // skip this entirely. onStage(stage) is invoked as the stage changes.
   if (first?.intent === "genie-pending" && first.conversationId && first.messageId) {
     if (typeof options.onStage === "function") options.onStage(first.stage || "Working");
-    const pollPath = contractPath("atlasAiMessage") || "/atlas-ai/message";
+    const pollPath = contractPath("axiomAiMessage") || "/axiom-ai/message";
     const pollBody = { conversationId: first.conversationId, messageId: first.messageId, question: body.question };
     if (body.context) pollBody.context = body.context;
     const deadline = Date.now() + (options.timeoutMs || 150000);
@@ -978,7 +978,7 @@ export async function fetchAtlasAiRecommendations(question = "", options = {}) {
       if (polled?.intent === "genie-pending") continue;
       return normalize(polled); // terminal: done, unavailable, or error envelope
     }
-    throw new Error("Atlas AI timed out waiting for Genie to finish. Try a narrower question.");
+    throw new Error("Axiom AI timed out waiting for Genie to finish. Try a narrower question.");
   }
   return normalize(first);
 }
@@ -987,7 +987,7 @@ export async function fetchAtlasAiRecommendations(question = "", options = {}) {
 // definition + domain from a term name) via the generative endpoint. Returns
 // { fields, model, warnings }; the caller drops fields into the form for review.
 export async function fetchAiAutofill(kind, context = {}, options = {}) {
-  const path = contractPath("atlasAiAutofill") || "/atlas-ai/autofill";
+  const path = contractPath("axiomAiAutofill") || "/axiom-ai/autofill";
   const body = { kind: String(kind || "").trim() };
   if (context && typeof context === "object" && Object.keys(context).length) body.context = context;
   const response = unwrapEnvelope(await requestJson(path, "POST", body, { signal: options.signal }));
@@ -999,59 +999,59 @@ export async function fetchAiAutofill(kind, context = {}, options = {}) {
 }
 
 export function fetchAsset360(assetFqn, options = {}) {
-  const template = contractPath("asset360") || "/atlas/assets/{asset_fqn}/360";
+  const template = contractPath("asset360") || "/axiom/assets/{asset_fqn}/360";
   return request(routeToken(assetRoute(template, assetFqn), "asset_fqn", assetFqn), {
     signal: options.signal,
   });
 }
 
 export function fetchGovernanceWorkbench(options = {}) {
-  const path = contractPath("governanceWorkbench") || "/atlas/governance/workbench";
+  const path = contractPath("governanceWorkbench") || "/axiom/governance/workbench";
   return request(path, { signal: options.signal });
 }
 
 export function fetchGovernanceRequestDetail(requestId, options = {}) {
-  const template = contractPath("governanceRequestDetail") || "/atlas/governance/requests/{request_id}";
+  const template = contractPath("governanceRequestDetail") || "/axiom/governance/requests/{request_id}";
   return request(routeToken(template, "request_id", requestId), {
     signal: options.signal,
   });
 }
 
 export function fetchInsightsDashboard(options = {}) {
-  const path = contractPath("insightsDashboard") || "/atlas/insights";
+  const path = contractPath("insightsDashboard") || "/axiom/insights";
   return request(path, { signal: options.signal });
 }
 
-// ── DataPact Control Center ──────────────────────────────────────────────
+// ── emet Control Center ──────────────────────────────────────────────
 
-export function fetchDataPactStatus(options = {}) {
-  return request("/datapact/status", { signal: options.signal });
+export function fetchemetStatus(options = {}) {
+  return request("/emet/status", { signal: options.signal });
 }
 
-export function fetchDataPactOverview(options = {}) {
+export function fetchemetOverview(options = {}) {
   const query = options.refresh ? "?refresh=1" : "";
-  return request(`/datapact/overview${query}`, { signal: options.signal });
+  return request(`/emet/overview${query}`, { signal: options.signal });
 }
 
-export function fetchDataPactRun(runId, options = {}) {
-  return request(`/datapact/runs/${encodeURIComponent(runId)}`, { signal: options.signal });
+export function fetchemetRun(runId, options = {}) {
+  return request(`/emet/runs/${encodeURIComponent(runId)}`, { signal: options.signal });
 }
 
-export function fetchDataPactRunLive(runId, options = {}) {
-  return request(`/datapact/runs/${encodeURIComponent(runId)}/live`, { signal: options.signal });
+export function fetchemetRunLive(runId, options = {}) {
+  return request(`/emet/runs/${encodeURIComponent(runId)}/live`, { signal: options.signal });
 }
 
-export function triggerDataPactRun(jobId, body = {}, options = {}) {
-  return requestJson(`/datapact/jobs/${encodeURIComponent(jobId)}/run`, "POST", body, options);
+export function triggeremetRun(jobId, body = {}, options = {}) {
+  return requestJson(`/emet/jobs/${encodeURIComponent(jobId)}/run`, "POST", body, options);
 }
 
-export function startDataPactGenie(question, options = {}) {
-  return requestJson("/datapact/genie/start", "POST", { question }, options);
+export function startemetGenie(question, options = {}) {
+  return requestJson("/emet/genie/start", "POST", { question }, options);
 }
 
-export function pollDataPactGenie(conversationId, messageId, options = {}) {
+export function pollemetGenie(conversationId, messageId, options = {}) {
   return requestJson(
-    "/datapact/genie/poll",
+    "/emet/genie/poll",
     "POST",
     { conversationId, messageId },
     options,
@@ -1110,7 +1110,7 @@ export function fetchAiRuns(options = {}) {
 }
 
 export function fetchTaxonomyOverview(options = {}) {
-  const path = contractPath("taxonomyOverview") || "/atlas/taxonomy/overview";
+  const path = contractPath("taxonomyOverview") || "/axiom/taxonomy/overview";
   const params = new URLSearchParams();
   if (options.refresh) params.set("refresh", "1");
   const query = params.toString();
@@ -1118,7 +1118,7 @@ export function fetchTaxonomyOverview(options = {}) {
 }
 
 export function fetchCdeDashboard(options = {}) {
-  const path = contractPath("cdeDashboard") || "/atlas/cde";
+  const path = contractPath("cdeDashboard") || "/axiom/cde";
   const params = new URLSearchParams();
   if (options.refresh) params.set("refresh", "1");
   const query = params.toString();
@@ -1126,7 +1126,7 @@ export function fetchCdeDashboard(options = {}) {
 }
 
 export function fetchCdeDetail(cdeId, options = {}) {
-  const template = contractPath("cdeDetail") || "/atlas/cde/{cde_id}";
+  const template = contractPath("cdeDetail") || "/axiom/cde/{cde_id}";
   return request(routeToken(template, "cde_id", cdeId), { signal: options.signal });
 }
 
@@ -1137,12 +1137,12 @@ export function fetchAuditEvidence(options = {}) {
   if (options.limit) params.set("limit", String(options.limit));
   if (options.refresh) params.set("refresh", "1");
   const query = params.toString();
-  const path = contractPath("auditEvidence") || "/atlas/audit/evidence";
+  const path = contractPath("auditEvidence") || "/axiom/audit/evidence";
   return request(`${path}${query ? `?${query}` : ""}`, { signal: options.signal });
 }
 
 export function fetchAdminControlCenter(options = {}) {
-  const path = contractPath("adminControlCenter") || "/atlas/admin/control-center";
+  const path = contractPath("adminControlCenter") || "/axiom/admin/control-center";
   const params = new URLSearchParams();
   if (options.refresh) params.set("refresh", "1");
   const query = params.toString();
@@ -1801,7 +1801,7 @@ export function fetchQualityFindings(filters = {}, options = {}) {
   // Wave C5 — the Evidence quality tab. GET /api/quality/findings returns a
   // FLAT envelope ({findings, summary, state, reason, windowTruncated,
   // visibilityScopedRowsExcluded, meta}); deliberately NOT unwrapEnvelope'd
-  // so useAtlasQuery's envelope-status resolution (lib/envelope.js flat-payload
+  // so useAxiomQuery's envelope-status resolution (lib/envelope.js flat-payload
   // fallbacks) can honor state/meta/warnings.
   const params = new URLSearchParams();
   if (filters.asset) params.set("asset", filters.asset);

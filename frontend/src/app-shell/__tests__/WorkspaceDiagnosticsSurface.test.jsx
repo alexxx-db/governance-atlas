@@ -21,8 +21,8 @@ describe("WorkspaceDiagnosticsSurface (app-shell, system kit)", () => {
     expect(screen.getByText("Workspace diagnostics")).not.toBeNull();
     expect(screen.getByText("Loading workspace setup diagnostics...")).not.toBeNull();
     // System-kit state card + skeleton — no legacy gh- shell.
-    expect(container.querySelector(".ga-shell-state-card")).not.toBeNull();
-    expect(container.querySelector(".ga-sys-loading")).not.toBeNull();
+    expect(container.querySelector(".ax-shell-state-card")).not.toBeNull();
+    expect(container.querySelector(".ax-sys-loading")).not.toBeNull();
     expect(container.querySelector('[class*="gh-"]')).toBeNull();
   });
 
@@ -32,7 +32,7 @@ describe("WorkspaceDiagnosticsSurface (app-shell, system kit)", () => {
     expect(screen.getByText("Workspace diagnostics")).not.toBeNull();
     expect(screen.getByText("Workspace setup diagnostics could not be loaded.")).not.toBeNull();
     expect(screen.getByText("Diagnostics request failed.")).not.toBeNull();
-    expect(container.querySelector(".ga-shell-state-card.tone-bad")).not.toBeNull();
+    expect(container.querySelector(".ax-shell-state-card.tone-bad")).not.toBeNull();
   });
 
   it("preserves stale diagnostics content while refresh is in progress", () => {
@@ -69,9 +69,9 @@ describe("WorkspaceDiagnosticsSurface (app-shell, system kit)", () => {
     expect(screen.getByText("Refreshing")).not.toBeNull();
     expect(screen.getByRole("button", { name: "Refreshing readiness..." }).hasAttribute("disabled")).toBe(true);
     expect(screen.getByText("Workspace access")).not.toBeNull();
-    expect(container.querySelector(".ga-shell-readiness-layout")).not.toBeNull();
-    expect(container.querySelector(".ga-shell-readiness-main")).not.toBeNull();
-    expect(container.querySelector(".ga-shell-readiness-side")).not.toBeNull();
+    expect(container.querySelector(".ax-shell-readiness-layout")).not.toBeNull();
+    expect(container.querySelector(".ax-shell-readiness-main")).not.toBeNull();
+    expect(container.querySelector(".ax-shell-readiness-side")).not.toBeNull();
   });
 
   it("renders readiness sequence, evidence, and rollout metadata", () => {
@@ -230,7 +230,7 @@ describe("WorkspaceDiagnosticsSurface (app-shell, system kit)", () => {
     fireEvent.click(screen.getByRole("button", { name: "Refresh readiness" }));
 
     expect(onRefresh).toHaveBeenCalledTimes(1);
-    expect(container.querySelector(".ga-shell-readiness-layout")).not.toBeNull();
+    expect(container.querySelector(".ax-shell-readiness-layout")).not.toBeNull();
     expect(screen.getByText("Workspace access")).not.toBeNull();
     expect(screen.getByText("Feature inventory")).not.toBeNull();
     expect(screen.getAllByText("Governance writes").length).toBeGreaterThan(0);

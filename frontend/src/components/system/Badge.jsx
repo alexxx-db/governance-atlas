@@ -32,7 +32,7 @@ export function Badge({ tone = "", status = "", size = "md", className = "", chi
     (TONES.has(tone) && tone) ||
     TONE_BY_STATUS[String(status || children || "").trim().toLowerCase()] ||
     "neutral";
-  const classes = ["ga-sys-badge", `tone-${resolvedTone}`, `size-${size === "sm" ? "sm" : "md"}`, className]
+  const classes = ["ax-sys-badge", `tone-${resolvedTone}`, `size-${size === "sm" ? "sm" : "md"}`, className]
     .filter(Boolean)
     .join(" ");
   return <span className={classes}>{children || status}</span>;

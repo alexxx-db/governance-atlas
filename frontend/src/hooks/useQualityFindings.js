@@ -3,10 +3,10 @@
 // GET /api/quality/findings (landed Wave A4) is visibility-scoped by asset —
 // NOT steward-gated like audit evidence — so this hook carries no role gate.
 // Rows carry stable QF-<hex8> findingIds and joined run metadata; the payload
-// is a flat envelope whose state/reason/meta the shared useAtlasQuery
+// is a flat envelope whose state/reason/meta the shared useAxiomQuery
 // contract resolves (lib/envelope.js flat-payload fallbacks).
 import { fetchQualityFindings } from "../lib/api";
-import { useAtlasQuery } from "./useAtlasQuery";
+import { useAxiomQuery } from "./useAxiomQuery";
 
 // Must match the backend cap (limit is clamped to 500 server-side).
 export const QUALITY_FINDINGS_DEFAULT_LIMIT = 500;
@@ -32,8 +32,8 @@ export function useQualityFindings(filters = {}, options = {}) {
     ? Math.max(1, Math.trunc(Number(filters.limit)))
     : QUALITY_FINDINGS_DEFAULT_LIMIT;
   const enabled = options.enabled !== false;
-  return useAtlasQuery({
-    key: ["atlas", "quality-findings", asset, severity, outcome, since, until, limit],
+  return useAxiomQuery({
+    key: ["axiom", "quality-findings", asset, severity, outcome, since, until, limit],
     enabled,
     fetch: (signal) => fetchQualityFindings({ asset, severity, outcome, since, until, limit }, { signal }),
     // Keep the previous filter window's rows on screen while the next loads

@@ -209,8 +209,8 @@ function sourceRejects(value) {
     normalized.includes("validation_seed") ||
     normalized.includes("home_northstar_seed") ||
     normalized.includes("home_evidence_plane") ||
-    normalized.includes("ga_home_seed") ||
-    normalized.includes("ga_taxonomy_seed") ||
+    normalized.includes("ax_home_seed") ||
+    normalized.includes("ax_taxonomy_seed") ||
     normalized.includes("seed_source") ||
     normalized.includes("prototype_mock") ||
     normalized.includes("local_prototype") ||
@@ -435,7 +435,7 @@ function rowIdentifierRejects(row = {}) {
     row.meta?.source,
     row.provenance?.source,
   ].map((value) => String(value || "")).join(" ").toLowerCase();
-  return /validation[_\s-]*seed|validation sample|home[_\s-]*northstar[_\s-]*seed|home[_\s-]*evidence[_\s-]*plane|ga[_\s-]*home[_\s-]*seed|gov[_\s-]*home[_\s-]*evidence/.test(text);
+  return /validation[_\s-]*seed|validation sample|home[_\s-]*northstar[_\s-]*seed|home[_\s-]*evidence[_\s-]*plane|ax[_\s-]*home[_\s-]*seed|gov[_\s-]*home[_\s-]*evidence/.test(text);
 }
 
 export function filterNonAuthoritativeRows(rows = []) {

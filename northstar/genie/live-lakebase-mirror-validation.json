@@ -2,15 +2,15 @@
   "generatedAt": "2026-04-25T09:12:46Z",
   "deploymentId": "01f14085e4a81baa9f74ebe8f88edd5e",
   "mode": "live-delta-primary-lakebase-shadow-store-validation",
-  "assetFqn": "datapact.governance_atlas_demo.customer_stewardship_queue",
-  "actor": "skyler@entrada.ai",
+  "assetFqn": "emet.axiom_demo.customer_stewardship_queue",
+  "actor": "abarreto@shorecp.com",
   "operations": {
-    "role": "atlas-lakebase-role-20260425051025@entrada.ai",
-    "owner": "atlas-lakebase-recipient-20260425051025@entrada.ai",
+    "role": "axiom-lakebase-role-20260425051025@shorecp.com",
+    "owner": "axiom-lakebase-recipient-20260425051025@shorecp.com",
     "workflowTaskId": "6824b7c0aafb47a2aa79488fa4e5bc50",
     "customDefinitionId": "1907dcb698f34b1ca139a48de53fbb63",
     "customAssignmentId": "a75084fd98be4f9d8f85eddc7029648c",
-    "classificationRecommendationId": "ga-lakebase-proof-20260425051025",
+    "classificationRecommendationId": "ax-lakebase-proof-20260425051025",
     "notificationId": "4be7f1374111e07c62cd3da8"
   },
   "mirrorStatus": {
@@ -23,7 +23,7 @@
     "lastError": "",
     "lastOperation": "notification_receipt",
     "lastTable": "notification_receipts",
-    "schema": "atlas_app",
+    "schema": "axiom_app",
     "activeTables": [
       "user_roles",
       "identity_directory_entries",
@@ -94,14 +94,14 @@
   "lakebaseChecks": {
     "user_roles": [
       {
-        "email": "atlas-lakebase-role-20260425051025@entrada.ai",
+        "email": "axiom-lakebase-role-20260425051025@shorecp.com",
         "role": "steward",
-        "updated_by": "skyler@entrada.ai"
+        "updated_by": "abarreto@shorecp.com"
       }
     ],
     "data_owners": [
       {
-        "owner_email": "atlas-lakebase-recipient-20260425051025@entrada.ai",
+        "owner_email": "axiom-lakebase-recipient-20260425051025@shorecp.com",
         "owner_type": "steward"
       }
     ],
@@ -109,7 +109,7 @@
       {
         "task_id": "6824b7c0aafb47a2aa79488fa4e5bc50",
         "thread_id": "ac36352e9117472ba23331acd1773765",
-        "entity_fqn_snapshot": "datapact.governance_atlas_demo.customer_stewardship_queue",
+        "entity_fqn_snapshot": "emet.axiom_demo.customer_stewardship_queue",
         "status": "open"
       }
     ],
@@ -154,13 +154,13 @@
       {
         "assignment_id": "a75084fd98be4f9d8f85eddc7029648c",
         "definition_id": "1907dcb698f34b1ca139a48de53fbb63",
-        "entity_fqn": "datapact.governance_atlas_demo.customer_stewardship_queue",
+        "entity_fqn": "emet.axiom_demo.customer_stewardship_queue",
         "value_json": "validated-20260425051025"
       }
     ],
     "classification_recommendations": [
       {
-        "recommendation_id": "ga-lakebase-proof-20260425051025",
+        "recommendation_id": "ax-lakebase-proof-20260425051025",
         "sample_values_json": [],
         "status": "pending"
       }

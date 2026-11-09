@@ -8,7 +8,7 @@ import unittest
 from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
-from atlas import uc as uc_module
+from axiom import uc as uc_module
 
 
 def _running(statement_id: str = "st-1") -> SimpleNamespace:

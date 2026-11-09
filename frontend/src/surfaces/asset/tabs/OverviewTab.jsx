@@ -21,7 +21,7 @@ function GlossaryChips({ asset }) {
   const refs = (links.length ? links : names).map(termRef).filter(Boolean);
   if (!refs.length) return null;
   return (
-    <div className="ga-asset-chip-row" aria-label="Glossary terms">
+    <div className="ax-asset-chip-row" aria-label="Glossary terms">
       {refs.map((ref, index) => (
         <EntityChip key={`${ref.id || ref.label || index}`} entity={ref} />
       ))}
@@ -31,8 +31,8 @@ function GlossaryChips({ asset }) {
 
 function MiniMapColumn({ title, nodes }) {
   return (
-    <div className="ga-asset-minimap-col">
-      <span className="ga-asset-minimap-col-title">{title}</span>
+    <div className="ax-asset-minimap-col">
+      <span className="ax-asset-minimap-col-title">{title}</span>
       {nodes.length ? (
         nodes.map((node) => (
           <EntityChip
@@ -51,7 +51,7 @@ function MiniMapColumn({ title, nodes }) {
           />
         ))
       ) : (
-        <span className="ga-asset-minimap-none">None observed</span>
+        <span className="ax-asset-minimap-none">None observed</span>
       )}
     </div>
   );
@@ -93,11 +93,11 @@ function LineageMiniMap({ fqn, graph }) {
     );
   }
   return (
-    <div className="ga-asset-minimap">
+    <div className="ax-asset-minimap">
       <MiniMapColumn title={`Upstream (${upstream.length})`} nodes={upstream} />
-      <div className="ga-asset-minimap-col is-focus">
-        <span className="ga-asset-minimap-col-title">Focus</span>
-        <span className="ga-asset-minimap-focus">{focus.label || fqn}</span>
+      <div className="ax-asset-minimap-col is-focus">
+        <span className="ax-asset-minimap-col-title">Focus</span>
+        <span className="ax-asset-minimap-focus">{focus.label || fqn}</span>
       </div>
       <MiniMapColumn title={`Downstream (${downstream.length})`} nodes={downstream} />
     </div>
@@ -119,8 +119,8 @@ function QualitySummary({ fqn, quality }) {
   const outcomes = run.outcomes || {};
   const evidence = formatUtcInstant(quality.evidenceAt);
   return (
-    <div className="ga-asset-quality-summary">
-      <div className="ga-asset-chip-row">
+    <div className="ax-asset-quality-summary">
+      <div className="ax-asset-chip-row">
         <Badge tone={Number(outcomes.failed) > 0 ? "bad" : "good"}>
           {Number(outcomes.failed) > 0 ? `${outcomes.failed} failed` : "All checks passed"}
         </Badge>
@@ -128,7 +128,7 @@ function QualitySummary({ fqn, quality }) {
         {Number(outcomes.errored) > 0 ? <Badge tone="warn">{outcomes.errored} errored</Badge> : null}
       </div>
       {evidence ? (
-        <p className="ga-asset-evidence-line" title={evidence.iso}>
+        <p className="ax-asset-evidence-line" title={evidence.iso}>
           Evidence from {evidence.display}
         </p>
       ) : null}
@@ -146,7 +146,7 @@ function UsageSources({ usage, fqn }) {
     return <UnavailableState title="Usage unavailable" reason="No usage sources were returned." />;
   }
   return (
-    <ul className="ga-asset-usage-list">
+    <ul className="ax-asset-usage-list">
       {entries.map((source) => {
         const available = String(source.state).toLowerCase() === "available";
         // The downstream-assets count is the observed lineage graph — link it to
@@ -154,8 +154,8 @@ function UsageSources({ usage, fqn }) {
         // so they stay as honest static counts.
         const linkToLineage = source.key === "downstreamAssets" && fqn && available && source.count > 0;
         return (
-          <li key={source.source || source.label} className="ga-asset-usage-row">
-            <span className="ga-asset-usage-label">
+          <li key={source.source || source.label} className="ax-asset-usage-row">
+            <span className="ax-asset-usage-label">
               {linkToLineage ? (
                 <EntityChip
                   appearance="inline"
@@ -164,12 +164,12 @@ function UsageSources({ usage, fqn }) {
               ) : (
                 source.label
               )}
-              <span className="ga-asset-usage-source">({source.source})</span>
+              <span className="ax-asset-usage-source">({source.source})</span>
             </span>
             {available ? (
               <strong>{source.count}</strong>
             ) : (
-              <span className="ga-asset-usage-reason" title={source.reason || undefined}>
+              <span className="ax-asset-usage-reason" title={source.reason || undefined}>
                 — {String(source.state).toLowerCase() === "loading" ? "loading" : "unavailable"}
               </span>
             )}
@@ -189,8 +189,8 @@ export function OverviewTab({ fqn, asset, a360, graph, detailLoading }) {
   const a360Ready = Boolean(a360);
 
   return (
-    <div className="ga-asset-tab-grid">
-      <SectionCard title="About" className="ga-asset-about-card">
+    <div className="ax-asset-tab-grid">
+      <SectionCard title="About" className="ax-asset-about-card">
         {!asset ? (
           /* No adopted asset yet (loading OR a hydrating stub was rejected) —
              "no description" is a claim we can't make about an asset we
@@ -199,13 +199,13 @@ export function OverviewTab({ fqn, asset, a360, graph, detailLoading }) {
         ) : (
           <>
             {description ? (
-              <p className="ga-asset-description">{description}</p>
+              <p className="ax-asset-description">{description}</p>
             ) : (
-              <p className="ga-asset-description is-empty">
+              <p className="ax-asset-description is-empty">
                 No description has been captured for this asset yet.
               </p>
             )}
-            <div className="ga-asset-chip-row">
+            <div className="ax-asset-chip-row">
               {domain && domain !== "Unassigned" ? (
                 <EntityChip entity={{ kind: "domain", name: domain, label: `Domain: ${domain}` }} />
               ) : null}
@@ -254,7 +254,7 @@ export function OverviewTab({ fqn, asset, a360, graph, detailLoading }) {
         {!a360Ready ? (
           <LoadingState variant="card" lines={2} />
         ) : related.length ? (
-          <div className="ga-asset-chip-row">
+          <div className="ax-asset-chip-row">
             {related
               .filter((item) => item?.fqn)
               .map((item) => (

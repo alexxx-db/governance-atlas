@@ -1,5 +1,5 @@
 import { fetchGovernanceSummary } from "../lib/api";
-import { useAtlasQuery } from "./useAtlasQuery";
+import { useAxiomQuery } from "./useAxiomQuery";
 
 const EMPTY_GOVERNANCE = {
   metrics: [],
@@ -24,7 +24,7 @@ export function useGovernanceSummary(options = {}) {
     : resolvedOptions.section
       ? [resolvedOptions.section]
       : [];
-  const { query } = useAtlasQuery({
+  const { query } = useAxiomQuery({
     key: ["governance-summary", sections],
     fetch: (signal) => fetchGovernanceSummary({ signal, sections }),
     enabled,

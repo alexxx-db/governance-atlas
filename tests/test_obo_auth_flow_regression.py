@@ -40,7 +40,7 @@ from unittest.mock import patch
 
 import importlib
 
-from atlas.services import capabilities as capability_service
+from axiom.services import capabilities as capability_service
 
 
 def _load_runtime_app():

@@ -28,8 +28,8 @@ def _load_snapshot_script():
 snapshot_script = _load_snapshot_script()
 
 from fastapi.responses import JSONResponse  # noqa: E402
-from atlas.api import response as _response_api  # noqa: E402
-from atlas.api.runtime import build_runtime_router  # noqa: E402
+from axiom.api import response as _response_api  # noqa: E402
+from axiom.api.runtime import build_runtime_router  # noqa: E402
 
 
 def _response_json(response) -> dict[str, object]:
@@ -44,11 +44,11 @@ class RuntimeApiContractsTests(unittest.TestCase):
         store = runtime_app._NullGovernanceStore()
 
         self.assertEqual(
-            store.get_role("skyler@entrada.ai", admin_emails=["skyler@entrada.ai"]),
+            store.get_role("abarreto@shorecp.com", admin_emails=["abarreto@shorecp.com"]),
             "admin",
         )
         self.assertEqual(
-            store.get_role("reader@entrada.ai", admin_emails=["skyler@entrada.ai"]),
+            store.get_role("reader@shorecp.com", admin_emails=["abarreto@shorecp.com"]),
             "reader",
         )
 
@@ -69,8 +69,8 @@ class RuntimeApiContractsTests(unittest.TestCase):
                 diagnostics_enabled=True,
                 admin_emails=[],
                 warehouse_id="warehouse-123",
-                gov_catalog="datapact",
-                gov_schema="atlas",
+                gov_catalog="emet",
+                gov_schema="axiom",
                 environment_label="Dev - DEFAULT",
                 deploy_target="Dev",
                 workspace_host="https://example.cloud.databricks.com",
@@ -93,34 +93,34 @@ class RuntimeApiContractsTests(unittest.TestCase):
         self.assertEqual(payload["routeHints"]["surface"], "entity")
         self.assertEqual(payload["routeHints"]["asset"], "main.sales.orders")
         self.assertEqual(payload["apiContract"]["bootstrap"], "/api/bootstrap")
-        self.assertEqual(payload["apiContract"]["commandCenter"], "/api/atlas/command-center")
-        self.assertEqual(payload["apiContract"]["asset360"], "/api/atlas/assets/{asset_fqn}/360")
+        self.assertEqual(payload["apiContract"]["commandCenter"], "/api/axiom/command-center")
+        self.assertEqual(payload["apiContract"]["asset360"], "/api/axiom/assets/{asset_fqn}/360")
         self.assertEqual(
             payload["apiContract"]["governanceWorkbench"],
-            "/api/atlas/governance/workbench",
+            "/api/axiom/governance/workbench",
         )
-        self.assertEqual(payload["apiContract"]["insightsDashboard"], "/api/atlas/insights")
-        self.assertEqual(payload["apiContract"]["cdeDashboard"], "/api/atlas/cde")
-        self.assertEqual(payload["apiContract"]["cdeDetail"], "/api/atlas/cde/{cde_id}")
+        self.assertEqual(payload["apiContract"]["insightsDashboard"], "/api/axiom/insights")
+        self.assertEqual(payload["apiContract"]["cdeDashboard"], "/api/axiom/cde")
+        self.assertEqual(payload["apiContract"]["cdeDetail"], "/api/axiom/cde/{cde_id}")
         self.assertEqual(
-            payload["apiContract"]["atlasAiRecommendations"],
-            "/api/atlas-ai/recommendations",
+            payload["apiContract"]["axiomAiRecommendations"],
+            "/api/axiom-ai/recommendations",
         )
         self.assertEqual(payload["shell"]["buildId"], "build-123")
         self.assertEqual(payload["shell"]["environment"]["label"], "Dev - DEFAULT")
-        self.assertEqual(payload["shell"]["environment"]["displayLabel"], "Dev · datapact.atlas")
+        self.assertEqual(payload["shell"]["environment"]["displayLabel"], "Dev · emet.axiom")
         self.assertEqual(payload["shell"]["environment"]["target"], "Dev")
-        self.assertEqual(payload["shell"]["environment"]["catalog"], "datapact")
-        self.assertEqual(payload["shell"]["environment"]["schema"], "atlas")
+        self.assertEqual(payload["shell"]["environment"]["catalog"], "emet")
+        self.assertEqual(payload["shell"]["environment"]["schema"], "axiom")
         self.assertEqual(payload["shell"]["environment"]["warehouseId"], "warehouse-123")
         self.assertEqual(payload["shell"]["workspaceHost"], "https://example.cloud.databricks.com")
         self.assertEqual(
             payload["shell"]["product"],
             {
-                "companyName": "Entrada",
-                "productName": "Governance Atlas",
-                "shortName": "Atlas",
-                "aiName": "Atlas AI",
+                "companyName": "Shore Capital Partners",
+                "productName": "Axiom",
+                "shortName": "Axiom",
+                "aiName": "Axiom AI",
             },
         )
         flag_keys = {item["key"] for item in payload["featureFlags"]}
@@ -157,8 +157,8 @@ class RuntimeApiContractsTests(unittest.TestCase):
                 diagnostics_enabled=True,
                 admin_emails=[],
                 warehouse_id="warehouse-123",
-                gov_catalog="datapact",
-                gov_schema="atlas",
+                gov_catalog="emet",
+                gov_schema="axiom",
                 environment_label="Dev - DEFAULT",
                 deploy_target="Dev",
                 workspace_host="https://example.cloud.databricks.com",
@@ -201,8 +201,8 @@ class RuntimeApiContractsTests(unittest.TestCase):
                 diagnostics_enabled=True,
                 admin_emails=[],
                 warehouse_id="warehouse-123",
-                gov_catalog="datapact",
-                gov_schema="atlas",
+                gov_catalog="emet",
+                gov_schema="axiom",
                 environment_label="Dev - DEFAULT",
                 deploy_target="Dev",
                 workspace_host="https://example.cloud.databricks.com",
@@ -217,7 +217,7 @@ class RuntimeApiContractsTests(unittest.TestCase):
         self.assertNotIn("assetIndex", payload)
         self.assertNotIn("diagnostics", payload)
         self.assertEqual(payload["apiContract"]["runtimeStatus"], "/api/runtime/status")
-        self.assertEqual(payload["apiContract"]["adminControlCenter"], "/api/atlas/admin/control-center")
+        self.assertEqual(payload["apiContract"]["adminControlCenter"], "/api/axiom/admin/control-center")
 
     def test_unavailable_bootstrap_payload_preserves_minimal_contract(self) -> None:
         runtime_app = snapshot_script.runtime_app
@@ -249,7 +249,7 @@ class RuntimeApiContractsTests(unittest.TestCase):
         self.assertNotIn("diagnostics", payload)
         self.assertNotIn("summary", payload["discovery"])
         self.assertEqual(payload["apiContract"]["bootstrap"], "/api/bootstrap")
-        self.assertEqual(payload["apiContract"]["auditEvidence"], "/api/atlas/audit/evidence")
+        self.assertEqual(payload["apiContract"]["auditEvidence"], "/api/axiom/audit/evidence")
 
     def test_request_obo_token_reads_forwarded_access_token_header(self) -> None:
         runtime_app = snapshot_script.runtime_app
@@ -261,7 +261,7 @@ class RuntimeApiContractsTests(unittest.TestCase):
         request = SimpleNamespace(
             headers={
                 "x-forwarded-user": "5882225431657870",
-                "x-forwarded-email": "skyler@entrada.ai",
+                "x-forwarded-email": "abarreto@shorecp.com",
                 "x-forwarded-display-name": "Skyler Kohler",
             }
         )
@@ -273,28 +273,28 @@ class RuntimeApiContractsTests(unittest.TestCase):
         request = SimpleNamespace(
             headers={
                 "x-forwarded-user": "5882225431657870",
-                "x-forwarded-email": "skyler@entrada.ai",
+                "x-forwarded-email": "abarreto@shorecp.com",
             }
         )
 
-        self.assertEqual(runtime_app._user_display_name(request), "skyler@entrada.ai")
+        self.assertEqual(runtime_app._user_display_name(request), "abarreto@shorecp.com")
 
-    def test_runtime_diagnostics_headers_use_govat_names(
+    def test_runtime_diagnostics_headers_use_axiom_names(
         self,
     ) -> None:
         runtime_app = snapshot_script.runtime_app
         request = SimpleNamespace(
-            headers={"X-GOVAT-Client-Request-ID": "govat-request-id"},
+            headers={"X-AXIOM-Client-Request-ID": "axiom-request-id"},
             state=SimpleNamespace(),
         )
 
-        self.assertEqual(runtime_app._http_request_id(request), "govat-request-id")
+        self.assertEqual(runtime_app._http_request_id(request), "axiom-request-id")
         self.assertEqual(
             runtime_app.CLIENT_REQUEST_ID_HEADER,
-            "X-GOVAT-Client-Request-ID",
+            "X-AXIOM-Client-Request-ID",
         )
-        self.assertEqual(runtime_app.BUILD_ID_HEADER, "X-GOVAT-Build-ID")
-        self.assertEqual(runtime_app.DURATION_HEADER, "X-GOVAT-Request-Duration-Ms")
+        self.assertEqual(runtime_app.BUILD_ID_HEADER, "X-AXIOM-Build-ID")
+        self.assertEqual(runtime_app.DURATION_HEADER, "X-AXIOM-Request-Duration-Ms")
 
     def test_request_auth_mode_flips_to_obo_when_token_forwarded(self) -> None:
         runtime_app = snapshot_script.runtime_app
@@ -318,7 +318,7 @@ class RuntimeApiContractsTests(unittest.TestCase):
         )
 
     def test_runtime_app_routes_delegate_to_runtime_helpers(self) -> None:
-        from atlas.api import runtime as _runtime_api
+        from axiom.api import runtime as _runtime_api
 
         runtime_app = snapshot_script.runtime_app
         routes = {
@@ -347,13 +347,13 @@ class RuntimeApiContractsTests(unittest.TestCase):
         self.assertEqual(_response_json(response), {"ok": "runtime_status"})
 
     def test_runtime_status_opens_lineage_surface_when_visible_assets_exist_without_edges(self) -> None:
-        from atlas.api import runtime as _runtime_api
+        from axiom.api import runtime as _runtime_api
 
         runtime_app = snapshot_script.runtime_app
         request = SimpleNamespace(
             headers={
-                "x-forwarded-email": "skyler@entrada.ai",
-                "x-forwarded-user": "skyler@entrada.ai",
+                "x-forwarded-email": "abarreto@shorecp.com",
+                "x-forwarded-user": "abarreto@shorecp.com",
                 "x-forwarded-display-name": "Skyler Myers",
                 "x-forwarded-access-token": "obo-token-live",
             }
@@ -376,15 +376,15 @@ class RuntimeApiContractsTests(unittest.TestCase):
                 "availableCatalogCount": 3,
                 "observedCatalogCount": 0,
             },
-            _request_cache_scope=lambda _request: "skyler@entrada.ai|obo-available",
+            _request_cache_scope=lambda _request: "abarreto@shorecp.com|obo-available",
             _user_role_slug=lambda _request: "admin",
             _config=lambda: SimpleNamespace(
                 build_id="build-123",
                 diagnostics_enabled=True,
                 admin_emails=[],
                 warehouse_id="warehouse-123",
-                gov_catalog="datapact",
-                gov_schema="atlas",
+                gov_catalog="emet",
+                gov_schema="axiom",
                 environment_label="Dev - DEFAULT",
                 deploy_target="Dev",
                 workspace_host="https://example.cloud.databricks.com",

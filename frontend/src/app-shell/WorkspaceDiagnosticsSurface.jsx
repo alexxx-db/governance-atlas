@@ -171,7 +171,7 @@ export default function WorkspaceDiagnosticsSurface({
 
   if (loading && !status) {
     return (
-      <div className="ga-shell-readiness-layout is-single">
+      <div className="ax-shell-readiness-layout is-single">
         <ShellStateCard
           eyebrow="Workspace diagnostics"
           loading
@@ -184,7 +184,7 @@ export default function WorkspaceDiagnosticsSurface({
 
   if (error && !status) {
     return (
-      <div className="ga-shell-readiness-layout is-single">
+      <div className="ax-shell-readiness-layout is-single">
         <ShellStateCard
           eyebrow="Workspace diagnostics"
           message={error}
@@ -196,8 +196,8 @@ export default function WorkspaceDiagnosticsSurface({
   }
 
   return (
-    <div className="ga-shell-readiness-layout">
-      <div className="ga-shell-readiness-main">
+    <div className="ax-shell-readiness-layout">
+      <div className="ax-shell-readiness-main">
         <SectionCard
           actions={
             <>
@@ -245,12 +245,12 @@ export default function WorkspaceDiagnosticsSurface({
               tone="warning"
             />
           ) : null}
-          <div className="ga-shell-readiness-subhead">
+          <div className="ax-shell-readiness-subhead">
             <h3>Readiness sequence</h3>
             <p>Ordered setup checks that rerun against the live runtime without leaving the shell.</p>
           </div>
           <ReadinessList items={setupSequence} />
-          <div className="ga-shell-readiness-tiles">
+          <div className="ax-shell-readiness-tiles">
             <SummaryTile
               label="Warehouse runtime"
               note={status?.runtime?.message || "Live metadata runtime health."}
@@ -326,7 +326,7 @@ export default function WorkspaceDiagnosticsSurface({
             ]}
           />
           {workspaceAccess?.blockedSurfaces?.length ? (
-            <div className="ga-shell-chip-row">
+            <div className="ax-shell-chip-row">
               {workspaceAccess.blockedSurfaces.map((surface) => (
                 <Badge key={`blocked-surface:${surface}`} tone="muted">
                   {surface}
@@ -399,7 +399,7 @@ export default function WorkspaceDiagnosticsSurface({
         </SectionCard>
       </div>
 
-      <aside className="ga-shell-readiness-side">
+      <aside className="ax-shell-readiness-side">
         <SectionCard title="Workspace context">
           <AttributeList
             items={[

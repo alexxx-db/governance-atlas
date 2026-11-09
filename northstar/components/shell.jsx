@@ -1,5 +1,5 @@
 /* eslint-disable */
-/** Governance Atlas — App Shell (sidebar + topbar) */
+/** Axiom — App Shell (sidebar + topbar) */
 const { useState: useS, useEffect: useE } = React;
 
 function Sidebar({ route, onRoute, openCounts }) {
@@ -20,9 +20,9 @@ function Sidebar({ route, onRoute, openCounts }) {
     <aside className="sidebar">
       <div className="sb-brand">
         <div className="mark">
-          <img src="assets/entrada-logo.png" alt="Entrada" width="32" height="32" style={{ display: 'block', borderRadius: 6 }}/>
+          <img src="assets/scp-mark.svg" alt="Shore Capital Partners" width="32" height="32" style={{ display: 'block', borderRadius: 6 }}/>
         </div>
-        <div className="name">Governance Atlas<small>By Entrada</small></div>
+        <div className="name">Axiom<small>By Shore Capital Partners</small></div>
       </div>
 
       <nav style={{ flex: 1, overflow: 'auto', paddingBottom: 12 }}>
@@ -62,7 +62,7 @@ function Topbar({ onSearch, onRoute, onAI }) {
         <Icon name="layout-grid" size={14} style={{ color: 'var(--txt-subtle)' }}/>
         <span style={{ color: 'var(--txt-subtle)', fontSize: 12 }}>Workspace</span>
         <Icon name="chevron-right" size={12} style={{ color: 'var(--txt-subtle)' }}/>
-        <span style={{ color: 'var(--txt)', fontSize: 12, fontWeight: 600 }}>entrada-prod</span>
+        <span style={{ color: 'var(--txt)', fontSize: 12, fontWeight: 600 }}>prod</span>
       </div>
       <div className={`tb-search ${focus ? 'focus' : ''}`}>
         <Icon name="search" size={15}/>
@@ -80,7 +80,7 @@ function Topbar({ onSearch, onRoute, onAI }) {
         <div className="tb-status"><span className="dot"></span>UC connected · 87.4% coverage</div>
         <button className="tb-btn"><Icon name="bell" size={15}/></button>
         <button className="tb-btn"><Icon name="help-circle" size={15}/></button>
-        <button className="tb-btn primary" onClick={onAI}><Icon name="sparkles" size={14}/>Atlas AI</button>
+        <button className="tb-btn primary" onClick={onAI}><Icon name="sparkles" size={14}/>Axiom AI</button>
       </div>
     </div>
   );

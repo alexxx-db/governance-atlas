@@ -5,7 +5,7 @@
 import { chromium } from "playwright";
 import { mkdirSync } from "fs";
 
-const BASE = process.env.ATLAS_CAPTURE_BASE || "http://localhost:3100";
+const BASE = process.env.AXIOM_CAPTURE_BASE || "http://localhost:3100";
 const outdir = process.argv[2] || "./lineage-states";
 mkdirSync(outdir, { recursive: true });
 
@@ -43,7 +43,7 @@ async function run(width, height, suffix) {
   }
 
   // Hover a non-focus node card, then select it (in-canvas seamless focus).
-  const card = page.locator(".ga-lineage-v2-card").nth(2);
+  const card = page.locator(".ax-lineage-v2-card").nth(2);
   if (await card.count()) {
     await card.hover({ timeout: 3000 }).catch(() => {});
     await page.waitForTimeout(400);

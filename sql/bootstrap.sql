@@ -1,14 +1,14 @@
--- Bootstrap Governance Atlas tables in Unity Catalog.
+-- Bootstrap Axiom tables in Unity Catalog.
 -- Run this once if the app service principal lacks DDL privileges.
--- Replace `main` and `atlas` below for the target workspace before running.
-CREATE SCHEMA IF NOT EXISTS main.atlas;
-CREATE TABLE IF NOT EXISTS main.atlas.user_roles (
+-- Replace `main` and `axiom` below for the target workspace before running.
+CREATE SCHEMA IF NOT EXISTS main.axiom;
+CREATE TABLE IF NOT EXISTS main.axiom.user_roles (
     email STRING NOT NULL,
     role STRING NOT NULL COMMENT 'reader | writer | admin',
     updated_at TIMESTAMP,
     updated_by STRING
 ) USING DELTA;
-CREATE TABLE IF NOT EXISTS main.atlas.glossary_terms (
+CREATE TABLE IF NOT EXISTS main.axiom.glossary_terms (
     term_id STRING NOT NULL,
     name STRING NOT NULL,
     definition STRING,
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS main.atlas.glossary_terms (
     updated_at TIMESTAMP,
     updated_by STRING
 ) USING DELTA;
-CREATE TABLE IF NOT EXISTS main.atlas.glossary_term_links (
+CREATE TABLE IF NOT EXISTS main.axiom.glossary_term_links (
     link_id STRING NOT NULL,
     term_id STRING NOT NULL,
     subject_type STRING NOT NULL COMMENT 'asset | column',
@@ -37,14 +37,14 @@ CREATE TABLE IF NOT EXISTS main.atlas.glossary_term_links (
     removed_at TIMESTAMP,
     removed_by STRING
 ) USING DELTA;
-CREATE TABLE IF NOT EXISTS main.atlas.data_owners (
+CREATE TABLE IF NOT EXISTS main.axiom.data_owners (
     uc_full_name STRING NOT NULL COMMENT 'catalog.schema.table',
     owner_email STRING NOT NULL,
     owner_type STRING COMMENT 'technical | business | steward',
     updated_at TIMESTAMP,
     updated_by STRING
 ) USING DELTA;
-CREATE TABLE IF NOT EXISTS main.atlas.change_requests (
+CREATE TABLE IF NOT EXISTS main.axiom.change_requests (
     request_id STRING NOT NULL,
     created_at TIMESTAMP,
     created_by STRING,

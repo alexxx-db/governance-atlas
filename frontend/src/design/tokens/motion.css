@@ -1,25 +1,25 @@
 /*
  * Motion tokens.
- * Duration and easing. --ga-* is canonical (Wave C8); the last --gh-*
+ * Duration and easing. --ax-* is canonical (Wave C8); the last --gh-*
  * consumers (the system kit) were migrated, so no aliases remain.
  */
 
 :root {
-  --ga-duration-instant: 80ms;
-  --ga-duration-quick: 140ms;
-  --ga-duration-standard: 220ms;
-  --ga-duration-slow: 360ms;
+  --ax-duration-instant: 80ms;
+  --ax-duration-quick: 140ms;
+  --ax-duration-standard: 220ms;
+  --ax-duration-slow: 360ms;
 
-  --ga-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
-  --ga-ease-out: cubic-bezier(0, 0, 0.2, 1);
-  --ga-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ax-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ax-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ax-ease-in: cubic-bezier(0.4, 0, 1, 1);
 }
 
 @media (prefers-reduced-motion: reduce) {
   :root {
-    --ga-duration-instant: 0ms;
-    --ga-duration-quick: 0ms;
-    --ga-duration-standard: 0ms;
-    --ga-duration-slow: 0ms;
+    --ax-duration-instant: 0ms;
+    --ax-duration-quick: 0ms;
+    --ax-duration-standard: 0ms;
+    --ax-duration-slow: 0ms;
   }
 }

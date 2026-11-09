@@ -11,30 +11,30 @@ import { stateText, statusTone } from "../adminPresentation";
 
 export function IntegrationsTab({ integrations, hydrating }) {
   return (
-    <div className="ga-admin-tab-body" id="ga-admin-panel-integrations" role="tabpanel">
+    <div className="ax-admin-tab-body" id="ax-admin-panel-integrations" role="tabpanel">
       <SectionCard
-        className="ga-admin-card"
+        className="ax-admin-card"
         subtitle="Connection states from the same live probes the product uses — unsupported integrations stay honestly unavailable with the API's reason"
         title="Integrations"
       >
         {!integrations.length && hydrating ? (
           <LoadingState label="Loading integrations" variant="card" />
         ) : integrations.length ? (
-          <div aria-label="Integration connections" className="ga-admin-integration-grid" role="list">
+          <div aria-label="Integration connections" className="ax-admin-integration-grid" role="list">
             {integrations.map((item) => (
-              <article className="ga-admin-integration-card" key={item.id} role="listitem">
+              <article className="ax-admin-integration-card" key={item.id} role="listitem">
                 <header>
                   <strong>{item.label}</strong>
                   <Badge tone={statusTone(item.status)}>{stateText(item.status)}</Badge>
                 </header>
-                <span className="ga-admin-integration-sub">{item.subtitle}</span>
+                <span className="ax-admin-integration-sub">{item.subtitle}</span>
                 {/* The API's own reason string — never a synthesized excuse. */}
                 {item.reason && item.reason !== item.subtitle ? (
-                  <p className="ga-admin-integration-reason">{item.reason}</p>
+                  <p className="ax-admin-integration-reason">{item.reason}</p>
                 ) : null}
                 {item.url ? (
                   <a
-                    className="ga-admin-external-link"
+                    className="ax-admin-external-link"
                     href={item.url}
                     rel="noopener noreferrer"
                     target="_blank"

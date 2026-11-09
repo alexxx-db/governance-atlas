@@ -1,7 +1,7 @@
 import { renderHook, waitFor } from "@testing-library/react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { createAtlasQueryClient } from "../lib/queryClient";
+import { createAxiomQueryClient } from "../lib/queryClient";
 import { useRuntimeStatus } from "./useRuntimeStatus";
 
 const fetchRuntimeStatusMock = vi.fn();
@@ -11,7 +11,7 @@ vi.mock("../lib/api", () => ({
 }));
 
 function createWrapper() {
-  const queryClient = createAtlasQueryClient();
+  const queryClient = createAxiomQueryClient();
   return function Wrapper({ children }) {
     return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
   };

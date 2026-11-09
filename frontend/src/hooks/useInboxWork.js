@@ -8,7 +8,7 @@
 import { useMemo } from "react";
 import { fetchGovernanceGlossary } from "../lib/api";
 import { envelopeData } from "../lib/envelope";
-import { useAtlasQuery } from "./useAtlasQuery";
+import { useAxiomQuery } from "./useAxiomQuery";
 import { useGovernanceWorkbench } from "./useGovernanceWorkbench";
 
 function textValue(value) {
@@ -42,15 +42,15 @@ export function reviewTermsFromGlossary(payload) {
  *   reviewTerms: any[],
  *   badgeCount: number,
  *   loading: boolean,
- *   workbench: ReturnType<typeof useAtlasQuery>,
- *   glossary: ReturnType<typeof useAtlasQuery>,
+ *   workbench: ReturnType<typeof useAxiomQuery>,
+ *   glossary: ReturnType<typeof useAxiomQuery>,
  * }}
  */
 export function useInboxWork(options = {}) {
   const enabled = options.enabled !== false;
   const workbench = useGovernanceWorkbench({ enabled });
-  const glossary = useAtlasQuery({
-    key: ["atlas", "governance-glossary"],
+  const glossary = useAxiomQuery({
+    key: ["axiom", "governance-glossary"],
     enabled,
     fetch: () => fetchGovernanceGlossary(),
     staleTime: 60_000,

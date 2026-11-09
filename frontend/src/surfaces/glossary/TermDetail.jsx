@@ -7,7 +7,7 @@ import {
   SuggestInput,
   toast,
 } from "../../components/system";
-import { useAtlasMutation } from "../../hooks/useAtlasQuery";
+import { useAxiomMutation } from "../../hooks/useAxiomQuery";
 import { useWorkspaceRoster } from "../../hooks/useWorkspaceRoster";
 import { upsertGovernanceGlossaryTerm } from "../../lib/api";
 import {
@@ -42,12 +42,12 @@ function replayStatus(value) {
 
 function OwnerLine({ label, email }) {
   return (
-    <div className="ga-glos-owner-line">
-      <span className="ga-glos-kv-label">{label}</span>
+    <div className="ax-glos-owner-line">
+      <span className="ax-glos-kv-label">{label}</span>
       {email ? (
         <EntityChip appearance="inline" entity={{ kind: "owner", id: email, label: email }} />
       ) : (
-        <span className="ga-glos-muted">Unassigned</span>
+        <span className="ax-glos-muted">Unassigned</span>
       )}
     </div>
   );
@@ -80,7 +80,7 @@ export function TermDetail({ term, termLookup, terms = [], childTerms = [], canD
   // asset-linked change request (that model left the decision UI empty on live
   // data). The decision replays the term's fields through the same governed
   // upsert with the new status. Gated to stewards/admins via `canDecide`.
-  const decideReview = useAtlasMutation({
+  const decideReview = useAxiomMutation({
     mutate: (status) =>
       upsertGovernanceGlossaryTerm({
         termId: term.termId,
@@ -99,7 +99,7 @@ export function TermDetail({ term, termLookup, terms = [], childTerms = [], canD
             ? `Term "${term.term}" approved in glossary review.`
             : `Term "${term.term}" rejected in glossary review.`,
       }),
-    invalidates: [["atlas", "taxonomy-overview"], ["governance", "glossary"]],
+    invalidates: [["axiom", "taxonomy-overview"], ["governance", "glossary"]],
   });
 
   const decide = async (status) => {
@@ -119,7 +119,7 @@ export function TermDetail({ term, termLookup, terms = [], childTerms = [], canD
     }
   };
 
-  const assignReviewer = useAtlasMutation({
+  const assignReviewer = useAxiomMutation({
     mutate: (email) =>
       upsertGovernanceGlossaryTerm({
         termId: term.termId,
@@ -141,7 +141,7 @@ export function TermDetail({ term, termLookup, terms = [], childTerms = [], canD
         ],
         changeNote: `Reviewer ${email} assigned from the glossary registry.`,
       }),
-    invalidates: [["atlas", "taxonomy-overview"], ["governance", "glossary"]],
+    invalidates: [["axiom", "taxonomy-overview"], ["governance", "glossary"]],
   });
 
   // Term switches reset the inline form state.
@@ -188,13 +188,13 @@ export function TermDetail({ term, termLookup, terms = [], childTerms = [], canD
   const firstAsset = term.assets.find((asset) => asset.fqn) || null;
 
   return (
-    <section aria-label={`${term.term} detail`} className="ga-glos-term-detail">
-      <header className="ga-glos-detail-head">
+    <section aria-label={`${term.term} detail`} className="ax-glos-term-detail">
+      <header className="ax-glos-detail-head">
         <div>
-          <span className="ga-glos-eyebrow">Term detail</span>
+          <span className="ax-glos-eyebrow">Term detail</span>
           <h2>{term.term}</h2>
         </div>
-        <div className="ga-glos-detail-head-actions">
+        <div className="ax-glos-detail-head-actions">
           <Button onClick={() => onEdit(term)} size="sm" variant="secondary">
             Edit term
           </Button>
@@ -204,34 +204,34 @@ export function TermDetail({ term, termLookup, terms = [], childTerms = [], canD
         </div>
       </header>
 
-      <div className="ga-glos-detail-grid">
+      <div className="ax-glos-detail-grid">
         {/* 1 — definition & status */}
         <SectionCard
-          className="ga-glos-detail-card is-definition"
+          className="ax-glos-detail-card is-definition"
           title="Definition & status"
           actions={<Badge tone={statusToneFor(effectiveStatus)}>{statusLabelFor(effectiveStatus, "Draft")}</Badge>}
         >
-          <p className="ga-glos-definition">
+          <p className="ax-glos-definition">
             {term.definition || "No definition recorded for this term."}
           </p>
-          <div className="ga-glos-kv-grid">
+          <div className="ax-glos-kv-grid">
             <OwnerLine email={term.ownerEmail} label="Owner" />
             <OwnerLine email={term.stewardEmail} label="Steward" />
-            <div className="ga-glos-owner-line">
-              <span className="ga-glos-kv-label">Domain</span>
+            <div className="ax-glos-owner-line">
+              <span className="ax-glos-kv-label">Domain</span>
               <span>{term.domain || "Unassigned"}</span>
             </div>
-            <div className="ga-glos-owner-line">
-              <span className="ga-glos-kv-label">Review</span>
+            <div className="ax-glos-owner-line">
+              <span className="ax-glos-kv-label">Review</span>
               <span>{termReviewSummary(term)}</span>
             </div>
-            <div className="ga-glos-owner-line">
-              <span className="ga-glos-kv-label">Version</span>
+            <div className="ax-glos-owner-line">
+              <span className="ax-glos-kv-label">Version</span>
               <span>{term.currentVersion || "No backed version label"}</span>
             </div>
             {term.synonyms.length ? (
-              <div className="ga-glos-owner-line">
-                <span className="ga-glos-kv-label">Synonyms</span>
+              <div className="ax-glos-owner-line">
+                <span className="ax-glos-kv-label">Synonyms</span>
                 <span>{term.synonyms.join(", ")}</span>
               </div>
             ) : null}
@@ -240,7 +240,7 @@ export function TermDetail({ term, termLookup, terms = [], childTerms = [], canD
 
         {/* 2 — linked assets */}
         <SectionCard
-          className="ga-glos-detail-card"
+          className="ax-glos-detail-card"
           title="Linked assets"
           subtitle={termAssociationSummary(term)}
           actions={
@@ -253,7 +253,7 @@ export function TermDetail({ term, termLookup, terms = [], childTerms = [], canD
           }
         >
           {term.assets.length ? (
-            <div className="ga-glos-linked-assets">
+            <div className="ax-glos-linked-assets">
               {term.assets.map((asset) => (
                 <EntityChip
                   appearance="row"
@@ -272,7 +272,7 @@ export function TermDetail({ term, termLookup, terms = [], childTerms = [], canD
             // asset-side via tagging), so route the user to Discovery scoped to
             // this term to find + tag assets — an honest action, not a dead
             // "Link assets" button.
-            <p className="ga-glos-muted">
+            <p className="ax-glos-muted">
               No linked assets are recorded for this term.{" "}
               <EntityChip
                 appearance="inline"
@@ -287,11 +287,11 @@ export function TermDetail({ term, termLookup, terms = [], childTerms = [], canD
         </SectionCard>
 
         {/* 3 — hierarchy (real structure only, humanized labels) */}
-        <SectionCard className="ga-glos-detail-card" title="Hierarchy">
+        <SectionCard className="ax-glos-detail-card" title="Hierarchy">
           {hasHierarchy ? (
-            <div className="ga-glos-hierarchy">
-              <div className="ga-glos-owner-line">
-                <span className="ga-glos-kv-label">Parent</span>
+            <div className="ax-glos-hierarchy">
+              <div className="ax-glos-owner-line">
+                <span className="ax-glos-kv-label">Parent</span>
                 {parentResolved ? (
                   <EntityChip
                     appearance="inline"
@@ -313,10 +313,10 @@ export function TermDetail({ term, termLookup, terms = [], childTerms = [], canD
                   <span>Root term</span>
                 )}
               </div>
-              <div className="ga-glos-owner-line">
-                <span className="ga-glos-kv-label">Child terms</span>
+              <div className="ax-glos-owner-line">
+                <span className="ax-glos-kv-label">Child terms</span>
                 {childTerms.length ? (
-                  <span className="ga-glos-chip-row">
+                  <span className="ax-glos-chip-row">
                     {childTerms.map((child) => (
                       <EntityChip
                         appearance="inline"
@@ -326,19 +326,19 @@ export function TermDetail({ term, termLookup, terms = [], childTerms = [], canD
                     ))}
                   </span>
                 ) : (
-                  <span className="ga-glos-muted">No child terms recorded</span>
+                  <span className="ax-glos-muted">No child terms recorded</span>
                 )}
               </div>
             </div>
           ) : (
-            <p className="ga-glos-muted">No parent or child terms are recorded for this term.</p>
+            <p className="ax-glos-muted">No parent or child terms are recorded for this term.</p>
           )}
         </SectionCard>
 
         {/* 4 — pending review → approve/reject the term */}
-        <SectionCard className="ga-glos-detail-card" title="Pending review">
+        <SectionCard className="ax-glos-detail-card" title="Pending review">
           {pendingRequests.length ? (
-            <div className="ga-glos-review-list">
+            <div className="ax-glos-review-list">
               {pendingRequests.map((request) => (
                 <EntityChip
                   appearance="row"
@@ -353,20 +353,20 @@ export function TermDetail({ term, termLookup, terms = [], childTerms = [], canD
               ))}
             </div>
           ) : awaitingReview ? (
-            <p className="ga-glos-muted">
+            <p className="ax-glos-muted">
               This term is {statusLabelFor(term.status, "Draft")} and awaiting review.
               {showDecision
                 ? " Approve it to publish, or reject to send it back."
                 : " A steward or admin can approve or reject it."}
             </p>
           ) : (
-            <p className="ga-glos-muted">
+            <p className="ax-glos-muted">
               No review is pending.{" "}
               {term.reviewedAt ? `Last reviewed ${compactDate(term.reviewedAt)}.` : "No review timestamp recorded."}
             </p>
           )}
           {showDecision ? (
-            <div className="ga-glos-decision">
+            <div className="ax-glos-decision">
               <Button
                 loading={decideReview.submitting}
                 onClick={() => decide("approved")}
@@ -388,7 +388,7 @@ export function TermDetail({ term, termLookup, terms = [], childTerms = [], canD
             </div>
           ) : null}
           {decideReview.errorMessage ? (
-            <p className="ga-glos-form-error" role="alert">
+            <p className="ax-glos-form-error" role="alert">
               {decideReview.errorMessage}
             </p>
           ) : null}
@@ -396,7 +396,7 @@ export function TermDetail({ term, termLookup, terms = [], childTerms = [], canD
 
         {/* 5 — stewardship: reviewers + history */}
         <SectionCard
-          className="ga-glos-detail-card is-stewardship"
+          className="ax-glos-detail-card is-stewardship"
           title="Stewardship"
           actions={
             <Button
@@ -409,7 +409,7 @@ export function TermDetail({ term, termLookup, terms = [], childTerms = [], canD
           }
         >
           {term.reviewers.length ? (
-            <ul className="ga-glos-reviewer-list">
+            <ul className="ax-glos-reviewer-list">
               {term.reviewers.slice(0, 4).map((reviewer) => (
                 <li key={reviewer.id || reviewer.email}>
                   {reviewer.email ? (
@@ -420,22 +420,22 @@ export function TermDetail({ term, termLookup, terms = [], childTerms = [], canD
                   ) : (
                     <span>Reviewer</span>
                   )}
-                  <span className="ga-glos-muted">
+                  <span className="ax-glos-muted">
                     {reviewer.role || "Reviewer"} · {reviewer.state || "active"}
                   </span>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="ga-glos-muted">No reviewer assignments are recorded for this term.</p>
+            <p className="ax-glos-muted">No reviewer assignments are recorded for this term.</p>
           )}
           {reviewerFormOpen ? (
             <form
               aria-label={`Assign reviewer to ${term.term}`}
-              className="ga-glos-inline-form"
+              className="ax-glos-inline-form"
               onSubmit={handleAssignReviewer}
             >
-              <label className="ga-glos-field">
+              <label className="ax-glos-field">
                 <span>Reviewer email</span>
                 <SuggestInput
                   disabled={assignReviewer.submitting}
@@ -448,7 +448,7 @@ export function TermDetail({ term, termLookup, terms = [], childTerms = [], canD
                 />
               </label>
               {assignReviewer.errorMessage ? (
-                <p className="ga-glos-form-error" role="alert">
+                <p className="ax-glos-form-error" role="alert">
                   {assignReviewer.errorMessage}
                 </p>
               ) : null}
@@ -464,15 +464,15 @@ export function TermDetail({ term, termLookup, terms = [], childTerms = [], canD
             </form>
           ) : null}
           {term.termHistory.length ? (
-            <div className="ga-glos-history">
-              <span className="ga-glos-kv-label">Version history</span>
+            <div className="ax-glos-history">
+              <span className="ax-glos-kv-label">Version history</span>
               <ul>
                 {term.termHistory.slice(0, 3).map((entry) => (
                   <li key={entry.id}>
                     <strong>
                       {entry.version} · {entry.title}
                     </strong>
-                    <span className="ga-glos-muted">
+                    <span className="ax-glos-muted">
                       {entry.changedAt ? compactDate(entry.changedAt) : "Timestamp unavailable"}
                     </span>
                   </li>
@@ -480,7 +480,7 @@ export function TermDetail({ term, termLookup, terms = [], childTerms = [], canD
               </ul>
             </div>
           ) : (
-            <p className="ga-glos-muted">No version history is recorded for this term.</p>
+            <p className="ax-glos-muted">No version history is recorded for this term.</p>
           )}
         </SectionCard>
       </div>

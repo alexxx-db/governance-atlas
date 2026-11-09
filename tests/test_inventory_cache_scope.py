@@ -18,8 +18,8 @@ from unittest.mock import patch
 
 import pandas as pd
 
-from atlas.api import cache as api_cache
-from atlas.services import inventory as inventory_service
+from axiom.api import cache as api_cache
+from axiom.services import inventory as inventory_service
 
 
 class BootstrapInventoryCacheScopeTests(unittest.TestCase):
@@ -71,13 +71,13 @@ class BootstrapInventoryCacheScopeTests(unittest.TestCase):
             return []
 
         with patch.object(inventory_service, "_runtime_deps", self._runtime_deps_stub), \
-             patch("atlas.services.assets.visible_assets", side_effect=fake_visible_assets), \
+             patch("axiom.services.assets.visible_assets", side_effect=fake_visible_assets), \
              patch(
-                 "atlas.services.assets.inventory_catalogs",
+                 "axiom.services.assets.inventory_catalogs",
                  side_effect=fake_inventory_catalogs,
              ), \
              patch(
-                 "atlas.services.assets.lineage_observed_catalogs",
+                 "axiom.services.assets.lineage_observed_catalogs",
                  side_effect=fake_lineage_observed_catalogs,
              ):
             inventory_service.bootstrap_inventory_summary("alice@example.com|obo-available")
@@ -172,7 +172,7 @@ class VisibleAssetsShortTTLEmptyTests(unittest.TestCase):
         with patch.object(
             inventory_service, "_runtime_deps", self._runtime_deps_stub
         ), patch(
-            "atlas.services.assets.visible_assets", side_effect=fake_visible
+            "axiom.services.assets.visible_assets", side_effect=fake_visible
         ):
             # First call: populates the cache with the empty frame.
             inventory_service.visible_assets(None)
@@ -220,7 +220,7 @@ class VisibleAssetsShortTTLEmptyTests(unittest.TestCase):
         with patch.object(
             inventory_service, "_runtime_deps", self._runtime_deps_stub
         ), patch(
-            "atlas.services.assets.visible_assets", side_effect=fake_visible
+            "axiom.services.assets.visible_assets", side_effect=fake_visible
         ):
             inventory_service.visible_assets(None)
             # Simulate aging to 60s (well past the 15s empty window, well

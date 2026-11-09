@@ -3,8 +3,8 @@ from __future__ import annotations
 import unittest
 from types import SimpleNamespace
 
-from atlas.config import AppConfig
-from atlas.services import ai_generation
+from axiom.config import AppConfig
+from axiom.services import ai_generation
 
 
 class FakeServingClient:
@@ -23,7 +23,7 @@ class FakeServingClient:
 def _config(**overrides) -> AppConfig:
     data = {
         "warehouse_id": "w", "gov_catalog": "c", "gov_schema": "s",
-        "ai_generation_endpoint": "databricks-claude-opus-4-8",
+        "ai_generation_endpoint": "databricks-claude-sonnet-4-6",
     }
     data.update(overrides)
     return AppConfig(**data)
@@ -48,7 +48,7 @@ class AiGenerationTests(unittest.TestCase):
         self.assertEqual(result["fields"]["domain"], "Finance")
         # Empty allowed field dropped so the UI fills selectively.
         self.assertNotIn("acronymExpansion", result["fields"])
-        self.assertEqual(result["model"], "databricks-claude-opus-4-8")
+        self.assertEqual(result["model"], "databricks-claude-sonnet-4-6")
         # The term name reached the prompt.
         sent = client.calls[0]["messages"][-1].content
         self.assertIn("Net Revenue", sent)

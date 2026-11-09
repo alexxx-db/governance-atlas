@@ -1,10 +1,10 @@
 - generic [ref=e3]:
   - banner [ref=e4]:
     - generic [ref=e6]:
-      - button "Governance Atlas Metadata Workspace" [ref=e8] [cursor=pointer]:
+      - button "Axiom Metadata Workspace" [ref=e8] [cursor=pointer]:
         - generic [ref=e10]: GH
         - generic [ref=e11]:
-          - generic [ref=e12]: Governance Atlas
+          - generic [ref=e12]: Axiom
           - generic [ref=e13]: Metadata Workspace
       - generic [ref=e14]:
         - generic [ref=e15]:

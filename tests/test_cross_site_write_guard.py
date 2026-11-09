@@ -10,7 +10,7 @@ from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 
-_ENV = {"DATABRICKS_WAREHOUSE_ID": "wh-test", "GOVAT_CATALOG": "main", "GOVAT_SCHEMA": "atlas"}
+_ENV = {"DATABRICKS_WAREHOUSE_ID": "wh-test", "AXIOM_CATALOG": "main", "AXIOM_SCHEMA": "axiom"}
 
 
 class CrossSiteWriteGuardTests(unittest.TestCase):

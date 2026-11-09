@@ -60,7 +60,7 @@ export function EntityChip({
       const ownerText = String(children ?? entity.label ?? entity.email ?? entity.id ?? "").trim();
       if (ownerText) {
         return (
-          <span className={`ga-sys-owner-plain ${className}`.trim()} data-kind="owner">
+          <span className={`ax-sys-owner-plain ${className}`.trim()} data-kind="owner">
             {ownerText}
           </span>
         );
@@ -93,34 +93,34 @@ export function EntityChip({
   return (
     <Anchor
       {...anchorProps}
-      className={`ga-sys-entity-chip is-${look} is-kind-${kind} ${className}`.trim()}
+      className={`ax-sys-entity-chip is-${look} is-kind-${kind} ${className}`.trim()}
       data-kind={kind}
       onClick={handleClick}
     >
-      <span className="ga-sys-entity-chip-icon" aria-hidden="true">
+      <span className="ax-sys-entity-chip-icon" aria-hidden="true">
         {KIND_ICONS[kind] ?? null}
       </span>
-      <span className="ga-sys-entity-chip-label">{label}</span>
+      <span className="ax-sys-entity-chip-label">{label}</span>
       {look === "row" && meta && !metaEntries ? (
-        <span className="ga-sys-entity-chip-meta">{meta}</span>
+        <span className="ax-sys-entity-chip-meta">{meta}</span>
       ) : null}
       {withHover ? (
         // CSS-only hover card (shown on :hover / :focus-visible). It is
         // supplementary — aria-hidden so AT reads only the anchor label.
-        <span className="ga-sys-entity-hover" role="presentation" aria-hidden="true">
-          <span className="ga-sys-entity-hover-kind">{KIND_LABELS[kind] ?? kind}</span>
-          <span className="ga-sys-entity-hover-id">
+        <span className="ax-sys-entity-hover" role="presentation" aria-hidden="true">
+          <span className="ax-sys-entity-hover-kind">{KIND_LABELS[kind] ?? kind}</span>
+          <span className="ax-sys-entity-hover-id">
             {entity.fqn ?? entity.email ?? entity.id ?? ""}
           </span>
           {metaEntries
             ? metaEntries.map(([key, value]) => (
-                <span key={key} className="ga-sys-entity-hover-row">
+                <span key={key} className="ax-sys-entity-hover-row">
                   <span>{key}</span>
                   <span>{String(value)}</span>
                 </span>
               ))
             : meta
-              ? <span className="ga-sys-entity-hover-row">{meta}</span>
+              ? <span className="ax-sys-entity-hover-row">{meta}</span>
               : null}
         </span>
       ) : null}

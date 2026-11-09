@@ -99,7 +99,7 @@ export function KpiRow({ kpis }) {
   ];
 
   return (
-    <section className="ga-home-kpi-row" aria-label="Governance summary metrics">
+    <section className="ax-home-kpi-row" aria-label="Governance summary metrics">
       {tiles.map((tile) => (
         <StatTile
           key={tile.key}
@@ -111,7 +111,7 @@ export function KpiRow({ kpis }) {
           progress={tile.progress}
           hint={tile.hint}
           target={tile.target}
-          className="ga-home-kpi"
+          className="ax-home-kpi"
         />
       ))}
     </section>

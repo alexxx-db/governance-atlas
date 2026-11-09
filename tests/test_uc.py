@@ -5,7 +5,7 @@ import types
 import unittest
 from unittest.mock import patch
 
-from atlas import uc
+from axiom import uc
 
 
 class UnityCatalogImportCompatibilityTests(unittest.TestCase):

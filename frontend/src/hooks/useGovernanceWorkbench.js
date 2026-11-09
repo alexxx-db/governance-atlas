@@ -9,16 +9,16 @@
 // ONE canonical key so every consumer shares one cache entry and one
 // invalidation point.
 import { fetchGovernanceWorkbench } from "../lib/api";
-import { useAtlasQuery } from "./useAtlasQuery";
+import { useAxiomQuery } from "./useAxiomQuery";
 
-export const GOVERNANCE_WORKBENCH_KEY = ["atlas", "governance-workbench"];
+export const GOVERNANCE_WORKBENCH_KEY = ["axiom", "governance-workbench"];
 
 /**
  * @param {{ enabled?: boolean, staleTime?: number }} [options]
  */
 export function useGovernanceWorkbench(options = {}) {
   const enabled = options.enabled !== false;
-  return useAtlasQuery({
+  return useAxiomQuery({
     key: GOVERNANCE_WORKBENCH_KEY,
     enabled,
     fetch: (signal) => fetchGovernanceWorkbench({ signal }),

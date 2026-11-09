@@ -5,7 +5,7 @@
 // the palette component becomes purely presentational.
 import { useEffect, useState } from "react";
 import { fetchDiscoverySearch, fetchGovernanceGlossary } from "../lib/api";
-import { useAtlasQuery } from "./useAtlasQuery";
+import { useAxiomQuery } from "./useAxiomQuery";
 
 // Mirror the palette's tuned constants (CommandPalette.jsx).
 export const PALETTE_SEARCH_DEBOUNCE_MS = 250;
@@ -23,8 +23,8 @@ export const PALETTE_SEARCH_LIMIT = 8;
  *   searching: boolean,
  *   searchError: string,
  *   resolvedQuery: string,
- *   search: ReturnType<typeof useAtlasQuery>,
- *   glossary: ReturnType<typeof useAtlasQuery>,
+ *   search: ReturnType<typeof useAxiomQuery>,
+ *   glossary: ReturnType<typeof useAxiomQuery>,
  * }}
  */
 export function usePaletteSearch(query, options = {}) {
@@ -46,7 +46,7 @@ export function usePaletteSearch(query, options = {}) {
     return () => window.clearTimeout(timer);
   }, [trimmed]);
 
-  const search = useAtlasQuery({
+  const search = useAxiomQuery({
     key: ["palette-search", debouncedQuery.toLowerCase()],
     enabled: enabled && Boolean(debouncedQuery),
     fetch: (signal) =>
@@ -59,7 +59,7 @@ export function usePaletteSearch(query, options = {}) {
 
   // Terms group must never block the palette: load once, tolerate failure
   // silently (matches the palette's existing catch-and-continue behavior).
-  const glossary = useAtlasQuery({
+  const glossary = useAxiomQuery({
     key: ["palette-glossary"],
     enabled,
     fetch: () => fetchGovernanceGlossary(),

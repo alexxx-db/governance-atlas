@@ -2,7 +2,7 @@ import "./asset.css";
 import { useEffect, useRef, useState } from "react";
 import { createGovernanceRequest } from "../../lib/api";
 import { Button, Drawer, toast } from "../../components/system";
-import { useAtlasNavigate } from "../../nav/useAtlasNavigate";
+import { useAxiomNavigate } from "../../nav/useAxiomNavigate";
 import { ExternalLink, catalogExplorerUrl, useWorkspaceHost } from "./ExternalLink";
 import { certifyGate, lineageGate, requestChangeGate } from "./gates";
 
@@ -76,7 +76,7 @@ export function AssetHeaderActions({
   onCertified = () => {},
   onAfterWrite = () => {},
 }) {
-  const navigate = useAtlasNavigate();
+  const navigate = useAxiomNavigate();
   const certifyMenu = useMenu();
   const kebabMenu = useMenu();
   const [certifying, setCertifying] = useState("");
@@ -179,7 +179,7 @@ export function AssetHeaderActions({
   };
 
   return (
-    <div className="ga-asset-actions">
+    <div className="ax-asset-actions">
       <Button
         variant="secondary"
         disabled={!requestGate.enabled}
@@ -199,7 +199,7 @@ export function AssetHeaderActions({
         {lineage.label}
       </Button>
 
-      <div className="ga-asset-menu-root" ref={certifyMenu.rootRef}>
+      <div className="ax-asset-menu-root" ref={certifyMenu.rootRef}>
         <Button
           variant="primary"
           tone="accent"
@@ -211,7 +211,7 @@ export function AssetHeaderActions({
           Certify
           {/* Real SVG chevron in the kit's icon slot — the old "⌄" glyph sat
               off the text baseline (flex centers an SVG, not a glyph). */}
-          <span className="ga-sys-button-icon" aria-hidden="true">
+          <span className="ax-sys-button-icon" aria-hidden="true">
             <svg
               viewBox="0 0 24 24"
               width="14"
@@ -227,18 +227,18 @@ export function AssetHeaderActions({
           </span>
         </Button>
         {certifyMenu.open ? (
-          <div className="ga-asset-menu" role="menu" aria-label="Certification actions">
+          <div className="ax-asset-menu" role="menu" aria-label="Certification actions">
             {certify.mode === "stage" ? (
               // Honesty before the click: the menu states that selections
               // stage a change request instead of writing directly.
-              <p className="ga-asset-menu-note">{certify.reason}</p>
+              <p className="ax-asset-menu-note">{certify.reason}</p>
             ) : null}
             {CERTIFY_OPTIONS.map((option) => (
               <button
                 key={option.key}
                 type="button"
                 role="menuitem"
-                className="ga-asset-menu-item"
+                className="ax-asset-menu-item"
                 onClick={() => handleCertify(option)}
               >
                 {certify.mode === "stage" ? `${option.label} (via change request)` : option.label}
@@ -248,7 +248,7 @@ export function AssetHeaderActions({
         ) : null}
       </div>
 
-      <div className="ga-asset-menu-root" ref={kebabMenu.rootRef}>
+      <div className="ax-asset-menu-root" ref={kebabMenu.rootRef}>
         <Button
           variant="secondary"
           aria-label="More asset actions"
@@ -259,8 +259,8 @@ export function AssetHeaderActions({
           ⋮
         </Button>
         {kebabMenu.open ? (
-          <div className="ga-asset-menu" role="menu" aria-label="More asset actions">
-            <button type="button" role="menuitem" className="ga-asset-menu-item" onClick={handleCopyLink}>
+          <div className="ax-asset-menu" role="menu" aria-label="More asset actions">
+            <button type="button" role="menuitem" className="ax-asset-menu-item" onClick={handleCopyLink}>
               Copy link
             </button>
             {/* "Open in Catalog Explorer" was promoted OUT of this menu into
@@ -282,7 +282,7 @@ export function AssetHeaderActions({
         onClose={() => setRequestOpen(false)}
         title="Request a change"
         footer={
-          <div className="ga-asset-dialog-footer">
+          <div className="ax-asset-dialog-footer">
             <Button variant="tertiary" onClick={() => setRequestOpen(false)}>
               Cancel
             </Button>
@@ -290,7 +290,7 @@ export function AssetHeaderActions({
               variant="primary"
               tone="accent"
               type="submit"
-              form="ga-asset-request-form"
+              form="ax-asset-request-form"
               loading={requestBusy}
               disabled={!requestSummary.trim()}
             >
@@ -299,11 +299,11 @@ export function AssetHeaderActions({
           </div>
         }
       >
-        <form id="ga-asset-request-form" className="ga-asset-dialog-form" onSubmit={handleRequestSubmit}>
-          <p className="ga-asset-dialog-scope">
+        <form id="ax-asset-request-form" className="ax-asset-dialog-form" onSubmit={handleRequestSubmit}>
+          <p className="ax-asset-dialog-scope">
             Scoped to <strong>{fqn}</strong> — filed through the governance request queue.
           </p>
-          <label className="ga-asset-field">
+          <label className="ax-asset-field">
             <span>Summary</span>
             <input
               type="text"
@@ -313,7 +313,7 @@ export function AssetHeaderActions({
               required
             />
           </label>
-          <label className="ga-asset-field">
+          <label className="ax-asset-field">
             <span>Reason</span>
             <textarea
               value={requestReason}

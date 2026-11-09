@@ -2,21 +2,21 @@
  * surfaces/asset/asset.css — Asset 360 hub styles (Wave B2).
  * Convention mirrors components/system/system.css: every component in this
  * surface imports this one file, so any consumer pulls the styles with it.
- * All classes are `ga-asset-*`, all colors are `--ga-*` tokens, zero hex,
+ * All classes are `ax-asset-*`, all colors are `--ax-*` tokens, zero hex,
  * zero specificity overrides (COHESION law 8 / check-css guardrails).
  */
 
 /* ---------------------------------------------------------------- frame */
 
-.ga-asset-breadcrumbs {
+.ax-asset-breadcrumbs {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   min-width: 0;
 }
 
-.ga-asset-breadcrumb-fqn {
-  color: var(--ga-text-muted);
+.ax-asset-breadcrumb-fqn {
+  color: var(--ax-text-muted);
   font-size: 12px;
   letter-spacing: 0.02em;
   overflow: hidden;
@@ -26,18 +26,18 @@
 
 /* --------------------------------------------------------- header actions */
 
-.ga-asset-actions {
+.ax-asset-actions {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-.ga-asset-menu-root {
+.ax-asset-menu-root {
   position: relative;
 }
 
-.ga-asset-menu {
+.ax-asset-menu {
   position: absolute;
   top: calc(100% + 6px);
   right: 0;
@@ -47,23 +47,23 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-  background: var(--ga-surface-strong);
-  border: 1px solid var(--ga-border-strong);
+  background: var(--ax-surface-strong);
+  border: 1px solid var(--ax-border-strong);
   border-radius: 10px;
-  box-shadow: var(--ga-shadow-md);
+  box-shadow: var(--ax-shadow-md);
 }
 
-.ga-asset-menu-note {
+.ax-asset-menu-note {
   margin: 2px 4px 6px;
   padding: 8px 10px;
   border-radius: 8px;
-  background: var(--ga-surface-soft);
-  color: var(--ga-text-soft);
+  background: var(--ax-surface-soft);
+  color: var(--ax-text-soft);
   font-size: 12px;
   line-height: 1.45;
 }
 
-.ga-asset-menu-item {
+.ax-asset-menu-item {
   /* Flex + center so a menu item's icon (e.g. Open in Catalog Explorer's
      external-link SVG) aligns to the label's vertical center instead of riding
      the text baseline. Harmless for text-only rows. */
@@ -75,7 +75,7 @@
   border: 0;
   border-radius: 8px;
   background: transparent;
-  color: var(--ga-text);
+  color: var(--ax-text);
   font: inherit;
   font-size: 13px;
   text-align: left;
@@ -83,73 +83,73 @@
   cursor: pointer;
 }
 
-.ga-asset-menu-item:hover:not(:disabled),
-.ga-asset-menu-item:focus-visible {
-  background: var(--ga-surface-soft);
-  color: var(--ga-text-strong);
+.ax-asset-menu-item:hover:not(:disabled),
+.ax-asset-menu-item:focus-visible {
+  background: var(--ax-surface-soft);
+  color: var(--ax-text-strong);
   outline: none;
 }
 
-.ga-asset-menu-item:disabled {
-  color: var(--ga-text-faint);
+.ax-asset-menu-item:disabled {
+  color: var(--ax-text-faint);
   cursor: not-allowed;
 }
 
 /* ------------------------------------------------------- request dialog */
 
-.ga-asset-dialog-form {
+.ax-asset-dialog-form {
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
-.ga-asset-dialog-scope {
+.ax-asset-dialog-scope {
   margin: 0;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   font-size: 13px;
   line-height: 1.5;
 }
 
-.ga-asset-dialog-scope strong {
-  color: var(--ga-text-soft);
+.ax-asset-dialog-scope strong {
+  color: var(--ax-text-soft);
   word-break: break-all;
 }
 
-.ga-asset-field {
+.ax-asset-field {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.ga-asset-field > span {
-  color: var(--ga-text-soft);
+.ax-asset-field > span {
+  color: var(--ax-text-soft);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
-.ga-asset-field input,
-.ga-asset-field textarea {
+.ax-asset-field input,
+.ax-asset-field textarea {
   width: 100%;
   padding: 9px 12px;
-  border: 1px solid var(--ga-border);
+  border: 1px solid var(--ax-border);
   border-radius: 8px;
-  background: var(--ga-surface-muted);
-  color: var(--ga-text);
+  background: var(--ax-surface-muted);
+  color: var(--ax-text);
   font: inherit;
   font-size: 13px;
   resize: vertical;
 }
 
-.ga-asset-field input:focus-visible,
-.ga-asset-field textarea:focus-visible {
-  border-color: var(--ga-highlight-blue);
-  box-shadow: var(--ga-shadow-focus);
+.ax-asset-field input:focus-visible,
+.ax-asset-field textarea:focus-visible {
+  border-color: var(--ax-highlight-blue);
+  box-shadow: var(--ax-shadow-focus);
   outline: none;
 }
 
-.ga-asset-dialog-footer {
+.ax-asset-dialog-footer {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
@@ -157,281 +157,281 @@
 
 /* Inline mutation error (e.g. Request-access submit failure) — honest, in the
    flow, no toast dependency. */
-.ga-asset-form-error {
+.ax-asset-form-error {
   margin: 0;
-  color: var(--ga-danger);
+  color: var(--ax-danger);
   font-size: 13px;
   line-height: 1.5;
 }
 
 /* ---------------------------------------------------------- trust verdict */
 
-.ga-asset-verdict {
+.ax-asset-verdict {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1.1fr);
   gap: 20px;
   padding: 16px 20px;
   margin-bottom: 20px;
-  background: var(--ga-surface);
-  border: 1px solid var(--ga-border);
+  background: var(--ax-surface);
+  border: 1px solid var(--ax-border);
   border-radius: 12px;
 }
 
-.ga-asset-verdict.is-compact {
+.ax-asset-verdict.is-compact {
   grid-template-columns: minmax(0, 1fr);
   gap: 14px;
   padding: 14px;
 }
 
-.ga-asset-verdict-chips {
+.ax-asset-verdict-chips {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-.ga-asset-score {
+.ax-asset-score {
   display: inline-flex;
   align-items: baseline;
   gap: 8px;
   padding: 4px 10px;
-  border: 1px solid var(--ga-border);
+  border: 1px solid var(--ax-border);
   border-radius: 999px;
-  background: var(--ga-surface-soft);
+  background: var(--ax-surface-soft);
 }
 
-.ga-asset-score-label {
-  color: var(--ga-text-muted);
+.ax-asset-score-label {
+  color: var(--ax-text-muted);
   font-size: 11px;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
-.ga-asset-score-value {
-  color: var(--ga-text-strong);
+.ax-asset-score-value {
+  color: var(--ax-text-strong);
   font-size: 15px;
 }
 
-.ga-asset-fresh {
+.ax-asset-fresh {
   display: flex;
   flex-direction: column;
   gap: 10px;
   justify-content: center;
 }
 
-.ga-asset-fresh-item {
+.ax-asset-fresh-item {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
-.ga-asset-fresh-label {
-  color: var(--ga-text-muted);
+.ax-asset-fresh-label {
+  color: var(--ax-text-muted);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
-.ga-asset-fresh-value {
-  color: var(--ga-text-strong);
+.ax-asset-fresh-value {
+  color: var(--ax-text-strong);
   font-size: 14px;
   font-variant-numeric: tabular-nums;
 }
 
-.ga-asset-fresh-value.is-empty {
-  color: var(--ga-text-faint);
+.ax-asset-fresh-value.is-empty {
+  color: var(--ax-text-faint);
 }
 
-.ga-asset-fresh-skeleton {
+.ax-asset-fresh-skeleton {
   width: 160px;
   height: 14px;
 }
 
-.ga-asset-owners {
+.ax-asset-owners {
   display: flex;
   flex-direction: column;
   gap: 8px;
   justify-content: center;
 }
 
-.ga-asset-owner-role {
+.ax-asset-owner-role {
   display: flex;
   align-items: center;
   gap: 10px;
   min-width: 0;
 }
 
-.ga-asset-owner-role-label {
+.ax-asset-owner-role-label {
   flex: 0 0 150px;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
-.ga-asset-owner-unassigned {
-  color: var(--ga-text-faint);
+.ax-asset-owner-unassigned {
+  color: var(--ax-text-faint);
   font-size: 13px;
 }
 
 /* Inline assign affordance replacing a dead "Unassigned" label. */
-.ga-asset-owner-assign-btn {
+.ax-asset-owner-assign-btn {
   align-self: flex-start;
   padding: 2px 8px;
-  border: 1px dashed var(--ga-border-strong);
-  border-radius: var(--ga-radius-sm, 6px);
+  border: 1px dashed var(--ax-border-strong);
+  border-radius: var(--ax-radius-sm, 6px);
   background: transparent;
-  color: var(--ga-bright-blue);
+  color: var(--ax-bright-blue);
   font-size: 12.5px;
   cursor: pointer;
 }
 
-.ga-asset-owner-assign-btn:hover,
-.ga-asset-owner-assign-btn:focus-visible {
-  border-color: var(--ga-bright-blue);
-  background: color-mix(in srgb, var(--ga-bright-blue) 10%, transparent);
+.ax-asset-owner-assign-btn:hover,
+.ax-asset-owner-assign-btn:focus-visible {
+  border-color: var(--ax-bright-blue);
+  background: color-mix(in srgb, var(--ax-bright-blue) 10%, transparent);
   outline: none;
 }
 
-.ga-asset-owner-assign-form {
+.ax-asset-owner-assign-form {
   display: flex;
   flex-direction: column;
   gap: 6px;
   min-width: 0;
 }
 
-.ga-asset-owner-assign-input {
+.ax-asset-owner-assign-input {
   padding: 6px 8px;
-  border: 1px solid var(--ga-border);
-  border-radius: var(--ga-radius-sm, 6px);
-  background: var(--ga-surface);
-  color: var(--ga-text);
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-radius-sm, 6px);
+  background: var(--ax-surface);
+  color: var(--ax-text);
   font: inherit;
   font-size: 12.5px;
 }
 
-.ga-asset-owner-assign-actions {
+.ax-asset-owner-assign-actions {
   display: flex;
   gap: 6px;
 }
 
 /* -------------------------------------------------------------- tab body */
 
-.ga-asset-tab-grid {
+.ax-asset-tab-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
   gap: 16px;
   align-items: start;
 }
 
-.ga-asset-about-card {
+.ax-asset-about-card {
   grid-column: 1 / -1;
 }
 
-.ga-asset-description {
+.ax-asset-description {
   margin: 0 0 12px;
-  color: var(--ga-text-soft);
+  color: var(--ax-text-soft);
   font-size: 14px;
   line-height: 1.6;
 }
 
-.ga-asset-description.is-empty {
-  color: var(--ga-text-faint);
+.ax-asset-description.is-empty {
+  color: var(--ax-text-faint);
   font-style: italic;
 }
 
-.ga-asset-chip-row {
+.ax-asset-chip-row {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-.ga-asset-chip-row + .ga-asset-chip-row {
+.ax-asset-chip-row + .ax-asset-chip-row {
   margin-top: 10px;
 }
 
 /* ----------------------------------------------------------- mini lineage */
 
-.ga-asset-minimap {
+.ax-asset-minimap {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
 }
 
-.ga-asset-minimap-col {
+.ax-asset-minimap-col {
   display: flex;
   flex-direction: column;
   gap: 8px;
   min-width: 0;
 }
 
-.ga-asset-minimap-col.is-focus {
+.ax-asset-minimap-col.is-focus {
   align-items: center;
   justify-content: flex-start;
   padding: 10px;
-  border: 1px solid var(--ga-border-strong);
+  border: 1px solid var(--ax-border-strong);
   border-radius: 10px;
-  background: var(--ga-surface-soft);
+  background: var(--ax-surface-soft);
 }
 
-.ga-asset-minimap-col-title {
-  color: var(--ga-text-muted);
+.ax-asset-minimap-col-title {
+  color: var(--ax-text-muted);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
-.ga-asset-minimap-focus {
-  color: var(--ga-text-strong);
+.ax-asset-minimap-focus {
+  color: var(--ax-text-strong);
   font-size: 13px;
   font-weight: 600;
   overflow-wrap: anywhere;
   text-align: center;
 }
 
-.ga-asset-minimap-none {
-  color: var(--ga-text-faint);
+.ax-asset-minimap-none {
+  color: var(--ax-text-faint);
   font-size: 12px;
 }
 
 /* Make the lineage node rows clearly read as clickable links (they are
    EntityChip anchors to the asset). */
-.ga-asset-minimap-col .ga-sys-entity-chip.is-row .ga-sys-entity-chip-label {
-  color: var(--ga-bright-blue);
+.ax-asset-minimap-col .ax-sys-entity-chip.is-row .ax-sys-entity-chip-label {
+  color: var(--ax-bright-blue);
 }
 
-.ga-asset-minimap-col .ga-sys-entity-chip.is-row:hover .ga-sys-entity-chip-label,
-.ga-asset-minimap-col .ga-sys-entity-chip.is-row:focus-visible .ga-sys-entity-chip-label {
+.ax-asset-minimap-col .ax-sys-entity-chip.is-row:hover .ax-sys-entity-chip-label,
+.ax-asset-minimap-col .ax-sys-entity-chip.is-row:focus-visible .ax-sys-entity-chip-label {
   text-decoration: underline;
 }
 
 /* ------------------------------------------------------ quality & usage */
 
-.ga-asset-quality-summary {
+.ax-asset-quality-summary {
   display: flex;
   flex-direction: column;
   gap: 10px;
   align-items: flex-start;
 }
 
-.ga-asset-evidence-line {
+.ax-asset-evidence-line {
   margin: 0;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   font-size: 12px;
 }
 
-.ga-asset-stat-row {
+.ax-asset-stat-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 12px;
   margin-bottom: 12px;
 }
 
-.ga-asset-usage-list {
+.ax-asset-usage-list {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -439,133 +439,133 @@
   flex-direction: column;
 }
 
-.ga-asset-usage-row {
+.ax-asset-usage-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   padding: 9px 0;
-  border-bottom: 1px solid var(--ga-border-muted);
+  border-bottom: 1px solid var(--ax-border-muted);
 }
 
-.ga-asset-usage-row:last-child {
+.ax-asset-usage-row:last-child {
   border-bottom: 0;
 }
 
-.ga-asset-usage-label {
-  color: var(--ga-text-soft);
+.ax-asset-usage-label {
+  color: var(--ax-text-soft);
   font-size: 13px;
   display: inline-flex;
   align-items: baseline;
   gap: 6px;
 }
 
-.ga-asset-usage-source {
-  color: var(--ga-text-faint);
+.ax-asset-usage-source {
+  color: var(--ax-text-faint);
   font-size: 11px;
 }
 
-.ga-asset-usage-row strong {
-  color: var(--ga-text-strong);
+.ax-asset-usage-row strong {
+  color: var(--ax-text-strong);
   font-variant-numeric: tabular-nums;
 }
 
-.ga-asset-usage-reason {
-  color: var(--ga-text-faint);
+.ax-asset-usage-reason {
+  color: var(--ax-text-faint);
   font-size: 12px;
 }
 
 /* --------------------------------------------------------------- columns */
 
-.ga-asset-col-name {
-  color: var(--ga-text-strong);
+.ax-asset-col-name {
+  color: var(--ax-text-strong);
   font-weight: 500;
 }
 
-.ga-asset-col-name.is-highlight {
+.ax-asset-col-name.is-highlight {
   padding: 2px 6px;
   border-radius: 6px;
-  background: var(--ga-surface-soft);
-  box-shadow: 0 0 0 1px var(--ga-highlight-blue);
+  background: var(--ax-surface-soft);
+  box-shadow: 0 0 0 1px var(--ax-highlight-blue);
 }
 
-.ga-asset-col-type {
-  color: var(--ga-light-blue);
+.ax-asset-col-type {
+  color: var(--ax-light-blue);
   font-size: 12px;
 }
 
 /* ---------------------------------------------------------------- access */
 
-.ga-asset-facts {
+.ax-asset-facts {
   margin: 0;
   display: flex;
   flex-direction: column;
   gap: 0;
 }
 
-.ga-asset-fact {
+.ax-asset-fact {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   padding: 9px 0;
-  border-bottom: 1px solid var(--ga-border-muted);
+  border-bottom: 1px solid var(--ax-border-muted);
 }
 
-.ga-asset-fact:last-child {
+.ax-asset-fact:last-child {
   border-bottom: 0;
 }
 
-.ga-asset-fact dt {
-  color: var(--ga-text-muted);
+.ax-asset-fact dt {
+  color: var(--ax-text-muted);
   font-size: 12px;
   letter-spacing: 0.03em;
 }
 
-.ga-asset-fact dd {
+.ax-asset-fact dd {
   margin: 0;
-  color: var(--ga-text-soft);
+  color: var(--ax-text-soft);
   font-size: 13px;
   text-align: right;
   overflow-wrap: anywhere;
 }
 
-.ga-asset-deeplink-row {
+.ax-asset-deeplink-row {
   margin: 12px 0 0;
 }
 
-.ga-asset-deeplink {
-  color: var(--ga-bright-blue);
+.ax-asset-deeplink {
+  color: var(--ax-bright-blue);
   font-size: 13px;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 
-.ga-asset-deeplink:hover,
-.ga-asset-deeplink:focus-visible {
-  color: var(--ga-light-blue);
+.ax-asset-deeplink:hover,
+.ax-asset-deeplink:focus-visible {
+  color: var(--ax-light-blue);
 }
 
-.ga-asset-remediation-list {
+.ax-asset-remediation-list {
   margin: 0;
   padding: 0 0 0 18px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  color: var(--ga-text-soft);
+  color: var(--ax-text-soft);
   font-size: 13px;
 }
 
-.ga-asset-remediation-list p {
+.ax-asset-remediation-list p {
   margin: 4px 0 0;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   font-size: 12px;
   line-height: 1.5;
 }
 
 /* -------------------------------------------------------------- activity */
 
-.ga-asset-activity-list {
+.ax-asset-activity-list {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -573,76 +573,76 @@
   flex-direction: column;
 }
 
-.ga-asset-activity-row {
+.ax-asset-activity-row {
   padding: 12px 0;
-  border-bottom: 1px solid var(--ga-border-muted);
+  border-bottom: 1px solid var(--ax-border-muted);
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.ga-asset-activity-row:last-child {
+.ax-asset-activity-row:last-child {
   border-bottom: 0;
 }
 
-.ga-asset-activity-main {
+.ax-asset-activity-main {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-.ga-asset-activity-title {
-  color: var(--ga-text-strong);
+.ax-asset-activity-title {
+  color: var(--ax-text-strong);
   font-size: 13px;
   font-weight: 600;
 }
 
-.ga-asset-activity-detail {
+.ax-asset-activity-detail {
   margin: 0;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   font-size: 12px;
   line-height: 1.5;
 }
 
-.ga-asset-activity-meta {
+.ax-asset-activity-meta {
   display: flex;
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   font-size: 12px;
 }
 
-.ga-asset-activity-meta time {
+.ax-asset-activity-meta time {
   font-variant-numeric: tabular-nums;
 }
 
 /* -------------------------------------------------------------- lineage */
 
-.ga-asset-lineage-embed {
+.ax-asset-lineage-embed {
   height: 620px;
   min-height: 420px;
-  border: 1px solid var(--ga-border);
+  border: 1px solid var(--ax-border);
   border-radius: 12px;
   overflow: hidden;
-  background: var(--ga-surface-muted);
+  background: var(--ax-surface-muted);
 }
 
 /* ------------------------------------------------------------------ peek */
 
-.ga-asset-peek-fqn {
+.ax-asset-peek-fqn {
   margin: 0 0 14px;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   font-size: 12px;
   overflow-wrap: anywhere;
 }
 
-.ga-asset-peek-facts {
+.ax-asset-peek-facts {
   margin-top: 16px;
 }
 
-.ga-asset-peek-footer {
+.ax-asset-peek-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -655,7 +655,7 @@
 /* The "Open in Databricks" anchor styled as a secondary system button — it is
    an <a> (new tab, rel=noopener), not a <button>, so it needs the flex/gap the
    Button component gets from its own element selector. */
-a.ga-asset-open-databricks {
+a.ax-asset-open-databricks {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -664,103 +664,103 @@ a.ga-asset-open-databricks {
 
 /* ------------------------------------------------------------ /assets picker */
 
-.ga-asset-picker {
+.ax-asset-picker {
   display: grid;
   gap: 28px;
   max-width: 760px;
 }
 
-.ga-asset-picker-search {
+.ax-asset-picker-search {
   display: grid;
   gap: 8px;
 }
 
-.ga-asset-picker-label {
-  color: var(--ga-text-strong);
+.ax-asset-picker-label {
+  color: var(--ax-text-strong);
   font-size: 0.82rem;
   font-weight: 640;
 }
 
-.ga-asset-picker-results {
+.ax-asset-picker-results {
   display: grid;
   gap: 4px;
 }
 
-.ga-asset-picker-status {
+.ax-asset-picker-status {
   padding: 10px 2px;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   font-size: 0.86rem;
 }
 
-.ga-asset-picker-section {
+.ax-asset-picker-section {
   display: grid;
   gap: 12px;
 }
 
-.ga-asset-picker-section-title {
+.ax-asset-picker-section-title {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 12px;
-  border-bottom: 1px solid var(--ga-border);
+  border-bottom: 1px solid var(--ax-border);
   padding-bottom: 8px;
 }
-.ga-asset-picker-section-title span {
-  color: var(--ga-text-strong);
+.ax-asset-picker-section-title span {
+  color: var(--ax-text-strong);
   font-size: 0.92rem;
   font-weight: 660;
 }
-.ga-asset-picker-section-title small {
-  color: var(--ga-text-muted);
+.ax-asset-picker-section-title small {
+  color: var(--ax-text-muted);
   font-size: 0.76rem;
 }
 
-.ga-asset-picker-list {
+.ax-asset-picker-list {
   display: grid;
   gap: 4px;
 }
 
-.ga-asset-picker-row.ga-sys-entity-chip.is-row {
+.ax-asset-picker-row.ax-sys-entity-chip.is-row {
   width: 100%;
 }
 
-.ga-asset-picker-cards {
+.ax-asset-picker-cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 10px;
 }
 
-.ga-asset-picker-card.ga-sys-entity-chip.is-row {
+.ax-asset-picker-card.ax-sys-entity-chip.is-row {
   width: 100%;
   align-items: flex-start;
   padding: 12px 14px;
-  border: 1px solid var(--ga-border);
+  border: 1px solid var(--ax-border);
   border-radius: 12px;
-  background: var(--ga-surface-muted);
+  background: var(--ax-surface-muted);
   transition: border-color 140ms ease, background 140ms ease;
 }
-.ga-asset-picker-card.ga-sys-entity-chip.is-row:hover,
-.ga-asset-picker-card.ga-sys-entity-chip.is-row:focus-visible {
-  border-color: var(--ga-bright-blue);
-  background: var(--ga-surface-strong);
+.ax-asset-picker-card.ax-sys-entity-chip.is-row:hover,
+.ax-asset-picker-card.ax-sys-entity-chip.is-row:focus-visible {
+  border-color: var(--ax-bright-blue);
+  background: var(--ax-surface-strong);
 }
 
-.ga-asset-picker-card-body {
+.ax-asset-picker-card-body {
   display: grid;
   gap: 6px;
 }
-.ga-asset-picker-card-name {
-  color: var(--ga-text-strong);
+.ax-asset-picker-card-name {
+  color: var(--ax-text-strong);
   font-size: 0.9rem;
   font-weight: 640;
   overflow-wrap: anywhere;
 }
-.ga-asset-picker-card-path {
-  color: var(--ga-text-muted);
+.ax-asset-picker-card-path {
+  color: var(--ax-text-muted);
   font-size: 0.76rem;
   overflow-wrap: anywhere;
 }
-.ga-asset-picker-card-tags {
+.ax-asset-picker-card-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;

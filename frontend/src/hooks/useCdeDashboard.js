@@ -3,7 +3,7 @@
 // mirror the inline ones so Wave C adoption is a drop-in with cache
 // continuity.
 import { fetchCdeDashboard, fetchCdeDetail } from "../lib/api";
-import { useAtlasQuery } from "./useAtlasQuery";
+import { useAxiomQuery } from "./useAxiomQuery";
 
 /**
  * The Critical Data Elements dashboard (candidates, controls, KPIs).
@@ -11,8 +11,8 @@ import { useAtlasQuery } from "./useAtlasQuery";
  */
 export function useCdeDashboard(options = {}) {
   const enabled = options.enabled !== false;
-  return useAtlasQuery({
-    key: ["atlas", "cde-dashboard"],
+  return useAxiomQuery({
+    key: ["axiom", "cde-dashboard"],
     enabled,
     fetch: (signal) => fetchCdeDashboard({ signal }),
     staleTime: 60_000,
@@ -29,8 +29,8 @@ export function useCdeDashboard(options = {}) {
 export function useCdeDetail(cdeId, options = {}) {
   const normalized = String(cdeId || "").trim();
   const enabled = options.enabled !== false && Boolean(normalized);
-  return useAtlasQuery({
-    key: ["atlas", "cde-detail", normalized],
+  return useAxiomQuery({
+    key: ["axiom", "cde-detail", normalized],
     enabled,
     fetch: (signal) => fetchCdeDetail(normalized, { signal }),
     staleTime: 60_000,

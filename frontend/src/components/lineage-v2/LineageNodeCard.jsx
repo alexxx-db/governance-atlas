@@ -183,18 +183,18 @@ function CertifiedBadge() {
   return (
     <span
       aria-label="Certified by data steward"
-      className="ga-lineage-v2-card-cert"
+      className="ax-lineage-v2-card-cert"
       title="Certified by data steward"
     >
       <svg aria-hidden="true" viewBox="0 0 24 24" width="11" height="11">
         <path
           d="M12 2l2.5 2.4 3.4-.5.6 3.4 3 1.7-1.5 3.1 1.5 3.1-3 1.7-.6 3.4-3.4-.5L12 22l-2.5-2.4-3.4.5-.6-3.4-3-1.7L4 12 2.5 8.9l3-1.7.6-3.4 3.4.5z"
-          fill="color-mix(in srgb, var(--ga-success) 18%, transparent)"
-          stroke="var(--ga-success)"
+          fill="color-mix(in srgb, var(--ax-success) 18%, transparent)"
+          stroke="var(--ax-success)"
           strokeWidth="1.4"
           strokeLinejoin="round"
         />
-        <path d="M9 12l2 2 4-4" fill="none" stroke="var(--ga-success)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M9 12l2 2 4-4" fill="none" stroke="var(--ax-success)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     </span>
   );
@@ -204,7 +204,7 @@ function PiiBadge() {
   return (
     <span
       aria-label="Contains PII"
-      className="ga-lineage-v2-card-pii"
+      className="ax-lineage-v2-card-pii"
       title="Contains PII"
     >
       PII
@@ -221,7 +221,7 @@ function ClassificationBadge({ classification }) {
     lower.includes("internal") ? "info" : "neutral";
   return (
     <span
-      className={`ga-lineage-v2-card-class tone-${tone}`}
+      className={`ax-lineage-v2-card-class tone-${tone}`}
       title={`Sensitivity: ${classification}`}
     >
       {classification}
@@ -231,7 +231,7 @@ function ClassificationBadge({ classification }) {
 
 function FootStat({ glyph, label, title }) {
   return (
-    <span className="ga-lineage-v2-card-footstat" title={title || undefined}>
+    <span className="ax-lineage-v2-card-footstat" title={title || undefined}>
       {glyph}
       <span>{label}</span>
     </span>
@@ -280,8 +280,8 @@ export function LineageNodeCard({
     if (!onClick) return;
     // Columns and the action strip own their own clicks — a click there must
     // not bubble to the card's select/re-anchor behavior.
-    if (event.target.closest?.(".ga-lineage-v2-card-col")) return;
-    if (event.target.closest?.(".ga-lineage-v2-card-actions")) return;
+    if (event.target.closest?.(".ax-lineage-v2-card-col")) return;
+    if (event.target.closest?.(".ax-lineage-v2-card-actions")) return;
     onClick(node);
   };
 
@@ -306,7 +306,7 @@ export function LineageNodeCard({
   return (
     <div
       aria-current={isFocus ? "true" : undefined}
-      className={`ga-lineage-v2-card ga-lineage-v2-card-${variant} ${stateClass}`.trim()}
+      className={`ax-lineage-v2-card ax-lineage-v2-card-${variant} ${stateClass}`.trim()}
       data-node-fqn={node?.fqn || undefined}
       data-node-kind={node?.kind || undefined}
       data-navigable={navigable ? "true" : "false"}
@@ -321,11 +321,11 @@ export function LineageNodeCard({
         }
       }}
     >
-      <header className="ga-lineage-v2-card-head">
-        <span aria-hidden="true" className="ga-lineage-v2-card-glyph">
+      <header className="ax-lineage-v2-card-head">
+        <span aria-hidden="true" className="ax-lineage-v2-card-glyph">
           <KindGlyph kind={node?.kind || "table"} />
         </span>
-        <span className="ga-lineage-v2-card-title-wrap">
+        <span className="ax-lineage-v2-card-title-wrap">
           {/*
             Single-FOCUS rule (persona audit P2): the accumulated canvas can
             hold a stale node copy whose API kicker still says "Focus" from a
@@ -338,22 +338,22 @@ export function LineageNodeCard({
               ? node?.kicker || "Focus"
               : /^focus$/i.test(String(node?.kicker || "")) ? "" : node?.kicker;
             return kickerLabel ? (
-              <span className="ga-lineage-v2-card-kicker">{kickerLabel}</span>
+              <span className="ax-lineage-v2-card-kicker">{kickerLabel}</span>
             ) : null;
           })()}
-          <span className="ga-lineage-v2-card-title" title={node?.label || node?.fqn || ""}>
+          <span className="ax-lineage-v2-card-title" title={node?.label || node?.fqn || ""}>
             {node?.label || "Unknown"}
           </span>
-          <span className="ga-lineage-v2-card-path">{node?.subtitle || ""}</span>
+          <span className="ax-lineage-v2-card-path">{node?.subtitle || ""}</span>
         </span>
         {node?.isCertified ? <CertifiedBadge /> : null}
       </header>
 
       {variant === "tall" && visibleColumns.length ? (
-        <div className="ga-lineage-v2-card-cols">
+        <div className="ax-lineage-v2-card-cols">
           {visibleColumns.map((col) => (
             <button
-              className={`ga-lineage-v2-card-col ${
+              className={`ax-lineage-v2-card-col ${
                 selectedColumnName && selectedColumnName === col.name ? "is-selected" : ""
               }`.trim()}
               key={col.name}
@@ -361,14 +361,14 @@ export function LineageNodeCard({
               title={`Trace column lineage for ${col.name}`}
               type="button"
             >
-              <span className="ga-lineage-v2-card-col-name">{col.name}</span>
-              <span className="ga-lineage-v2-card-col-type">
+              <span className="ax-lineage-v2-card-col-name">{col.name}</span>
+              <span className="ax-lineage-v2-card-col-type">
                 {String(col.type || "").toUpperCase()}
               </span>
             </button>
           ))}
           {hiddenColumns > 0 ? (
-            <div className="ga-lineage-v2-card-col-more">
+            <div className="ax-lineage-v2-card-col-more">
               +{hiddenColumns} more {hiddenColumns === 1 ? "column" : "columns"}
             </div>
           ) : null}
@@ -376,13 +376,13 @@ export function LineageNodeCard({
       ) : null}
 
       {(node?.classification || node?.containsPii) && variant === "tall" ? (
-        <div className="ga-lineage-v2-card-chiprow">
+        <div className="ax-lineage-v2-card-chiprow">
           {node?.containsPii ? <PiiBadge /> : null}
           {node?.classification ? <ClassificationBadge classification={node.classification} /> : null}
         </div>
       ) : null}
 
-      <footer className="ga-lineage-v2-card-foot">
+      <footer className="ax-lineage-v2-card-foot">
         {/*
           Per-node footer renders UC-grade stats (type · size · rows ·
           freshness · owner) derived from the batch-fetched asset header.
@@ -480,7 +480,7 @@ export function LineageNodeCard({
           (node?.foot || []).length ? (
             (node.foot || []).slice(0, 2).map((line, idx) => (
               <span
-                className={`ga-lineage-v2-card-footstat ${
+                className={`ax-lineage-v2-card-footstat ${
                   // "Not visible to your account" (restricted, L9) and
                   // "Loading metadata…" (cold-cache initial profile, L4)
                   // are status lines, not stats — render them muted.
@@ -493,16 +493,16 @@ export function LineageNodeCard({
               </span>
             ))
           ) : (
-            <span className="ga-lineage-v2-card-footstat is-empty">Loading header…</span>
+            <span className="ax-lineage-v2-card-footstat is-empty">Loading header…</span>
           )
         ) : null}
       </footer>
 
       {showActions ? (
-        <div className="ga-lineage-v2-card-actions">
+        <div className="ax-lineage-v2-card-actions">
           {onOpenAsset ? (
             <button
-              className="ga-lineage-v2-card-action"
+              className="ax-lineage-v2-card-action"
               onClick={handleOpenAsset}
               title={`Open ${node?.label || node?.fqn || "asset"} in Asset 360`}
               type="button"
@@ -516,7 +516,7 @@ export function LineageNodeCard({
           ) : null}
           {databricksHref ? (
             <a
-              className="ga-lineage-v2-card-action"
+              className="ax-lineage-v2-card-action"
               href={databricksHref}
               onClick={(event) => event.stopPropagation()}
               rel="noreferrer noopener"

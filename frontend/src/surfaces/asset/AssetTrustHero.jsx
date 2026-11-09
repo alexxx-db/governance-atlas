@@ -2,7 +2,7 @@ import "./asset.css";
 import { useState } from "react";
 import { Badge, Button, EntityChip, SuggestInput, toast } from "../../components/system";
 import { useWorkspaceRoster } from "../../hooks/useWorkspaceRoster";
-import { useAtlasMutation } from "../../hooks/useAtlasQuery";
+import { useAxiomMutation } from "../../hooks/useAxiomQuery";
 import { upsertGovernanceOwner } from "../../lib/api";
 import { formatUtcInstant, ownerRef } from "./format";
 
@@ -15,7 +15,7 @@ function AssignOwnerControl({ assetFqn, ownerType, role, onAssigned }) {
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const roster = useWorkspaceRoster({ enabled: open });
-  const assign = useAtlasMutation({
+  const assign = useAxiomMutation({
     mutate: (ownerEmail) => upsertGovernanceOwner({ assetFqn, ownerEmail, ownerType }),
   });
 
@@ -39,16 +39,16 @@ function AssignOwnerControl({ assetFqn, ownerType, role, onAssigned }) {
 
   if (!open) {
     return (
-      <button type="button" className="ga-asset-owner-assign-btn" onClick={() => setOpen(true)}>
+      <button type="button" className="ax-asset-owner-assign-btn" onClick={() => setOpen(true)}>
         Unassigned · Assign
       </button>
     );
   }
   return (
-    <form className="ga-asset-owner-assign-form" onSubmit={submit}>
+    <form className="ax-asset-owner-assign-form" onSubmit={submit}>
       <SuggestInput
         aria-label={`${role} email`}
-        className="ga-asset-owner-assign-input"
+        className="ax-asset-owner-assign-input"
         disabled={assign.submitting}
         onChange={(event) => setEmail(event.target.value)}
         options={roster.emails}
@@ -57,7 +57,7 @@ function AssignOwnerControl({ assetFqn, ownerType, role, onAssigned }) {
         value={email}
         autoFocus
       />
-      <div className="ga-asset-owner-assign-actions">
+      <div className="ax-asset-owner-assign-actions">
         <Button size="sm" type="submit" variant="primary" loading={assign.submitting} disabled={!email.trim()}>
           Assign
         </Button>
@@ -91,18 +91,18 @@ function certificationBadge(certification, hydrating) {
 function FreshnessValue({ label, value, hydrating, fallbackReason }) {
   const formatted = formatUtcInstant(value);
   return (
-    <div className="ga-asset-fresh-item">
-      <span className="ga-asset-fresh-label">{label}</span>
+    <div className="ax-asset-fresh-item">
+      <span className="ax-asset-fresh-label">{label}</span>
       {formatted ? (
         // Absolute UTC headline, ISO in the tooltip — never a raw ISO
         // headline, never a fake sparkline (teardown P0-4).
-        <time className="ga-asset-fresh-value" dateTime={formatted.iso} title={formatted.iso}>
+        <time className="ax-asset-fresh-value" dateTime={formatted.iso} title={formatted.iso}>
           {formatted.display}
         </time>
       ) : hydrating ? (
-        <span className="ga-sys-skeleton ga-asset-fresh-skeleton" aria-hidden="true" />
+        <span className="ax-sys-skeleton ax-asset-fresh-skeleton" aria-hidden="true" />
       ) : (
-        <span className="ga-asset-fresh-value is-empty" title={fallbackReason || undefined}>
+        <span className="ax-asset-fresh-value is-empty" title={fallbackReason || undefined}>
           —
         </span>
       )}
@@ -127,14 +127,14 @@ function OwnerRole({ role, entry, hydrating = false, assetFqn = "", canMutate = 
   // instead of a dead "Unassigned" label the user can't act on.
   const canAssign = Boolean(canMutate && ownerType && assetFqn);
   return (
-    <div className="ga-asset-owner-role">
-      <span className="ga-asset-owner-role-label">{role}</span>
+    <div className="ax-asset-owner-role">
+      <span className="ax-asset-owner-role-label">{role}</span>
       {ref ? (
         <EntityChip entity={ref} appearance="inline" />
       ) : hydrating ? (
         // Unknown yet — "Unassigned" is a governance claim, not a loading
         // state (Wave-B verifier BLOCK).
-        <span className="ga-asset-owner-unassigned" aria-busy="true">…</span>
+        <span className="ax-asset-owner-unassigned" aria-busy="true">…</span>
       ) : canAssign ? (
         <AssignOwnerControl
           assetFqn={assetFqn}
@@ -143,7 +143,7 @@ function OwnerRole({ role, entry, hydrating = false, assetFqn = "", canMutate = 
           onAssigned={onAssigned}
         />
       ) : (
-        <span className="ga-asset-owner-unassigned">Unassigned</span>
+        <span className="ax-asset-owner-unassigned">Unassigned</span>
       )}
     </div>
   );
@@ -176,29 +176,29 @@ export function AssetTrustHero({ asset, freshness, ownership, ownershipPending =
 
   return (
     <section
-      className={`ga-asset-verdict ${compact ? "is-compact" : ""}`.trim()}
+      className={`ax-asset-verdict ${compact ? "is-compact" : ""}`.trim()}
       aria-label="Trust verdict"
       aria-busy={hydrating || undefined}
     >
-      <div className="ga-asset-verdict-chips">
+      <div className="ax-asset-verdict-chips">
         {certificationBadge(asset?.certification, hydrating)}
-        <span className="ga-asset-score" title="Composite governance score from the live inventory.">
-          <span className="ga-asset-score-label">Governance score</span>
-          <strong className="ga-asset-score-value">
+        <span className="ax-asset-score" title="Composite governance score from the live inventory.">
+          <span className="ax-asset-score-label">Governance score</span>
+          <strong className="ax-asset-score-value">
             {hasCoverage ? coverage : hydrating ? "…" : "—"}
           </strong>
         </span>
         {isCde ? (
           // Canonical CDE predicate is criticality-derived (semantics.py);
           // the subtitle must say so, never "tag-governed".
-          <Badge tone="warn" className="ga-asset-cde-chip">
+          <Badge tone="warn" className="ax-asset-cde-chip">
             CDE · Criticality-derived
           </Badge>
         ) : null}
         {sensitivity ? <Badge tone="info">{sensitivity}</Badge> : null}
       </div>
 
-      <div className="ga-asset-fresh" aria-label="Freshness">
+      <div className="ax-asset-fresh" aria-label="Freshness">
         <FreshnessValue
           label={labels.dataUpdatedAt || "Data updated"}
           value={freshness?.dataUpdatedAt}
@@ -213,7 +213,7 @@ export function AssetTrustHero({ asset, freshness, ownership, ownershipPending =
         />
       </div>
 
-      <div className="ga-asset-owners" aria-label="Ownership">
+      <div className="ax-asset-owners" aria-label="Ownership">
         <OwnerRole hydrating={hydrating || (ownershipPending && !ownership?.ucOwner)} role="Owner (Unity Catalog)" entry={ownership?.ucOwner} />
         <OwnerRole
           hydrating={hydrating || (ownershipPending && !ownership?.businessOwner)}

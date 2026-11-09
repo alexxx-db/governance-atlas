@@ -26,7 +26,7 @@ export function Button({
   const t = TONES.has(tone) ? tone : "neutral";
   const s = SIZES.has(size) ? size : "md";
   const classes = [
-    "ga-sys-button",
+    "ax-sys-button",
     `is-${v}`,
     `tone-${t}`,
     `size-${s}`,
@@ -45,14 +45,14 @@ export function Button({
       aria-busy={loading || undefined}
       {...rest}
     >
-      {loading ? <span className="ga-sys-button-spinner" aria-hidden="true" /> : null}
+      {loading ? <span className="ax-sys-button-spinner" aria-hidden="true" /> : null}
       {icon ? (
-        <span className="ga-sys-button-icon" aria-hidden="true">
+        <span className="ax-sys-button-icon" aria-hidden="true">
           {icon}
         </span>
       ) : null}
       {/* icon-variant buttons carry no visible text; callers MUST pass aria-label */}
-      {v === "icon" ? null : children != null ? <span className="ga-sys-button-label">{children}</span> : null}
+      {v === "icon" ? null : children != null ? <span className="ax-sys-button-label">{children}</span> : null}
     </button>
   );
 }

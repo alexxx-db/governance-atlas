@@ -1,4 +1,4 @@
-"""Governance Atlas application runtime."""
+"""Axiom application runtime."""
 
 from __future__ import annotations
 
@@ -18,22 +18,22 @@ from urllib.parse import unquote
 
 import pandas as pd
 from fastapi import FastAPI, HTTPException, Query, Request
-from atlas.util import error_text, redact_error_text
+from axiom.util import error_text, redact_error_text
 from fastapi.exceptions import RequestValidationError
 from pydantic import BaseModel, Field, field_validator
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from atlas.api import (
+from axiom.api import (
     build_admin_router,
-    build_atlas_ai_router,
-    build_atlas_router,
+    build_axiom_ai_router,
+    build_axiom_router,
     build_assets_router,
     build_catalog_router,
     build_cde_router,
     build_classification_router,
-    build_datapact_router,
+    build_emet_router,
     build_discovery_router,
     build_export_router,
     build_governance_router,
@@ -41,7 +41,7 @@ from atlas.api import (
     build_lineage_router,
     build_runtime_router,
 )
-from atlas.api.cache import (
+from axiom.api.cache import (
     _CACHE_LOCK,
     _OBO_CLIENT_CACHE,
     _OBO_CLIENT_MAX_ENTRIES,
@@ -52,14 +52,14 @@ from atlas.api.cache import (
     _ttl_cache_pop,
     _ttl_value,
 )
-from atlas.api.identity import (
+from axiom.api.identity import (
     _request_auth_mode,
     _request_obo_token,
     _request_read_visibility_scope,
     _user_display_name,
     _user_email,
 )
-from atlas.api.response import (
+from axiom.api.response import (
     _error_response,
     _future_iso,
     _now_iso,
@@ -67,20 +67,20 @@ from atlas.api.response import (
     _response_meta,
     _with_meta,
 )
-from atlas.config import AppConfig, ai_features_enabled_from_env
-from atlas.runtime_contract import validate_frontend_bundle
-from atlas.services import approvals as approval_service
-from atlas.services import assets as asset_service
-from atlas.services import capabilities as capability_service
-from atlas.services import datapact as datapact_service
-from atlas.services import genie as genie_service
-from atlas.services import governance as governance_service
-from atlas.services import lakebase as lakebase_service
-from atlas.services import lakebase_store as lakebase_store_service
-from atlas.services import lineage as lineage_service
-from atlas.services import runtime_setup as runtime_setup_service
-from atlas.store import GovernanceStore
-from atlas.uc import UCSQLClient, _is_skippable_metadata_error, is_missing_sql_scope_error
+from axiom.config import AppConfig, ai_features_enabled_from_env
+from axiom.runtime_contract import validate_frontend_bundle
+from axiom.services import approvals as approval_service
+from axiom.services import assets as asset_service
+from axiom.services import capabilities as capability_service
+from axiom.services import emet as emet_service
+from axiom.services import genie as genie_service
+from axiom.services import governance as governance_service
+from axiom.services import lakebase as lakebase_service
+from axiom.services import lakebase_store as lakebase_store_service
+from axiom.services import lineage as lineage_service
+from axiom.services import runtime_setup as runtime_setup_service
+from axiom.store import GovernanceStore
+from axiom.uc import UCSQLClient, _is_skippable_metadata_error, is_missing_sql_scope_error
 
 
 ROOT = Path(__file__).resolve().parent
@@ -132,22 +132,22 @@ CLIENT_ROUTE_PREFIXES = {
     "evidence",
     "exec",
     "sk",
-    # DataPact Control Center (nav/routes.js surface "datapact") + its aliases,
+    # emet Control Center (nav/routes.js surface "emet") + its aliases,
     # so hard-loads / deep links to the surface get the SPA shell, not a 404.
-    "datapact",
+    "emet",
     "data-pact",
     "data-quality",
     "quality-gate",
 }
 MUTATION_ROLES = {"writer", "steward", "admin"}
 APPROVAL_ROLES = {"steward", "admin"}
-APP_VERSION = "atlas-runtime-6"
+APP_VERSION = "axiom-runtime-6"
 REQUEST_ID_HEADER = "X-Request-ID"
-CLIENT_REQUEST_ID_HEADER = "X-GOVAT-Client-Request-ID"
-BUILD_ID_HEADER = "X-GOVAT-Build-ID"
-DURATION_HEADER = "X-GOVAT-Request-Duration-Ms"
+CLIENT_REQUEST_ID_HEADER = "X-AXIOM-Client-Request-ID"
+BUILD_ID_HEADER = "X-AXIOM-Build-ID"
+DURATION_HEADER = "X-AXIOM-Request-Duration-Ms"
 
-LOGGER = logging.getLogger("atlas.runtime")
+LOGGER = logging.getLogger("axiom.runtime")
 if not LOGGER.handlers:
     _handler = logging.StreamHandler()
     _handler.setFormatter(logging.Formatter("%(message)s"))
@@ -155,7 +155,7 @@ if not LOGGER.handlers:
 LOGGER.setLevel(
     getattr(
         logging,
-        (os.getenv("GOVAT_LOG_LEVEL") or "INFO").strip().upper(),
+        (os.getenv("AXIOM_LOG_LEVEL") or "INFO").strip().upper(),
         logging.INFO,
     )
 )
@@ -216,20 +216,20 @@ SHELL_API_CONTRACT = {
     "governanceGlossaryTerm": "/api/governance/glossary/:id",
     "runtimeStatus": "/api/runtime/status",
     "adminBackgroundStatus": "/api/admin/background/status",
-    "commandCenter": "/api/atlas/command-center",
-    "asset360": "/api/atlas/assets/{asset_fqn}/360",
-    "governanceWorkbench": "/api/atlas/governance/workbench",
-    "governanceRequestDetail": "/api/atlas/governance/requests/{request_id}",
-    "insightsDashboard": "/api/atlas/insights",
-    "taxonomyOverview": "/api/atlas/taxonomy/overview",
-    "cdeDashboard": "/api/atlas/cde",
-    "cdeDetail": "/api/atlas/cde/{cde_id}",
-    "auditEvidence": "/api/atlas/audit/evidence",
-    "adminControlCenter": "/api/atlas/admin/control-center",
-    "atlasAiRecommendations": "/api/atlas-ai/recommendations",
-    "atlasAiMessage": "/api/atlas-ai/message",
-    "atlasAiAutofill": "/api/atlas-ai/autofill",
-    "atlasAiChat": "/api/atlas-ai/chat",
+    "commandCenter": "/api/axiom/command-center",
+    "asset360": "/api/axiom/assets/{asset_fqn}/360",
+    "governanceWorkbench": "/api/axiom/governance/workbench",
+    "governanceRequestDetail": "/api/axiom/governance/requests/{request_id}",
+    "insightsDashboard": "/api/axiom/insights",
+    "taxonomyOverview": "/api/axiom/taxonomy/overview",
+    "cdeDashboard": "/api/axiom/cde",
+    "cdeDetail": "/api/axiom/cde/{cde_id}",
+    "auditEvidence": "/api/axiom/audit/evidence",
+    "adminControlCenter": "/api/axiom/admin/control-center",
+    "axiomAiRecommendations": "/api/axiom-ai/recommendations",
+    "axiomAiMessage": "/api/axiom-ai/message",
+    "axiomAiAutofill": "/api/axiom-ai/autofill",
+    "axiomAiChat": "/api/axiom-ai/chat",
     "cdeRegistry": "/api/cde",
     "bulkImportDryRun": "/api/admin/bulk-import/dry-run",
     "bulkImportCommit": "/api/admin/bulk-import/commit",
@@ -239,8 +239,24 @@ SHELL_API_CONTRACT = {
 }
 
 
+def _configure_threadpool() -> None:
+    """Size the pool that runs sync endpoints (AnyIO default: 40 threads)."""
+    raw = os.getenv("AXIOM_THREADPOOL_SIZE", "").strip()
+    if not raw:
+        return
+    try:
+        size = max(4, int(raw))
+    except ValueError:
+        LOGGER.warning("Ignoring invalid AXIOM_THREADPOOL_SIZE=%r", raw)
+        return
+    import anyio.to_thread
+
+    anyio.to_thread.current_default_thread_limiter().total_tokens = size
+
+
 @asynccontextmanager
 async def _runtime_lifespan(_app: FastAPI) -> AsyncIterator[None]:
+    _configure_threadpool()
     _warmup_live_runtime()
     _start_background_drainer()
     try:
@@ -249,7 +265,7 @@ async def _runtime_lifespan(_app: FastAPI) -> AsyncIterator[None]:
         _stop_background_drainer()
 
 
-app = FastAPI(title="Governance Atlas Runtime", lifespan=_runtime_lifespan)
+app = FastAPI(title="Axiom Runtime", lifespan=_runtime_lifespan)
 # Static assets shipped 464kB where 151kB gzip would; the bundle is served by
 # this process directly (no CDN in Databricks Apps), so compress here.
 app.add_middleware(GZipMiddleware, minimum_size=1024)
@@ -473,7 +489,7 @@ class _NullGovernanceStore:
         if normalized and normalized in configured_admins:
             LOGGER.warning(
                 "admin_emails_fallback_promotion store=null email=%s "
-                "(honoring GOVAT_ADMIN_EMAILS while governance store is unreachable)",
+                "(honoring AXIOM_ADMIN_EMAILS while governance store is unreachable)",
                 normalized,
             )
             return "admin"
@@ -573,7 +589,7 @@ def _uc_for_request(request: Optional[Request]) -> UCSQLClient:
 def _store() -> GovernanceStore:
     cfg = _config()
     store = GovernanceStore(uc=_uc(), catalog=cfg.gov_catalog, schema=cfg.gov_schema)
-    store.ensure_tables()
+    store.bootstrap_schema(getattr(cfg, "schema_bootstrap", "auto"))
     if getattr(cfg, "lakebase_enabled", False):
         try:
             lakebase_service.ensure_schema(cfg, include_upgrades=False)
@@ -712,7 +728,7 @@ def _store_status_fast(background: bool = True) -> Dict[str, str]:
 
             threading.Thread(
                 target=warm_store_status,
-                name="atlas-store-status-warmup",
+                name="axiom-store-status-warmup",
                 daemon=True,
             ).start()
     return {
@@ -1041,7 +1057,7 @@ def _runtime_diagnostics_payload(
     }
 
 
-from atlas.services.inventory import (
+from axiom.services.inventory import (
     asset_exists as _asset_exists,
     asset_is_openable as _asset_is_openable,
     asset_is_visible as _asset_is_visible,
@@ -1253,13 +1269,13 @@ def _invalidate_asset_caches(asset_fqn: str) -> None:
     _ttl_cache_pop(f"runtime_lineage:{asset_fqn}")
     _invalidate_cache_prefix("runtime_inventory:")
     _invalidate_cache_prefix("runtime_bootstrap_inventory_summary:")
-    _invalidate_cache_prefix("atlas_command_center_payload:")
-    _invalidate_cache_prefix("atlas_governance_workbench_payload:")
-    _invalidate_cache_prefix("atlas_governance_request_detail_payload:")
-    _invalidate_cache_prefix("atlas_insights_dashboard_payload:")
-    _invalidate_cache_prefix("atlas_cde_dashboard_payload:")
-    _invalidate_cache_prefix("atlas_cde_detail_payload:")
-    _invalidate_cache_prefix("atlas_audit_evidence_payload:")
+    _invalidate_cache_prefix("axiom_command_center_payload:")
+    _invalidate_cache_prefix("axiom_governance_workbench_payload:")
+    _invalidate_cache_prefix("axiom_governance_request_detail_payload:")
+    _invalidate_cache_prefix("axiom_insights_dashboard_payload:")
+    _invalidate_cache_prefix("axiom_cde_dashboard_payload:")
+    _invalidate_cache_prefix("axiom_cde_detail_payload:")
+    _invalidate_cache_prefix("axiom_audit_evidence_payload:")
     _ttl_cache_pop("runtime_governance")
 
 
@@ -1272,7 +1288,7 @@ def _safe_int(value: Any) -> int:
         return 0
 
 
-from atlas.services.inventory import (
+from axiom.services.inventory import (
     inventory_option_counts as _inventory_option_counts,
 )
 
@@ -1384,7 +1400,7 @@ def _asset_detail_payload(
     )
 
 
-from atlas.services.metadata_audit import (
+from axiom.services.metadata_audit import (
     audit_asset_snapshot as _metadata_audit_asset_snapshot,
     audit_column_snapshot as _metadata_audit_column_snapshot,
     record_audit_log as _record_metadata_audit,
@@ -1434,7 +1450,7 @@ def _governance_summary(
     return payload
 
 
-from atlas.services.inventory import (
+from axiom.services.inventory import (
     bootstrap_inventory_summary as _bootstrap_inventory_summary,
     fast_bootstrap_inventory_summary as _fast_bootstrap_inventory_summary,
 )
@@ -1462,7 +1478,7 @@ def _empty_inventory_boot_message(summary: Dict[str, Any]) -> str:
     )
 
 
-from atlas.services.inventory import (
+from axiom.services.inventory import (
     inventory_option_values as _inventory_option_values,
 )
 
@@ -1530,7 +1546,7 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
     # needing workspace log access.
     import logging
     import traceback
-    logger = logging.getLogger("atlas")
+    logger = logging.getLogger("axiom")
     logger.error("Unhandled %s on %s: %s", exc.__class__.__name__, request.url.path, exc)
     logger.debug("Traceback:\n%s", traceback.format_exc())
 
@@ -1614,7 +1630,7 @@ def _ensure_governance_store() -> GovernanceStore:
     return _store()
 
 
-from atlas.api.assets import (
+from axiom.api.assets import (
     AssetAvailabilityRequest,
     AssetDescriptionPatch,
     AssetMetadataPatch,
@@ -1627,7 +1643,7 @@ from atlas.api.assets import (
 )
 
 
-from atlas.api.governance import (
+from axiom.api.governance import (
     GlossaryTermUpsert,
     GovernanceNotificationPatch,
     GovernanceRequestStatusPatch,
@@ -1722,7 +1738,7 @@ def _apply_asset_metadata(
     # A queued write writes NOTHING to Unity Catalog — the payload is
     # stashed on a pending change_request and returned as an envelope
     # so the frontend can show "pending approval" without pretending
-    # the change took effect. See atlas/services/approvals.py.
+    # the change took effect. See axiom/services/approvals.py.
     if not bypass_approval and request is not None:
         actor_email = _user_email(request)
         actor_role = _user_role_slug(request)
@@ -2205,7 +2221,7 @@ def _shell_branding_payload() -> Dict[str, Any]:
         if store is None:
             return {}
         try:
-            from atlas.services import branding as branding_service
+            from axiom.services import branding as branding_service
 
             return branding_service.get_branding(store)
         except Exception:
@@ -2241,31 +2257,31 @@ def _shell_payload(
         else 0
     )
 
-    # DataPact detection is a best-effort app-principal probe, run only once the
+    # emet detection is a best-effort app-principal probe, run only once the
     # runtime is live (never on cold boot) and cached 60s so it can't slow the
     # bootstrap hot path. It decorates the nav + rail tile; the Control Center
     # surface performs the authoritative OBO detection on load.
-    def _load_datapact_status() -> Dict[str, Any]:
+    def _load_emet_status() -> Dict[str, Any]:
         try:
-            return datapact_service.shell_integration_status(_config(), _uc())
+            return emet_service.shell_integration_status(_config(), _uc())
         except Exception as exc:
             return {
                 "state": "unknown",
                 "detected": False,
                 "message": f"{error_text(exc)}",
-                "surface": "datapact",
+                "surface": "emet",
             }
 
     if state == "live":
-        datapact_status = _ttl_value(
-            "runtime_shell_datapact_status", 60, _load_datapact_status
+        emet_status = _ttl_value(
+            "runtime_shell_emet_status", 60, _load_emet_status
         )
     else:
-        datapact_status = {
+        emet_status = {
             "state": "unknown",
             "detected": False,
-            "message": "DataPact detection runs once the runtime is live.",
-            "surface": "datapact",
+            "message": "emet detection runs once the runtime is live.",
+            "surface": "emet",
         }
 
     capabilities = capability_service.bootstrap_capabilities(
@@ -2283,8 +2299,8 @@ def _shell_payload(
         observed_catalog_count=int(bootstrap_summary.get("observedCatalogCount") or 0),
         boot_message=message,
         per_user_authorization=bool(_request_obo_token(request)),
-        datapact_state=_normalize_str(datapact_status.get("state")),
-        datapact_reason=_normalize_str(datapact_status.get("message")),
+        emet_state=_normalize_str(emet_status.get("state")),
+        emet_reason=_normalize_str(emet_status.get("message")),
     )
 
     cfg = _config()
@@ -2304,7 +2320,7 @@ def _shell_payload(
     # P5 perf: both statuses are workspace-level (identical for every user
     # and every ?surface=), yet /api/bootstrap is refetched on each tab
     # switch. Cache 60s so navigation-driven bootstraps stay in-memory.
-    def _load_atlas_ai_status() -> Dict[str, Any]:
+    def _load_axiom_ai_status() -> Dict[str, Any]:
         try:
             return genie_service.provider_status(cfg)
         except Exception as exc:
@@ -2342,7 +2358,7 @@ def _shell_payload(
                 "enabled": False,
             }
 
-    atlas_ai_status = _ttl_value("runtime_shell_ai_status", 60, _load_atlas_ai_status)
+    axiom_ai_status = _ttl_value("runtime_shell_ai_status", 60, _load_axiom_ai_status)
     lakebase_status = _ttl_value(
         "runtime_shell_lakebase_status", 60, _load_lakebase_status
     )
@@ -2373,22 +2389,22 @@ def _shell_payload(
                 "warehouseId": cfg.warehouse_id,
                 "workspaceHost": cfg.workspace_host,
             },
-            "ai": atlas_ai_status,
+            "ai": axiom_ai_status,
             "storage": {
                 "lakebase": lakebase_status,
             },
             "integrations": {
-                "datapact": datapact_status,
+                "emet": emet_status,
             },
             # AI governance surface flag (DESIGN.md 10): the rail entry and the
             # /ai route render only when the backend registered /api/ai.
             "aiGovernance": {"enabled": bool(getattr(cfg, "ai_features_enabled", False))},
             "workspaceHost": cfg.workspace_host,
             "product": {
-                "companyName": "Entrada",
-                "productName": "Governance Atlas",
-                "shortName": "Atlas",
-                "aiName": "Atlas AI",
+                "companyName": "Shore Capital Partners",
+                "productName": "Axiom",
+                "shortName": "Axiom",
+                "aiName": "Axiom AI",
             },
             "branding": _shell_branding_payload(),
         },
@@ -2451,7 +2467,7 @@ def _inject_bootstrap(html_text: str, payload: Optional[Dict[str, Any]]) -> str:
     if payload is None:
         return html_text
     bootstrap = json.dumps(payload, default=str).replace("</", "<\\/")
-    inline_bootstrap = f"<script>window.__GOVAT_BOOTSTRAP__ = {bootstrap};</script>"
+    inline_bootstrap = f"<script>window.__AXIOM_BOOTSTRAP__ = {bootstrap};</script>"
     return html_text.replace("</head>", f"{inline_bootstrap}\n  </head>")
 
 
@@ -2478,7 +2494,7 @@ def index(request: Request) -> HTMLResponse:
     return _spa_shell_response(request)
 
 
-from atlas.api.runtime import (  # noqa: E402
+from axiom.api.runtime import (  # noqa: E402
     _api_bootstrap_response,
     _api_runtime_status_response,
 )
@@ -2506,7 +2522,7 @@ def _warmup_live_runtime() -> None:
         except Exception:
             pass
 
-    thread = threading.Thread(target=_warm, name="atlas-warmup", daemon=True)
+    thread = threading.Thread(target=_warm, name="axiom-warmup", daemon=True)
     thread.start()
 
 
@@ -2558,8 +2574,8 @@ def _start_background_drainer() -> None:
 
     _BACKGROUND_DRAINER_STOPPED = False
 
-    from atlas.services.background_runner import drain_queued_batch
-    from atlas.api.export import _handle_export_work
+    from axiom.services.background_runner import drain_queued_batch
+    from axiom.api.export import _handle_export_work
 
     def _drain_loop() -> None:
         _DRAINER_STATE["running"] = True
@@ -2590,7 +2606,7 @@ def _start_background_drainer() -> None:
                 _DRAINER_STATE["lastError"] = _format_runtime_message(exc)
         _DRAINER_STATE["running"] = False
 
-    thread = threading.Thread(target=_drain_loop, name="atlas-bg-drainer", daemon=True)
+    thread = threading.Thread(target=_drain_loop, name="axiom-bg-drainer", daemon=True)
     thread.start()
 
 
@@ -2600,7 +2616,7 @@ def _stop_background_drainer() -> None:
     _BACKGROUND_DRAINER_WAKE.set()
 
 
-from atlas.api.assets import (  # noqa: E402
+from axiom.api.assets import (  # noqa: E402
     api_asset_availability,
     api_asset_detail,
     api_patch_asset_description,
@@ -2611,13 +2627,13 @@ from atlas.api.assets import (  # noqa: E402
     api_patch_column_metadata,
     api_patch_column_tags,
 )
-from atlas.api.discovery import api_discovery_search  # noqa: E402
+from axiom.api.discovery import api_discovery_search  # noqa: E402
 
 
-from atlas.api.lineage import api_lineage  # noqa: E402
+from axiom.api.lineage import api_lineage  # noqa: E402
 
 
-from atlas.api.governance import (  # noqa: E402
+from axiom.api.governance import (  # noqa: E402
     api_governance_create_request,
     api_governance_glossary,
     api_governance_glossary_term,
@@ -2641,10 +2657,10 @@ app.include_router(build_classification_router())
 app.include_router(build_export_router())
 app.include_router(build_admin_router())
 app.include_router(build_insights_router())
-app.include_router(build_atlas_router())
-app.include_router(build_atlas_ai_router())
+app.include_router(build_axiom_router())
+app.include_router(build_axiom_ai_router())
 app.include_router(build_cde_router())
-app.include_router(build_datapact_router())
+app.include_router(build_emet_router())
 
 
 def _register_ai_router(target: FastAPI, enabled: bool) -> bool:
@@ -2653,7 +2669,7 @@ def _register_ai_router(target: FastAPI, enabled: bool) -> bool:
     disabled deployment never loads the extension's API module."""
     if not enabled:
         return False
-    from atlas.api.ai import build_ai_router
+    from axiom.api.ai import build_ai_router
 
     target.include_router(build_ai_router())
     return True

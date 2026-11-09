@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor, within } from "@testing-library/rea
 import { QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { atlasQueryClient } from "../../../lib/queryClient";
+import { axiomQueryClient } from "../../../lib/queryClient";
 import { toast, ToastHost } from "../../../components/system";
 import AssetHubPage from "../AssetHubPage";
 import { ShellProvider } from "../../../app-shell/ShellContext";
@@ -51,9 +51,9 @@ function detailFixture(overrides = {}) {
     criticality: "Tier 1",
     isCde: true,
     openRequests: 2,
-    ucOwner: "skyler@entrada.ai",
-    businessOwner: "product-steward@entrada.ai",
-    steward: "finance-steward@entrada.ai",
+    ucOwner: "abarreto@shorecp.com",
+    businessOwner: "product-steward@shorecp.com",
+    steward: "finance-steward@shorecp.com",
     dataUpdatedAt: "2026-05-03T19:51:25.309000Z",
     lastAltered: "2026-06-01T00:00:00Z",
     glossaryTerms: ["Net Revenue"],
@@ -72,9 +72,9 @@ function asset360Fixture(overrides = {}) {
   return {
     asset: { fqn: FQN, name: "orders" },
     ownership: {
-      ucOwner: { name: "skyler@entrada.ai", title: "Unity Catalog owner" },
-      businessOwner: { name: "product-steward@entrada.ai", title: "Business Owner" },
-      steward: { name: "finance-steward@entrada.ai", title: "Steward" },
+      ucOwner: { name: "abarreto@shorecp.com", title: "Unity Catalog owner" },
+      businessOwner: { name: "product-steward@shorecp.com", title: "Business Owner" },
+      steward: { name: "finance-steward@shorecp.com", title: "Steward" },
     },
     freshness: {
       state: "available",
@@ -120,7 +120,7 @@ function asset360Fixture(overrides = {}) {
       state: "available",
       authMode: "app-principal-only",
       visibilityScope: "workspace-app-principal",
-      actorEmail: "skyler@entrada.ai",
+      actorEmail: "abarreto@shorecp.com",
       remediation: [
         { label: "Enable per-user authorization (OBO)", detail: "Open from a Databricks session." },
       ],
@@ -134,8 +134,8 @@ function asset360Fixture(overrides = {}) {
         detail: "open",
         status: "Pending",
         createdAt: "2026-07-21T15:04:19.000Z",
-        createdBy: "skyler@entrada.ai",
-        actorEmail: "skyler@entrada.ai",
+        createdBy: "abarreto@shorecp.com",
+        actorEmail: "abarreto@shorecp.com",
         taskId: "task-9",
         priority: "p1",
       },
@@ -143,7 +143,7 @@ function asset360Fixture(overrides = {}) {
         id: "aud-1",
         title: "Task Triage Updated",
         displayAuditId: "AUD-0F0E0D0C",
-        actorEmail: "skyler@entrada.ai",
+        actorEmail: "abarreto@shorecp.com",
         createdAt: "2026-07-21T15:00:00.000Z",
         status: "Success",
       },
@@ -185,7 +185,7 @@ function LocationProbe() {
 
 function renderPage(initialEntry = `/assets/${encodeURIComponent(FQN)}`) {
   return render(
-    <QueryClientProvider client={atlasQueryClient}>
+    <QueryClientProvider client={axiomQueryClient}>
       <ShellProvider value={{ shell: { workspaceHost: "https://example.cloud.databricks.com" } }}>
         <MemoryRouter initialEntries={[initialEntry]}>
           <Routes>
@@ -228,7 +228,7 @@ beforeEach(() => {
   api.fetchAssetMetadataEditor.mockResolvedValue(null);
   api.fetchAssetAvailability.mockResolvedValue({ assets: {} });
   api.fetchAssetHeaders.mockResolvedValue({ assets: {} });
-  atlasQueryClient.clear();
+  axiomQueryClient.clear();
   toast.clear();
 });
 
@@ -256,15 +256,15 @@ describe("AssetHubPage — trust verdict hero", () => {
     expect(dataUpdated.getAttribute("title")).toBe("2026-05-03T19:51:25.309Z");
     expect(within(verdict).getByText("Jun 1, 2026, 00:00 UTC")).toBeTruthy();
     // No fake sparkline (the only SVGs allowed are entity-chip icons).
-    expect(verdict.querySelector(".ga-sys-sparkline")).toBeNull();
+    expect(verdict.querySelector(".ax-sys-sparkline")).toBeNull();
     expect(verdict.querySelector("polyline")).toBeNull();
 
     // Ownership: distinct roles, each a REAL owner-search anchor.
     expect(within(verdict).getByText("Owner (Unity Catalog)")).toBeTruthy();
-    const business = within(verdict).getByText("product-steward@entrada.ai").closest("a");
+    const business = within(verdict).getByText("product-steward@shorecp.com").closest("a");
     expect(business.getAttribute("href")).toContain("/discovery");
-    expect(decodeURIComponent(business.getAttribute("href"))).toContain('owner:"product-steward@entrada.ai"');
-    const steward = within(verdict).getByText("finance-steward@entrada.ai").closest("a");
+    expect(decodeURIComponent(business.getAttribute("href"))).toContain('owner:"product-steward@shorecp.com"');
+    const steward = within(verdict).getByText("finance-steward@shorecp.com").closest("a");
     expect(steward).toBeTruthy();
   });
 
@@ -455,12 +455,12 @@ describe("AssetHubPage — header actions", () => {
     });
 
     // First submit fails → danger toast, dialog stays open.
-    fireEvent.submit(document.getElementById("ga-asset-request-form"));
+    fireEvent.submit(document.getElementById("ax-asset-request-form"));
     await waitFor(() => expect(screen.getByText("queue is down")).toBeTruthy());
     expect(screen.getByRole("dialog")).toBeTruthy();
 
     // Second submit succeeds → success toast names the request id.
-    fireEvent.submit(document.getElementById("ga-asset-request-form"));
+    fireEvent.submit(document.getElementById("ax-asset-request-form"));
     await waitFor(() => expect(screen.getByText(/GOV-abcdef01 filed/)).toBeTruthy());
     expect(api.createGovernanceRequest).toHaveBeenLastCalledWith(
       { assetFqn: FQN, title: "Fix the owner", note: "Business owner left the company." },
@@ -580,7 +580,7 @@ describe("AssetHubPage — Quality / Access / Activity / Lineage tabs", () => {
     expect(audit.getAttribute("href")).toBe("/evidence?event=AUD-0F0E0D0C");
     const task = screen.getByText("Task task-9").closest("a");
     expect(task.getAttribute("href")).toBe("/stewardship?item=task-9");
-    const actors = screen.getAllByText("skyler@entrada.ai");
+    const actors = screen.getAllByText("abarreto@shorecp.com");
     expect(actors.some((node) => node.closest("a")?.getAttribute("href")?.includes("/discovery"))).toBe(true);
   });
 

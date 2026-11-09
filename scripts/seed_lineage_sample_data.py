@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Write backed Governance Atlas lineage evidence in Databricks.
+"""Write backed Axiom lineage evidence in Databricks.
 
 The visual and functional lineage workspace needs representative downstream
 consumers to exercise impact analysis. This script creates Databricks-managed
@@ -18,17 +18,17 @@ from typing import Any
 from seed_quality_sample_data import execute_sql, fq_name, result_rows, sql_string
 
 
-DEFAULT_PROFILE = os.getenv("ATLAS_PROFILE", "DEFAULT")
+DEFAULT_PROFILE = os.getenv("AXIOM_PROFILE", "DEFAULT")
 DEFAULT_WAREHOUSE_ID = os.getenv("BUNDLE_VAR_warehouse_id") or os.getenv("DATABRICKS_WAREHOUSE_ID") or ""
-DEFAULT_CATALOG = "datapact"
+DEFAULT_CATALOG = "emet"
 DEFAULT_DEMO_SCHEMA = "enterprise_metadata_ops"
-DEFAULT_STORE_CATALOG = "datapact"
-DEFAULT_STORE_SCHEMA = "atlas"
+DEFAULT_STORE_CATALOG = "emet"
+DEFAULT_STORE_SCHEMA = "axiom"
 SOURCE_VIEW = "customer_stewardship_queue"
 SEED_SOURCE = "lineage-evidence-plane"
 FINANCE_FOCUS_ASSET = "finance_prod.curated.revenue_daily"
 ENTERPRISE_SEED_SOURCE = "enterprise-workspace-evidence-plane"
-ENTERPRISE_SEED_ACTOR = "metadata.enterprise@entrada.ai"
+ENTERPRISE_SEED_ACTOR = "metadata.enterprise@shorecp.com"
 
 
 def seeded_fqn(args: argparse.Namespace, table: str) -> str:
@@ -87,7 +87,7 @@ def enterprise_asset_profiles(args: argparse.Namespace) -> list[dict[str, str]]:
     revenue_term = "Net Revenue"
     product_term = "Product Revenue"
     profiles = [
-        # Datapact lineage consumer tables produced by this script.
+        # emet lineage consumer tables produced by this script.
         (seeded_fqn(args, "customer_stewardship_priority_workbench_table"), "Customer", "Customer 360", customer_term),
         (seeded_fqn(args, "customer_stewardship_executive_feed_table"), "Customer", "Customer 360", customer_term),
         (seeded_fqn(args, "customer_stewardship_remediation_portfolio_table"), "Customer", "Customer 360", customer_term),
@@ -123,12 +123,12 @@ def enterprise_asset_profiles(args: argparse.Namespace) -> list[dict[str, str]]:
         ("hr_secure.confidential.compensation_band", "People", "Workforce Analytics", "Compensation Band"),
     ]
     owner_by_domain = {
-        "Customer": "customer-steward@entrada.ai",
-        "Finance": "finance-steward@entrada.ai",
-        "Marketing": "marketing-steward@entrada.ai",
-        "People": "people-steward@entrada.ai",
-        "Product": "product-steward@entrada.ai",
-        "Sales": "sales-steward@entrada.ai",
+        "Customer": "customer-steward@shorecp.com",
+        "Finance": "finance-steward@shorecp.com",
+        "Marketing": "marketing-steward@shorecp.com",
+        "People": "people-steward@shorecp.com",
+        "Product": "product-steward@shorecp.com",
+        "Sales": "sales-steward@shorecp.com",
     }
     return [
         {
@@ -136,8 +136,8 @@ def enterprise_asset_profiles(args: argparse.Namespace) -> list[dict[str, str]]:
             "domain": domain,
             "dataProduct": data_product,
             "glossaryTerm": glossary_term,
-            "businessOwner": owner_by_domain.get(domain, "metadata-steward@entrada.ai"),
-            "technicalOwner": "metadata-platform@entrada.ai",
+            "businessOwner": owner_by_domain.get(domain, "metadata-steward@shorecp.com"),
+            "technicalOwner": "metadata-platform@shorecp.com",
         }
         for fqn, domain, data_product, glossary_term in profiles
     ]
@@ -148,8 +148,8 @@ def create_table_sql(args: argparse.Namespace, table: str, select_sql: str, comm
 CREATE OR REPLACE TABLE {fq_name(args.catalog, args.demo_schema, table)}
 COMMENT {sql_string(comment)}
 TBLPROPERTIES (
-  'governance_atlas.evidence.source' = {sql_string(SEED_SOURCE)},
-  'governance_atlas.evidence.focus_asset' = {sql_string(seeded_fqn(args, SOURCE_VIEW))}
+  'axiom.evidence.source' = {sql_string(SEED_SOURCE)},
+  'axiom.evidence.focus_asset' = {sql_string(seeded_fqn(args, SOURCE_VIEW))}
 )
 AS
 {select_sql}
@@ -168,8 +168,8 @@ def create_uc_table_sql(
 CREATE OR REPLACE TABLE {fq_name(catalog, schema, table)}
 COMMENT {sql_string(comment)}
 TBLPROPERTIES (
-  'governance_atlas.evidence.source' = {sql_string(SEED_SOURCE)},
-  'governance_atlas.evidence.focus_asset' = {sql_string(focus_asset)}
+  'axiom.evidence.source' = {sql_string(SEED_SOURCE)},
+  'axiom.evidence.focus_asset' = {sql_string(focus_asset)}
 )
 AS
 {select_sql}
@@ -582,8 +582,8 @@ def tag_table_sql(args: argparse.Namespace, table: str) -> str:
     return f"""
 ALTER TABLE {fq_name(args.catalog, args.demo_schema, table)}
 SET TAGS (
-  'governance_atlas_evidence_source' = {sql_string(SEED_SOURCE)},
-  'governance_atlas_lineage_focus_asset' = {sql_string(seeded_fqn(args, SOURCE_VIEW))}
+  'axiom_evidence_source' = {sql_string(SEED_SOURCE)},
+  'axiom_lineage_focus_asset' = {sql_string(seeded_fqn(args, SOURCE_VIEW))}
 )
 """.strip()
 
@@ -592,8 +592,8 @@ def tag_uc_table_sql(catalog: str, schema: str, table: str, focus_asset: str) ->
     return f"""
 ALTER TABLE {fq_name(catalog, schema, table)}
 SET TAGS (
-  'governance_atlas_evidence_source' = {sql_string(SEED_SOURCE)},
-  'governance_atlas_lineage_focus_asset' = {sql_string(focus_asset)}
+  'axiom_evidence_source' = {sql_string(SEED_SOURCE)},
+  'axiom_lineage_focus_asset' = {sql_string(focus_asset)}
 )
 """.strip()
 
@@ -603,11 +603,11 @@ def finance_operational_job_tag_sql(args: argparse.Namespace) -> str:
     job_name = str(args.operational_job_name or "").strip()
     if not job_id and not job_name:
         return ""
-    tags = ["'governance_atlas_evidence_source' = " + sql_string(SEED_SOURCE)]
+    tags = ["'axiom_evidence_source' = " + sql_string(SEED_SOURCE)]
     if job_id:
-        tags.append("'governance_atlas_operational_consumer_job_id' = " + sql_string(job_id))
+        tags.append("'axiom_operational_consumer_job_id' = " + sql_string(job_id))
     if job_name:
-        tags.append("'governance_atlas_operational_consumer_job_name' = " + sql_string(job_name))
+        tags.append("'axiom_operational_consumer_job_name' = " + sql_string(job_name))
     tag_body = ",\n  ".join(tags)
     return f"""
 ALTER TABLE {fq_name(*fqn_parts(FINANCE_FOCUS_ASSET))}
@@ -636,7 +636,7 @@ SET TAGS (
   'criticality' = 'Critical',
   'data_product' = {sql_string(profile["dataProduct"])},
   'glossary_term' = {sql_string(profile["glossaryTerm"])},
-  'governance_atlas_evidence_source' = {sql_string(ENTERPRISE_SEED_SOURCE)}
+  'axiom_evidence_source' = {sql_string(ENTERPRISE_SEED_SOURCE)}
   {cde_tags}
 )
 """.strip()
@@ -716,7 +716,7 @@ def finance_governed_lineage_evidence_count_sql() -> str:
     return f"""
 SELECT COUNT(DISTINCT CONCAT(catalog_name, '.', schema_name, '.', table_name))
 FROM system.information_schema.table_tags
-WHERE tag_name = 'governance_atlas_lineage_focus_asset'
+WHERE tag_name = 'axiom_lineage_focus_asset'
   AND tag_value = {sql_string(FINANCE_FOCUS_ASSET)}
   AND (
     CONCAT(catalog_name, '.', schema_name, '.', table_name) LIKE 'finance_prod.gold.%'

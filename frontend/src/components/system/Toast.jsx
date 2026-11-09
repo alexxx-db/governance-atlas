@@ -83,15 +83,15 @@ toast.clear = () => {
 export function ToastHost() {
   const items = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
   return (
-    <div className="ga-sys-toast-host" role="region" aria-label="Notifications">
+    <div className="ax-sys-toast-host" role="region" aria-label="Notifications">
       {items.map((item) => (
         <div
           key={item.id}
-          className={`ga-sys-toast tone-${item.tone}`}
+          className={`ax-sys-toast tone-${item.tone}`}
           // danger interrupts AT (alert); everything else is polite status.
           role={item.tone === "danger" ? "alert" : "status"}
         >
-          <span className="ga-sys-toast-message">{item.message}</span>
+          <span className="ax-sys-toast-message">{item.message}</span>
           {item.action ? (
             <Button
               variant="tertiary"

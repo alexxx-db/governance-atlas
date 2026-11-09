@@ -1,6 +1,6 @@
 /* eslint-disable */
 /**
- * Governance Atlas — mock data contracts
+ * Axiom — mock data contracts
  * Shape mirrors what we'd query from Unity Catalog system tables + governance Delta tables.
  * Comments map each shape to the feasible Databricks data source.
  */
@@ -33,13 +33,13 @@ const CATALOGS = [
 
 // --- Domains (business areas, derived from tag policy) ---
 const DOMAINS = [
-  { name: 'Revenue & Sales',   color: '#3D84AD', coverage: 92, certified: 138, open: 22 },
-  { name: 'Customer',          color: '#66C5FF', coverage: 84, certified: 174, open: 41 },
-  { name: 'Marketing',         color: '#5CE1E6', coverage: 88, certified: 89,  open: 14 },
-  { name: 'Finance',           color: '#025080', coverage: 95, certified: 121, open: 8 },
-  { name: 'Operations',        color: '#2C6D93', coverage: 79, certified: 64,  open: 27 },
-  { name: 'People',            color: '#CFEFFF', coverage: 72, certified: 26,  open: 12 },
-  { name: 'Risk & Compliance', color: '#B2BDC2', coverage: 81, certified: 48,  open: 19 },
+  { name: 'Revenue & Sales',   color: '#5B7FD0', coverage: 92, certified: 138, open: 22 },
+  { name: 'Customer',          color: '#7497DC', coverage: 84, certified: 174, open: 41 },
+  { name: 'Marketing',         color: '#C8C8C8', coverage: 88, certified: 89,  open: 14 },
+  { name: 'Finance',           color: '#325396', coverage: 95, certified: 121, open: 8 },
+  { name: 'Operations',        color: '#3D66B8', coverage: 79, certified: 64,  open: 27 },
+  { name: 'People',            color: '#CDDAF4', coverage: 72, certified: 26,  open: 12 },
+  { name: 'Risk & Compliance', color: '#8D8D8D', coverage: 81, certified: 48,  open: 19 },
 ];
 
 // --- Search results / asset catalog ---
@@ -344,13 +344,13 @@ const STEW_ITEMS = [
 // --- Audit events (immutable evidence) ---
 // SOURCE: governance_state.audit_log (append-only Delta) + system.access.audit
 const AUDIT_EVENTS = [
-  { id: 'AE-78421', ts: '2026-04-27 09:14:22Z', actor: 'marisol.reyes@entrada.ai', actorType: 'user', kind: 'Certification', target: 'finance_prod.curated.revenue_daily', summary: 'Re-certified for Q2 2026.', evidence: '4 checks passed: owner, description, lineage coverage, freshness SLA.', sev: 'info' },
+  { id: 'AE-78421', ts: '2026-04-27 09:14:22Z', actor: 'marisol.reyes@shorecp.com', actorType: 'user', kind: 'Certification', target: 'finance_prod.curated.revenue_daily', summary: 'Re-certified for Q2 2026.', evidence: '4 checks passed: owner, description, lineage coverage, freshness SLA.', sev: 'info' },
   { id: 'AE-78418', ts: '2026-04-27 08:52:09Z', actor: 'svc-governance-sweeper', actorType: 'service', kind: 'Tag applied',  target: 'customer_360.silver.contact_events', summary: 'Auto-tagged 6 columns as `pii` after classifier scan v2026.04.', evidence: 'Job run ID 9821044 · Classifier confidence ≥ 0.92.', sev: 'info' },
-  { id: 'AE-78415', ts: '2026-04-27 08:31:44Z', actor: 'aaron.chen@entrada.ai', actorType: 'user', kind: 'Grant',  target: 'customer_360.gold.customer_profile', summary: 'Granted SELECT to `customer-success-leads` group.', evidence: 'Approved via stewardship workflow SI-2440. Justification on file.', sev: 'info' },
+  { id: 'AE-78415', ts: '2026-04-27 08:31:44Z', actor: 'aaron.chen@shorecp.com', actorType: 'user', kind: 'Grant',  target: 'customer_360.gold.customer_profile', summary: 'Granted SELECT to `customer-success-leads` group.', evidence: 'Approved via stewardship workflow SI-2440. Justification on file.', sev: 'info' },
   { id: 'AE-78410', ts: '2026-04-27 07:58:01Z', actor: 'svc-policy-engine', actorType: 'service', kind: 'Policy violation', target: 'experimental.sandbox.pricing_experiment_2025q4', summary: 'Owner-required policy failed.', evidence: 'No principal in `owner` grant set. Quarantined from search index.', sev: 'crit' },
-  { id: 'AE-78404', ts: '2026-04-27 07:14:55Z', actor: 'priya.natarajan@entrada.ai', actorType: 'user', kind: 'Quality alert', target: 'sales_prod.silver.orders', summary: 'Acknowledged quality regression on `currency_code`.', evidence: 'Linked to Lakeflow run 1029384 · DQ check `currency_code_not_null`.', sev: 'warn' },
+  { id: 'AE-78404', ts: '2026-04-27 07:14:55Z', actor: 'priya.natarajan@shorecp.com', actorType: 'user', kind: 'Quality alert', target: 'sales_prod.silver.orders', summary: 'Acknowledged quality regression on `currency_code`.', evidence: 'Linked to Lakeflow run 1029384 · DQ check `currency_code_not_null`.', sev: 'warn' },
   { id: 'AE-78401', ts: '2026-04-27 06:42:31Z', actor: 'svc-lineage-collector', actorType: 'service', kind: 'Lineage updated', target: 'finance_prod.gold.revenue_recognition', summary: 'Captured new column-level lineage for `is_recognized`.', evidence: 'Source: `system.access.column_lineage` · 38 new edges.', sev: 'info' },
-  { id: 'AE-78395', ts: '2026-04-27 05:18:12Z', actor: 'devon.park@entrada.ai', actorType: 'user', kind: 'Description', target: 'product_events.bronze.clickstream_events', summary: 'Edited table description.', evidence: 'Diff: +148 / -24 chars. Reviewer: Customer Stewards.', sev: 'info' },
+  { id: 'AE-78395', ts: '2026-04-27 05:18:12Z', actor: 'devon.park@shorecp.com', actorType: 'user', kind: 'Description', target: 'product_events.bronze.clickstream_events', summary: 'Edited table description.', evidence: 'Diff: +148 / -24 chars. Reviewer: Customer Stewards.', sev: 'info' },
   { id: 'AE-78388', ts: '2026-04-26 22:04:00Z', actor: 'compliance-bot', actorType: 'service', kind: 'Access review', target: 'hr_secure.*', summary: 'Quarterly access review completed.', evidence: '12 grants reviewed · 2 revoked · 0 escalations.', sev: 'good' },
 ];
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Badge, Button, EmptyState, SectionCard, SuggestInput, toast } from "../../../components/system";
-import { useAtlasMutation, useAtlasQuery } from "../../../hooks/useAtlasQuery";
+import { useAxiomMutation, useAxiomQuery } from "../../../hooks/useAxiomQuery";
 import { useWorkspaceRoster } from "../../../hooks/useWorkspaceRoster";
 import { fetchAdminRoles, updateAdminRole } from "../../../lib/api";
 
@@ -27,7 +27,7 @@ function compact(value) {
 }
 
 export function RolesTab() {
-  const { query } = useAtlasQuery({
+  const { query } = useAxiomQuery({
     key: ["admin", "roles"],
     fetch: (signal) => fetchAdminRoles({ signal }),
     staleTime: 30_000,
@@ -42,7 +42,7 @@ export function RolesTab() {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("steward");
 
-  const assign = useAtlasMutation({
+  const assign = useAxiomMutation({
     mutate: (payload) => updateAdminRole(payload.email, payload.role),
     invalidates: [["admin", "roles"]],
   });
@@ -61,13 +61,13 @@ export function RolesTab() {
   };
 
   return (
-    <div className="ga-admin-panel" id="ga-admin-panel-roles" role="tabpanel">
+    <div className="ax-admin-panel" id="ax-admin-panel-roles" role="tabpanel">
       <SectionCard
         title="Assign a role"
         subtitle="Grant a workspace user a governance role. Assigning an existing user updates their role."
       >
-        <form aria-label="Assign a governance role" className="ga-admin-roles-form" onSubmit={submit}>
-          <label className="ga-admin-roles-field">
+        <form aria-label="Assign a governance role" className="ax-admin-roles-form" onSubmit={submit}>
+          <label className="ax-admin-roles-field">
             <span>User email</span>
             <SuggestInput
               disabled={assign.submitting}
@@ -79,10 +79,10 @@ export function RolesTab() {
               value={email}
             />
           </label>
-          <label className="ga-admin-roles-field">
+          <label className="ax-admin-roles-field">
             <span>Role</span>
             <select
-              className="ga-admin-roles-select"
+              className="ax-admin-roles-select"
               disabled={assign.submitting}
               onChange={(event) => setRole(event.target.value)}
               value={role}
@@ -98,9 +98,9 @@ export function RolesTab() {
             Assign role
           </Button>
         </form>
-        <p className="ga-admin-roles-hint">{ROLE_HINT[role]}</p>
+        <p className="ax-admin-roles-hint">{ROLE_HINT[role]}</p>
         {assign.errorMessage ? (
-          <p className="ga-admin-form-error" role="alert">
+          <p className="ax-admin-form-error" role="alert">
             {assign.errorMessage}
           </p>
         ) : null}
@@ -112,8 +112,8 @@ export function RolesTab() {
         status={query.isPending && !query.data ? "loading" : undefined}
       >
         {roles.length ? (
-          <div className="ga-admin-roles-scroll">
-            <table className="ga-admin-roles-table">
+          <div className="ax-admin-roles-scroll">
+            <table className="ax-admin-roles-table">
               <thead>
                 <tr>
                   <th>User</th>

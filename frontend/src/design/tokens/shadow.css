@@ -1,13 +1,13 @@
 /*
- * Governance Atlas elevation and glow tokens.
+ * Axiom elevation and glow tokens.
  */
 
 :root {
-  --ga-shadow-sm: 0 8px 20px rgba(0, 0, 0, 0.18);
-  --ga-shadow-md: 0 18px 44px rgba(0, 0, 0, 0.28);
-  --ga-shadow-lg: 0 28px 72px rgba(0, 0, 0, 0.36);
-  --ga-shadow-glow: 0 0 32px rgba(102, 197, 255, 0.18);
-  --ga-shadow-focus: 0 0 0 3px var(--ga-focus);
-  --ga-glass-highlight: inset 0 1px 0 rgba(207, 239, 255, 0.12);
+  --ax-shadow-sm: 0 8px 20px rgba(0, 0, 0, 0.18);
+  --ax-shadow-md: 0 18px 44px rgba(0, 0, 0, 0.28);
+  --ax-shadow-lg: 0 28px 72px rgba(0, 0, 0, 0.36);
+  --ax-shadow-glow: 0 0 32px rgba(116, 151, 220, 0.18);
+  --ax-shadow-focus: 0 0 0 3px var(--ax-focus);
+  --ax-glass-highlight: inset 0 1px 0 rgba(205, 218, 244, 0.12);
   /* Wave C8: all --gh-shadow* aliases had zero remaining references. */
 }

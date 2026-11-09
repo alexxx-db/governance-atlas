@@ -14,9 +14,9 @@ from unittest.mock import patch
 import pandas as pd
 from fastapi import FastAPI, HTTPException
 
-from atlas.ai import models
-from atlas.ai.store import AiStore
-from atlas.api import ai as ai_api
+from axiom.ai import models
+from axiom.ai.store import AiStore
+from axiom.api import ai as ai_api
 from test_ai_store import FakeGovernanceStore, FakeUC
 
 EP_ID = models.ai_entity_id("serving_endpoint", "databricks", "ep1")
@@ -261,7 +261,7 @@ class ReadRouteTests(unittest.TestCase):
 
 class AvailabilityNotesTests(unittest.TestCase):
     def test_known_gaps_are_notes_not_degradation(self) -> None:
-        from atlas.ai import views
+        from axiom.ai import views
 
         run = {**SUCCEEDED, "sources_json": {
             "serving_endpoints": {"state": "available"},
@@ -280,7 +280,7 @@ class MutationRouteTests(unittest.TestCase):
     def _real_store(self, **uc_kwargs: Any):
         finding = pd.DataFrame([{"finding_id": FINDING_ID, "finding_type": "ambiguous_match", "state": "open", "entity_id": EP_ID, "entity_kind": "serving_endpoint"}])
         intake = pd.DataFrame([{"intake_id": "INT-1", "title": "t"}])
-        uc = FakeUC(frames={"WHERE finding_id IN": finding, "FROM `main`.`atlas`.`intake_records` ORDER BY": intake}, **uc_kwargs)
+        uc = FakeUC(frames={"WHERE finding_id IN": finding, "FROM `main`.`axiom`.`intake_records` ORDER BY": intake}, **uc_kwargs)
         return uc, AiStore(FakeGovernanceStore(uc))
 
     def _call(self, fn, store, role="steward"):

@@ -9,14 +9,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Governance Atlas metadata workspace built on Unity Catalog."
+      content="Axiom metadata workspace built on Unity Catalog."
     />
     <meta name="theme-color" content="#050e18" />
     <link
       rel="icon"
-      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23061321'/%3E%3Ccircle cx='32' cy='32' r='17' fill='none' stroke='%2366c5ff' stroke-width='4'/%3E%3Ccircle cx='32' cy='32' r='7' fill='%235ce1e6'/%3E%3Cpath d='M32 15v-6M32 55v-6M15 32h-6M55 32h-6' stroke='%233d84ad' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23061321'/%3E%3Ccircle cx='32' cy='32' r='17' fill='none' stroke='%237497dc' stroke-width='4'/%3E%3Ccircle cx='32' cy='32' r='7' fill='%23c8c8c8'/%3E%3Cpath d='M32 15v-6M32 55v-6M15 32h-6M55 32h-6' stroke='%235b7fd0' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E"
     />
-    <title>Governance Atlas</title>
+    <title>Axiom</title>
     <style>
       /* Preboot skeleton — must visually match the live dark shell so first
          paint and app hydration are seamless. Tokens mirror
@@ -24,15 +24,15 @@
          bundle loads). Any light/cream surface here is a bug. */
       :root {
         color-scheme: dark;
-        --ga-preboot-shell: #050e18;
-        --ga-preboot-bg: #08172a;
-        --ga-preboot-surface: rgba(12, 33, 56, 0.96);
-        --ga-preboot-line: rgba(31, 63, 95, 0.96);
-        --ga-preboot-text: #f5fbff;
-        --ga-preboot-text-soft: #cfefff;
-        --ga-preboot-text-muted: #8fa8b6;
-        --ga-preboot-accent: #66c5ff;
-        --ga-preboot-accent-2: #3d84ad;
+        --ax-preboot-shell: #050e18;
+        --ax-preboot-bg: #08172a;
+        --ax-preboot-surface: rgba(12, 33, 56, 0.96);
+        --ax-preboot-line: rgba(31, 63, 95, 0.96);
+        --ax-preboot-text: #f5fbff;
+        --ax-preboot-text-soft: #cddaf4;
+        --ax-preboot-text-muted: #8fa8b6;
+        --ax-preboot-accent: #7497dc;
+        --ax-preboot-accent-2: #5b7fd0;
       }
       html, body, #root {
         min-height: 100%;
@@ -40,78 +40,78 @@
       body {
         margin: 0;
         font-family: "SF Pro Text", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI Variable Text", sans-serif;
-        background: var(--ga-preboot-shell);
-        color: var(--ga-preboot-text);
+        background: var(--ax-preboot-shell);
+        color: var(--ax-preboot-text);
       }
-      .ga-preboot {
+      .ax-preboot {
         display: grid;
         grid-template-rows: 56px minmax(0, 1fr);
         min-height: 100vh;
       }
-      .ga-preboot-topbar {
+      .ax-preboot-topbar {
         display: flex;
         align-items: center;
         gap: 14px;
         padding: 0 18px;
-        background: var(--ga-preboot-bg);
-        border-bottom: 1px solid var(--ga-preboot-line);
+        background: var(--ax-preboot-bg);
+        border-bottom: 1px solid var(--ax-preboot-line);
       }
-      .ga-preboot-mark {
+      .ax-preboot-mark {
         width: 30px;
         height: 30px;
         border-radius: 8px;
         display: grid;
         place-items: center;
-        background: linear-gradient(135deg, #025080 0%, #3d84ad 100%);
-        color: var(--ga-preboot-text);
+        background: linear-gradient(135deg, #325396 0%, #5b7fd0 100%);
+        color: var(--ax-preboot-text);
         font-weight: 800;
         font-size: 0.72rem;
         letter-spacing: 0.06em;
       }
-      .ga-preboot-brand strong {
+      .ax-preboot-brand strong {
         font-size: 0.98rem;
         letter-spacing: -0.01em;
       }
-      .ga-preboot-brand span {
+      .ax-preboot-brand span {
         display: block;
         font-size: 0.68rem;
-        color: var(--ga-preboot-text-muted);
+        color: var(--ax-preboot-text-muted);
         letter-spacing: 0.08em;
         text-transform: uppercase;
       }
-      .ga-preboot-search {
+      .ax-preboot-search {
         margin-left: auto;
         width: min(480px, 40vw);
         height: 34px;
-        border: 1px solid var(--ga-preboot-line);
+        border: 1px solid var(--ax-preboot-line);
         border-radius: 10px;
         background: rgba(12, 33, 56, 0.68);
         display: flex;
         align-items: center;
         padding: 0 14px;
-        color: var(--ga-preboot-text-muted);
+        color: var(--ax-preboot-text-muted);
         font-size: 0.8rem;
       }
-      .ga-preboot-body {
+      .ax-preboot-body {
         display: grid;
         grid-template-columns: 240px minmax(0, 1fr);
-        background: var(--ga-preboot-bg);
+        background: var(--ax-preboot-bg);
         min-height: 0;
       }
-      .ga-preboot-rail {
-        border-right: 1px solid var(--ga-preboot-line);
-        background: var(--ga-preboot-shell);
+      .ax-preboot-rail {
+        border-right: 1px solid var(--ax-preboot-line);
+        background: var(--ax-preboot-shell);
         padding: 18px 14px;
         display: grid;
         gap: 10px;
         align-content: start;
       }
-      .ga-preboot-rail span,
-      .ga-preboot-cards span,
-      .ga-preboot-rows span {
+      .ax-preboot-rail span,
+      .ax-preboot-cards span,
+      .ax-preboot-rows span {
         display: block;
         border-radius: 10px;
-        border: 1px solid var(--ga-preboot-line);
+        border: 1px solid var(--ax-preboot-line);
         background: linear-gradient(
           90deg,
           rgba(12, 33, 56, 0.9) 0%,
@@ -119,71 +119,71 @@
           rgba(12, 33, 56, 0.9) 100%
         );
         background-size: 220% 100%;
-        animation: ga-preboot-shimmer 1.6s ease-in-out infinite;
+        animation: ax-preboot-shimmer 1.6s ease-in-out infinite;
       }
-      .ga-preboot-rail span {
+      .ax-preboot-rail span {
         height: 34px;
       }
-      .ga-preboot-main {
+      .ax-preboot-main {
         padding: 22px;
         display: grid;
         gap: 16px;
         align-content: start;
       }
-      .ga-preboot-status {
+      .ax-preboot-status {
         display: flex;
         align-items: center;
         gap: 10px;
-        color: var(--ga-preboot-text-soft);
+        color: var(--ax-preboot-text-soft);
         font-size: 0.86rem;
       }
-      .ga-preboot-dot {
+      .ax-preboot-dot {
         width: 8px;
         height: 8px;
         border-radius: 50%;
-        background: var(--ga-preboot-accent);
-        animation: ga-preboot-pulse 1.4s ease-in-out infinite;
+        background: var(--ax-preboot-accent);
+        animation: ax-preboot-pulse 1.4s ease-in-out infinite;
       }
-      .ga-preboot-cards {
+      .ax-preboot-cards {
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 14px;
       }
-      .ga-preboot-cards span {
+      .ax-preboot-cards span {
         height: 96px;
         border-radius: 14px;
       }
-      .ga-preboot-rows {
+      .ax-preboot-rows {
         display: grid;
         gap: 10px;
       }
-      .ga-preboot-rows span {
+      .ax-preboot-rows span {
         height: 48px;
       }
-      @keyframes ga-preboot-shimmer {
+      @keyframes ax-preboot-shimmer {
         0% { background-position: 200% 0; }
         100% { background-position: -20% 0; }
       }
-      @keyframes ga-preboot-pulse {
+      @keyframes ax-preboot-pulse {
         0%, 100% { opacity: 1; }
         50% { opacity: 0.35; }
       }
       @media (max-width: 900px) {
-        .ga-preboot-body {
+        .ax-preboot-body {
           grid-template-columns: 1fr;
         }
-        .ga-preboot-rail {
+        .ax-preboot-rail {
           display: none;
         }
-        .ga-preboot-cards {
+        .ax-preboot-cards {
           grid-template-columns: repeat(2, minmax(0, 1fr));
         }
       }
       @media (prefers-reduced-motion: reduce) {
-        .ga-preboot-rail span,
-        .ga-preboot-cards span,
-        .ga-preboot-rows span,
-        .ga-preboot-dot {
+        .ax-preboot-rail span,
+        .ax-preboot-cards span,
+        .ax-preboot-rows span,
+        .ax-preboot-dot {
           animation: none;
         }
       }
@@ -191,30 +191,30 @@
   </head>
   <body>
     <div id="root">
-      <div class="ga-preboot">
-        <div class="ga-preboot-topbar">
-          <div class="ga-preboot-mark">GA</div>
+      <div class="ax-preboot">
+        <div class="ax-preboot-topbar">
+          <div class="ax-preboot-mark">AX</div>
           <!-- Mirror the hydrated shell's branding exactly so the preboot →
                shell transition reads as one continuous chrome. -->
-          <div class="ga-preboot-brand">
-            <strong>Governance Atlas</strong>
-            <span>By Entrada</span>
+          <div class="ax-preboot-brand">
+            <strong>Axiom</strong>
+            <span>By Shore Capital Partners</span>
           </div>
-          <div class="ga-preboot-search">Search assets, glossary terms, owners...</div>
+          <div class="ax-preboot-search">Search assets, glossary terms, owners...</div>
         </div>
-        <div class="ga-preboot-body">
-          <div class="ga-preboot-rail">
+        <div class="ax-preboot-body">
+          <div class="ax-preboot-rail">
             <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
           </div>
-          <div class="ga-preboot-main">
-            <div class="ga-preboot-status">
-              <div class="ga-preboot-dot"></div>
+          <div class="ax-preboot-main">
+            <div class="ax-preboot-status">
+              <div class="ax-preboot-dot"></div>
               Preparing your governance workspace…
             </div>
-            <div class="ga-preboot-cards">
+            <div class="ax-preboot-cards">
               <span></span><span></span><span></span><span></span>
             </div>
-            <div class="ga-preboot-rows">
+            <div class="ax-preboot-rows">
               <span></span><span></span><span></span><span></span><span></span>
             </div>
           </div>

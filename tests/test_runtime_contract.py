@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from atlas import runtime_contract
+from axiom import runtime_contract
 
 
 RUNTIME_MANIFEST = """
@@ -16,12 +16,12 @@ runtime:
   app_object: app
   frontend_dist: frontend/dist/index.html
   frontend_assets: frontend/dist/assets
-  frontend_build_manifest: frontend/dist/atlas-build-manifest.json
+  frontend_build_manifest: frontend/dist/axiom-build-manifest.json
 removed_runtime_paths:
   - app.py
   - modern_app.py
   - modern_ui
-  - atlas/openmetadata.py
+  - axiom/openmetadata.py
 """.strip()
 
 
@@ -31,12 +31,12 @@ class RuntimeContractTests(unittest.TestCase):
         (root / "frontend/dist/assets").mkdir(parents=True, exist_ok=True)
         (root / "runtime_manifest.yaml").write_text(RUNTIME_MANIFEST, encoding="utf-8")
         (root / "frontend/index.html").write_text("<!doctype html><html></html>\n", encoding="utf-8")
-        (root / "frontend/package.json").write_text('{"name":"atlas"}\n', encoding="utf-8")
-        (root / "frontend/package-lock.json").write_text('{"name":"atlas"}\n', encoding="utf-8")
+        (root / "frontend/package.json").write_text('{"name":"axiom"}\n', encoding="utf-8")
+        (root / "frontend/package-lock.json").write_text('{"name":"axiom"}\n', encoding="utf-8")
         (root / "frontend/eslint.config.js").write_text("export default [];\n", encoding="utf-8")
         (root / "frontend/tsconfig.json").write_text('{"include":[]}\n', encoding="utf-8")
         (root / "frontend/vite.config.js").write_text("export default {};\n", encoding="utf-8")
-        (root / "frontend/src/main.jsx").write_text("console.log('atlas');\n", encoding="utf-8")
+        (root / "frontend/src/main.jsx").write_text("console.log('axiom');\n", encoding="utf-8")
         (root / "frontend/dist/index.html").write_text("<!doctype html><html></html>\n", encoding="utf-8")
         (root / "frontend/dist/assets/app.js").write_text("console.log('bundle');\n", encoding="utf-8")
 
@@ -50,7 +50,7 @@ class RuntimeContractTests(unittest.TestCase):
                 "generatedAt": "2026-04-16T00:00:00Z",
                 "sourceHash": source_hash,
             }
-            (root / "frontend/dist/atlas-build-manifest.json").write_text(
+            (root / "frontend/dist/axiom-build-manifest.json").write_text(
                 json.dumps(build_manifest),
                 encoding="utf-8",
             )
@@ -64,7 +64,7 @@ class RuntimeContractTests(unittest.TestCase):
             root = Path(tmpdir)
             self._write_tree(root)
             source_hash = runtime_contract.frontend_source_hash(root)
-            (root / "frontend/dist/atlas-build-manifest.json").write_text(
+            (root / "frontend/dist/axiom-build-manifest.json").write_text(
                 json.dumps(
                     {
                         "buildId": "frontend-test-build",

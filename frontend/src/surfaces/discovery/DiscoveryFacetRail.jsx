@@ -26,12 +26,12 @@ function railOptions(facets, facetKey, selected, fallbackValues = []) {
 
 function RailGroup({ eyebrow, count = null, children }) {
   return (
-    <section className="ga-disc-facet-group">
+    <section className="ax-disc-facet-group">
       <header>
         <span>{eyebrow}</span>
       </header>
       {count !== null ? (
-        <small className="ga-disc-facet-group-count">
+        <small className="ax-disc-facet-group-count">
           {Number(count || 0).toLocaleString()} results
         </small>
       ) : null}
@@ -57,7 +57,7 @@ export function DiscoveryFacetRail({
     return (
       <button
         aria-expanded={isExpanded}
-        className="ga-disc-facet-show-all"
+        className="ax-disc-facet-show-all"
         onClick={() => setExpanded((current) => ({ ...current, [facetKey]: !current[facetKey] }))}
         type="button"
       >
@@ -94,7 +94,7 @@ export function DiscoveryFacetRail({
   );
 
   return (
-    <aside aria-label="Discovery quick facets" className="ga-disc-facet-rail">
+    <aside aria-label="Discovery quick facets" className="ax-disc-facet-rail">
       <RailGroup count={certificationShownCount} eyebrow="Certification">
         {visibleOptions("certifications", certificationOptions).map((option) =>
           facetButton(
@@ -102,7 +102,7 @@ export function DiscoveryFacetRail({
             "certification",
             option,
             <span
-              className={`ga-disc-facet-dot tone-${
+              className={`ax-disc-facet-dot tone-${
                 /cert/i.test(option) ? "good" : /review|draft/i.test(option) ? "warn" : "bad"
               }`}
             />,
@@ -112,7 +112,7 @@ export function DiscoveryFacetRail({
       </RailGroup>
       <RailGroup eyebrow="Domain">
         {visibleOptions("domains", domainOptions).map((option) =>
-          facetButton("domains", "domain", option, <span className="ga-disc-facet-square" />),
+          facetButton("domains", "domain", option, <span className="ax-disc-facet-square" />),
         )}
         {expander("domains", domainOptions)}
       </RailGroup>
@@ -123,7 +123,7 @@ export function DiscoveryFacetRail({
             "sensitivity",
             option,
             <span
-              className={`ga-disc-facet-dot tone-${
+              className={`ax-disc-facet-dot tone-${
                 /restrict/i.test(option) ? "bad" : /conf/i.test(option) ? "warn" : "info"
               }`}
             />,
@@ -133,15 +133,15 @@ export function DiscoveryFacetRail({
       </RailGroup>
       <RailGroup eyebrow="Attributes">
         <button onClick={() => onAppendQueryClause?.("tag:CDE")} type="button">
-          <span className="ga-disc-facet-square tone-teal" />
+          <span className="ax-disc-facet-square tone-teal" />
           <span>Critical Data Element</span>
         </button>
         <button onClick={() => onAppendQueryClause?.("tag:pii")} type="button">
-          <span className="ga-disc-facet-dot tone-bad" />
+          <span className="ax-disc-facet-dot tone-bad" />
           <span>Contains PII</span>
         </button>
         <button onClick={() => onAppendQueryClause?.("tag:no_pii")} type="button">
-          <span className="ga-disc-facet-dot tone-muted" />
+          <span className="ax-disc-facet-dot tone-muted" />
           <span>No PII</span>
         </button>
       </RailGroup>

@@ -4,7 +4,7 @@ from types import SimpleNamespace
 
 import pandas as pd
 
-from atlas.services import databricks_evidence
+from axiom.services import databricks_evidence
 
 
 class FakeUC:
@@ -126,7 +126,7 @@ def test_lakeflow_payload_does_not_probe_pipeline_update_table_without_pipeline_
 
 
 def test_profile_metric_payload_prefers_monitor_table_names_when_available(monkeypatch) -> None:
-    monkeypatch.setenv("GOVAT_ENABLE_DATABRICKS_MONITOR_API", "true")
+    monkeypatch.setenv("AXIOM_ENABLE_DATABRICKS_MONITOR_API", "true")
 
     class Tables:
         def get(self, *, full_name: str):
@@ -186,7 +186,7 @@ def test_profile_metric_payload_skips_monitor_api_by_default() -> None:
 
 
 def test_profile_metric_payload_does_not_mark_table_id_only_monitor_available(monkeypatch) -> None:
-    monkeypatch.setenv("GOVAT_ENABLE_DATABRICKS_MONITOR_API", "true")
+    monkeypatch.setenv("AXIOM_ENABLE_DATABRICKS_MONITOR_API", "true")
 
     class Tables:
         def get(self, *, full_name: str):

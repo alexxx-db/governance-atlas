@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import { fetchAdminBackgroundStatus, fetchRuntimeStatus } from "../lib/api";
-import { useAtlasQuery } from "./useAtlasQuery";
+import { useAxiomQuery } from "./useAxiomQuery";
 
 /**
  * Composes `/api/runtime/status` + `/api/admin/background/status` into a
@@ -15,14 +15,14 @@ export function useCapabilityDashboard(options = {}) {
   const enabled = options?.enabled !== false;
   const [lastRefreshedAt, setLastRefreshedAt] = useState("");
 
-  const runtimeQuery = useAtlasQuery({
+  const runtimeQuery = useAxiomQuery({
     key: ["capabilities-dashboard", "runtime-status"],
     fetch: (signal) => fetchRuntimeStatus({ signal }),
     enabled,
     staleTime: 15_000,
   }).query;
 
-  const backgroundQuery = useAtlasQuery({
+  const backgroundQuery = useAxiomQuery({
     key: ["capabilities-dashboard", "background-status"],
     fetch: (signal) => fetchAdminBackgroundStatus({ signal }),
     enabled,

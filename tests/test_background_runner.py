@@ -45,7 +45,7 @@ class FakeStore:
 
 class DrainQueuedBatchTests(unittest.TestCase):
     def test_drains_item_and_marks_succeeded(self) -> None:
-        from atlas.services.background_runner import drain_queued_batch, WorkItemResult
+        from axiom.services.background_runner import drain_queued_batch, WorkItemResult
 
         store = FakeStore(
             [
@@ -74,7 +74,7 @@ class DrainQueuedBatchTests(unittest.TestCase):
         self.assertIn("INSERT", kinds)
 
     def test_failed_item_with_retries_goes_back_to_queued(self) -> None:
-        from atlas.services.background_runner import drain_queued_batch, WorkItemResult
+        from axiom.services.background_runner import drain_queued_batch, WorkItemResult
 
         store = FakeStore(
             [
@@ -103,7 +103,7 @@ class DrainQueuedBatchTests(unittest.TestCase):
         self.assertNotIn("background_dead_letters", sqls)
 
     def test_failed_item_at_max_attempts_routes_to_dead_letters(self) -> None:
-        from atlas.services.background_runner import drain_queued_batch, WorkItemResult
+        from axiom.services.background_runner import drain_queued_batch, WorkItemResult
 
         store = FakeStore(
             [
@@ -128,7 +128,7 @@ class DrainQueuedBatchTests(unittest.TestCase):
         self.assertIn("background_dead_letters", sqls)
 
     def test_handler_exception_maps_to_failed(self) -> None:
-        from atlas.services.background_runner import drain_queued_batch
+        from axiom.services.background_runner import drain_queued_batch
 
         store = FakeStore(
             [
@@ -153,7 +153,7 @@ class DrainQueuedBatchTests(unittest.TestCase):
         self.assertIn("kaboom", results[0].detail)
 
     def test_empty_queue_returns_empty_list(self) -> None:
-        from atlas.services.background_runner import drain_queued_batch
+        from axiom.services.background_runner import drain_queued_batch
 
         store = FakeStore([])
         results = drain_queued_batch(store=store, handler=lambda _: None, max_items=5)

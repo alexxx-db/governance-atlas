@@ -22,8 +22,8 @@ import unittest
 
 import pandas as pd
 
-from atlas.services import assets
-from atlas.services import atlas_metrics
+from axiom.services import assets
+from axiom.services import axiom_metrics
 
 
 def _inventory_row(**overrides) -> pd.Series:
@@ -125,11 +125,11 @@ class _WorkbenchStoreBase:
 
 class RequestRecordGapTests(unittest.TestCase):
     def test_placeholder_title_synthesized_from_tag_diff(self) -> None:
-        record = atlas_metrics._request_record(
+        record = axiom_metrics._request_record(
             {
                 "request_id": "REQ-TAGS",
                 "created_at": "2026-07-18 01:00:00",
-                "created_by": "skyler@entrada.ai",
+                "created_by": "abarreto@shorecp.com",
                 "status": "pending",
                 "uc_full_name": "main.finance.orders",
                 "new_comment": "Governance request",
@@ -139,7 +139,7 @@ class RequestRecordGapTests(unittest.TestCase):
         self.assertEqual(record["title"], "Tag change: orders")
 
     def test_placeholder_title_with_description_content(self) -> None:
-        record = atlas_metrics._request_record(
+        record = axiom_metrics._request_record(
             {
                 "request_id": "REQ-DESC",
                 "created_at": "2026-07-18 01:00:00",
@@ -153,7 +153,7 @@ class RequestRecordGapTests(unittest.TestCase):
         self.assertEqual(record["title"], "Governance review: orders")
 
     def test_title_priority_due_assignee_read_from_new_uc_tags(self) -> None:
-        record = atlas_metrics._request_record(
+        record = axiom_metrics._request_record(
             {
                 "request_id": "REQ-META",
                 "created_at": "2026-07-18 01:00:00",
@@ -177,7 +177,7 @@ class RequestRecordGapTests(unittest.TestCase):
         old_created = (
             dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=30)
         ).strftime("%Y-%m-%d %H:%M:%S")
-        record = atlas_metrics._request_record(
+        record = axiom_metrics._request_record(
             {
                 "request_id": "REQ-OLD",
                 "created_at": old_created,
@@ -192,7 +192,7 @@ class RequestRecordGapTests(unittest.TestCase):
         self.assertIn("7d default", record["sla"])
 
     def test_no_sla_fabricated_without_created_at(self) -> None:
-        record = atlas_metrics._request_record(
+        record = axiom_metrics._request_record(
             {
                 "request_id": "REQ-NOTS",
                 "status": "pending",
@@ -217,7 +217,7 @@ class WorkbenchMetricsGapTests(unittest.TestCase):
                 {
                     "request_id": "REQ-OVERDUE",
                     "created_at": old,
-                    "created_by": "skyler@entrada.ai",
+                    "created_by": "abarreto@shorecp.com",
                     "status": "pending",
                     "uc_full_name": "main.finance.orders",
                     "new_comment": "Assign owner: needs review",
@@ -225,7 +225,7 @@ class WorkbenchMetricsGapTests(unittest.TestCase):
                 {
                     "request_id": "REQ-FRESH",
                     "created_at": fresh,
-                    "created_by": "skyler@entrada.ai",
+                    "created_by": "abarreto@shorecp.com",
                     "status": "pending",
                     "uc_full_name": "main.finance.invoices",
                     "new_comment": "Certify: ready for review",
@@ -233,25 +233,25 @@ class WorkbenchMetricsGapTests(unittest.TestCase):
                 {
                     "request_id": "REQ-DONE",
                     "created_at": resolved_created,
-                    "created_by": "skyler@entrada.ai",
+                    "created_by": "abarreto@shorecp.com",
                     "status": "approved",
                     "uc_full_name": "main.finance.orders",
                     "new_comment": "Update description: done",
                     "reviewed_at": resolved_reviewed,
-                    "reviewed_by": "steward@entrada.ai",
+                    "reviewed_by": "steward@shorecp.com",
                 },
             ]
         )
 
     def test_overdue_items_metric_computed_from_default_sla(self) -> None:
-        payload = atlas_metrics.governance_workbench_payload(store=self._store())
+        payload = axiom_metrics.governance_workbench_payload(store=self._store())
         overdue = next(m for m in payload["metrics"] if m["key"] == "overdueItems")
         self.assertEqual(overdue["state"], "available")
         self.assertEqual(overdue["value"], 1)
         self.assertIn("7-day", overdue["reason"])
 
     def test_sla_performance_metric_median_resolution(self) -> None:
-        payload = atlas_metrics.governance_workbench_payload(store=self._store())
+        payload = axiom_metrics.governance_workbench_payload(store=self._store())
         sla = next(m for m in payload["metrics"] if m["key"] == "slaPerformance")
         self.assertEqual(sla["state"], "available")
         # 10d -> 8d ago is a 48h resolution window.
@@ -270,7 +270,7 @@ class WorkbenchMetricsGapTests(unittest.TestCase):
                 }
             ]
         )
-        payload = atlas_metrics.governance_workbench_payload(store=store)
+        payload = axiom_metrics.governance_workbench_payload(store=store)
         sla = next(m for m in payload["metrics"] if m["key"] == "slaPerformance")
         self.assertEqual(sla["state"], "unavailable")
         self.assertIsNone(sla["value"])
@@ -284,13 +284,13 @@ class RequestDetailCommentGapTests(unittest.TestCase):
             return {
                 "request_id": "REQ-COMMENTED",
                 "created_at": "2026-07-10 01:00:00",
-                "created_by": "skyler@entrada.ai",
+                "created_by": "abarreto@shorecp.com",
                 "status": "pending",
                 "uc_full_name": "main.finance.orders",
                 "new_comment": "description: Curated orders",
                 "new_uc_tags": {"domain": "Finance"},
                 "reviewed_at": "2026-07-11 02:00:00",
-                "reviewed_by": "steward@entrada.ai",
+                "reviewed_by": "steward@shorecp.com",
                 "review_note": "Looks good, expanding scope.",
             }
 
@@ -303,7 +303,7 @@ class RequestDetailCommentGapTests(unittest.TestCase):
                         "action": "request_commented",
                         "detail": "Comment recorded on REQ-COMMENTED",
                         "created_at": "2026-07-12 03:00:00",
-                        "actor_email": "steward@entrada.ai",
+                        "actor_email": "steward@shorecp.com",
                     },
                     {
                         "audit_id": "AUD-OTHER",
@@ -311,14 +311,14 @@ class RequestDetailCommentGapTests(unittest.TestCase):
                         "action": "metadata updated",
                         "detail": "Unrelated owner change",
                         "created_at": "2026-07-12 04:00:00",
-                        "actor_email": "someone@entrada.ai",
+                        "actor_email": "someone@shorecp.com",
                     },
                 ]
             )
 
     def test_comments_backed_by_review_note_and_request_audit_events(self) -> None:
         store = self._DetailStore([])
-        payload = atlas_metrics.governance_request_detail_payload(
+        payload = axiom_metrics.governance_request_detail_payload(
             store=store,
             request_id="REQ-COMMENTED",
         )

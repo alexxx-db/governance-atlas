@@ -1,5 +1,5 @@
 /* eslint-disable */
-/** Governance Atlas — root */
+/** Axiom — root */
 const { useState: uSR, useEffect: uER } = React;
 
 function App() {

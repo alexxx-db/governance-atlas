@@ -8,7 +8,7 @@ import { normalizeStatus } from "./statusContract";
  *   skeleton               = loading
  *   "—" + reason           = unavailable (honest, never fake data)
  *   banner strip           = degraded / stale
- * `ForQuery` consumes the Wave-A2 `useAtlasQuery` status contract directly
+ * `ForQuery` consumes the Wave-A2 `useAxiomQuery` status contract directly
  * so surfaces stop hand-interpreting envelope states (the 10-12 divergent
  * renderings in FRONTEND_BLUEPRINT §3.3 die at their consumers' waves).
  */
@@ -23,13 +23,13 @@ export function LoadingState({ variant = "card", lines, label = "Loading", class
   const count = Number.isInteger(lines) && lines > 0 ? lines : SKELETON_VARIANTS[kind];
   return (
     <div
-      className={`ga-sys-loading is-${kind} ${className}`.trim()}
+      className={`ax-sys-loading is-${kind} ${className}`.trim()}
       role="status"
       aria-live="polite"
       aria-label={label}
     >
       {Array.from({ length: count }, (_, index) => (
-        <span key={index} className="ga-sys-skeleton" aria-hidden="true" />
+        <span key={index} className="ax-sys-skeleton" aria-hidden="true" />
       ))}
     </div>
   );
@@ -43,15 +43,15 @@ export function EmptyState({
   className = "",
 }) {
   return (
-    <div className={`ga-sys-empty-state ${className}`.trim()}>
+    <div className={`ax-sys-empty-state ${className}`.trim()}>
       {icon ? (
-        <span className="ga-sys-empty-state-icon" aria-hidden="true">
+        <span className="ax-sys-empty-state-icon" aria-hidden="true">
           {icon}
         </span>
       ) : null}
       <h3>{title}</h3>
       {body ? <p>{body}</p> : null}
-      {action ? <div className="ga-sys-empty-state-action">{action}</div> : null}
+      {action ? <div className="ax-sys-empty-state-action">{action}</div> : null}
     </div>
   );
 }
@@ -64,12 +64,12 @@ export function UnavailableState({
   className = "",
 }) {
   return (
-    <div className={`ga-sys-unavailable ${className}`.trim()} role="status">
+    <div className={`ax-sys-unavailable ${className}`.trim()} role="status">
       {/* "—" is the one honest-unavailability glyph (COHESION law #3) */}
-      <span className="ga-sys-unavailable-glyph" aria-hidden="true">
+      <span className="ax-sys-unavailable-glyph" aria-hidden="true">
         —
       </span>
-      <div className="ga-sys-unavailable-copy">
+      <div className="ax-sys-unavailable-copy">
         <h3>{title}</h3>
         <p>{reason || "This signal is unavailable for the current visibility scope."}</p>
       </div>
@@ -97,11 +97,11 @@ export function StatusBanner({
     message || (items.length ? items.join(" ") : "Some live signals are unavailable for the current visibility scope.");
   return (
     <div
-      className={`ga-sys-status-banner tone-${tone} ${className}`.trim()}
+      className={`ax-sys-status-banner tone-${tone} ${className}`.trim()}
       // danger banners must interrupt AT; informational ones must not.
       role={tone === "danger" ? "alert" : "status"}
     >
-      <div className="ga-sys-status-banner-copy">
+      <div className="ax-sys-status-banner-copy">
         {title ? <strong>{title}</strong> : null}
         <span>{body}</span>
       </div>
@@ -183,7 +183,7 @@ export function ForQuery({
   }
   if (status === "hydrating") {
     return (
-      <div className="ga-sys-hydrating" aria-busy="true">
+      <div className="ax-sys-hydrating" aria-busy="true">
         {content}
       </div>
     );
