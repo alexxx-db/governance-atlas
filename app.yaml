@@ -7,7 +7,7 @@
 # per-target values resolved from databricks.yml (the Databricks Apps platform
 # reads env vars only from app.yaml in the deployed source code; the
 # databricks_app Terraform resource has no config/env attribute, so values in
-# databricks.yml under resources.apps.atlas.config.env never reach the running
+# databricks.yml under resources.apps.axiom.config.env never reach the running
 # app via `databricks bundle deploy` alone).
 
 command:
@@ -17,47 +17,51 @@ command:
 env:
   - name: DATABRICKS_WAREHOUSE_ID
     valueFrom: "sql-warehouse"
-  - name: GOVAT_CATALOG
+  - name: AXIOM_CATALOG
     value: "main"
-  - name: GOVAT_SCHEMA
-    value: "governance_atlas"
-  - name: GOVAT_DISCOVERY_CATALOGS
+  - name: AXIOM_SCHEMA
+    value: "axiom"
+  - name: AXIOM_DISCOVERY_CATALOGS
     value: ""
-  - name: GOVAT_ADMIN_EMAILS
+  - name: AXIOM_ADMIN_EMAILS
     value: ""
-  - name: GOVAT_ENVIRONMENT_LABEL
+  - name: AXIOM_ENVIRONMENT_LABEL
     value: ""
-  - name: GOVAT_DEPLOY_TARGET
+  - name: AXIOM_DEPLOY_TARGET
     value: ""
-  - name: GOVAT_ATLAS_AI_PROVIDER
+  - name: AXIOM_AI_PROVIDER
     value: "local"
-  - name: GOVAT_GENIE_SPACE_ID
+  - name: AXIOM_GENIE_SPACE_ID
     value: "not-configured"
-  - name: GOVAT_GENIE_SPACE_TITLE
-    value: "Governance Atlas Metadata Room"
-  - name: GOVAT_ATLAS_AI_REQUIRE_BENCHMARK
+  - name: AXIOM_GENIE_SPACE_TITLE
+    value: "Axiom Metadata Room"
+  - name: AXIOM_AI_REQUIRE_BENCHMARK
     value: "false"
-  - name: GOVAT_LAKEBASE_ENABLED
+  - name: AXIOM_LAKEBASE_ENABLED
     value: "false"
-  - name: GOVAT_LAKEBASE_ENDPOINT_NAME
+  - name: AXIOM_LAKEBASE_ENDPOINT_NAME
     value: "not-configured"
-  - name: GOVAT_LAKEBASE_SCHEMA
-    value: "atlas_app"
-  - name: GOVAT_LAKEBASE_UC_CATALOG
+  - name: AXIOM_LAKEBASE_SCHEMA
+    value: "axiom_app"
+  - name: AXIOM_LAKEBASE_UC_CATALOG
     value: "not-configured"
-  - name: GOVAT_AI_GENERATION_ENDPOINT
-    value: "databricks-claude-opus-4-8"
-  - name: GOVAT_LINEAGE_LOOKBACK_DAYS
-    value: "365"
-  - name: GOVAT_AI_FEATURES_ENABLED
+  - name: AXIOM_AI_GENERATION_ENDPOINT
+    value: "databricks-claude-sonnet-4-6"
+  - name: AXIOM_LINEAGE_LOOKBACK_DAYS
+    value: "90"
+  - name: AXIOM_EMET_CATALOG
+    value: ""
+  - name: AXIOM_SCHEMA_BOOTSTRAP
+    value: "auto"
+  - name: AXIOM_AI_FEATURES_ENABLED
     value: "false"
-  - name: GOVAT_AI_INTAKE_TAG_KEY
+  - name: AXIOM_AI_INTAKE_TAG_KEY
     value: "edw_intake_id"
-  - name: GOVAT_AI_TIER_TAG_KEY
+  - name: AXIOM_AI_TIER_TAG_KEY
     value: "ai_risk_tier"
-  - name: GOVAT_AI_CATALOG_ALLOWLIST
+  - name: AXIOM_AI_CATALOG_ALLOWLIST
     value: ""
-  - name: GOVAT_AI_TOOL_SCHEMA_ALLOWLIST
+  - name: AXIOM_AI_TOOL_SCHEMA_ALLOWLIST
     value: ""
-  - name: GOVAT_AI_INTAKE_GRACE_DAYS
+  - name: AXIOM_AI_INTAKE_GRACE_DAYS
     value: "30"

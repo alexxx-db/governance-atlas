@@ -3,7 +3,7 @@
  *
  * Ports the bootstrap/runtime-status merging that used to live inline in the
  * 1,172-line App.jsx (identity overlay, capability merge, effective boot
- * state, seed-asset derivation, Atlas AI availability, diagnostics gating)
+ * state, seed-asset derivation, Axiom AI availability, diagnostics gating)
  * into one hook consumed by AppShell and exposed to surfaces via
  * ShellContext. What deliberately did NOT survive the port:
  *
@@ -195,22 +195,22 @@ export function useShellRuntime({ surface = "home", assetFqn = "" } = {}) {
   const effectiveBootMessage =
     effectiveBootState === "live" && hasRenderableCatalogSeed ? "" : refreshError || bootMessage;
 
-  /* ---- Atlas AI availability (honest gate: shell must report a configured
+  /* ---- Axiom AI availability (honest gate: shell must report a configured
      evidence-backed endpoint; never fabricate availability) ---- */
 
-  const atlasAiAvailableStates = new Set(["available", "ready", "enabled", "configured", "live"]);
-  const atlasAiProviderState = String(shell?.ai?.state || "").trim().toLowerCase();
-  const atlasAiProviderName = String(shell?.ai?.provider || "").trim().toLowerCase();
-  const atlasAiProviderAuthoritative = !isNonAuthoritativeMockEvidence(shell?.ai, atlasAiProviderName);
-  const atlasAiAvailable =
+  const axiomAiAvailableStates = new Set(["available", "ready", "enabled", "configured", "live"]);
+  const axiomAiProviderState = String(shell?.ai?.state || "").trim().toLowerCase();
+  const axiomAiProviderName = String(shell?.ai?.provider || "").trim().toLowerCase();
+  const axiomAiProviderAuthoritative = !isNonAuthoritativeMockEvidence(shell?.ai, axiomAiProviderName);
+  const axiomAiAvailable =
     effectiveBootState === "live" &&
-    atlasAiProviderAuthoritative &&
-    atlasAiAvailableStates.has(atlasAiProviderState);
-  const atlasAiUnavailableReason =
+    axiomAiProviderAuthoritative &&
+    axiomAiAvailableStates.has(axiomAiProviderState);
+  const axiomAiUnavailableReason =
     (typeof shell?.ai?.message === "string" && shell.ai.message.trim()) ||
     (effectiveBootState !== "live"
-      ? "Atlas AI is waiting for the live metadata runtime before it can answer questions."
-      : "Atlas AI requires a configured evidence-backed endpoint before it can answer questions.");
+      ? "Axiom AI is waiting for the live metadata runtime before it can answer questions."
+      : "Axiom AI requires a configured evidence-backed endpoint before it can answer questions.");
 
   /* ---- shell chrome state ---- */
 
@@ -259,9 +259,9 @@ export function useShellRuntime({ surface = "home", assetFqn = "" } = {}) {
     diagnosticsRecovery,
     setupReadiness,
     refreshDiagnostics,
-    // Atlas AI
-    atlasAiAvailable,
-    atlasAiUnavailableReason,
+    // Axiom AI
+    axiomAiAvailable,
+    axiomAiUnavailableReason,
     // chrome
     shellDisabled,
     shellDisabledReason,

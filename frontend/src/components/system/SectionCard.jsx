@@ -28,19 +28,19 @@ export function SectionCard({
 
   return (
     <section
-      className={`ga-sys-section-card ${busy ? "is-hydrating" : ""} ${className}`.trim()}
+      className={`ax-sys-section-card ${busy ? "is-hydrating" : ""} ${className}`.trim()}
       aria-busy={busy || undefined}
       data-status={norm?.status || undefined}
     >
-      <header className="ga-sys-section-card-header">
+      <header className="ax-sys-section-card-header">
         <div>
-          {eyebrow ? <div className="ga-sys-eyebrow">{eyebrow}</div> : null}
+          {eyebrow ? <div className="ax-sys-eyebrow">{eyebrow}</div> : null}
           <h2>
             <span>{title}</span>
             {tooltip ? (
               <button
                 aria-label={`${title}: ${tooltip}`}
-                className="ga-sys-info-tip"
+                className="ax-sys-info-tip"
                 title={tooltip}
                 type="button"
               >
@@ -48,13 +48,13 @@ export function SectionCard({
               </button>
             ) : null}
           </h2>
-          {subtitle ? <p className="ga-sys-section-card-subtitle">{subtitle}</p> : null}
+          {subtitle ? <p className="ax-sys-section-card-subtitle">{subtitle}</p> : null}
         </div>
-        {actions ? <div className="ga-sys-section-card-actions">{actions}</div> : null}
+        {actions ? <div className="ax-sys-section-card-actions">{actions}</div> : null}
       </header>
       {children}
       {degraded || unavailable ? (
-        <p className={`ga-sys-section-card-footnote tone-${unavailable ? "bad" : "warn"}`} role="status">
+        <p className={`ax-sys-section-card-footnote tone-${unavailable ? "bad" : "warn"}`} role="status">
           {norm.reason ||
             (unavailable
               ? "This section is unavailable for the current visibility scope."

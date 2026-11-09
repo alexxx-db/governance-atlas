@@ -140,7 +140,7 @@ export function workItemFullId(item = {}) {
 
 export function workItemDisplayId(item = {}) {
   const requestId = textValue(item.requestId || item.id, "—");
-  const evidenceMatch = requestId.match(/^(?:ga-home-evidence|GOV-HOME-EVIDENCE)-request-(\d+)$/i);
+  const evidenceMatch = requestId.match(/^(?:ax-home-evidence|GOV-HOME-EVIDENCE)-request-(\d+)$/i);
   if (evidenceMatch) return `GOV-${evidenceMatch[1]}`;
   if (requestId.length > 14) {
     // Long store ids (UUID-shaped) compress to GOV-XXXXXXXX from the first
@@ -239,7 +239,7 @@ export function hasNonAuthoritativeWorkItemMarker(...values) {
     })
     .join(" ")
     .toLowerCase();
-  return /prototype|mock|fixture|validation[_\s-]*seed|validation sample|home[_\s-]*northstar[_\s-]*seed|home[_\s-]*evidence[_\s-]*plane|ga[_\s-]*home[_\s-]*seed/.test(
+  return /prototype|mock|fixture|validation[_\s-]*seed|validation sample|home[_\s-]*northstar[_\s-]*seed|home[_\s-]*evidence[_\s-]*plane|ax[_\s-]*home[_\s-]*seed/.test(
     haystack,
   );
 }
@@ -553,7 +553,7 @@ export function openingEvidenceFacts(item = {}) {
 
 /**
  * Patch one request inside a workbench payload (optimistic update for
- * useAtlasMutation). Handles both the bare `{requests}` shape and the
+ * useAxiomMutation). Handles both the bare `{requests}` shape and the
  * envelope `{data: {requests}}` shape without mutating the original.
  */
 export function patchWorkbenchRequests(payload, requestId, patch) {

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Write backed Governance Atlas quality evidence in Databricks.
+"""Write backed Axiom quality evidence in Databricks.
 
 This script computes metrics from real Unity Catalog representative enterprise views and writes the
 resulting quality suite, cases, run, result, alert, and audit rows to the app
@@ -19,14 +19,14 @@ from dataclasses import dataclass
 from typing import Any, Iterable
 
 
-DEFAULT_PROFILE = os.getenv("ATLAS_PROFILE", "DEFAULT")
+DEFAULT_PROFILE = os.getenv("AXIOM_PROFILE", "DEFAULT")
 DEFAULT_WAREHOUSE_ID = os.getenv("BUNDLE_VAR_warehouse_id") or os.getenv("DATABRICKS_WAREHOUSE_ID") or ""
-DEFAULT_CATALOG = "datapact"
-DEFAULT_STORE_SCHEMA = "atlas"
+DEFAULT_CATALOG = "emet"
+DEFAULT_STORE_SCHEMA = "axiom"
 DEFAULT_DEMO_SCHEMA = "enterprise_metadata_ops"
 SEED_PREFIX = "GOV-QUALITY-EVIDENCE"
-LEGACY_SEED_PREFIX = "ga-quality-evidence"
-SEED_ACTOR = "metadata.quality@entrada.ai"
+LEGACY_SEED_PREFIX = "ax-quality-evidence"
+SEED_ACTOR = "metadata.quality@shorecp.com"
 SEED_SOURCE = "quality-control-plane"
 LEGACY_SEED_SOURCE = "quality-northstar-seed"
 RUN_ID = f"{SEED_PREFIX}-run-current"
@@ -352,7 +352,7 @@ INSERT INTO {fq_name(store_catalog, store_schema, "quality_suites")}
 VALUES (
   {sql_string(SUITE_ID)},
   'Enterprise metadata quality evidence',
-  'Databricks-backed quality cases for the Governance Atlas development workspace.',
+  'Databricks-backed quality cases for the Axiom development workspace.',
   NULL,
   'active',
   current_timestamp(),
@@ -520,7 +520,7 @@ VALUES (
   'QA-20260502',
   {sql_string(SEED_ACTOR)},
   'admin',
-  'Databricks-backed quality run evidence recorded for Governance Atlas quality monitoring.',
+  'Databricks-backed quality run evidence recorded for Axiom quality monitoring.',
   current_timestamp(),
   {sql_string(SEED_ACTOR)},
   current_timestamp(),
@@ -564,7 +564,7 @@ def seed_statements(results: list[dict[str, Any]], args: argparse.Namespace) -> 
                 f"audit_id = {sql_string(SEED_PREFIX + '-audit-current')} "
                 f"OR audit_id = {sql_string(LEGACY_SEED_PREFIX + '-audit-current')} "
                 f"OR source IN ({sql_string(SEED_SOURCE)}, {sql_string(LEGACY_SEED_SOURCE)}) "
-                f"OR actor_email IN ({sql_string(SEED_ACTOR)}, {sql_string('quality-northstar-seed@entrada.ai')})"
+                f"OR actor_email IN ({sql_string(SEED_ACTOR)}, {sql_string('quality-northstar-seed@shorecp.com')})"
             ),
         ),
         definition_insert_sql(cases, store_catalog, store_schema),

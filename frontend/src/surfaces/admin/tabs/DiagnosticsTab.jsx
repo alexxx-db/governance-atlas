@@ -55,12 +55,12 @@ const SYSTEM_TABLE_KEYS = [
 
 function KvRow({ heading, value, tone = "neutral", hint = "" }) {
   return (
-    <div className="ga-admin-kv">
-      <span className="ga-admin-kv-label">{heading}</span>
-      <span className="ga-admin-kv-value">
+    <div className="ax-admin-kv">
+      <span className="ax-admin-kv-label">{heading}</span>
+      <span className="ax-admin-kv-value">
         <Badge tone={tone}>{value}</Badge>
       </span>
-      {hint ? <span className="ga-admin-kv-hint">{hint}</span> : null}
+      {hint ? <span className="ax-admin-kv-hint">{hint}</span> : null}
     </div>
   );
 }
@@ -78,11 +78,11 @@ function IdentitySection({ identity, capabilities }) {
 
   return (
     <SectionCard
-      className="ga-admin-card"
+      className="ax-admin-card"
       subtitle="Forwarded user, authorization mode, and read-path visibility scope"
       title="Identity and auth"
     >
-      <div className="ga-admin-kv-grid">
+      <div className="ax-admin-kv-grid">
         <KvRow heading="Actor email" value={actorEmail} />
         <KvRow
           heading="Authenticated user"
@@ -118,11 +118,11 @@ function RuntimeSection({ runtime, store, config }) {
   const client = runtime?.client || {};
   return (
     <SectionCard
-      className="ga-admin-card"
+      className="ax-admin-card"
       subtitle="Live Databricks SQL runtime, governance control-plane, and UC client metadata"
       title="Runtime and store"
     >
-      <div className="ga-admin-kv-grid">
+      <div className="ax-admin-kv-grid">
         <KvRow
           heading="Runtime state"
           hint={runtime?.message || ""}
@@ -220,13 +220,13 @@ function CapabilityTruthTable({ capabilities, bootstrap }) {
 
   return (
     <SectionCard
-      className="ga-admin-card"
+      className="ax-admin-card"
       subtitle="Runtime truth per request vs the conservative bootstrap signal. Where they disagree, the live runtime wins — bootstrap pessimism is a warm-up artifact, not product truth."
       title="Capability truth"
     >
       <DataTable
         caption="Capability truth flags"
-        className="ga-admin-capability-table"
+        className="ax-admin-capability-table"
         columns={columns}
         emptyMessage="The runtime did not report capability flags."
         rowKey="id"
@@ -239,14 +239,14 @@ function CapabilityTruthTable({ capabilities, bootstrap }) {
 function BackgroundSection({ background, error }) {
   if (error) {
     return (
-      <SectionCard className="ga-admin-card" title="Background work health">
+      <SectionCard className="ax-admin-card" title="Background work health">
         <StatusBanner message={error} title="Background status unavailable" tone="warning" />
       </SectionCard>
     );
   }
   if (!background) {
     return (
-      <SectionCard className="ga-admin-card" title="Background work health">
+      <SectionCard className="ax-admin-card" title="Background work health">
         <StatusBanner
           message="The background drainer has not reported a tick yet. If the app just started, refresh in a few seconds; the first drain pass runs on the 30-second interval."
           title="Not yet observed"
@@ -264,11 +264,11 @@ function BackgroundSection({ background, error }) {
   const lastError = drainer.lastError || "";
   return (
     <SectionCard
-      className="ga-admin-card"
+      className="ax-admin-card"
       subtitle="In-process drainer that claims queued work items every 30 seconds"
       title="Background work health"
     >
-      <div className="ga-admin-kv-grid">
+      <div className="ax-admin-kv-grid">
         <KvRow heading="Drainer running" tone={running ? "good" : "bad"} value={running ? "Yes" : "No"} />
         <KvRow
           heading="Last drain at"
@@ -324,13 +324,13 @@ function SystemTableHealth({ capabilities }) {
   ];
   return (
     <SectionCard
-      className="ga-admin-card"
+      className="ax-admin-card"
       subtitle="Reachability of the Databricks system tables that power discovery, lineage, and workload surfaces"
       title="System-table health"
     >
       <DataTable
         caption="System table reachability"
-        className="ga-admin-capability-table"
+        className="ax-admin-capability-table"
         columns={columns}
         rowKey="id"
         rows={rows}
@@ -355,14 +355,14 @@ function TruthCheckSection({ enabled }) {
 
   if (enabled && (truthQuery.status === "loading" || truthQuery.status === "hydrating") && !payload) {
     return (
-      <SectionCard className="ga-admin-card" title="Metastore truth check">
+      <SectionCard className="ax-admin-card" title="Metastore truth check">
         <LoadingState label="Running metastore truth check" variant="table" />
       </SectionCard>
     );
   }
   if (forbidden || truthQuery.status === "error") {
     return (
-      <SectionCard className="ga-admin-card" title="Metastore truth check">
+      <SectionCard className="ax-admin-card" title="Metastore truth check">
         <UnavailableState
           reason={
             forbidden
@@ -388,7 +388,7 @@ function TruthCheckSection({ enabled }) {
       key: "catalog",
       header: "Catalog",
       render: (row) => (
-        <span className="ga-admin-truth-catalog">
+        <span className="ax-admin-truth-catalog">
           <code>{row.catalog}</code>
           {/* All-zero catalogs are ambiguous (empty vs. missing grants);
               badge them so the zeros don't read as a broken pipeline. */}
@@ -417,7 +417,7 @@ function TruthCheckSection({ enabled }) {
       key: "drift",
       header: "Inventory drift",
       render: (row) => (
-        <span className={`ga-admin-truth-delta tone-${deltaTone(row.drift?.inventoryDelta)}`}>
+        <span className={`ax-admin-truth-delta tone-${deltaTone(row.drift?.inventoryDelta)}`}>
           {deltaLabel(row.drift?.inventoryDelta)}
         </span>
       ),
@@ -426,7 +426,7 @@ function TruthCheckSection({ enabled }) {
       key: "hidden",
       header: "Hidden by visibility",
       render: (row) => (
-        <span className={`ga-admin-truth-delta tone-${deltaTone(row.drift?.hiddenByVisibility)}`}>
+        <span className={`ax-admin-truth-delta tone-${deltaTone(row.drift?.hiddenByVisibility)}`}>
           {deltaLabel(row.drift?.hiddenByVisibility)}
         </span>
       ),
@@ -440,39 +440,39 @@ function TruthCheckSection({ enabled }) {
           Re-run truth check
         </Button>
       }
-      className="ga-admin-card"
+      className="ax-admin-card"
       subtitle="Authoritative counts from system.information_schema compared to what the inventory and visibility pipeline surfaced"
       title="Metastore truth check"
     >
-      <div aria-label="Truth check totals" className="ga-admin-summary-grid" role="group">
-        <div className="ga-admin-summary-tile">
+      <div aria-label="Truth check totals" className="ax-admin-summary-grid" role="group">
+        <div className="ax-admin-summary-tile">
           <small>Catalogs</small>
           <strong>{numberValue(metastore.catalogTotal)}</strong>
           <span>in metastore (excl. hidden)</span>
         </div>
-        <div className="ga-admin-summary-tile">
+        <div className="ax-admin-summary-tile">
           <small>Schemas</small>
           <strong>{numberValue(metastore.schemaTotalForDiscovery)}</strong>
           <span>across discovery catalogs</span>
         </div>
-        <div className="ga-admin-summary-tile">
+        <div className="ax-admin-summary-tile">
           <small>Tables</small>
           <strong>{numberValue(metastore.tableTotalForDiscovery)}</strong>
           <span>across discovery catalogs</span>
         </div>
-        <div className="ga-admin-summary-tile">
+        <div className="ax-admin-summary-tile">
           <small>UI inventory</small>
           <strong>{numberValue(ui.inventoryTotal)}</strong>
           <span>before visibility filters</span>
         </div>
-        <div className="ga-admin-summary-tile">
+        <div className="ax-admin-summary-tile">
           <small>UI visible</small>
           <strong>{numberValue(ui.visibleTotal)}</strong>
           <span>after visibility filters</span>
         </div>
-        <div className="ga-admin-summary-tile">
+        <div className="ax-admin-summary-tile">
           <small>Drift</small>
-          <strong className={`ga-admin-truth-delta tone-${deltaTone(drift.inventoryDelta)}`}>
+          <strong className={`ax-admin-truth-delta tone-${deltaTone(drift.inventoryDelta)}`}>
             {deltaLabel(drift.inventoryDelta)}
           </strong>
           <span>metastore − inventory</span>
@@ -485,7 +485,7 @@ function TruthCheckSection({ enabled }) {
         <StatusBanner key={warning} message={warning} tone="warning" />
       ))}
 
-      <p className="ga-admin-truth-meta">
+      <p className="ax-admin-truth-meta">
         Observed <strong>{humanTimestamp(data.observedAt)}</strong> · Discovery catalogs:{" "}
         {discoveryCatalogs.length ? (
           discoveryCatalogs.map((catalog) => <code key={catalog}>{catalog}</code>)
@@ -496,11 +496,11 @@ function TruthCheckSection({ enabled }) {
 
       <DataTable
         caption="Per-catalog metastore vs UI comparison"
-        className="ga-admin-truth-table"
+        className="ax-admin-truth-table"
         columns={catalogColumns}
         emptyState={
           <UnavailableState
-            reason="The truth-check returned an empty per-catalog breakdown. Configure GOVAT_DISCOVERY_CATALOGS or grant the app principal access to system.information_schema."
+            reason="The truth-check returned an empty per-catalog breakdown. Configure AXIOM_DISCOVERY_CATALOGS or grant the app principal access to system.information_schema."
             title="No catalog rows reported"
           />
         }
@@ -509,7 +509,7 @@ function TruthCheckSection({ enabled }) {
       />
 
       <details
-        className="ga-admin-truth-queries"
+        className="ax-admin-truth-queries"
         onToggle={(event) => setShowSql(event.currentTarget.open)}
         open={showSql}
       >
@@ -527,13 +527,13 @@ function TruthCheckSection({ enabled }) {
                 </span>
               </header>
               <pre>{entry.sql || ""}</pre>
-              {entry.error ? <p className="ga-admin-truth-query-error">{entry.error}</p> : null}
+              {entry.error ? <p className="ax-admin-truth-query-error">{entry.error}</p> : null}
             </li>
           ))}
         </ul>
       </details>
 
-      <p className="ga-admin-truth-state" data-state={text(meta.state)}>
+      <p className="ax-admin-truth-state" data-state={text(meta.state)}>
         Truth-check state: <strong>{stateText(meta.state || "available")}</strong>
         {meta.reason ? <span> · {meta.reason}</span> : null}
       </p>
@@ -559,9 +559,9 @@ export function DiagnosticsTab({ canReadAdmin, bootstrap }) {
   } = dashboard;
 
   return (
-    <div className="ga-admin-tab-body" id="ga-admin-panel-diagnostics" role="tabpanel">
-      <div className="ga-admin-diagnostics-toolbar">
-        <p className="ga-admin-diagnostics-note">
+    <div className="ax-admin-tab-body" id="ax-admin-panel-diagnostics" role="tabpanel">
+      <div className="ax-admin-diagnostics-toolbar">
+        <p className="ax-admin-diagnostics-note">
           Read-only snapshot of what the live runtime says the app can do, sourced from{" "}
           <code>/api/runtime/status</code> and <code>/api/admin/background/status</code>. Every value
           is a truthful mirror of a server-side signal — no synthesized metrics.

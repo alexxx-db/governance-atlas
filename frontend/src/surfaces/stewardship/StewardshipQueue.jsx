@@ -39,7 +39,7 @@ function IdCell({ item, selectedId, onSelect }) {
     return (
       <EntityChip
         appearance="inline"
-        className="ga-stew-id-chip"
+        className="ax-stew-id-chip"
         entity={{ kind: "term", id: item.termId || item.title, label: item.termId || "Term" }}
       />
     );
@@ -49,7 +49,7 @@ function IdCell({ item, selectedId, onSelect }) {
     <span title={workItemFullId(item) || displayId}>
       <EntityChip
         appearance="inline"
-        className={`ga-stew-id-chip is-mono ${item.id === selectedId ? "is-selected" : ""}`.trim()}
+        className={`ax-stew-id-chip is-mono ${item.id === selectedId ? "is-selected" : ""}`.trim()}
         entity={{ kind: "request", id: displayId, label: displayId }}
         // Plain left-click focuses the detail panel while PRESERVING the
         // active lens/asset params; the href stays the canonical deep link.
@@ -72,14 +72,14 @@ export function StewardshipQueue({
   const columns = [
     {
       key: "select",
-      header: <span className="ga-sys-visually-hidden">Select</span>,
+      header: <span className="ax-sys-visually-hidden">Select</span>,
       width: "36px",
       render: (item) =>
         item.itemKind === "request" && item.requestId ? (
           <input
             aria-label={`Select ${workItemDisplayId(item)} for bulk actions`}
             checked={bulkSelection.has(item.id)}
-            className="ga-stew-bulk-checkbox"
+            className="ax-stew-bulk-checkbox"
             disabled={bulkDisabled}
             onChange={() => onToggleBulk?.(item.id)}
             type="checkbox"
@@ -97,7 +97,7 @@ export function StewardshipQueue({
       key: "item",
       header: "Item",
       render: (item) => (
-        <span className="ga-stew-item-cell">
+        <span className="ax-stew-item-cell">
           <strong>{item.kind}</strong>
           <small>{itemCaption(item)}</small>
         </span>
@@ -120,7 +120,7 @@ export function StewardshipQueue({
         item.assetFqn ? (
           <EntityChip
             appearance="inline"
-            className="ga-stew-asset-chip"
+            className="ax-stew-asset-chip"
             entity={{ kind: "asset", fqn: item.assetFqn }}
           />
         ) : (
@@ -168,7 +168,7 @@ export function StewardshipQueue({
   return (
     <DataTable
       caption="Governance work queue"
-      className="ga-stew-queue-table"
+      className="ax-stew-queue-table"
       columns={columns}
       density="compact"
       emptyState={emptyState ?? <EmptyState title="No work items" body="Nothing in the queue matches this view." />}

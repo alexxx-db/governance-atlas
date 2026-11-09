@@ -36,13 +36,13 @@ export function StateBadge({ state = "" }) {
 /** Compact readiness KPI (replaces the legacy task-card SummaryCard). */
 export function SummaryTile({ label, value, state, note }) {
   return (
-    <div className="ga-shell-readiness-tile">
-      <div className="ga-shell-readiness-tile-head">
+    <div className="ax-shell-readiness-tile">
+      <div className="ax-shell-readiness-tile-head">
         <StateBadge state={state} />
-        <span className="ga-shell-readiness-tile-value">{value}</span>
+        <span className="ax-shell-readiness-tile-value">{value}</span>
       </div>
-      <div className="ga-shell-readiness-tile-label">{label}</div>
-      {note ? <p className="ga-shell-readiness-note">{note}</p> : null}
+      <div className="ax-shell-readiness-tile-label">{label}</div>
+      {note ? <p className="ax-shell-readiness-note">{note}</p> : null}
     </div>
   );
 }
@@ -50,9 +50,9 @@ export function SummaryTile({ label, value, state, note }) {
 /** Label/value rows (replaces the legacy attribute-list markup). */
 export function AttributeList({ items = [] }) {
   return (
-    <dl className="ga-shell-attr-list">
+    <dl className="ax-shell-attr-list">
       {items.map((item) => (
-        <div className="ga-shell-attr-row" key={item.label}>
+        <div className="ax-shell-attr-row" key={item.label}>
           <dt>{item.label}</dt>
           <dd>{item.value}</dd>
         </div>
@@ -62,7 +62,7 @@ export function AttributeList({ items = [] }) {
 }
 
 function ChipRow({ children }) {
-  return <div className="ga-shell-chip-row">{children}</div>;
+  return <div className="ax-shell-chip-row">{children}</div>;
 }
 
 /**
@@ -73,22 +73,22 @@ function ChipRow({ children }) {
  */
 export function ReadinessList({ items = [] }) {
   return (
-    <div className="ga-shell-readiness-list">
+    <div className="ax-shell-readiness-list">
       {items.map((item, index) => (
         <article
-          className="ga-shell-readiness-item"
+          className="ax-shell-readiness-item"
           key={`${item.key || item.name || item.label || item.surface || "item"}:${index}`}
         >
-          <div className="ga-shell-readiness-item-topline">
-            <div className="ga-shell-readiness-item-copy">
-              <div className="ga-shell-readiness-item-title">
+          <div className="ax-shell-readiness-item-topline">
+            <div className="ax-shell-readiness-item-copy">
+              <div className="ax-shell-readiness-item-title">
                 {item.label || item.name || item.surface || "Step"}
               </div>
-              <div className="ga-shell-readiness-item-meta">
+              <div className="ax-shell-readiness-item-meta">
                 {item.summary || item.reason || item.rollout || item.source || ""}
               </div>
             </div>
-            <div className="ga-shell-chip-row">
+            <div className="ax-shell-chip-row">
               {typeof item.enabled === "boolean" ? (
                 <Badge tone="muted">{item.enabled ? "Enabled" : "Disabled"}</Badge>
               ) : null}
@@ -96,25 +96,25 @@ export function ReadinessList({ items = [] }) {
             </div>
           </div>
           {item.detail || item.description || item.effect ? (
-            <p className="ga-shell-readiness-note">{item.detail || item.description || item.effect}</p>
+            <p className="ax-shell-readiness-note">{item.detail || item.description || item.effect}</p>
           ) : null}
           {item.rationale ? (
-            <p className="ga-shell-readiness-note">
+            <p className="ax-shell-readiness-note">
               <strong>Rationale:</strong> {item.rationale}
             </p>
           ) : null}
           {item.proofSource ? (
-            <p className="ga-shell-readiness-note">
+            <p className="ax-shell-readiness-note">
               <strong>Proof source:</strong> {item.proofSource}
             </p>
           ) : null}
           {item.evidence ? (
-            <p className="ga-shell-readiness-note">
+            <p className="ax-shell-readiness-note">
               <strong>Evidence:</strong> {item.evidence}
             </p>
           ) : null}
           {item.remediation ? (
-            <p className="ga-shell-readiness-note">
+            <p className="ax-shell-readiness-note">
               <strong>Remediation:</strong> {item.remediation}
             </p>
           ) : null}

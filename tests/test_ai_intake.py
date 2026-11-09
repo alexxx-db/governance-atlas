@@ -12,7 +12,7 @@ from unittest.mock import patch
 
 from fastapi import HTTPException
 
-from atlas.ai import intake
+from axiom.ai import intake
 from test_ai_store import FakeGovernanceStore, FakeUC
 
 GOOD_CSV = """Intake ID,Title,Status,Owner,Vendor,Model,Tier,Approval Date,Cost Center
@@ -86,7 +86,7 @@ def _fake_runtime(role: str, uc: FakeUC) -> ModuleType:
 
 
 def _call(role: str, csv_text: str, mode: str, uc: FakeUC):
-    from atlas.api import ai as ai_api
+    from axiom.api import ai as ai_api
 
     request = SimpleNamespace(headers={"x-request-id": "req-1"}, state=SimpleNamespace(http_request_id="req-1"))
     with patch.dict(sys.modules, {"runtime_app": _fake_runtime(role, uc)}):
@@ -114,7 +114,7 @@ class IntakeImportApiTests(unittest.TestCase):
         self.assertEqual(audit.count("'ai.intake.ingested'"), 2)
         self.assertIn("'import'", audit)
         self.assertIn("'req-1'", audit)
-        self.assertTrue(any(sql.startswith("MERGE INTO `main`.`atlas`.`intake_records`") for sql in uc.executed))
+        self.assertTrue(any(sql.startswith("MERGE INTO `main`.`axiom`.`intake_records`") for sql in uc.executed))
 
     def test_commit_with_invalid_rows_is_rejected_whole(self) -> None:
         uc = FakeUC()

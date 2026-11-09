@@ -31,7 +31,7 @@ export function ColumnsTab({ asset, loading, highlightCol = "" }) {
       sortValue: (row) => row.name,
       render: (row) => (
         <span
-          className={`ga-asset-col-name ${highlight && row.name === highlight ? "is-highlight" : ""}`.trim()}
+          className={`ax-asset-col-name ${highlight && row.name === highlight ? "is-highlight" : ""}`.trim()}
         >
           {row.name}
         </span>
@@ -42,7 +42,7 @@ export function ColumnsTab({ asset, loading, highlightCol = "" }) {
       header: "Type",
       sortable: true,
       sortValue: (row) => row.type,
-      render: (row) => (row.type ? <code className="ga-asset-col-type">{row.type}</code> : null),
+      render: (row) => (row.type ? <code className="ax-asset-col-type">{row.type}</code> : null),
     },
     {
       key: "description",
@@ -66,7 +66,7 @@ export function ColumnsTab({ asset, loading, highlightCol = "" }) {
         const refs = links.map(termRef).filter(Boolean);
         if (!refs.length) return null;
         return (
-          <span className="ga-asset-chip-row">
+          <span className="ax-asset-chip-row">
             {refs.map((ref, index) => (
               <EntityChip key={ref.id || ref.label || index} entity={ref} appearance="inline" />
             ))}

@@ -23,9 +23,9 @@ from unittest.mock import patch
 
 import pandas as pd
 
-from atlas.api import admin
-from atlas.api import atlas as atlas_api
-from atlas.services import atlas_metrics
+from axiom.api import admin
+from axiom.api import axiom as axiom_api
+from axiom.services import axiom_metrics
 
 
 def _assets_df() -> pd.DataFrame:
@@ -43,7 +43,7 @@ def _assets_df() -> pd.DataFrame:
                 "sensitivity": "Confidential",
                 "criticality": "Critical",
                 "data_product": "Customer 360",
-                "business_owner": "skyler@entrada.ai",
+                "business_owner": "abarreto@shorecp.com",
             },
             {
                 "fqn": "main.finance.revenue",
@@ -77,7 +77,7 @@ def _noisy_audit_df() -> pd.DataFrame:
             "status": "success",
             "detail": "mirror upkeep",
             "created_at": f"2026-07-19 10:{index:02d}:00",
-            "actor_email": "app@entrada.ai",
+            "actor_email": "app@shorecp.com",
         }
         for index in range(15)
     ]
@@ -89,7 +89,7 @@ def _noisy_audit_df() -> pd.DataFrame:
             "status": "success",
             "detail": "Owner changed",
             "created_at": "2026-07-18 09:00:00",
-            "actor_email": "skyler@entrada.ai",
+            "actor_email": "abarreto@shorecp.com",
         },
         {
             "audit_id": "AUD-REAL-2",
@@ -98,7 +98,7 @@ def _noisy_audit_df() -> pd.DataFrame:
             "status": "success",
             "detail": "Certified",
             "created_at": "2026-07-17 09:00:00",
-            "actor_email": "skyler@entrada.ai",
+            "actor_email": "abarreto@shorecp.com",
         },
         {
             "audit_id": "AUD-REAL-3",
@@ -107,7 +107,7 @@ def _noisy_audit_df() -> pd.DataFrame:
             "status": "failed",
             "detail": "Review REQ-9",
             "created_at": "2026-07-16 09:00:00",
-            "actor_email": "skyler@entrada.ai",
+            "actor_email": "abarreto@shorecp.com",
         },
     ]
     return pd.DataFrame(internal + real)
@@ -136,7 +136,7 @@ class NoisyAuditStore:
 
 
 def _admin_payload(jobs=None, runtime=None):
-    return atlas_metrics.admin_control_center_payload(
+    return axiom_metrics.admin_control_center_payload(
         visible_assets=_assets_df(),
         store=NoisyAuditStore(),
         runtime=runtime
@@ -145,7 +145,7 @@ def _admin_payload(jobs=None, runtime=None):
             "catalogCount": 7,
             "client": {"authMode": "oauth-m2m-env", "warehouseId": "wh-123", "host": "https://dbc.example.com"},
         },
-        environment={"displayLabel": "Dev · datapact.atlas"},
+        environment={"displayLabel": "Dev · emet.axiom"},
         actor_role="admin",
         ai_status={"state": "available", "provider": "genie", "spaceId": "space-1"},
         jobs=jobs,
@@ -255,7 +255,7 @@ def _fake_job(job_id: int, name: str) -> SimpleNamespace:
 
 class JobInventoryTests(unittest.TestCase):
     def test_none_client_degrades_to_empty_inventory(self) -> None:
-        self.assertEqual(atlas_api._databricks_job_inventory(None), [])
+        self.assertEqual(axiom_api._databricks_job_inventory(None), [])
 
     def test_inventory_includes_latest_run_status(self) -> None:
         runs = _FakeRuns()
@@ -264,7 +264,7 @@ class JobInventoryTests(unittest.TestCase):
             list_runs=runs,
         )
         client = SimpleNamespace(w=SimpleNamespace(jobs=jobs_api))
-        rows = atlas_api._databricks_job_inventory(
+        rows = axiom_api._databricks_job_inventory(
             client,
             limit=12,
             include_latest_runs=True,
@@ -291,7 +291,7 @@ class JobInventoryTests(unittest.TestCase):
             list_runs=lambda job_id=None, limit=None: iter([]),
         )
         client = SimpleNamespace(w=SimpleNamespace(jobs=no_runs))
-        rows = atlas_api._databricks_job_inventory(
+        rows = axiom_api._databricks_job_inventory(
             client,
             limit=12,
             include_latest_runs=True,
@@ -312,7 +312,7 @@ class JobInventoryTests(unittest.TestCase):
             list_runs=lambda job_id=None, limit=None: iter([]),
         )
         client = SimpleNamespace(w=SimpleNamespace(jobs=jobs_api))
-        rows = atlas_api._databricks_job_inventory(
+        rows = axiom_api._databricks_job_inventory(
             client,
             limit=12,
             include_latest_runs=True,
@@ -327,8 +327,8 @@ class JobInventoryTests(unittest.TestCase):
         cfg = SimpleNamespace(
             deploy_target="Dev",
             environment_label="",
-            gov_catalog="datapact",
-            gov_schema="atlas",
+            gov_catalog="emet",
+            gov_schema="axiom",
             warehouse_id="wh-1",
             workspace_host="https://dbc.example.com",
         )
@@ -355,13 +355,13 @@ class JobInventoryTests(unittest.TestCase):
                 "client": {"authMode": "oauth-m2m-env", "warehouseId": "wh-1"},
             },
         ), patch.object(
-            atlas_api.genie_service,
+            axiom_api.genie_service,
             "provider_status",
             return_value={"state": "available", "provider": "genie", "spaceId": "space-1"},
         ):
             request = SimpleNamespace(headers={}, state=SimpleNamespace())
             # refresh=1 takes the synchronous load path (no SWR warm thread).
-            response = atlas_api.api_admin_control_center(request, refresh="1")
+            response = axiom_api.api_admin_control_center(request, refresh="1")
 
         self.assertEqual(response.status_code, 200)
         import json
@@ -387,7 +387,7 @@ class TruthCheckGapTests(unittest.TestCase):
     def setUp(self) -> None:
         admin._TRUTH_CACHE.clear()
 
-    def _payload(self, *, tables_df, schemas_df, inventory_df, visible_df, catalogs="datapact,ghost"):
+    def _payload(self, *, tables_df, schemas_df, inventory_df, visible_df, catalogs="emet,ghost"):
         fake_uc = _FakeUC(
             {
                 "system.information_schema.catalogs": pd.DataFrame([{"catalog_count": 7}]),
@@ -400,10 +400,10 @@ class TruthCheckGapTests(unittest.TestCase):
         fake_runtime_app._store = lambda: None
         fake_runtime_app._user_role_slug = lambda _request: "admin"
 
-        from atlas.services import assets as real_assets
+        from axiom.services import assets as real_assets
 
         with patch.dict(sys.modules, {"runtime_app": fake_runtime_app}), patch.dict(
-            "os.environ", {"GOVAT_DISCOVERY_CATALOGS": catalogs}, clear=False
+            "os.environ", {"AXIOM_DISCOVERY_CATALOGS": catalogs}, clear=False
         ), patch.object(
             real_assets, "inventory", lambda *_a, **_k: inventory_df
         ), patch.object(
@@ -413,24 +413,24 @@ class TruthCheckGapTests(unittest.TestCase):
 
     def test_all_zero_catalog_flagged_empty_or_unauthorized(self) -> None:
         payload = self._payload(
-            tables_df=pd.DataFrame([{"catalog": "datapact", "table_count": 5}]),
-            schemas_df=pd.DataFrame([{"catalog": "datapact", "schema_count": 2}]),
-            inventory_df=pd.DataFrame([{"table_catalog": "datapact"} for _ in range(5)]),
-            visible_df=pd.DataFrame([{"table_catalog": "datapact"} for _ in range(5)]),
+            tables_df=pd.DataFrame([{"catalog": "emet", "table_count": 5}]),
+            schemas_df=pd.DataFrame([{"catalog": "emet", "schema_count": 2}]),
+            inventory_df=pd.DataFrame([{"table_catalog": "emet"} for _ in range(5)]),
+            visible_df=pd.DataFrame([{"table_catalog": "emet"} for _ in range(5)]),
         )
         rows = {entry["catalog"]: entry for entry in payload["data"]["metastore"]["perCatalog"]}
         self.assertEqual(rows["ghost"]["state"], "empty-or-unauthorized")
         self.assertIn("app principal", rows["ghost"]["stateReason"])
-        self.assertEqual(rows["datapact"]["state"], "populated")
-        self.assertEqual(rows["datapact"]["stateReason"], "")
+        self.assertEqual(rows["emet"]["state"], "populated")
+        self.assertEqual(rows["emet"]["stateReason"], "")
 
     def test_drift_gets_explanatory_warning_without_degrading_state(self) -> None:
         payload = self._payload(
-            tables_df=pd.DataFrame([{"catalog": "datapact", "table_count": 8}]),
-            schemas_df=pd.DataFrame([{"catalog": "datapact", "schema_count": 2}]),
-            inventory_df=pd.DataFrame([{"table_catalog": "datapact"} for _ in range(5)]),
-            visible_df=pd.DataFrame([{"table_catalog": "datapact"} for _ in range(5)]),
-            catalogs="datapact",
+            tables_df=pd.DataFrame([{"catalog": "emet", "table_count": 8}]),
+            schemas_df=pd.DataFrame([{"catalog": "emet", "schema_count": 2}]),
+            inventory_df=pd.DataFrame([{"table_catalog": "emet"} for _ in range(5)]),
+            visible_df=pd.DataFrame([{"table_catalog": "emet"} for _ in range(5)]),
+            catalogs="emet",
         )
         self.assertEqual(payload["data"]["drift"]["inventoryDelta"], 3)
         warnings = payload["data"]["drift"]["warnings"]
@@ -441,11 +441,11 @@ class TruthCheckGapTests(unittest.TestCase):
 
     def test_zero_drift_emits_no_drift_warning(self) -> None:
         payload = self._payload(
-            tables_df=pd.DataFrame([{"catalog": "datapact", "table_count": 5}]),
-            schemas_df=pd.DataFrame([{"catalog": "datapact", "schema_count": 2}]),
-            inventory_df=pd.DataFrame([{"table_catalog": "datapact"} for _ in range(5)]),
-            visible_df=pd.DataFrame([{"table_catalog": "datapact"} for _ in range(5)]),
-            catalogs="datapact",
+            tables_df=pd.DataFrame([{"catalog": "emet", "table_count": 5}]),
+            schemas_df=pd.DataFrame([{"catalog": "emet", "schema_count": 2}]),
+            inventory_df=pd.DataFrame([{"table_catalog": "emet"} for _ in range(5)]),
+            visible_df=pd.DataFrame([{"table_catalog": "emet"} for _ in range(5)]),
+            catalogs="emet",
         )
         self.assertEqual(payload["data"]["drift"]["inventoryDelta"], 0)
         self.assertEqual(payload["data"]["drift"]["warnings"], [])

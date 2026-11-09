@@ -496,7 +496,7 @@ describe("LineagePage — focused /lineage/<fqn>", () => {
     renderLineage("/lineage/a.b.focus");
     expect(screen.getByText("Quality issues")).toBeTruthy();
     expect(screen.getAllByText("Unavailable").length).toBeGreaterThan(0);
-    expect(screen.queryByText("0 Atlas run(s) · DQM unavailable")).toBeNull();
+    expect(screen.queryByText("0 Axiom run(s) · DQM unavailable")).toBeNull();
   });
 
   it("surfaces backed Databricks quality and Lakeflow evidence in the impact inspector", () => {

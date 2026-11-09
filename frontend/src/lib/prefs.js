@@ -15,7 +15,7 @@
  *   - never throws.
  */
 
-const LOCAL_PREFIX = "ga.prefs.";
+const LOCAL_PREFIX = "ax.prefs.";
 const SESSION_PREFIX = "ga.session.";
 
 /**
@@ -78,7 +78,7 @@ const PREFS = {
         ? value.filter((item) => typeof item === "string" && item).slice(0, 12)
         : [],
   },
-  // Atlas AI dock layout: user-chosen size + maximize state, restored on
+  // Axiom AI dock layout: user-chosen size + maximize state, restored on
   // reopen/refresh. Bounds are enforced by the dock (min 320x360); the
   // normalizer only guards types so a corrupt value never breaks the dock.
   aiDockLayout: {
@@ -246,12 +246,12 @@ export function writeDiscoveryLayout(value) {
 
 /*
  * Profile avatar (Wave C8: moved here from UserChip so the storage guardrail
- * holds). The key is per-identity and predates the ga.prefs. namespace —
+ * holds). The key is per-identity and predates the ax.prefs. namespace —
  * kept verbatim so existing users' avatars survive.
  */
 function avatarKey(identity) {
   const id = String(identity || "workspace-user").trim().toLowerCase();
-  return `governance-atlas:profile-avatar:${id}`;
+  return `axiom:profile-avatar:${id}`;
 }
 
 export function readProfileAvatar(identity) {
@@ -269,7 +269,7 @@ export function writeProfileAvatar(identity, dataUrl) {
 /* ------------------------------------------------------------------ */
 /* Session caches (tab-scoped, TTL-bounded)                             */
 /*                                                                      */
-/* Used for ephemeral response caches (e.g. Atlas AI recommendations)   */
+/* Used for ephemeral response caches (e.g. Axiom AI recommendations)   */
 /* that should survive an in-tab remount but never a new session.       */
 /* ------------------------------------------------------------------ */
 

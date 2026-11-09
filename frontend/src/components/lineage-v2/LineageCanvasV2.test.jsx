@@ -29,6 +29,7 @@ vi.mock("@xyflow/react", () => {
     MarkerType: { ArrowClosed: "arrowclosed" },
     Position: { Left: "left", Right: "right" },
     ReactFlow,
+    ReactFlowProvider: ({ children }) => <>{children}</>,
     useReactFlow: () => ({ fitView: vi.fn() }),
     useUpdateNodeInternals: () => vi.fn(),
   };
@@ -37,11 +38,11 @@ vi.mock("@xyflow/react", () => {
 import { LineageCanvasV2 } from "./LineageCanvasV2";
 
 const baseGraph = {
-  focus: { id: "focus-a", fqn: "datapact.x.focus", isFocus: true, label: "focus" },
+  focus: { id: "focus-a", fqn: "emet.x.focus", isFocus: true, label: "focus" },
   nodes: [
     {
       id: "focus-a",
-      fqn: "datapact.x.focus",
+      fqn: "emet.x.focus",
       label: "focus",
       kind: "table",
       isFocus: true,
@@ -51,7 +52,7 @@ const baseGraph = {
     },
     {
       id: "u1",
-      fqn: "datapact.x.upstream",
+      fqn: "emet.x.upstream",
       label: "upstream",
       kind: "table",
       isFocus: false,
@@ -60,7 +61,7 @@ const baseGraph = {
     },
     {
       id: "u2",
-      fqn: "datapact.x.lineage_only",
+      fqn: "emet.x.lineage_only",
       label: "lineage_only",
       kind: "table",
       isFocus: false,
@@ -91,7 +92,7 @@ describe("LineageCanvasV2", () => {
     render(
       <LineageCanvasV2
         error=""
-        focusId="datapact.x.focus"
+        focusId="emet.x.focus"
         graph={{ focus: null, nodes: [], edges: [], columnEdges: [] }}
         hydrating={true}
         onFocusChange={() => {}}
@@ -109,10 +110,10 @@ describe("LineageCanvasV2", () => {
     render(
       <LineageCanvasV2
         error=""
-        focusId="datapact.x.focus"
+        focusId="emet.x.focus"
         graph={{
-          focus: { id: "focus-a", fqn: "datapact.x.focus", isFocus: true, label: "focus" },
-          nodes: [{ id: "focus-a", fqn: "datapact.x.focus", isFocus: true, label: "focus", kind: "table" }],
+          focus: { id: "focus-a", fqn: "emet.x.focus", isFocus: true, label: "focus" },
+          nodes: [{ id: "focus-a", fqn: "emet.x.focus", isFocus: true, label: "focus", kind: "table" }],
           edges: [],
           columnEdges: [],
         }}
@@ -128,10 +129,10 @@ describe("LineageCanvasV2", () => {
     render(
       <LineageCanvasV2
         error=""
-        focusId="datapact.x.focus"
+        focusId="emet.x.focus"
         graph={{
-          focus: { id: "focus-a", fqn: "datapact.x.focus", isFocus: true, label: "focus" },
-          nodes: [{ id: "focus-a", fqn: "datapact.x.focus", isFocus: true, label: "focus", kind: "table" }],
+          focus: { id: "focus-a", fqn: "emet.x.focus", isFocus: true, label: "focus" },
+          nodes: [{ id: "focus-a", fqn: "emet.x.focus", isFocus: true, label: "focus", kind: "table" }],
           edges: [],
           columnEdges: [],
         }}
@@ -153,7 +154,7 @@ describe("LineageCanvasV2", () => {
     render(
       <LineageCanvasV2
         error=""
-        focusId="datapact.x.focus"
+        focusId="emet.x.focus"
         graph={{
           ...baseGraph,
           meta: {
@@ -175,7 +176,7 @@ describe("LineageCanvasV2", () => {
     render(
       <LineageCanvasV2
         error="Asset not visible to actor"
-        focusId="datapact.x.focus"
+        focusId="emet.x.focus"
         graph={{ focus: null, nodes: [], edges: [], columnEdges: [] }}
         hydrating={false}
         onFocusChange={() => {}}
@@ -189,7 +190,7 @@ describe("LineageCanvasV2", () => {
     render(
       <LineageCanvasV2
         error=""
-        focusId="datapact.x.focus"
+        focusId="emet.x.focus"
         graph={baseGraph}
         hydrating={false}
         onFocusChange={() => {}}
@@ -204,7 +205,7 @@ describe("LineageCanvasV2", () => {
     render(
       <LineageCanvasV2
         error=""
-        focusId="datapact.x.focus"
+        focusId="emet.x.focus"
         graph={baseGraph}
         hydrating={false}
         onFocusChange={() => {}}
@@ -218,14 +219,14 @@ describe("LineageCanvasV2", () => {
     render(
       <LineageCanvasV2
         error=""
-        focusId="datapact.x.focus"
+        focusId="emet.x.focus"
         graph={baseGraph}
         hydrating={false}
         onFocusChange={onFocusChange}
       />,
     );
     fireEvent.click(screen.getByTestId("card-u1"));
-    expect(onFocusChange).toHaveBeenCalledWith("datapact.x.upstream");
+    expect(onFocusChange).toHaveBeenCalledWith("emet.x.upstream");
   });
 
   it("does NOT call onFocusChange for lineage-only (isOpenable=false) nodes", () => {
@@ -233,7 +234,7 @@ describe("LineageCanvasV2", () => {
     render(
       <LineageCanvasV2
         error=""
-        focusId="datapact.x.focus"
+        focusId="emet.x.focus"
         graph={baseGraph}
         hydrating={false}
         onFocusChange={onFocusChange}
@@ -245,11 +246,11 @@ describe("LineageCanvasV2", () => {
 
   it("keeps accumulated topology when the same FQN returns with a new focus node id", async () => {
     const nextGraph = {
-      focus: { id: "focus-upstream", fqn: "datapact.x.upstream", isFocus: true, label: "upstream" },
+      focus: { id: "focus-upstream", fqn: "emet.x.upstream", isFocus: true, label: "upstream" },
       nodes: [
         {
           id: "focus-upstream",
-          fqn: "datapact.x.upstream",
+          fqn: "emet.x.upstream",
           label: "upstream",
           kind: "table",
           isFocus: true,
@@ -257,7 +258,7 @@ describe("LineageCanvasV2", () => {
         },
         {
           id: "target-new",
-          fqn: "datapact.x.new_target",
+          fqn: "emet.x.new_target",
           label: "new_target",
           kind: "table",
           isOpenable: true,
@@ -269,7 +270,7 @@ describe("LineageCanvasV2", () => {
     const { rerender } = render(
       <LineageCanvasV2
         error=""
-        focusId="datapact.x.focus"
+        focusId="emet.x.focus"
         graph={baseGraph}
         hydrating={false}
         onFocusChange={() => {}}
@@ -278,7 +279,7 @@ describe("LineageCanvasV2", () => {
     rerender(
       <LineageCanvasV2
         error=""
-        focusId="datapact.x.upstream"
+        focusId="emet.x.upstream"
         graph={nextGraph}
         hydrating={false}
         onFocusChange={() => {}}
@@ -292,11 +293,11 @@ describe("LineageCanvasV2", () => {
   // Type filters (owner direction #2a): the legend chips toggle node kinds
   // and re-layout live; the direction segment scopes upstream/downstream.
   const mixedGraph = {
-    focus: { id: "focus-a", fqn: "datapact.x.focus", isFocus: true, label: "focus" },
+    focus: { id: "focus-a", fqn: "emet.x.focus", isFocus: true, label: "focus" },
     nodes: [
-      { id: "focus-a", fqn: "datapact.x.focus", label: "focus", kind: "table", isFocus: true, isOpenable: true },
-      { id: "up1", fqn: "datapact.x.upstream", label: "upstream", kind: "table", isOpenable: true },
-      { id: "job1", fqn: "datapact.x.job", label: "job", kind: "job", isOpenable: true },
+      { id: "focus-a", fqn: "emet.x.focus", label: "focus", kind: "table", isFocus: true, isOpenable: true },
+      { id: "up1", fqn: "emet.x.upstream", label: "upstream", kind: "table", isOpenable: true },
+      { id: "job1", fqn: "emet.x.job", label: "job", kind: "job", isOpenable: true },
     ],
     edges: [
       { id: "e-up", source: "up1", target: "focus-a", isRestricted: false },
@@ -307,7 +308,7 @@ describe("LineageCanvasV2", () => {
 
   it("hides a node kind when its legend chip is toggled off, then restores on reset", () => {
     render(
-      <LineageCanvasV2 error="" focusId="datapact.x.focus" graph={mixedGraph} hydrating={false} onFocusChange={() => {}} />,
+      <LineageCanvasV2 error="" focusId="emet.x.focus" graph={mixedGraph} hydrating={false} onFocusChange={() => {}} />,
     );
     expect(screen.getByTestId("rf-node-job1")).toBeTruthy();
     fireEvent.click(screen.getByTitle(/Hide Job nodes/i));
@@ -321,7 +322,7 @@ describe("LineageCanvasV2", () => {
 
   it("scopes to upstream when the Upstream direction is selected", () => {
     render(
-      <LineageCanvasV2 error="" focusId="datapact.x.focus" graph={mixedGraph} hydrating={false} onFocusChange={() => {}} />,
+      <LineageCanvasV2 error="" focusId="emet.x.focus" graph={mixedGraph} hydrating={false} onFocusChange={() => {}} />,
     );
     fireEvent.click(screen.getByTitle("Show upstream assets"));
     // Downstream job drops; upstream + focus stay.
@@ -340,13 +341,13 @@ describe("LineageCanvasV2", () => {
     render(
       <LineageCanvasV2
         error=""
-        focusId="datapact.x.focus"
+        focusId="emet.x.focus"
         graph={baseGraph}
         hydrating={false}
         onFocusChange={onFocusChange}
       />,
     );
     fireEvent.click(screen.getByTestId("card-focus-a"));
-    expect(onFocusChange).toHaveBeenCalledWith("datapact.x.focus");
+    expect(onFocusChange).toHaveBeenCalledWith("emet.x.focus");
   });
 });

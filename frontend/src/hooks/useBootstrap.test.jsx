@@ -2,7 +2,7 @@ import { renderHook, waitFor } from "@testing-library/react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { createAtlasQueryClient } from "../lib/queryClient";
+import { createAxiomQueryClient } from "../lib/queryClient";
 import { useBootstrap } from "./useBootstrap";
 
 const fetchBootstrapMock = vi.fn();
@@ -12,7 +12,7 @@ vi.mock("../lib/api", () => ({
 }));
 
 function createWrapper() {
-  const queryClient = createAtlasQueryClient();
+  const queryClient = createAxiomQueryClient();
   return function Wrapper({ children }) {
     return (
       <MemoryRouter future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
@@ -29,7 +29,7 @@ describe("useBootstrap", () => {
 
   beforeEach(() => {
     fetchBootstrapMock.mockReset();
-    window.__GOVAT_BOOTSTRAP__ = {
+    window.__AXIOM_BOOTSTRAP__ = {
       bootState: "live",
       shell: {
         userEmail: "qa@example.com",
@@ -138,7 +138,7 @@ describe("useBootstrap", () => {
   });
 
   it("preserves additive top-level capability flags through the seed and refresh path", async () => {
-    window.__GOVAT_BOOTSTRAP__ = {
+    window.__AXIOM_BOOTSTRAP__ = {
       bootState: "live",
       shell: {
         userEmail: "qa@example.com",
@@ -199,7 +199,7 @@ describe("useBootstrap", () => {
   });
 
   it("keeps polling route bootstrap payloads while the runtime is still loading", async () => {
-    window.__GOVAT_BOOTSTRAP__ = {
+    window.__AXIOM_BOOTSTRAP__ = {
       bootState: "loading",
       shell: {
         userEmail: "qa@example.com",

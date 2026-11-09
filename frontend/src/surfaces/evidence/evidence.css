@@ -1,22 +1,22 @@
 /*
  * surfaces/evidence/evidence.css — Evidence surface styles (Wave C5).
  * Convention mirrors surfaces/stewardship/stewardship.css: EvidencePage.jsx
- * imports this one file, all classes are `ga-evid-*`, all colors are
- * `--ga-*` tokens or token-derived translucents, zero hex, zero importance
+ * imports this one file, all classes are `ax-evid-*`, all colors are
+ * `--ax-*` tokens or token-derived translucents, zero hex, zero importance
  * overrides (check-css guardrails). The system kit carries table/tab/filter
  * chrome; this sheet only lays out the surface-specific composition.
  */
 
 /* ---------------------------------------------------------------- layout */
 
-.ga-evid-events,
-.ga-evid-quality {
+.ax-evid-events,
+.ax-evid-quality {
   display: grid;
   gap: 14px;
   min-width: 0;
 }
 
-.ga-evid-layout {
+.ax-evid-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
   gap: 16px;
@@ -25,12 +25,12 @@
 }
 
 @media (max-width: 1180px) {
-  .ga-evid-layout {
+  .ax-evid-layout {
     grid-template-columns: minmax(0, 1fr);
   }
 }
 
-.ga-evid-main {
+.ax-evid-main {
   display: grid;
   gap: 10px;
   min-width: 0;
@@ -38,21 +38,21 @@
 
 /* ---------------------------------------------------------------- KPIs */
 
-.ga-evid-kpis {
+.ax-evid-kpis {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
 }
 
 @media (max-width: 980px) {
-  .ga-evid-kpis {
+  .ax-evid-kpis {
     grid-template-columns: minmax(0, 1fr);
   }
 }
 
 /* ---------------------------------------------------------------- toolbar */
 
-.ga-evid-toolbar {
+.ax-evid-toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -60,71 +60,71 @@
   flex-wrap: wrap;
 }
 
-.ga-evid-export-actions {
+.ax-evid-export-actions {
   display: flex;
   gap: 8px;
 }
 
-.ga-evid-outcome-tally {
-  color: var(--ga-text-muted);
+.ax-evid-outcome-tally {
+  color: var(--ax-text-muted);
   font-size: 12px;
 }
 
-.ga-evid-filter-row {
+.ax-evid-filter-row {
   display: flex;
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
 }
 
-.ga-evid-filter-row .ga-sys-filter-bar {
+.ax-evid-filter-row .ax-sys-filter-bar {
   flex: 1 1 auto;
   min-width: 0;
 }
 
-.ga-evid-filter-note {
+.ax-evid-filter-note {
   display: flex;
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
   margin: 0;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   font-size: 12px;
 }
 
 /* ---------------------------------------------------------------- table cells */
 
-.ga-evid-id {
-  font-family: var(--ga-font-mono, ui-monospace, monospace);
+.ax-evid-id {
+  font-family: var(--ax-font-mono, ui-monospace, monospace);
   font-size: 12px;
-  color: var(--ga-text-strong, var(--ga-text));
+  color: var(--ax-text-strong, var(--ax-text));
   /* Copyable text: the anchor wrapper keeps default text selection. */
   user-select: text;
 }
 
-.ga-evid-id.is-selected {
-  color: var(--ga-bright-blue);
+.ax-evid-id.is-selected {
+  color: var(--ax-bright-blue);
   font-weight: 600;
 }
 
-.ga-evid-time {
-  font-family: var(--ga-font-mono, ui-monospace, monospace);
+.ax-evid-time {
+  font-family: var(--ax-font-mono, ui-monospace, monospace);
   font-size: 12px;
-  color: var(--ga-text-soft, var(--ga-text));
+  color: var(--ax-text-soft, var(--ax-text));
   white-space: nowrap;
 }
 
-.ga-evid-event-cell,
-.ga-evid-check-cell {
+.ax-evid-event-cell,
+.ax-evid-check-cell {
   display: grid;
   gap: 3px;
   justify-items: start;
   min-width: 0;
 }
 
-.ga-evid-event-cell small,
-.ga-evid-check-cell small {
-  color: var(--ga-text-muted);
+.ax-evid-event-cell small,
+.ax-evid-check-cell small {
+  color: var(--ax-text-muted);
   font-size: 11.5px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -133,8 +133,8 @@
   -webkit-box-orient: vertical;
 }
 
-.ga-evid-ref {
-  color: var(--ga-text-muted);
+.ax-evid-ref {
+  color: var(--ax-text-muted);
   font-size: 11.5px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -143,19 +143,19 @@
   -webkit-box-orient: vertical;
 }
 
-.ga-evid-ref.is-muted {
-  color: var(--ga-text-faint, var(--ga-text-muted));
+.ax-evid-ref.is-muted {
+  color: var(--ax-text-faint, var(--ax-text-muted));
   font-style: italic;
 }
 
-.ga-evid-target-plain {
-  color: var(--ga-text-soft, var(--ga-text));
+.ax-evid-target-plain {
+  color: var(--ax-text-soft, var(--ax-text));
   font-size: 12.5px;
 }
 
 /* ---------------------------------------------------------------- captions */
 
-.ga-evid-caption-row {
+.ax-evid-caption-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -163,97 +163,97 @@
   flex-wrap: wrap;
 }
 
-.ga-evid-caption {
+.ax-evid-caption {
   margin: 0;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   font-size: 12px;
 }
 
-.ga-evid-caption.is-truncation {
-  color: var(--ga-warning);
+.ax-evid-caption.is-truncation {
+  color: var(--ax-warning);
   font-weight: 600;
 }
 
-.ga-evid-provenance {
+.ax-evid-provenance {
   margin: 4px 0 0;
   padding-top: 10px;
-  border-top: 1px solid var(--ga-border-muted, var(--ga-border));
-  color: var(--ga-text-muted);
+  border-top: 1px solid var(--ax-border-muted, var(--ax-border));
+  color: var(--ax-text-muted);
   font-size: 12px;
 }
 
 /* ---------------------------------------------------------------- rail */
 
-.ga-evid-rail {
+.ax-evid-rail {
   min-width: 0;
   position: sticky;
   top: 12px;
 }
 
-.ga-evid-detail {
+.ax-evid-detail {
   display: grid;
   gap: 12px;
   padding: 14px;
-  border: 1px solid var(--ga-border);
-  border-radius: var(--ga-radius-lg);
-  background: var(--ga-surface);
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-radius-lg);
+  background: var(--ax-surface);
 }
 
-.ga-evid-detail-head {
+.ax-evid-detail-head {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 10px;
 }
 
-.ga-evid-detail-head h3 {
+.ax-evid-detail-head h3 {
   margin: 2px 0 0;
   font-size: 15px;
-  color: var(--ga-text-strong, var(--ga-text));
+  color: var(--ax-text-strong, var(--ax-text));
 }
 
-.ga-evid-detail-list {
+.ax-evid-detail-list {
   display: grid;
   gap: 8px;
   margin: 0;
 }
 
-.ga-evid-detail-list > div {
+.ax-evid-detail-list > div {
   display: grid;
   grid-template-columns: minmax(90px, 120px) minmax(0, 1fr);
   gap: 8px;
   align-items: baseline;
 }
 
-.ga-evid-detail-list dt {
-  color: var(--ga-text-muted);
+.ax-evid-detail-list dt {
+  color: var(--ax-text-muted);
   font-size: 11.5px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 
-.ga-evid-detail-list dd {
+.ax-evid-detail-list dd {
   margin: 0;
-  color: var(--ga-text);
+  color: var(--ax-text);
   font-size: 12.5px;
   overflow-wrap: anywhere;
 }
 
-.ga-evid-detail-sub {
+.ax-evid-detail-sub {
   display: block;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   font-size: 11px;
 }
 
-.ga-evid-run-block h4 {
+.ax-evid-run-block h4 {
   margin: 0 0 8px;
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
 }
 
-.ga-evid-run-actions {
+.ax-evid-run-actions {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -262,49 +262,49 @@
 
 /* -------------------------------------------------------------- diff view */
 
-.ga-evid-diff {
+.ax-evid-diff {
   display: grid;
   gap: 6px;
 }
 
-.ga-evid-diff p {
+.ax-evid-diff p {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 2px;
   margin: 0;
   padding: 8px 10px;
-  border: 1px solid var(--ga-border-muted, var(--ga-border));
-  border-radius: var(--ga-radius-md);
-  background: var(--ga-surface-muted, var(--ga-surface));
+  border: 1px solid var(--ax-border-muted, var(--ax-border));
+  border-radius: var(--ax-radius-md);
+  background: var(--ax-surface-muted, var(--ax-surface));
   font-size: 12px;
 }
 
-.ga-evid-diff strong {
-  color: var(--ga-text-strong, var(--ga-text));
-  font-family: var(--ga-font-mono, ui-monospace, monospace);
+.ax-evid-diff strong {
+  color: var(--ax-text-strong, var(--ax-text));
+  font-family: var(--ax-font-mono, ui-monospace, monospace);
   font-size: 11.5px;
 }
 
-.ga-evid-diff span {
-  color: var(--ga-danger);
+.ax-evid-diff span {
+  color: var(--ax-danger);
   text-decoration: line-through;
   overflow-wrap: anywhere;
 }
 
-.ga-evid-diff em {
-  color: var(--ga-success);
+.ax-evid-diff em {
+  color: var(--ax-success);
   font-style: normal;
   overflow-wrap: anywhere;
 }
 
-.ga-evid-diff-empty {
+.ax-evid-diff-empty {
   margin: 0;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   font-size: 12px;
   font-style: italic;
 }
 
-.ga-evid-detail-actions {
+.ax-evid-detail-actions {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
@@ -312,113 +312,113 @@
 
 /* ---------------------------------------------------------------- gates */
 
-.ga-evid-gate {
+.ax-evid-gate {
   margin-top: 8px;
 }
 
-/* ── DataPact validation-trust band (Quality findings tab) ───────────── */
-.ga-evid-datapact {
+/* ── emet validation-trust band (Quality findings tab) ───────────── */
+.ax-evid-emet {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 14px 24px;
   padding: 12px 16px;
   margin-bottom: 16px;
-  border: 1px solid var(--ga-border);
-  border-left: 3px solid var(--ga-bright-blue);
+  border: 1px solid var(--ax-border);
+  border-left: 3px solid var(--ax-bright-blue);
   border-radius: 12px;
-  background: var(--ga-surface-soft);
+  background: var(--ax-surface-soft);
 }
-.ga-evid-datapact-lead { display: flex; align-items: center; gap: 10px; flex: 1 1 300px; }
-.ga-evid-datapact-lead span { color: var(--ga-text-muted); font-size: 13px; }
-.ga-evid-datapact-stats { display: flex; flex-wrap: wrap; gap: 20px; }
-.ga-evid-datapact-stat { display: flex; flex-direction: column; gap: 2px; }
-.ga-evid-datapact-label { color: var(--ga-text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
-.ga-evid-datapact-stat strong { color: var(--ga-text-strong); font-size: 16px; font-weight: 700; }
-.ga-evid-datapact-stat strong.is-danger,
-.ga-evid-datapact-stat strong.is-unavailable { color: var(--ga-danger); }
-.ga-evid-datapact-stat strong.is-degraded { color: var(--ga-warning); }
-.ga-evid-datapact-stat strong.is-available { color: var(--ga-success); }
-.ga-evid-datapact-stat strong.is-pending { color: var(--ga-bright-blue); }
-.ga-evid-datapact-link {
+.ax-evid-emet-lead { display: flex; align-items: center; gap: 10px; flex: 1 1 300px; }
+.ax-evid-emet-lead span { color: var(--ax-text-muted); font-size: 13px; }
+.ax-evid-emet-stats { display: flex; flex-wrap: wrap; gap: 20px; }
+.ax-evid-emet-stat { display: flex; flex-direction: column; gap: 2px; }
+.ax-evid-emet-label { color: var(--ax-text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
+.ax-evid-emet-stat strong { color: var(--ax-text-strong); font-size: 16px; font-weight: 700; }
+.ax-evid-emet-stat strong.is-danger,
+.ax-evid-emet-stat strong.is-unavailable { color: var(--ax-danger); }
+.ax-evid-emet-stat strong.is-degraded { color: var(--ax-warning); }
+.ax-evid-emet-stat strong.is-available { color: var(--ax-success); }
+.ax-evid-emet-stat strong.is-pending { color: var(--ax-bright-blue); }
+.ax-evid-emet-link {
   margin-left: auto;
-  color: var(--ga-bright-blue);
+  color: var(--ax-bright-blue);
   font-size: 13px; font-weight: 600; text-decoration: none; white-space: nowrap;
 }
-.ga-evid-datapact-link:hover { text-decoration: underline; }
+.ax-evid-emet-link:hover { text-decoration: underline; }
 @media (max-width: 900px) {
-  .ga-evid-datapact-link { margin-left: 0; }
+  .ax-evid-emet-link { margin-left: 0; }
 }
 
 /* ── Classification / PII review queue (A9.4) ────────────────────────── */
-.ga-clsq {
+.ax-clsq {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
-.ga-clsq-toolbar {
+.ax-clsq-toolbar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 10px 20px;
 }
-.ga-clsq-lede {
+.ax-clsq-lede {
   margin: 0;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   font-size: 13px;
 }
-.ga-clsq-gate-note {
+.ax-clsq-gate-note {
   margin: 0;
   padding: 10px 14px;
-  border: 1px solid var(--ga-border);
-  border-left: 3px solid var(--ga-warning);
-  border-radius: var(--ga-radius-md);
-  background: var(--ga-surface-soft);
-  color: var(--ga-text-muted);
+  border: 1px solid var(--ax-border);
+  border-left: 3px solid var(--ax-warning);
+  border-radius: var(--ax-radius-md);
+  background: var(--ax-surface-soft);
+  color: var(--ax-text-muted);
   font-size: 13px;
 }
 /* The recommendation table can outgrow the surface; keep it scrolling in its
    own lane so the page body never scrolls sideways. */
-.ga-clsq .ga-sys-table-scroll,
-.ga-clsq .ga-sys-datatable {
+.ax-clsq .ax-sys-table-scroll,
+.ax-clsq .ax-sys-datatable {
   overflow-x: auto;
 }
-.ga-clsq-column {
-  font-family: var(--ga-font-mono, ui-monospace, monospace);
-  color: var(--ga-text-strong);
+.ax-clsq-column {
+  font-family: var(--ax-font-mono, ui-monospace, monospace);
+  color: var(--ax-text-strong);
   font-size: 13px;
 }
-.ga-clsq-suggested {
+.ax-clsq-suggested {
   display: inline-flex;
   flex-wrap: wrap;
   gap: 4px;
 }
-.ga-clsq-evidence {
+.ax-clsq-evidence {
   display: inline-flex;
   flex-direction: column;
   gap: 2px;
   max-width: 320px;
 }
-.ga-clsq-evidence-first {
-  color: var(--ga-text);
+.ax-clsq-evidence-first {
+  color: var(--ax-text);
   font-size: 13px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.ga-clsq-evidence-more {
-  color: var(--ga-text-muted);
+.ax-clsq-evidence-more {
+  color: var(--ax-text-muted);
   font-size: 11px;
 }
-.ga-clsq-muted {
-  color: var(--ga-text-muted);
+.ax-clsq-muted {
+  color: var(--ax-text-muted);
   font-size: 13px;
 }
-.ga-clsq-reviewed {
-  color: var(--ga-text-muted);
+.ax-clsq-reviewed {
+  color: var(--ax-text-muted);
   font-size: 12px;
 }
-.ga-clsq-actions {
+.ax-clsq-actions {
   display: inline-flex;
   flex-wrap: wrap;
   gap: 6px;

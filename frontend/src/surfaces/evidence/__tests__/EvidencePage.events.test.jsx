@@ -22,7 +22,7 @@ const api = vi.hoisted(() => ({
 
 vi.mock("../../../lib/api", () => api);
 
-const shell = { userEmail: "skyler@entrada.ai", role: "admin" };
+const shell = { userEmail: "abarreto@shorecp.com", role: "admin" };
 
 function auditEvent(id, overrides = {}) {
   return {
@@ -35,7 +35,7 @@ function auditEvent(id, overrides = {}) {
     status: "success",
     detail: "Owner changed",
     created_at: "2026-07-19T12:00:00Z",
-    actor_email: "skyler@entrada.ai",
+    actor_email: "abarreto@shorecp.com",
     ...overrides,
   };
 }
@@ -159,15 +159,15 @@ describe("Evidence events tab", () => {
         auditEvent("AUD-0001", {
           request_id: "REQ-1",
           displayRequestId: "REQ-1",
-          before_json: JSON.stringify({ owner: "old.owner@entrada.ai" }),
-          after_json: JSON.stringify({ owner: "new.owner@entrada.ai", steward: "s@entrada.ai" }),
+          before_json: JSON.stringify({ owner: "old.owner@shorecp.com" }),
+          after_json: JSON.stringify({ owner: "new.owner@shorecp.com", steward: "s@shorecp.com" }),
         }),
       ]),
     );
     renderPage("/evidence?event=AUD-0001");
     const rail = await screen.findByLabelText("Selected audit event detail");
-    await within(rail).findByText("old.owner@entrada.ai");
-    expect(within(rail).getByText("new.owner@entrada.ai")).toBeTruthy();
+    await within(rail).findByText("old.owner@shorecp.com");
+    expect(within(rail).getByText("new.owner@shorecp.com")).toBeTruthy();
     // A creation-side value legitimately has no prior state: "—", never
     // "Unavailable" (that implied missing evidence).
     expect(within(rail).getByText("—")).toBeTruthy();
@@ -225,14 +225,14 @@ describe("Evidence events tab", () => {
     await screen.findByText(/Showing 1 of 1 events/);
 
     fireEvent.change(screen.getByLabelText("Actor email"), {
-      target: { value: "marisol.reyes@entrada.ai" },
+      target: { value: "marisol.reyes@shorecp.com" },
     });
     fireEvent.click(screen.getByRole("button", { name: "Apply filters" }));
 
     await waitFor(() => {
       expect(api.fetchAuditEvents).toHaveBeenCalledWith(
         expect.objectContaining({
-          actorEmail: "marisol.reyes@entrada.ai",
+          actorEmail: "marisol.reyes@shorecp.com",
           limit: 500,
           since: expect.any(String),
         }),
@@ -249,7 +249,7 @@ describe("Evidence events tab", () => {
     renderPage();
     await screen.findByText(/Showing 1 of 1 events/);
 
-    fireEvent.change(screen.getByLabelText("Actor email"), { target: { value: "someone@entrada.ai" } });
+    fireEvent.change(screen.getByLabelText("Actor email"), { target: { value: "someone@shorecp.com" } });
     fireEvent.click(screen.getByRole("button", { name: "Apply filters" }));
 
     expect(

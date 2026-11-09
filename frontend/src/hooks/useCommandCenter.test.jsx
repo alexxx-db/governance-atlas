@@ -1,8 +1,8 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { createAtlasQueryClient } from "../lib/queryClient";
-import { resetPollAttempts } from "./useAtlasQuery";
+import { createAxiomQueryClient } from "../lib/queryClient";
+import { resetPollAttempts } from "./useAxiomQuery";
 import { useCommandCenter, __resetCommandCenterRetention } from "./useCommandCenter";
 
 const fetchCommandCenterMock = vi.fn();
@@ -12,7 +12,7 @@ vi.mock("../lib/api", () => ({
 }));
 
 function createWrapper() {
-  const queryClient = createAtlasQueryClient();
+  const queryClient = createAxiomQueryClient();
   return function Wrapper({ children }) {
     return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
   };
@@ -23,8 +23,8 @@ describe("useCommandCenter", () => {
     fetchCommandCenterMock.mockReset();
     // Retention is bounded by the poll budget; clear the module-scoped ledger
     // so one test's poll attempts don't flip another test's retention state.
-    resetPollAttempts(["atlas", "command-center", "cache"]);
-    resetPollAttempts(["atlas", "command-center", "force"]);
+    resetPollAttempts(["axiom", "command-center", "cache"]);
+    resetPollAttempts(["axiom", "command-center", "force"]);
     // Retention now survives navigation at module scope — reset it between
     // cases so one test's backed payload doesn't mask another's warming/error.
     __resetCommandCenterRetention();

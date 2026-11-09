@@ -1,13 +1,13 @@
 import { useCallback, useMemo } from "react";
 import { fetchLineage } from "../lib/api";
 import { isNonAuthoritativeMockEvidence } from "../lib/nonAuthoritativeEvidence";
-import { atlasQueryClient } from "../lib/queryClient";
+import { axiomQueryClient } from "../lib/queryClient";
 import {
   boundedRefetchInterval,
   pollBudgetExhausted,
   resetPollAttempts,
-  useAtlasQuery,
-} from "./useAtlasQuery";
+  useAxiomQuery,
+} from "./useAxiomQuery";
 
 const LINEAGE_CACHE_TTL_MS = 300_000;
 // Keep prefetched neighbor payloads alive long enough to be useful. The
@@ -23,7 +23,7 @@ function lineageQueryKey(assetFqn, profile = LINEAGE_PROFILE_FULL) {
 }
 
 function queryUpdatedAt(queryKey) {
-  return atlasQueryClient.getQueryState(queryKey)?.dataUpdatedAt || 0;
+  return axiomQueryClient.getQueryState(queryKey)?.dataUpdatedAt || 0;
 }
 
 function isFresh(queryKey, maxAgeMs = null) {
@@ -36,7 +36,7 @@ function isFresh(queryKey, maxAgeMs = null) {
 function readCachedLineage(assetFqn, { maxAgeMs = LINEAGE_CACHE_TTL_MS, profile = LINEAGE_PROFILE_FULL } = {}) {
   if (!assetFqn) return null;
   const queryKey = lineageQueryKey(assetFqn, profile);
-  const payload = atlasQueryClient.getQueryData(queryKey) || null;
+  const payload = axiomQueryClient.getQueryData(queryKey) || null;
   if (!payload) return null;
   if (!isFresh(queryKey, maxAgeMs)) return null;
   return payload;
@@ -87,7 +87,7 @@ function setCachedLineage(assetFqn, payload) {
   const normalized = normalizeCanonicalPayload(assetFqn, payload);
   if (!normalized) return null;
   const profile = normalized.profile === LINEAGE_PROFILE_INITIAL ? LINEAGE_PROFILE_INITIAL : LINEAGE_PROFILE_FULL;
-  atlasQueryClient.setQueryData(lineageQueryKey(assetFqn, profile), normalized);
+  axiomQueryClient.setQueryData(lineageQueryKey(assetFqn, profile), normalized);
   return normalized;
 }
 
@@ -140,7 +140,7 @@ function lineagePayloadPending(payload, requestedProfile = LINEAGE_PROFILE_FULL)
 // The module-scoped attempt ledger that used to live HERE (per-key counters,
 // spacing debounce so predicate re-evaluations don't burn budget, survives
 // remounts within a session, reset on explicit refresh) was generalized into
-// useAtlasQuery's bounded-poll engine — this hook now supplies only the
+// useAxiomQuery's bounded-poll engine — this hook now supplies only the
 // lineage-shaped terminality predicate.
 export const LINEAGE_POLL_ATTEMPT_LIMIT = 15;
 const LINEAGE_POLL_INTERVAL_MS = 3_000;
@@ -184,7 +184,7 @@ export function primeLineagePayload(assetFqn, payload) {
 
 export function invalidateLineage(assetFqn) {
   if (!assetFqn) return;
-  atlasQueryClient.removeQueries({
+  axiomQueryClient.removeQueries({
     queryKey: [LINEAGE_QUERY_PREFIX],
     exact: false,
     predicate: (query) => query.queryKey?.[2] === assetFqn,
@@ -197,7 +197,7 @@ export function prefetchLineage(assetFqn, options = {}) {
   const profile = options.profile === LINEAGE_PROFILE_INITIAL ? LINEAGE_PROFILE_INITIAL : LINEAGE_PROFILE_FULL;
   const cached = force ? null : readCachedLineage(assetFqn, { profile });
   if (cached) return Promise.resolve(cached);
-  return atlasQueryClient
+  return axiomQueryClient
     .fetchQuery({
       queryKey: lineageQueryKey(assetFqn, profile),
       staleTime: LINEAGE_CACHE_TTL_MS,
@@ -219,7 +219,7 @@ export function useLineage(assetFqn, enabled = true, options = {}) {
     [assetFqn],
   );
 
-  const initialQuery = useAtlasQuery({
+  const initialQuery = useAxiomQuery({
     key: lineageQueryKey(assetFqn || "", LINEAGE_PROFILE_INITIAL),
     enabled: Boolean(assetFqn) && enabled,
     staleTime: LINEAGE_CACHE_TTL_MS,
@@ -229,7 +229,7 @@ export function useLineage(assetFqn, enabled = true, options = {}) {
     fetch: (signal) => fetchLineage(assetFqn, { signal, profile: LINEAGE_PROFILE_INITIAL }),
   }).query;
 
-  const fullQuery = useAtlasQuery({
+  const fullQuery = useAxiomQuery({
     key: lineageQueryKey(assetFqn || "", LINEAGE_PROFILE_FULL),
     enabled: Boolean(assetFqn) &&
       enabled &&
@@ -255,7 +255,7 @@ export function useLineage(assetFqn, enabled = true, options = {}) {
     if (!assetFqn) return null;
     // Explicit user retry: hand the poll loop a fresh attempt budget.
     resetLineagePollAttempts(assetFqn);
-    atlasQueryClient.removeQueries({
+    axiomQueryClient.removeQueries({
       queryKey: [LINEAGE_QUERY_PREFIX],
       exact: false,
       predicate: (query) => query.queryKey?.[2] === assetFqn,

@@ -3,7 +3,7 @@
 // AuditBrowserWorkspace's inline useQuery declarations. Query keys mirror the
 // legacy inline ones for cache continuity.
 import { fetchAuditEvents, fetchAuditEvidence } from "../lib/api";
-import { useAtlasQuery } from "./useAtlasQuery";
+import { useAxiomQuery } from "./useAxiomQuery";
 
 // Must match the backend default/max (AUDIT_EVIDENCE_DEFAULT_LIMIT = 500).
 export const AUDIT_EVIDENCE_DEFAULT_LIMIT = 500;
@@ -28,8 +28,8 @@ export function useAuditEvidence(options = {}) {
     ? Math.max(1, Math.trunc(Number(options.limit)))
     : AUDIT_EVIDENCE_DEFAULT_LIMIT;
   const enabled = options.enabled !== false;
-  return useAtlasQuery({
-    key: ["atlas", "audit-evidence", dateRange, limit],
+  return useAxiomQuery({
+    key: ["axiom", "audit-evidence", dateRange, limit],
     enabled,
     fetch: (signal) => fetchAuditEvidence({ dateRange, limit, signal }),
     // Keep the previous range's rows on screen while the new range loads
@@ -63,8 +63,8 @@ export function useAuditEvents(filters = {}, options = {}) {
   // Filters drive enablement (matches the inline `serverFiltersActive` gate):
   // an unfiltered call must not duplicate the main evidence feed.
   const enabled = options.enabled !== false && hasFilters;
-  return useAtlasQuery({
-    key: ["atlas", "audit-events", actorEmail, action, entityFqn, since],
+  return useAxiomQuery({
+    key: ["axiom", "audit-events", actorEmail, action, entityFqn, since],
     enabled,
     fetch: (signal) =>
       fetchAuditEvents({ actorEmail, action, entityFqn, since, limit }, { signal }),

@@ -26,7 +26,7 @@ function LatestRunSummary({ quality }) {
   const evidence = formatUtcInstant(quality?.evidenceAt);
   return (
     <>
-      <div className="ga-asset-stat-row">
+      <div className="ax-asset-stat-row">
         <StatTile label="Passed" value={outcomes.passed ?? 0} tone="neutral" />
         <StatTile label="Failed" value={outcomes.failed ?? 0} tone={Number(outcomes.failed) > 0 ? "bad" : "neutral"} />
         <StatTile label="Errored" value={outcomes.errored ?? 0} tone={Number(outcomes.errored) > 0 ? "warn" : "neutral"} />
@@ -37,7 +37,7 @@ function LatestRunSummary({ quality }) {
         />
       </div>
       {evidence ? (
-        <p className="ga-asset-evidence-line" title={evidence.iso}>
+        <p className="ax-asset-evidence-line" title={evidence.iso}>
           Evidence from {evidence.display}
         </p>
       ) : null}
@@ -100,7 +100,7 @@ export function QualityTab({ fqn, quality }) {
   ];
 
   return (
-    <div className="ga-asset-tab-grid">
+    <div className="ax-asset-tab-grid">
       <SectionCard title="Latest run">
         {!quality || state === "loading" ? (
           <LoadingState variant="card" lines={2} />

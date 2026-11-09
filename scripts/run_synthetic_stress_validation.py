@@ -18,13 +18,13 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 
-RUN_ID_RE = re.compile(r"^ga-stress-\d{14}-[0-9a-f]{7,12}$")
+RUN_ID_RE = re.compile(r"^ax-stress-\d{14}-[0-9a-f]{7,12}$")
 SAFE_IDENTIFIER_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
-ROW_MARKER = "governance_atlas.synthetic_stress"
-APP_OWNED_MARKER = "governance_atlas_app_owned"
-TEST_SCOPED_MARKER = "governance_atlas_test_scoped"
-CLEANUP_SAFE_MARKER = "governance_atlas_cleanup_safe"
-EXCLUDE_ORGANIC_MARKER = "governance_atlas_exclude_from_organic_evidence"
+ROW_MARKER = "axiom.synthetic_stress"
+APP_OWNED_MARKER = "axiom_app_owned"
+TEST_SCOPED_MARKER = "axiom_test_scoped"
+CLEANUP_SAFE_MARKER = "axiom_cleanup_safe"
+EXCLUDE_ORGANIC_MARKER = "axiom_exclude_from_organic_evidence"
 WORKFLOW_ENTITIES_TABLE = "workflow_entities"
 WORKFLOW_AUDIT_TABLE = "workflow_audit_events"
 VALIDATION_EVENTS_TABLE = "validation_events"
@@ -147,7 +147,7 @@ def build_run_id(*, now: datetime | None = None, short_sha: str | None = None) -
     sha = (short_sha or _git_short_sha()).lower()
     if not re.fullmatch(r"[0-9a-f]{7,12}", sha):
         raise ValueError(f"short sha must be 7-12 lowercase hex characters, got {sha!r}")
-    run_id = f"ga-stress-{timestamp}-{sha}"
+    run_id = f"ax-stress-{timestamp}-{sha}"
     if not RUN_ID_RE.fullmatch(run_id):
         raise ValueError(f"invalid generated run id: {run_id}")
     return run_id
@@ -220,7 +220,7 @@ def synthetic_provenance(run_id: str) -> Dict[str, Any]:
 
 def create_schema_statement(*, catalog: str, schema: str, run_id: str) -> str:
     comment = (
-        f"Governance Atlas synthetic stress validation; run_id={run_id}; "
+        f"Axiom synthetic stress validation; run_id={run_id}; "
         f"{APP_OWNED_MARKER}=true; {TEST_SCOPED_MARKER}=true; {CLEANUP_SAFE_MARKER}=true; "
         f"{EXCLUDE_ORGANIC_MARKER}=true"
     )
@@ -245,11 +245,11 @@ CREATE TABLE IF NOT EXISTS {_fq_name(catalog, schema, VALIDATION_EVENTS_TABLE)} 
 )
 USING DELTA
 TBLPROPERTIES (
-  'governance_atlas.validation_kind' = 'synthetic_stress',
-  'governance_atlas.app_owned' = 'true',
-  'governance_atlas.test_scoped' = 'true',
-  'governance_atlas.cleanup_safe' = 'true',
-  'governance_atlas.exclude_from_organic_evidence' = 'true'
+  'axiom.validation_kind' = 'synthetic_stress',
+  'axiom.app_owned' = 'true',
+  'axiom.test_scoped' = 'true',
+  'axiom.cleanup_safe' = 'true',
+  'axiom.exclude_from_organic_evidence' = 'true'
 )
 """.strip()
 
@@ -281,11 +281,11 @@ CREATE TABLE IF NOT EXISTS {_fq_name(catalog, schema, WORKFLOW_ENTITIES_TABLE)} 
 )
 USING DELTA
 TBLPROPERTIES (
-  'governance_atlas.validation_kind' = 'synthetic_workflow_stress',
-  'governance_atlas.app_owned' = 'true',
-  'governance_atlas.test_scoped' = 'true',
-  'governance_atlas.cleanup_safe' = 'true',
-  'governance_atlas.exclude_from_organic_evidence' = 'true'
+  'axiom.validation_kind' = 'synthetic_workflow_stress',
+  'axiom.app_owned' = 'true',
+  'axiom.test_scoped' = 'true',
+  'axiom.cleanup_safe' = 'true',
+  'axiom.exclude_from_organic_evidence' = 'true'
 )
 """.strip()
 
@@ -316,11 +316,11 @@ CREATE TABLE IF NOT EXISTS {_fq_name(catalog, schema, WORKFLOW_AUDIT_TABLE)} (
 )
 USING DELTA
 TBLPROPERTIES (
-  'governance_atlas.validation_kind' = 'synthetic_workflow_audit',
-  'governance_atlas.app_owned' = 'true',
-  'governance_atlas.test_scoped' = 'true',
-  'governance_atlas.cleanup_safe' = 'true',
-  'governance_atlas.exclude_from_organic_evidence' = 'true'
+  'axiom.validation_kind' = 'synthetic_workflow_audit',
+  'axiom.app_owned' = 'true',
+  'axiom.test_scoped' = 'true',
+  'axiom.cleanup_safe' = 'true',
+  'axiom.exclude_from_organic_evidence' = 'true'
 )
 """.strip()
 
@@ -478,11 +478,11 @@ def insert_audit_statement(
 
 
 def workflow_statements_for_row(*, catalog: str, schema: str, run_id: str, stress_row: int) -> List[str]:
-    actor = "synthetic.data_owner@governance-atlas.local"
-    reviewer = "synthetic.steward@governance-atlas.local"
+    actor = "synthetic.data_owner@axiom.local"
+    reviewer = "synthetic.steward@axiom.local"
     workflow_id = f"{run_id}-customer-workflow-{stress_row}"
     slug = _run_slug(run_id)
-    asset_fqn = f"datapact.synthetic_stress.{slug}_customer_profile_{stress_row}"
+    asset_fqn = f"emet.synthetic_stress.{slug}_customer_profile_{stress_row}"
     approval_request = f"{workflow_id}-approval-request"
     rejection_request = f"{workflow_id}-rejection-request"
     taxonomy_association = f"{workflow_id}-taxonomy-association"
@@ -885,8 +885,8 @@ def workflow_statements_for_row(*, catalog: str, schema: str, run_id: str, stres
             reviewer=reviewer,
             state="submitted",
             expected_state="answered",
-            source_system="atlas_genie_space",
-            provenance="configured Governance Atlas Genie space",
+            source_system="axiom_genie_space",
+            provenance="configured Axiom Genie space",
             evidence={
                 "questionText": "Which customer assets have open governance requests?",
                 "provider": "genie",
@@ -924,7 +924,7 @@ def workflow_statements_for_row(*, catalog: str, schema: str, run_id: str, stres
             event_type="genie_answer_grounded",
             actor=actor,
             target_id=genie_question,
-            source_system="atlas_genie_space",
+            source_system="axiom_genie_space",
             request_id=f"{workflow_id}-genie",
             before_state="submitted",
             after_state="answered",
@@ -1477,14 +1477,14 @@ def run_validation(args: argparse.Namespace) -> Dict[str, Any]:
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Build or run a scoped Governance Atlas synthetic workflow stress validation."
+        description="Build or run a scoped Axiom synthetic workflow stress validation."
     )
     parser.add_argument("--live", action="store_true", help="Execute UC mutations. Omitted means dry-run only.")
     parser.add_argument("--profile", default=None, help="Required as DEFAULT when --live is used.")
     parser.add_argument("--warehouse-id", default="", help="Required when --live is used.")
-    parser.add_argument("--catalog", default="datapact")
-    parser.add_argument("--schema-prefix", default="atlas_ga_stress")
-    parser.add_argument("--run-id", default="", help="Optional prebuilt ga-stress-YYYYMMDDHHMMSS-<shortsha> id.")
+    parser.add_argument("--catalog", default="emet")
+    parser.add_argument("--schema-prefix", default="axiom_ax_stress")
+    parser.add_argument("--run-id", default="", help="Optional prebuilt ax-stress-YYYYMMDDHHMMSS-<shortsha> id.")
     parser.add_argument("--rows-per-scenario", type=int, default=3)
     parser.add_argument("--keep-resources", action="store_true", help="Leave the run-scoped schema in place.")
     parser.add_argument("--output", default="", help="Optional JSON artifact path.")
@@ -1499,12 +1499,12 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
 
 def _organic_rows_counter(uc: Any, run_id: str):
     """Count this run's marker in the app's real governance schema (the
-    catalog/schema the app reads, from BUNDLE_VAR_* or GOVAT_* env). Anything
+    catalog/schema the app reads, from BUNDLE_VAR_* or AXIOM_* env). Anything
     above zero means synthetic rows leaked into organic evidence."""
     import os
 
-    catalog = os.environ.get("BUNDLE_VAR_gov_catalog") or os.environ.get("GOVAT_CATALOG") or ""
-    schema = os.environ.get("BUNDLE_VAR_gov_schema") or os.environ.get("GOVAT_SCHEMA") or ""
+    catalog = os.environ.get("BUNDLE_VAR_gov_catalog") or os.environ.get("AXIOM_CATALOG") or ""
+    schema = os.environ.get("BUNDLE_VAR_gov_schema") or os.environ.get("AXIOM_SCHEMA") or ""
     if not (catalog and schema):
         return None
 
@@ -1526,7 +1526,7 @@ def _organic_rows_counter(uc: Any, run_id: str):
 
 
 def run_ai_validation(args: argparse.Namespace) -> Dict[str, Any]:
-    """AI governance scenarios (atlas/ai/stress.py) in a run-scoped schema.
+    """AI governance scenarios (axiom/ai/stress.py) in a run-scoped schema.
 
     The whole governance schema (migrations 1-22) is created inside
     <schema-prefix>_<run suffix>, exercised with synthetic sample rows, and
@@ -1555,10 +1555,10 @@ def run_ai_validation(args: argparse.Namespace) -> Dict[str, Any]:
         ]
         return payload
 
-    from atlas.ai.store import AiStore
-    from atlas.ai.stress import run_ai_scenarios
-    from atlas.store import GovernanceStore
-    from atlas.uc import UCSQLClient
+    from axiom.ai.store import AiStore
+    from axiom.ai.stress import run_ai_scenarios
+    from axiom.store import GovernanceStore
+    from axiom.uc import UCSQLClient
 
     import os
 

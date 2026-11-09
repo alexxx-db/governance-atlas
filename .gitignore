@@ -223,7 +223,7 @@ frontend/vite.config.js.timestamp-*.mjs
 /*.webp
 # Regenerable visual-QA evidence is NOT tracked in git (2026-07 repo-size
 # cleanup): screenshots, capture reports, and side-by-side PNGs are produced
-# locally by the capture scripts (frontend/scripts/atlas_*_qa.mjs). They
+# locally by the capture scripts (frontend/scripts/axiom_*_qa.mjs). They
 # accounted for ~1.3GB and made the repo unpushable against GitHub's 2GB pack
 # limit. The north-star audit contract guard skips when this evidence is absent.
 docs/northstar_visual_qa/

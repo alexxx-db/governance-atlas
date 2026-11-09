@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import unittest
 
-from atlas.services import custom_properties as cp_service
+from axiom.services import custom_properties as cp_service
 
 
 class ValidateValueTests(unittest.TestCase):

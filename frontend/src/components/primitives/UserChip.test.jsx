@@ -73,7 +73,7 @@ describe("UserChip avatar upload", () => {
 
   it("stores accepted avatar uploads under the user-specific localStorage key", async () => {
     const { container } = render(
-      <UserChip userEmail="skyler@entrada.ai" userName="Skyler Kohler" role="Admin" />,
+      <UserChip userEmail="abarreto@shorecp.com" userName="Skyler Kohler" role="Admin" />,
     );
     const input = screen.getByLabelText("Upload profile avatar");
 
@@ -85,15 +85,15 @@ describe("UserChip avatar upload", () => {
 
     await waitFor(() => {
       expect(storage.setItem).toHaveBeenCalledWith(
-        "governance-atlas:profile-avatar:skyler@entrada.ai",
+        "axiom:profile-avatar:abarreto@shorecp.com",
         expect.stringMatching(/^data:image\/png;base64,/),
       );
     });
-    expect(container.querySelector(".ga-user-chip-avatar img")).not.toBeNull();
+    expect(container.querySelector(".ax-user-chip-avatar img")).not.toBeNull();
   });
 
   it("does not write rejected avatar uploads to localStorage", async () => {
-    render(<UserChip userEmail="skyler@entrada.ai" userName="Skyler Kohler" role="Admin" />);
+    render(<UserChip userEmail="abarreto@shorecp.com" userName="Skyler Kohler" role="Admin" />);
     const input = screen.getByLabelText("Upload profile avatar");
 
     await act(async () => {
@@ -114,15 +114,15 @@ describe("UserChip avatar upload", () => {
     storage.getItem.mockReturnValue("data:image/svg+xml;base64,PHN2Zz48L3N2Zz4=");
 
     const { container } = render(
-      <UserChip userEmail="skyler@entrada.ai" userName="Skyler Kohler" role="Admin" />,
+      <UserChip userEmail="abarreto@shorecp.com" userName="Skyler Kohler" role="Admin" />,
     );
 
-    expect(container.querySelector(".ga-user-chip-avatar img")).toBeNull();
+    expect(container.querySelector(".ax-user-chip-avatar img")).toBeNull();
     expect(screen.getByText("SK")).not.toBeNull();
   });
 
   it("labels avatar upload as a local browser preference", () => {
-    render(<UserChip userEmail="skyler@entrada.ai" userName="Skyler Kohler" role="Admin" />);
+    render(<UserChip userEmail="abarreto@shorecp.com" userName="Skyler Kohler" role="Admin" />);
 
     fireEvent.click(screen.getByRole("button", { name: /Open profile menu/i }));
 

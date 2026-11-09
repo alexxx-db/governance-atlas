@@ -47,32 +47,32 @@ function MultiFacet({ facet, selected = [], onSelect }) {
   };
 
   return (
-    <div className="ga-sys-filter-facet is-multi" ref={rootRef}>
+    <div className="ax-sys-filter-facet is-multi" ref={rootRef}>
       <button
         type="button"
-        className={`ga-sys-filter-trigger ${selected.length ? "has-value" : ""}`.trim()}
+        className={`ax-sys-filter-trigger ${selected.length ? "has-value" : ""}`.trim()}
         aria-haspopup="true"
         aria-expanded={open}
         onClick={() => setOpen((current) => !current)}
       >
         <span>{facet.label}</span>
-        {selected.length ? <span className="ga-sys-filter-count">{selected.length}</span> : null}
+        {selected.length ? <span className="ax-sys-filter-count">{selected.length}</span> : null}
       </button>
       {open ? (
-        <div className="ga-sys-filter-pop" role="group" aria-labelledby={labelId}>
-          <span id={labelId} className="ga-sys-visually-hidden">
+        <div className="ax-sys-filter-pop" role="group" aria-labelledby={labelId}>
+          <span id={labelId} className="ax-sys-visually-hidden">
             {facet.label}
           </span>
           {(facet.options ?? []).map((option) => (
-            <label key={option.value} className="ga-sys-filter-option">
+            <label key={option.value} className="ax-sys-filter-option">
               <input
                 type="checkbox"
                 checked={selected.includes(option.value)}
                 onChange={() => toggleOption(option.value)}
               />
-              <span className="ga-sys-filter-option-label">{option.label ?? option.value}</span>
+              <span className="ax-sys-filter-option-label">{option.label ?? option.value}</span>
               {option.count != null ? (
-                <span className="ga-sys-filter-option-count">{option.count}</span>
+                <span className="ax-sys-filter-option-count">{option.count}</span>
               ) : null}
             </label>
           ))}
@@ -107,7 +107,7 @@ export function FilterBar({
   };
 
   return (
-    <div className={`ga-sys-filter-bar ${className}`.trim()} role="group" aria-label={label}>
+    <div className={`ax-sys-filter-bar ${className}`.trim()} role="group" aria-label={label}>
       {facets.map((facet) => {
         const type = facet.type ?? "select";
         if (type === "search") {
@@ -118,7 +118,7 @@ export function FilterBar({
             return (
               <SuggestInput
                 key={facet.key}
-                className="ga-sys-filter-search"
+                className="ax-sys-filter-search"
                 aria-label={facet.label}
                 placeholder={facet.placeholder ?? facet.label}
                 options={facet.suggestions}
@@ -131,7 +131,7 @@ export function FilterBar({
             <input
               key={facet.key}
               type="search"
-              className="ga-sys-filter-search"
+              className="ax-sys-filter-search"
               aria-label={facet.label}
               placeholder={facet.placeholder ?? facet.label}
               value={value[facet.key] ?? ""}
@@ -150,10 +150,10 @@ export function FilterBar({
           );
         }
         return (
-          <label key={facet.key} className="ga-sys-filter-facet is-select">
-            <span className="ga-sys-filter-facet-label">{facet.label}</span>
+          <label key={facet.key} className="ax-sys-filter-facet is-select">
+            <span className="ax-sys-filter-facet-label">{facet.label}</span>
             <select
-              className="ga-sys-filter-select"
+              className="ax-sys-filter-select"
               value={value[facet.key] ?? ""}
               onChange={(event) => setFacet(facet.key, event.target.value)}
             >

@@ -23,7 +23,7 @@ describe("EntityChip — the keystone: every entity mention is a real anchor", (
       { kind: "column", fqn: "a.b.c", id: "col1" },
       { kind: "term", id: "t1" },
       { kind: "cde", id: "cde1" },
-      { kind: "owner", id: "jane@entrada.ai" },
+      { kind: "owner", id: "jane@shorecp.com" },
       { kind: "request", id: "GOV-11112222" },
       { kind: "event", id: "AUD-33334444" },
       { kind: "domain", name: "Finance" },
@@ -47,7 +47,7 @@ describe("EntityChip — the keystone: every entity mention is a real anchor", (
   it("query-param kinds point at their canonical destinations", () => {
     render(
       <div>
-        <EntityChip entity={{ kind: "owner", id: "jane@entrada.ai" }} />
+        <EntityChip entity={{ kind: "owner", id: "jane@shorecp.com" }} />
         <EntityChip entity={{ kind: "request", id: "GOV-BE17D517" }} />
         <EntityChip entity={{ kind: "event", id: "AUD-DEADBEEF" }} />
         <EntityChip entity={{ kind: "cde", id: "CDE-4" }} />
@@ -55,7 +55,7 @@ describe("EntityChip — the keystone: every entity mention is a real anchor", (
     );
     const [owner, request, event, cde] = screen.getAllByRole("link").map((a) => a.getAttribute("href"));
     expect(owner.startsWith("/discovery?")).toBe(true);
-    expect(new URLSearchParams(owner.split("?")[1]).get("q")).toBe('owner:"jane@entrada.ai"');
+    expect(new URLSearchParams(owner.split("?")[1]).get("q")).toBe('owner:"jane@shorecp.com"');
     expect(request.startsWith("/stewardship?")).toBe(true);
     expect(new URLSearchParams(request.split("?")[1]).get("item")).toBe("GOV-BE17D517");
     expect(event.startsWith("/evidence?")).toBe(true);
@@ -71,7 +71,7 @@ describe("EntityChip — the keystone: every entity mention is a real anchor", (
     // …but the name still shows as plain muted text.
     const span = screen.getByText("identity-integrity-cleanup");
     expect(span.tagName).toBe("SPAN");
-    expect(span.className).toContain("ga-sys-owner-plain");
+    expect(span.className).toContain("ax-sys-owner-plain");
   });
 
   it("the FQN text is the anchor label by default (law: text is the anchor)", () => {
@@ -138,7 +138,7 @@ describe("EntityChip — the keystone: every entity mention is a real anchor", (
       />,
     );
     const link = screen.getByRole("link");
-    const hover = link.querySelector(".ga-sys-entity-hover");
+    const hover = link.querySelector(".ax-sys-entity-hover");
     expect(hover).not.toBeNull();
     expect(hover.getAttribute("aria-hidden")).toBe("true");
     expect(hover.textContent).toContain("main.sales.orders");

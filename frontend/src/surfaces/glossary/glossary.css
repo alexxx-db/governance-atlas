@@ -1,222 +1,222 @@
 /*
  * surfaces/glossary/glossary.css — Glossary & CDEs surface layout (Wave C4).
  * Layout-only per FRONTEND_BLUEPRINT §9: buttons/badges/tables/cards/empty
- * states come from the system kit (ga-sys-*). All values are --ga-* tokens;
+ * states come from the system kit (ax-sys-*). All values are --ax-* tokens;
  * no legacy prefixes, no raw hex, no priority overrides.
  */
 
 /* ---------------- shared section scaffolding ---------------- */
 
-.ga-glos-section {
+.ax-glos-section {
   display: flex;
   flex-direction: column;
-  gap: var(--ga-space-3, 12px);
+  gap: var(--ax-space-3, 12px);
 }
 
-.ga-glos-toolbar {
+.ax-glos-toolbar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--ga-space-2, 8px);
+  gap: var(--ax-space-2, 8px);
 }
 
-.ga-glos-caption {
+.ax-glos-caption {
   margin: 0;
   font-size: 0.78rem;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
 }
 
-.ga-glos-footnote {
+.ax-glos-footnote {
   margin: 0;
   font-size: 0.74rem;
-  color: var(--ga-text-subtle);
+  color: var(--ax-text-subtle);
 }
 
-.ga-glos-muted {
-  color: var(--ga-text-muted);
+.ax-glos-muted {
+  color: var(--ax-text-muted);
 }
 
-.ga-glos-mono {
+.ax-glos-mono {
   margin: 0;
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
   font-size: 0.8rem;
-  color: var(--ga-text);
+  color: var(--ax-text);
   overflow-wrap: anywhere;
 }
 
-.ga-glos-untagged {
+.ax-glos-untagged {
   font-style: italic;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
 }
 
-.ga-glos-eyebrow {
+.ax-glos-eyebrow {
   display: block;
   font-size: 0.68rem;
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--ga-text-subtle);
+  color: var(--ax-text-subtle);
 }
 
 /* ---------------- glossary card grid ---------------- */
 
-.ga-glos-card-grid {
+.ax-glos-card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: var(--ga-space-3, 12px);
+  gap: var(--ax-space-3, 12px);
 }
 
-.ga-glos-card {
+.ax-glos-card {
   display: flex;
   flex-direction: column;
   gap: 10px;
   padding: 14px 16px;
-  border: 1px solid var(--ga-border);
-  border-radius: var(--ga-radius-lg);
-  background: var(--ga-surface);
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-radius-lg);
+  background: var(--ax-surface);
   cursor: pointer;
   transition: border-color 120ms ease, background 120ms ease;
 }
 
-.ga-glos-card:hover {
-  border-color: var(--ga-border-strong);
-  background: var(--ga-surface-raised);
+.ax-glos-card:hover {
+  border-color: var(--ax-border-strong);
+  background: var(--ax-surface-raised);
 }
 
-.ga-glos-card.is-selected {
-  border-color: var(--ga-bright-blue);
+.ax-glos-card.is-selected {
+  border-color: var(--ax-bright-blue);
 }
 
-.ga-glos-card-head {
+.ax-glos-card-head {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 10px;
 }
 
-.ga-glos-card-head h2 {
+.ax-glos-card-head h2 {
   margin: 0;
   font-size: 0.98rem;
   line-height: 1.3;
 }
 
-.ga-glos-card-sub {
+.ax-glos-card-sub {
   display: block;
   margin-top: 2px;
   font-size: 0.74rem;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
 }
 
-.ga-glos-card-definition {
+.ax-glos-card-definition {
   margin: 0;
   font-size: 0.82rem;
   line-height: 1.45;
-  color: var(--ga-text);
+  color: var(--ax-text);
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-.ga-glos-card-proof {
+.ax-glos-card-proof {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
   margin: 0;
   padding-top: 10px;
-  border-top: 1px solid var(--ga-border);
+  border-top: 1px solid var(--ax-border);
 }
 
-.ga-glos-card-proof dt {
+.ax-glos-card-proof dt {
   font-size: 0.66rem;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--ga-text-subtle);
+  color: var(--ax-text-subtle);
 }
 
-.ga-glos-card-proof dd {
+.ax-glos-card-proof dd {
   margin: 2px 0 0;
   font-size: 0.76rem;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
 }
 
 /* ---------------- detail (term mini-hub + CDE detail) ---------------- */
 
-.ga-glos-term-detail,
-.ga-glos-cde-detail {
+.ax-glos-term-detail,
+.ax-glos-cde-detail {
   display: flex;
   flex-direction: column;
-  gap: var(--ga-space-3, 12px);
-  margin-top: var(--ga-space-3, 12px);
+  gap: var(--ax-space-3, 12px);
+  margin-top: var(--ax-space-3, 12px);
   padding: 16px;
-  border: 1px solid var(--ga-border-strong);
-  border-radius: var(--ga-radius-lg);
-  background: var(--ga-surface-raised);
+  border: 1px solid var(--ax-border-strong);
+  border-radius: var(--ax-radius-lg);
+  background: var(--ax-surface-raised);
 }
 
-.ga-glos-detail-head {
+.ax-glos-detail-head {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
 }
 
-.ga-glos-detail-head h2 {
+.ax-glos-detail-head h2 {
   margin: 2px 0 0;
   font-size: 1.15rem;
 }
 
-.ga-glos-detail-head-actions {
+.ax-glos-detail-head-actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
 }
 
-.ga-glos-detail-grid {
+.ax-glos-detail-grid {
   display: grid;
   /* Exactly 3 columns for the 3 mid cards (Linked assets / Hierarchy / Pending
      review); full-width cards span 1/-1. auto-fit made 4 columns on wide
      screens, leaving an empty 4th column of dead space. stretch equalizes the
      card heights (they were ragged under align-items:start). */
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--ga-space-3, 12px);
+  gap: var(--ax-space-3, 12px);
   align-items: stretch;
 }
 
 @media (max-width: 900px) {
-  .ga-glos-detail-grid {
+  .ax-glos-detail-grid {
     grid-template-columns: 1fr;
   }
 }
 
 /* Each detail card fills its stretched grid cell so the three mid cards are
    equal height instead of ragged. */
-.ga-glos-detail-card {
+.ax-glos-detail-card {
   height: 100%;
 }
 
 /* Scroll landing: the term-detail panel is scrolled into view on select/deep
    link. Without this margin its top lands behind the sticky shell header +
    glossary tab bar and reads as "blocked" text. Offset by that stacked chrome. */
-.ga-glos-detail-anchor {
-  scroll-margin-top: calc(var(--ga-shell-header-height, 80px) + 60px);
+.ax-glos-detail-anchor {
+  scroll-margin-top: calc(var(--ax-shell-header-height, 80px) + 60px);
 }
 
-.ga-glos-detail-card.is-definition,
-.ga-glos-detail-card.is-stewardship {
+.ax-glos-detail-card.is-definition,
+.ax-glos-detail-card.is-stewardship {
   grid-column: 1 / -1;
 }
 
-.ga-glos-definition {
+.ax-glos-definition {
   margin: 0 0 10px;
   font-size: 0.86rem;
   line-height: 1.5;
 }
 
-.ga-glos-kv-grid {
+.ax-glos-kv-grid {
   /* A metadata strip (Owner/Steward/Domain/Review/Version): pack the pairs
      left with an even rhythm. The auto-fit grid made a variable number of
      columns and left a ragged empty column that read as uneven spacing. */
@@ -225,7 +225,7 @@
   gap: 10px 36px;
 }
 
-.ga-glos-owner-line {
+.ax-glos-owner-line {
   display: flex;
   align-items: baseline;
   gap: 8px;
@@ -233,35 +233,35 @@
   font-size: 0.8rem;
 }
 
-.ga-glos-kv-label {
+.ax-glos-kv-label {
   flex: 0 0 auto;
   font-size: 0.68rem;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--ga-text-subtle);
+  color: var(--ax-text-subtle);
 }
 
-.ga-glos-chip-row {
+.ax-glos-chip-row {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
 }
 
-.ga-glos-linked-assets,
-.ga-glos-review-list {
+.ax-glos-linked-assets,
+.ax-glos-review-list {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.ga-glos-hierarchy {
+.ax-glos-hierarchy {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.ga-glos-reviewer-list {
+.ax-glos-reviewer-list {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -270,14 +270,14 @@
   gap: 6px;
 }
 
-.ga-glos-reviewer-list li {
+.ax-glos-reviewer-list li {
   display: flex;
   align-items: baseline;
   gap: 8px;
   font-size: 0.8rem;
 }
 
-.ga-glos-history ul {
+.ax-glos-history ul {
   margin: 6px 0 0;
   padding: 0;
   list-style: none;
@@ -286,7 +286,7 @@
   gap: 6px;
 }
 
-.ga-glos-history li {
+.ax-glos-history li {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -296,13 +296,13 @@
 
 /* ---------------- CDE registry ---------------- */
 
-.ga-glos-stat-row {
+.ax-glos-stat-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: var(--ga-space-3, 12px);
+  gap: var(--ax-space-3, 12px);
 }
 
-.ga-glos-cde-name {
+.ax-glos-cde-name {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -311,96 +311,96 @@
 
 /* ---------------- forms (modals + inline) ---------------- */
 
-.ga-glos-form,
-.ga-glos-inline-form {
+.ax-glos-form,
+.ax-glos-inline-form {
   display: flex;
   flex-direction: column;
-  gap: var(--ga-space-3, 12px);
+  gap: var(--ax-space-3, 12px);
 }
 
-.ga-glos-inline-form {
+.ax-glos-inline-form {
   padding: 12px;
-  border: 1px solid var(--ga-border);
-  border-radius: var(--ga-radius-md);
-  background: var(--ga-surface);
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-radius-md);
+  background: var(--ax-surface);
 }
 
-.ga-glos-form-help {
+.ax-glos-form-help {
   margin: 0;
   font-size: 0.78rem;
   line-height: 1.45;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
 }
 
-.ga-glos-field {
+.ax-glos-field {
   display: flex;
   flex-direction: column;
   gap: 4px;
   min-width: 0;
 }
 
-.ga-glos-field > span {
+.ax-glos-field > span {
   font-size: 0.72rem;
   font-weight: 600;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
 }
 
 /* Label row with an inline AI-draft action on the right. */
-.ga-glos-field-label-row {
+.ax-glos-field-label-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
 }
 
-.ga-glos-field-label-row > span {
+.ax-glos-field-label-row > span {
   font-size: 0.72rem;
   font-weight: 600;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
 }
 
-.ga-glos-field input,
-.ga-glos-field textarea,
-.ga-glos-field select {
+.ax-glos-field input,
+.ax-glos-field textarea,
+.ax-glos-field select {
   padding: 8px 10px;
-  border: 1px solid var(--ga-border);
-  border-radius: var(--ga-radius-md);
-  background: var(--ga-surface);
-  color: var(--ga-text);
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-radius-md);
+  background: var(--ax-surface);
+  color: var(--ax-text);
   font: inherit;
   font-size: 0.84rem;
 }
 
-.ga-glos-field input:focus-visible,
-.ga-glos-field textarea:focus-visible,
-.ga-glos-field select:focus-visible {
+.ax-glos-field input:focus-visible,
+.ax-glos-field textarea:focus-visible,
+.ax-glos-field select:focus-visible {
   outline: none;
-  border-color: var(--ga-focus);
-  box-shadow: var(--ga-shadow-focus);
+  border-color: var(--ax-focus);
+  box-shadow: var(--ax-shadow-focus);
 }
 
-.ga-glos-field-hint {
-  color: var(--ga-text-faint);
+.ax-glos-field-hint {
+  color: var(--ax-text-faint);
   font-size: 0.7rem;
 }
 
-.ga-glos-field-row {
+.ax-glos-field-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--ga-space-3, 12px);
+  gap: var(--ax-space-3, 12px);
 }
 
-.ga-glos-form-error {
+.ax-glos-form-error {
   margin: 0;
   padding: 8px 10px;
-  border: 1px solid color-mix(in srgb, var(--ga-danger) 40%, transparent);
-  border-radius: var(--ga-radius-md);
-  background: color-mix(in srgb, var(--ga-danger) 9%, transparent);
-  color: var(--ga-danger);
+  border: 1px solid color-mix(in srgb, var(--ax-danger) 40%, transparent);
+  border-radius: var(--ax-radius-md);
+  background: color-mix(in srgb, var(--ax-danger) 9%, transparent);
+  color: var(--ax-danger);
   font-size: 0.78rem;
 }
 
-.ga-glos-form-actions {
+.ax-glos-form-actions {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
@@ -409,18 +409,18 @@
 /* ---------------- responsive ---------------- */
 
 @media (max-width: 760px) {
-  .ga-glos-toolbar {
+  .ax-glos-toolbar {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .ga-glos-detail-head {
+  .ax-glos-detail-head {
     flex-direction: column;
   }
 }
 
 /* G6 — term Approve/Reject decision row in the Pending review card. */
-.ga-glos-decision {
+.ax-glos-decision {
   display: flex;
   gap: 10px;
   margin-top: 12px;

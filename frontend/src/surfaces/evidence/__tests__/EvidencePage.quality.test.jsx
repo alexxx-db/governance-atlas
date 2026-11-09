@@ -22,7 +22,7 @@ const api = vi.hoisted(() => ({
 
 vi.mock("../../../lib/api", () => api);
 
-const shell = { userEmail: "skyler@entrada.ai", role: "admin" };
+const shell = { userEmail: "abarreto@shorecp.com", role: "admin" };
 
 function finding(findingId, overrides = {}) {
   return {

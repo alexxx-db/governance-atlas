@@ -1,24 +1,24 @@
 /*
- * Entrada Governance Atlas typography tokens.
+ * Axiom typography tokens.
  *
- * --ga-* is canonical (Wave C8). The --gh-font alias died with app.css in
+ * --ax-* is canonical (Wave C8). The --gh-font alias died with app.css in
  * cohesion follow-up 3 (its last consumer); the base body rule now lives in
- * app-shell/shell.css on --ga-font-body directly.
+ * app-shell/shell.css on --ax-font-body directly.
  */
 
 :root {
-  --ga-font-heading: "Hanken Grotesk", "Instrument Sans", "Inter", "Segoe UI", sans-serif;
-  --ga-font-body: "Instrument Sans", "Inter", "Segoe UI", sans-serif;
+  --ax-font-heading: "Hanken Grotesk", "Instrument Sans", "Inter", "Segoe UI", sans-serif;
+  --ax-font-body: "Instrument Sans", "Inter", "Segoe UI", sans-serif;
 
-  --ga-heading-weight: 600;
-  --ga-body-weight: 400;
+  --ax-heading-weight: 600;
+  --ax-body-weight: 400;
 
-  --ga-font-weight-bold: 600;
-  --ga-font-weight-heavy: 700;
-  --ga-font-weight-black: 800;
+  --ax-font-weight-bold: 600;
+  --ax-font-weight-heavy: 700;
+  --ax-font-weight-black: 800;
 
-  --ga-line-height-tight: 1.2;
-  --ga-line-height-snug: 1.35;
-  --ga-line-height-normal: 1.5;
-  --ga-line-height-loose: 1.65;
+  --ax-line-height-tight: 1.2;
+  --ax-line-height-snug: 1.35;
+  --ax-line-height-normal: 1.5;
+  --ax-line-height-loose: 1.65;
 }

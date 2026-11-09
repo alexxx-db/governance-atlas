@@ -1,16 +1,16 @@
 /*
- * surfaces/discovery/useDiscoveryAi.js — Atlas AI recommendations for the
- * Discover surface (Wave C1 port of the legacy askAtlasForDiscovery machinery,
+ * surfaces/discovery/useDiscoveryAi.js — Axiom AI recommendations for the
+ * Discover surface (Wave C1 port of the legacy askAxiomForDiscovery machinery,
  * behavior-preserving: abort-on-scope-change, 60s timeout, request-sequence
  * guard, non-authoritative rejection, and a TTL-bounded session cache — now
  * through lib/prefs.js instead of raw sessionStorage).
  *
  * Genie recommendations are an explicit user action (a click), not a poll, so
- * this stays an imperative hook rather than a useAtlasQuery consumer.
+ * this stays an imperative hook rather than a useAxiomQuery consumer.
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { fetchAtlasAiRecommendations } from "../../lib/api";
+import { fetchAxiomAiRecommendations } from "../../lib/api";
 import { isNonAuthoritativeMockEvidence } from "../../lib/nonAuthoritativeEvidence";
 import { readSessionCache, removeSessionCache, writeSessionCache } from "../../lib/prefs";
 
@@ -28,7 +28,7 @@ function cacheKeyFor(scopeKey = "default", query = "") {
  * unavailable markers yields its own reason string; "" means the response is
  * renderable (possibly empty for honest reasons).
  */
-export function atlasAiUnavailableResponseMessage(response = null) {
+export function axiomAiUnavailableResponseMessage(response = null) {
   if (!response || response.nonAuthoritative) return "";
   const recommendations = Array.isArray(response.recommendations) ? response.recommendations : [];
   if (recommendations.length) return "";
@@ -59,14 +59,14 @@ export function atlasAiUnavailableResponseMessage(response = null) {
         response.providerState?.message ||
         "",
     ).trim() ||
-    "Atlas AI recommendations are unavailable until Databricks Genie returns evidence."
+    "Axiom AI recommendations are unavailable until Databricks Genie returns evidence."
   );
 }
 
 function readAiCache(cacheKey) {
   const cached = readSessionCache(cacheKey, { ttlMs: AI_CACHE_TTL_MS });
   if (!cached) return null;
-  if (atlasAiUnavailableResponseMessage(cached)) {
+  if (axiomAiUnavailableResponseMessage(cached)) {
     // Never serve a stale "unavailable" verdict from cache — re-ask live.
     removeSessionCache(cacheKey);
     return null;
@@ -126,7 +126,7 @@ export function useDiscoveryAi({
       cacheKey: requestCacheKey,
     }));
 
-    fetchAtlasAiRecommendations(
+    fetchAxiomAiRecommendations(
       query
         ? `Recommend governed assets and priorities for this Discovery search: ${query}`
         : "Recommend the next governed assets and governance priorities for Discovery.",
@@ -149,7 +149,7 @@ export function useDiscoveryAi({
           });
           return;
         }
-        if (!atlasAiUnavailableResponseMessage(response)) {
+        if (!axiomAiUnavailableResponseMessage(response)) {
           // Only renderable (authoritative, evidence-backed) responses cache.
           writeSessionCache(requestCacheKey, response);
         }
@@ -165,8 +165,8 @@ export function useDiscoveryAi({
           cacheKey: requestCacheKey,
           error:
             error?.name === "AbortError"
-              ? "Atlas AI recommendations are taking longer than expected. Try again."
-              : error?.message || "Atlas AI recommendations are unavailable.",
+              ? "Axiom AI recommendations are taking longer than expected. Try again."
+              : error?.message || "Axiom AI recommendations are unavailable.",
         });
       });
   }, [available, cacheKey, query, unavailableReason]);
@@ -180,7 +180,7 @@ export function useDiscoveryAi({
       visible.response?.recommendations,
       visible.response?.warnings,
     );
-  const unavailableMessage = atlasAiUnavailableResponseMessage(visible.response);
+  const unavailableMessage = axiomAiUnavailableResponseMessage(visible.response);
   const recommendations =
     !nonAuthoritative && !unavailableMessage && Array.isArray(visible.response?.recommendations)
       ? visible.response.recommendations

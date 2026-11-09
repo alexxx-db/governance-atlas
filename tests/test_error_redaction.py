@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import unittest
 
-from atlas.util import error_text, redact_error_text
+from axiom.util import error_text, redact_error_text
 
 
 class ErrorRedactionTests(unittest.TestCase):

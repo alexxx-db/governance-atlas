@@ -27,13 +27,13 @@ describe("StatTile", () => {
 
   it("donut variant renders the ring and derives display value from percent", () => {
     render(<StatTile label="Maturity" variant="donut" percent={62.5} />);
-    expect(document.querySelector(".ga-sys-donut")).not.toBeNull();
+    expect(document.querySelector(".ax-sys-donut")).not.toBeNull();
     expect(screen.getByText("62.5%")).not.toBeNull();
   });
 
   it("renders a progress bar when progress is numeric", () => {
     render(<StatTile label="Adoption" value="12" progress={40} />);
-    const bar = document.querySelector(".ga-sys-progress");
+    const bar = document.querySelector(".ax-sys-progress");
     expect(bar).not.toBeNull();
     expect(bar.getAttribute("aria-label")).toBe("Adoption progress");
     expect(bar.querySelector("span").style.width).toBe("40%");

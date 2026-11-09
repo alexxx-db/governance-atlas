@@ -1,65 +1,65 @@
 /*
- * Entrada Governance Atlas color tokens.
+ * Axiom color tokens.
  *
- * The --ga-* names are the North Star design contract. The --gh-* aliases are
+ * The --ax-* names are the North Star design contract. The --gh-* aliases are
  * kept intentionally because the existing product CSS still consumes them.
  */
 
 :root {
   color-scheme: dark;
 
-  --ga-navy-980: #050e18;
-  --ga-navy-950: #061321;
-  --ga-navy-925: #091b2f;
-  --ga-navy-900: #0d2740;
-  --ga-navy-850: #14324f;
+  --ax-navy-980: #050e18;
+  --ax-navy-950: #061321;
+  --ax-navy-925: #091b2f;
+  --ax-navy-900: #0d2740;
+  --ax-navy-850: #14324f;
 
-  --ga-entrada-blue: #025080;
-  --ga-highlight-blue: #3d84ad;
-  --ga-bright-blue: #66c5ff;
-  --ga-light-blue: #cfefff;
-  --ga-gray: #b2bdc2;
-  --ga-white: #ffffff;
-  --ga-teal: #5ce1e6;
+  --ax-shorecp-blue: #325396;
+  --ax-highlight-blue: #5b7fd0;
+  --ax-bright-blue: #7497dc;
+  --ax-light-blue: #cddaf4;
+  --ax-gray: #c8c8c8;
+  --ax-white: #ffffff;
+  --ax-teal: #c8c8c8;
 
-  --ga-success: #2ee6a6;
-  --ga-warning: #ffb547;
-  --ga-danger: #ff5c6c;
-  --ga-purple: #9d7cff;
+  --ax-success: #2ee6a6;
+  --ax-warning: #ffb547;
+  --ax-danger: #ff5c6c;
+  --ax-purple: #9d7cff;
 
-  --ga-bg: #08172a;
-  --ga-shell: var(--ga-navy-980);
-  --ga-chrome-bg: var(--ga-navy-980);
-  --ga-surface: rgba(12, 33, 56, 0.96);
-  --ga-surface-strong: rgba(12, 33, 56, 0.98);
-  --ga-surface-raised: rgba(12, 33, 56, 0.98);
-  --ga-surface-soft: rgba(102, 197, 255, 0.07);
-  --ga-surface-muted: rgba(12, 33, 56, 0.68);
-  --ga-border: rgba(31, 63, 95, 0.96);
-  --ga-border-strong: rgba(44, 86, 128, 0.98);
-  --ga-border-muted: rgba(207, 239, 255, 0.08);
+  --ax-bg: #08172a;
+  --ax-shell: var(--ax-navy-980);
+  --ax-chrome-bg: var(--ax-navy-980);
+  --ax-surface: rgba(12, 33, 56, 0.96);
+  --ax-surface-strong: rgba(12, 33, 56, 0.98);
+  --ax-surface-raised: rgba(12, 33, 56, 0.98);
+  --ax-surface-soft: rgba(116, 151, 220, 0.07);
+  --ax-surface-muted: rgba(12, 33, 56, 0.68);
+  --ax-border: rgba(31, 63, 95, 0.96);
+  --ax-border-strong: rgba(44, 86, 128, 0.98);
+  --ax-border-muted: rgba(205, 218, 244, 0.08);
 
-  --ga-text: #f5fbff;
-  --ga-text-soft: #cfefff;
-  /* Muted/faint tiers sit ≥4.5:1 on --ga-bg AND on hovered/tinted surfaces
+  --ax-text: #f5fbff;
+  --ax-text-soft: #cddaf4;
+  /* Muted/faint tiers sit ≥4.5:1 on --ax-bg AND on hovered/tinted surfaces
      (adversarial contrast audit measured the old values at 4.0-4.46 on
      hover-tinted cards — near-misses at caption sizes). */
-  --ga-text-muted: #9db4c1;
-  --ga-text-faint: #7b96a6;
+  --ax-text-muted: #9db4c1;
+  --ax-text-faint: #7b96a6;
   /* Referenced widely (28+ sites in lineage alone) but previously never
-     defined — every var(--ga-text-strong, #fff) was riding its fallback.
+     defined — every var(--ax-text-strong, #fff) was riding its fallback.
      Defined here so those references are live tokens. */
-  --ga-text-strong: var(--ga-white);
-  --ga-text-subtle: var(--ga-text-muted);
+  --ax-text-strong: var(--ax-white);
+  --ax-text-subtle: var(--ax-text-muted);
 
-  --ga-focus: rgba(102, 197, 255, 0.42);
+  --ax-focus: rgba(116, 151, 220, 0.42);
 
   /* Legacy --gh-* aliases (cohesion follow-up 3): app.css / entity.css /
      governance.css are deleted, so only the FOUR names the surviving
      northstar/shell-rail sheets still reference remain. Each alias dies
      with its last consumer. */
-  --gh-bg: var(--ga-bg);
-  --gh-line: var(--ga-border);
-  --gh-ink: var(--ga-text);
-  --gh-ink-muted: var(--ga-text-muted);
+  --gh-bg: var(--ax-bg);
+  --gh-line: var(--ax-border);
+  --gh-ink: var(--ax-text);
+  --gh-ink-muted: var(--ax-text-muted);
 }

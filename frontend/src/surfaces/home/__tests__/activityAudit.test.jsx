@@ -68,7 +68,7 @@ describe("ActivityCard event anchoring", () => {
           id: "store-evt-1",
           displayAuditId: "AUD-0A1B2C3D",
           title: "Certification updated",
-          actorEmail: "marisol@entrada.ai",
+          actorEmail: "marisol@shorecp.com",
           createdAt: "2026-07-20T08:00:00Z",
         },
       ],

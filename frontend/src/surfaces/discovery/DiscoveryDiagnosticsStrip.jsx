@@ -48,41 +48,41 @@ export function DiscoveryDiagnosticsStrip({
         : "—";
 
   const item = (label, value, testId, title) => (
-    <span className="ga-disc-diagnostics-item">
-      <span className="ga-disc-diagnostics-label">{label}</span>
-      <span className="ga-disc-diagnostics-value" data-testid={testId} title={title}>
+    <span className="ax-disc-diagnostics-item">
+      <span className="ax-disc-diagnostics-label">{label}</span>
+      <span className="ax-disc-diagnostics-value" data-testid={testId} title={title}>
         {value}
       </span>
     </span>
   );
-  const sep = <span aria-hidden="true" className="ga-disc-diagnostics-sep">·</span>;
+  const sep = <span aria-hidden="true" className="ax-disc-diagnostics-sep">·</span>;
 
   return (
     <div
       aria-label="Discovery diagnostics"
-      className="ga-disc-diagnostics"
-      data-testid="ga-disc-diagnostics"
+      className="ax-disc-diagnostics"
+      data-testid="ax-disc-diagnostics"
       role="status"
     >
-      {item("Runtime", runtimeLabel, "ga-disc-diagnostics-runtime")}
+      {item("Runtime", runtimeLabel, "ax-disc-diagnostics-runtime")}
       {sep}
       {/* "Access", not "Auth mode": customer-facing wording, no OBO enum. */}
-      {item("Access", authLabel, "ga-disc-diagnostics-auth")}
+      {item("Access", authLabel, "ax-disc-diagnostics-auth")}
       {sep}
-      {item("Inventory", sourceLabel, "ga-disc-diagnostics-source")}
+      {item("Inventory", sourceLabel, "ax-disc-diagnostics-source")}
       {sep}
-      {item("Visible assets", visibleCountLabel, "ga-disc-diagnostics-visible")}
+      {item("Visible assets", visibleCountLabel, "ax-disc-diagnostics-visible")}
       {sep}
       {item(
         "Last observed",
         observedLabel,
-        "ga-disc-diagnostics-observed",
+        "ax-disc-diagnostics-observed",
         observedAt ? String(observedAt) : undefined,
       )}
       {stateLabel ? (
         <>
           {sep}
-          {item("Status", stateLabel, "ga-disc-diagnostics-state")}
+          {item("Status", stateLabel, "ax-disc-diagnostics-state")}
         </>
       ) : null}
     </div>

@@ -168,8 +168,8 @@ class OperationalStore(AuditStore):
 
 
 class ExportStore(AuditStore):
-    catalog = "datapact"
-    schema = "atlas"
+    catalog = "emet"
+    schema = "axiom"
 
     def __init__(self) -> None:
         super().__init__()
@@ -177,7 +177,7 @@ class ExportStore(AuditStore):
         self.uc = SimpleNamespace(execute=self.sql.append)
 
     def _fq(self, table: str) -> str:
-        return f"`datapact`.`atlas`.`{table}`"
+        return f"`emet`.`axiom`.`{table}`"
 
 
 class BackendWriteAuditContractsTests(unittest.TestCase):
@@ -185,12 +185,12 @@ class BackendWriteAuditContractsTests(unittest.TestCase):
         return SimpleNamespace(headers={"x-forwarded-email": "writer@example.com", "x-forwarded-access-token": "token"})
 
     def test_owner_patch_propagates_http_request_id_to_store_writes(self) -> None:
-        from atlas.services import governance
+        from axiom.services import governance
 
         store = OwnerStore()
         governance.patch_asset_owners(
             store,
-            asset_fqn="datapact.atlas.customer_dim",
+            asset_fqn="emet.axiom.customer_dim",
             owner_assignments=[{"ownerEmail": "new@example.com", "ownerType": "steward"}],
             updated_by="writer@example.com",
             actor_role="steward",
@@ -201,7 +201,7 @@ class BackendWriteAuditContractsTests(unittest.TestCase):
         self.assertEqual(store.upserted[0][1]["request_id"], "http-rid-123")
 
     def test_custom_property_assignment_audit_has_request_id_and_snapshots(self) -> None:
-        from atlas.api import catalog
+        from axiom.api import catalog
 
         store = CustomPropertyStore()
         with RuntimePatcher(store):
@@ -209,7 +209,7 @@ class BackendWriteAuditContractsTests(unittest.TestCase):
                 catalog.CustomPropertyAssignmentPayload(
                     definitionId="def-1",
                     value="<b>new</b>",
-                    entityFqn="datapact.atlas.customer_dim",
+                    entityFqn="emet.axiom.customer_dim",
                 ),
                 self.request(),
             )
@@ -224,7 +224,7 @@ class BackendWriteAuditContractsTests(unittest.TestCase):
         self.assertTrue(store.assignment_written)
 
     def test_custom_property_assignment_audit_failure_blocks_write(self) -> None:
-        from atlas.api import catalog
+        from axiom.api import catalog
 
         store = FailingAuditCustomPropertyStore()
         with RuntimePatcher(store):
@@ -233,7 +233,7 @@ class BackendWriteAuditContractsTests(unittest.TestCase):
                     catalog.CustomPropertyAssignmentPayload(
                         definitionId="def-1",
                         value="new",
-                        entityFqn="datapact.atlas.customer_dim",
+                        entityFqn="emet.axiom.customer_dim",
                     ),
                     self.request(),
                 )
@@ -242,18 +242,18 @@ class BackendWriteAuditContractsTests(unittest.TestCase):
 
     def test_custom_property_read_requires_open_asset_before_store_read(self) -> None:
         from fastapi import HTTPException
-        from atlas.api import catalog
+        from axiom.api import catalog
 
         store = CustomPropertyStore()
         with RuntimePatcher(store, openable=False):
             with self.assertRaises(HTTPException) as ctx:
-                catalog.api_asset_custom_properties("datapact.atlas.customer_dim", self.request())
+                catalog.api_asset_custom_properties("emet.axiom.customer_dim", self.request())
 
         self.assertEqual(ctx.exception.status_code, 404)
         self.assertEqual(store.assignment_reads, 0)
 
     def test_profile_route_emits_audit_with_request_id(self) -> None:
-        from atlas.api import catalog
+        from axiom.api import catalog
 
         store = OperationalStore()
         result = SimpleNamespace(
@@ -263,8 +263,8 @@ class BackendWriteAuditContractsTests(unittest.TestCase):
             column_metrics_written=1,
             error="",
         )
-        with RuntimePatcher(store), patch("atlas.services.profile_runner.run_profile", return_value=result):
-            response = catalog.api_run_asset_profile("datapact.atlas.customer_dim", self.request())
+        with RuntimePatcher(store), patch("axiom.services.profile_runner.run_profile", return_value=result):
+            response = catalog.api_run_asset_profile("emet.axiom.customer_dim", self.request())
 
         self.assertEqual(response.status_code, 200)
         audit = store.audit_calls[0]
@@ -275,14 +275,14 @@ class BackendWriteAuditContractsTests(unittest.TestCase):
 
     def test_profile_write_requires_open_asset_before_profile_run(self) -> None:
         from fastapi import HTTPException
-        from atlas.api import catalog
+        from axiom.api import catalog
 
         store = OperationalStore()
         with RuntimePatcher(store, openable=False), patch(
-            "atlas.services.profile_runner.run_profile",
+            "axiom.services.profile_runner.run_profile",
         ) as run_profile:
             with self.assertRaises(HTTPException) as ctx:
-                catalog.api_run_asset_profile("datapact.atlas.customer_dim", self.request())
+                catalog.api_run_asset_profile("emet.axiom.customer_dim", self.request())
 
         self.assertEqual(ctx.exception.status_code, 404)
         run_profile.assert_not_called()
@@ -291,25 +291,25 @@ class BackendWriteAuditContractsTests(unittest.TestCase):
 
     def test_profile_read_requires_open_asset_before_store_read(self) -> None:
         from fastapi import HTTPException
-        from atlas.api import catalog
+        from axiom.api import catalog
 
         store = OperationalStore()
         with RuntimePatcher(store, openable=False):
             with self.assertRaises(HTTPException) as ctx:
-                catalog.api_asset_profile("datapact.atlas.customer_dim", self.request())
+                catalog.api_asset_profile("emet.axiom.customer_dim", self.request())
 
         self.assertEqual(ctx.exception.status_code, 404)
 
     def test_quality_route_requires_open_asset_and_emits_audit(self) -> None:
-        from atlas.api import catalog
+        from axiom.api import catalog
 
         store = OperationalStore()
         result = SimpleNamespace(run_id="quality-1", status="succeeded", passed=1, failed=0, errored=0, skipped=0)
         payload = catalog.QualityRunInlineRequest(
-            assetFqn="datapact.atlas.customer_dim",
+            assetFqn="emet.axiom.customer_dim",
             cases=[{"testKey": "row_count", "parameters": {"minRows": 1}}],
         )
-        with RuntimePatcher(store), patch("atlas.services.quality_runner.run_quality_suite", return_value=result):
+        with RuntimePatcher(store), patch("axiom.services.quality_runner.run_quality_suite", return_value=result):
             response = catalog.api_run_asset_quality(payload, self.request())
 
         self.assertEqual(response.status_code, 200)
@@ -322,7 +322,7 @@ class BackendWriteAuditContractsTests(unittest.TestCase):
         import json
 
         from fastapi import HTTPException
-        from atlas.api import catalog
+        from axiom.api import catalog
 
         store = OperationalStore()
         with RuntimePatcher(store, openable=False):
@@ -330,9 +330,9 @@ class BackendWriteAuditContractsTests(unittest.TestCase):
             # an honest 200 "unavailable" envelope (a 404 spammed the browser
             # console for out-of-scope lineage neighbors) — but the store must
             # STILL never be read for an asset the actor cannot open.
-            asset_response = catalog.api_asset_quality("datapact.atlas.customer_dim", self.request())
+            asset_response = catalog.api_asset_quality("emet.axiom.customer_dim", self.request())
             with self.assertRaises(HTTPException) as list_ctx:
-                catalog.api_list_quality_runs(self.request(), entityFqn="datapact.atlas.customer_dim")
+                catalog.api_list_quality_runs(self.request(), entityFqn="emet.axiom.customer_dim")
 
         self.assertEqual(asset_response.status_code, 200)
         asset_payload = json.loads(asset_response.body)
@@ -344,11 +344,11 @@ class BackendWriteAuditContractsTests(unittest.TestCase):
 
     def test_quality_custom_sql_validation_requires_open_asset(self) -> None:
         from fastapi import HTTPException
-        from atlas.api import catalog
+        from axiom.api import catalog
 
         payload = catalog.QualityCustomSqlRequest(
-            targetEntityFqn="datapact.atlas.customer_dim",
-            sql="SELECT COUNT(*) FROM datapact.atlas.customer_dim",
+            targetEntityFqn="emet.axiom.customer_dim",
+            sql="SELECT COUNT(*) FROM emet.axiom.customer_dim",
         )
         with RuntimePatcher(OperationalStore(), openable=False):
             with self.assertRaises(HTTPException) as ctx:
@@ -357,7 +357,7 @@ class BackendWriteAuditContractsTests(unittest.TestCase):
         self.assertEqual(ctx.exception.status_code, 404)
 
     def test_export_job_persistence_audits_sync_exports_fail_closed(self) -> None:
-        from atlas.api import export as export_api
+        from axiom.api import export as export_api
 
         store = ExportStore()
         requested_at = datetime.now(timezone.utc)
@@ -365,7 +365,7 @@ class BackendWriteAuditContractsTests(unittest.TestCase):
             export_api._persist_export_job(
                 request=self.request(),
                 job_id="export-1",
-                asset_fqns=["datapact.atlas.customer_dim"],
+                asset_fqns=["emet.axiom.customer_dim"],
                 actor_email="reader@example.com",
                 actor_role="reader",
                 filter_snapshot="{}",

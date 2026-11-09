@@ -1,6 +1,6 @@
 """Wave A4 — contract tests for GET /api/quality/findings and its service.
 
-Follows the tests/test_atlas_api.py patterns: SimpleNamespace requests,
+Follows the tests/test_axiom_api.py patterns: SimpleNamespace requests,
 runtime_app patch.multiple, honest-envelope assertions.
 """
 
@@ -13,8 +13,8 @@ from unittest.mock import patch
 
 import pandas as pd
 
-from atlas.api import catalog as catalog_api
-from atlas.services import quality as quality_service
+from axiom.api import catalog as catalog_api
+from axiom.services import quality as quality_service
 
 
 def _request(headers: dict[str, str] | None = None) -> SimpleNamespace:

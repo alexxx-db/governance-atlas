@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor, within } from "@testing-library/rea
 import { QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { atlasQueryClient } from "../../../lib/queryClient";
+import { axiomQueryClient } from "../../../lib/queryClient";
 import { toast, ToastHost } from "../../../components/system";
 import HomePage from "../HomePage.jsx";
 import { __resetCommandCenterRetention } from "../../../hooks/useCommandCenter";
@@ -68,7 +68,7 @@ function commandCenterFixture(overrides = {}) {
         id: "AUD-0A1B2C3D",
         title: "Certification updated",
         detail: "finance_prod.curated.revenue_daily",
-        actorEmail: "marisol@entrada.ai",
+        actorEmail: "marisol@shorecp.com",
         createdAt: "2026-07-20T08:00:00Z",
         tone: "good",
       },
@@ -81,7 +81,7 @@ function commandCenterFixture(overrides = {}) {
           request_id: "GOV-11223344",
           entity_fqn: "finance_prod.curated.revenue_daily",
           summary: "Request certification review",
-          requested_by: "skyler@entrada.ai",
+          requested_by: "abarreto@shorecp.com",
           status: "pending",
           created_at: "2026-07-20T09:00:00Z",
         },
@@ -110,14 +110,14 @@ function commandCenterFixture(overrides = {}) {
         id: "finance_prod.curated.revenue_daily",
         name: "revenue_daily",
         assetFqn: "finance_prod.curated.revenue_daily",
-        owner: "finance-steward@entrada.ai",
+        owner: "finance-steward@shorecp.com",
         status: "Certified",
         sox: true,
       },
     ],
     cdeSignal: { count: 49, subtitle: "Criticality-derived", definition: "Criticality-derived population." },
     signalAvailability: { visibleAssets: true, audit: true, quality: true, lineage: true },
-    meta: { state: "available", warnings: [], generatedAt: "2026-07-20T10:00:00Z", workspace: "entrada-prod" },
+    meta: { state: "available", warnings: [], generatedAt: "2026-07-20T10:00:00Z", workspace: "prod" },
     ...overrides,
   };
 }
@@ -162,7 +162,7 @@ function insightsFixture(overrides = {}) {
 
 function renderPage() {
   return render(
-    <QueryClientProvider client={atlasQueryClient}>
+    <QueryClientProvider client={axiomQueryClient}>
       <MemoryRouter initialEntries={["/home"]}>
         <HomePage />
         <ToastHost />
@@ -190,7 +190,7 @@ function linkByText(text) {
 beforeEach(() => {
   api.fetchCommandCenter.mockReset();
   api.fetchInsightsDashboard.mockReset();
-  atlasQueryClient.clear();
+  axiomQueryClient.clear();
   __resetCommandCenterRetention();
   toast.clear();
 });
@@ -390,7 +390,7 @@ describe("Command Center (surfaces/home)", () => {
     await settled();
     await waitFor(() => expect(screen.getByText("Risk heatmap")).toBeTruthy());
 
-    expect(screen.queryByText("Atlas AI recommendations")).toBeNull();
+    expect(screen.queryByText("Axiom AI recommendations")).toBeNull();
     expect(screen.queryByText(/No evidence-backed recommendation/i)).toBeNull();
     expect(screen.queryByText(/No additional evidence-backed recommendation/i)).toBeNull();
   });

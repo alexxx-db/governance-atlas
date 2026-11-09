@@ -41,8 +41,8 @@ vi.mock("../../hooks/useGovernanceSummary", () => ({
 vi.mock("../../hooks/useInboxWork", () => ({ useInboxWork: (...args) => useInboxWorkMock(...args) }));
 vi.mock("../../hooks/useCommandCenter", () => ({ useCommandCenter: (...args) => useCommandCenterMock(...args) }));
 vi.mock("../../hooks/usePaletteSearch", () => ({ usePaletteSearch: (...args) => usePaletteSearchMock(...args) }));
-vi.mock("../../hooks/useAtlasAiConversation", () => ({
-  useAtlasAiConversation: () => ({
+vi.mock("../../hooks/useAxiomAiConversation", () => ({
+  useAxiomAiConversation: () => ({
     messages: [],
     loading: false,
     draft: "",
@@ -98,13 +98,13 @@ function LocationProbe() {
 const LIVE_BOOTSTRAP = {
   bootState: "live",
   shell: {
-    userEmail: "skyler@entrada.ai",
+    userEmail: "abarreto@shorecp.com",
     userName: "Skyler",
     role: "Admin",
     ai: { state: "available", provider: "genie" },
     environment: { label: "Dev" },
   },
-  identity: { actorEmail: "skyler@entrada.ai", actorRole: "Admin" },
+  identity: { actorEmail: "abarreto@shorecp.com", actorRole: "Admin" },
   assets: [{ fqn: "main.core.orders", name: "orders" }],
   discovery: {},
 };
@@ -252,7 +252,7 @@ describe("AppShell routing", () => {
     expect(lastLocation.pathname).toBe("/glossary/Churn%20Rate");
     // Wave C4: the sessionStorage/window-event pending-term handoff is dead —
     // the rebuilt surface reads the durable path itself.
-    expect(window.sessionStorage.getItem("ga-pending-glossary-term")).toBeNull();
+    expect(window.sessionStorage.getItem("ax-pending-glossary-term")).toBeNull();
   });
 
   it("normalizes legacy discovery grammar into flat canonical params on /discovery", async () => {
@@ -316,7 +316,7 @@ describe("AppShell rail", () => {
       bootstrap: {
         ...LIVE_BOOTSTRAP,
         shell: { ...LIVE_BOOTSTRAP.shell, role: "Data Steward" },
-        identity: { actorEmail: "skyler@entrada.ai", actorRole: "Data Steward" },
+        identity: { actorEmail: "abarreto@shorecp.com", actorRole: "Data Steward" },
       },
     });
     renderApp("/home");
@@ -361,14 +361,14 @@ describe("my-work badge hydration contract", () => {
     primeHooks({ inboxLoading: true });
     renderApp("/home");
     await screen.findByTestId("home-page");
-    expect(document.querySelector(".ga-side-nav-badge")).toBeNull();
+    expect(document.querySelector(".ax-side-nav-badge")).toBeNull();
   });
 
   it("shows unread + actionable work once both sources settle", async () => {
     primeHooks({ badgeCount: 3, unreadCount: 2 });
     renderApp("/home");
     await screen.findByTestId("home-page");
-    expect(document.querySelector(".ga-side-nav-badge").textContent).toBe("5");
+    expect(document.querySelector(".ax-side-nav-badge").textContent).toBe("5");
   });
 });
 

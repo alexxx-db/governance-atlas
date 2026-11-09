@@ -5,19 +5,19 @@
  * a blob of text.
  */
 
-// Deterministic per-owner hue, chosen from --ga-* accent tokens. The circle is
+// Deterministic per-owner hue, chosen from --ax-* accent tokens. The circle is
 // a low-alpha tint of the accent (color-mix → transparent) with the initials in
 // the full accent — distinct color per owner, but on the dark theme rather than
 // the old light pastels. No hard-coded hex, no light surfaces (repo rule).
 const ACCENTS = [
-  "var(--ga-bright-blue)",
-  "var(--ga-teal)",
-  "var(--ga-success)",
-  "var(--ga-warning)",
-  "var(--ga-purple)",
-  "var(--ga-danger)",
-  "var(--ga-light-blue)",
-  "var(--ga-gray)",
+  "var(--ax-bright-blue)",
+  "var(--ax-teal)",
+  "var(--ax-success)",
+  "var(--ax-warning)",
+  "var(--ax-purple)",
+  "var(--ax-danger)",
+  "var(--ax-light-blue)",
+  "var(--ax-gray)",
 ];
 
 // Slightly stronger tint than the type icons: the circle carries text, so it
@@ -51,7 +51,7 @@ export function OwnerAvatar({ owner = "", size = 22, className = "", imageUrl = 
   return (
     <span
       aria-label={owner || "No owner"}
-      className={`ga-owner-avatar ${className}`.trim()}
+      className={`ax-owner-avatar ${className}`.trim()}
       role="img"
       style={{
         alignItems: "center",
@@ -81,19 +81,19 @@ export function OwnerAvatarStack({ owners = [], limit = 3, size = 22 }) {
   const visible = owners.slice(0, limit);
   const extra = owners.length - visible.length;
   return (
-    <span className="ga-owner-avatar-stack" aria-label={owners.join(", ")}>
+    <span className="ax-owner-avatar-stack" aria-label={owners.join(", ")}>
       {visible.map((o, i) => (
         <OwnerAvatar
           key={`${o}-${i}`}
           owner={o}
           size={size}
-          className={i > 0 ? "ga-owner-avatar-overlap" : ""}
+          className={i > 0 ? "ax-owner-avatar-overlap" : ""}
         />
       ))}
       {extra > 0 ? (
         <span
           aria-hidden="true"
-          className="ga-owner-avatar ga-owner-avatar-overflow"
+          className="ax-owner-avatar ax-owner-avatar-overflow"
           style={{ width: `${size}px`, height: `${size}px`, fontSize: Math.round(size * 0.38) }}
           title={`+${extra} more`}
         >

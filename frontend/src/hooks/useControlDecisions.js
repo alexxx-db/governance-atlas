@@ -1,10 +1,10 @@
 // Governance "controls in action" decisions feed for the Admin Control Center's
-// Policy tab. Wraps GET /api/governance/control-decisions via useAtlasQuery so
+// Policy tab. Wraps GET /api/governance/control-decisions via useAxiomQuery so
 // the panel renders the real steward review log (approvals / rejections /
 // status updates) alongside the payload's honest enforcement caveat — these are
 // governance REVIEW decisions, not access-enforcement events.
 import { fetchControlDecisions } from "../lib/api";
-import { useAtlasQuery } from "./useAtlasQuery";
+import { useAxiomQuery } from "./useAxiomQuery";
 
 /**
  * Recent governance control decisions.
@@ -15,7 +15,7 @@ import { useAtlasQuery } from "./useAtlasQuery";
 export function useControlDecisions(options = {}) {
   const enabled = options.enabled !== false;
   const { limit } = options;
-  const { data, status, refresh, query } = useAtlasQuery({
+  const { data, status, refresh, query } = useAxiomQuery({
     key: ["admin", "control-decisions"],
     enabled,
     fetch: (signal) => fetchControlDecisions({ signal, limit }),

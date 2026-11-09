@@ -13,7 +13,7 @@ import {
 } from "../../components/system";
 import { useCdeDetail } from "../../hooks/useCdeDashboard";
 import { useWorkspaceRoster } from "../../hooks/useWorkspaceRoster";
-import { useAtlasMutation } from "../../hooks/useAtlasQuery";
+import { useAxiomMutation } from "../../hooks/useAxiomQuery";
 import { createGovernanceRequest, upsertGovernanceOwner } from "../../lib/api";
 import {
   buildCdeCsv,
@@ -77,7 +77,7 @@ function CdeDetailPanel({ cde, onClose }) {
 
   // Recertification routes through governance-request creation — the same
   // path Lineage uses (POST /governance/requests).
-  const requestRecert = useAtlasMutation({
+  const requestRecert = useAxiomMutation({
     mutate: () =>
       createGovernanceRequest(
         {
@@ -88,10 +88,10 @@ function CdeDetailPanel({ cde, onClose }) {
         { fast: true },
       ),
   });
-  const assignOwner = useAtlasMutation({
+  const assignOwner = useAxiomMutation({
     mutate: (email) =>
       upsertGovernanceOwner({ assetFqn: sourceAssetFqn, ownerEmail: email, ownerType: "steward" }),
-    invalidates: [["atlas", "cde-dashboard"], ["atlas", "taxonomy-overview"]],
+    invalidates: [["axiom", "cde-dashboard"], ["axiom", "taxonomy-overview"]],
   });
 
   useEffect(() => {
@@ -130,13 +130,13 @@ function CdeDetailPanel({ cde, onClose }) {
   };
 
   return (
-    <section aria-label={`${detail.name} detail`} className="ga-glos-cde-detail">
-      <header className="ga-glos-detail-head">
+    <section aria-label={`${detail.name} detail`} className="ax-glos-cde-detail">
+      <header className="ax-glos-detail-head">
         <div>
-          <span className="ga-glos-eyebrow">CDE detail</span>
+          <span className="ax-glos-eyebrow">CDE detail</span>
           <h2>{detail.name}</h2>
         </div>
-        <div className="ga-glos-detail-head-actions">
+        <div className="ax-glos-detail-head-actions">
           <Button
             disabled={!sourceAssetFqn}
             loading={requestRecert.submitting}
@@ -169,10 +169,10 @@ function CdeDetailPanel({ cde, onClose }) {
       {ownerFormOpen ? (
         <form
           aria-label={`Assign owner for ${detail.name}`}
-          className="ga-glos-inline-form"
+          className="ax-glos-inline-form"
           onSubmit={handleAssignOwner}
         >
-          <label className="ga-glos-field">
+          <label className="ax-glos-field">
             <span>Owner email</span>
             <SuggestInput
               disabled={assignOwner.submitting}
@@ -185,7 +185,7 @@ function CdeDetailPanel({ cde, onClose }) {
             />
           </label>
           {assignOwner.errorMessage ? (
-            <p className="ga-glos-form-error" role="alert">
+            <p className="ax-glos-form-error" role="alert">
               {assignOwner.errorMessage}
             </p>
           ) : null}
@@ -195,21 +195,21 @@ function CdeDetailPanel({ cde, onClose }) {
         </form>
       ) : null}
 
-      <div className="ga-glos-detail-grid">
-        <SectionCard className="ga-glos-detail-card" title="Source of record">
-          <p className="ga-glos-mono">{detail.column || "Not tagged"}</p>
-          <p className="ga-glos-muted">{cdeSourceSummary(detail)}</p>
-          <div className="ga-glos-owner-line">
-            <span className="ga-glos-kv-label">Source asset</span>
+      <div className="ax-glos-detail-grid">
+        <SectionCard className="ax-glos-detail-card" title="Source of record">
+          <p className="ax-glos-mono">{detail.column || "Not tagged"}</p>
+          <p className="ax-glos-muted">{cdeSourceSummary(detail)}</p>
+          <div className="ax-glos-owner-line">
+            <span className="ax-glos-kv-label">Source asset</span>
             {sourceAssetFqn ? (
               <EntityChip appearance="inline" entity={{ kind: "asset", fqn: sourceAssetFqn }} />
             ) : (
-              <span className="ga-glos-muted">No source asset FQN is recorded on this registry row.</span>
+              <span className="ax-glos-muted">No source asset FQN is recorded on this registry row.</span>
             )}
           </div>
           {sourceAssetFqn ? (
-            <div className="ga-glos-owner-line">
-              <span className="ga-glos-kv-label">Lineage</span>
+            <div className="ax-glos-owner-line">
+              <span className="ax-glos-kv-label">Lineage</span>
               <EntityChip
                 appearance="inline"
                 entity={{ kind: "lineage", fqn: sourceAssetFqn, label: "Open lineage" }}
@@ -218,53 +218,53 @@ function CdeDetailPanel({ cde, onClose }) {
           ) : null}
         </SectionCard>
 
-        <SectionCard className="ga-glos-detail-card" title="Ownership & certification">
-          <div className="ga-glos-kv-grid">
-            <div className="ga-glos-owner-line">
-              <span className="ga-glos-kv-label">Owner</span>
+        <SectionCard className="ax-glos-detail-card" title="Ownership & certification">
+          <div className="ax-glos-kv-grid">
+            <div className="ax-glos-owner-line">
+              <span className="ax-glos-kv-label">Owner</span>
               {detail.owner && detail.owner !== "Unassigned" ? (
                 <EntityChip appearance="inline" entity={{ kind: "owner", id: detail.owner, label: detail.owner }} />
               ) : (
-                <span className="ga-glos-muted">Unassigned</span>
+                <span className="ax-glos-muted">Unassigned</span>
               )}
             </div>
-            <div className="ga-glos-owner-line">
-              <span className="ga-glos-kv-label">Certification</span>
+            <div className="ax-glos-owner-line">
+              <span className="ax-glos-kv-label">Certification</span>
               <Badge tone={statusToneFor(detail.status)}>{statusLabelFor(detail.status, "Certification pending")}</Badge>
             </div>
-            <div className="ga-glos-owner-line">
-              <span className="ga-glos-kv-label">Recertification</span>
+            <div className="ax-glos-owner-line">
+              <span className="ax-glos-kv-label">Recertification</span>
               <span>{statusLabelFor(detail.recert)}</span>
             </div>
-            <div className="ga-glos-owner-line">
-              <span className="ga-glos-kv-label">Last review</span>
+            <div className="ax-glos-owner-line">
+              <span className="ax-glos-kv-label">Last review</span>
               <span>{cdeLastReviewSummary(detail)}</span>
             </div>
             {detail.sensitivity ? (
-              <div className="ga-glos-owner-line">
-                <span className="ga-glos-kv-label">Sensitivity label</span>
+              <div className="ax-glos-owner-line">
+                <span className="ax-glos-kv-label">Sensitivity label</span>
                 {/* A label, not a protection control — labeling language only. */}
                 <Badge tone={statusToneFor(detail.sensitivity)}>{detail.sensitivity}</Badge>
               </div>
             ) : null}
-            <div className="ga-glos-owner-line">
-              <span className="ga-glos-kv-label">SOX</span>
+            <div className="ax-glos-owner-line">
+              <span className="ax-glos-kv-label">SOX</span>
               <span>{detail.sox ? "SOX-relevant" : "Not marked SOX"}</span>
             </div>
           </div>
         </SectionCard>
 
-        <SectionCard className="ga-glos-detail-card" title="Recertification evidence">
+        <SectionCard className="ax-glos-detail-card" title="Recertification evidence">
           <p>{cdeRecertEvidenceSummary(detail)}</p>
         </SectionCard>
 
-        <SectionCard className="ga-glos-detail-card" title="Quality evidence">
+        <SectionCard className="ax-glos-detail-card" title="Quality evidence">
           <p>{cdeHealthEvidenceSummary(detail)}</p>
         </SectionCard>
 
         {detail.linkedAssets.length ? (
-          <SectionCard className="ga-glos-detail-card" title="Linked assets">
-            <div className="ga-glos-linked-assets">
+          <SectionCard className="ax-glos-detail-card" title="Linked assets">
+            <div className="ax-glos-linked-assets">
               {detail.linkedAssets.map((asset) => (
                 <EntityChip
                   appearance="row"
@@ -332,7 +332,7 @@ export function CdeRegistry({
       key: "name",
       header: "CDE",
       render: (row) => (
-        <span className="ga-glos-cde-name">
+        <span className="ax-glos-cde-name">
           {row.name}
           {row.sox ? (
             <Badge size="sm" tone="warn">
@@ -347,13 +347,13 @@ export function CdeRegistry({
       header: "Source-of-record column",
       render: (row) =>
         row.column ? (
-          <span className="ga-glos-mono" title={cdeSourceSummary(row)}>
+          <span className="ax-glos-mono" title={cdeSourceSummary(row)}>
             {row.column}
           </span>
         ) : (
           // Honest state, not instruction text masquerading as a value: the
           // remediation hint lives in the tooltip.
-          <em className="ga-glos-untagged" title={cdeSourceSummary(row)}>
+          <em className="ax-glos-untagged" title={cdeSourceSummary(row)}>
             Not tagged
           </em>
         ),
@@ -373,7 +373,7 @@ export function CdeRegistry({
         row.owner && row.owner !== "Unassigned" ? (
           <EntityChip appearance="inline" entity={{ kind: "owner", id: row.owner, label: row.owner }} />
         ) : (
-          <span className="ga-glos-muted">Unassigned</span>
+          <span className="ax-glos-muted">Unassigned</span>
         ),
     },
     {
@@ -400,8 +400,8 @@ export function CdeRegistry({
   ];
 
   return (
-    <div className="ga-glos-cde-registry">
-      <div aria-label="CDE metrics" className="ga-glos-stat-row">
+    <div className="ax-glos-cde-registry">
+      <div aria-label="CDE metrics" className="ax-glos-stat-row">
         <StatTile
           hint={`${visibleRows.length.toLocaleString()} visible in this view`}
           label="Total CDEs"
@@ -429,7 +429,7 @@ export function CdeRegistry({
         />
       </div>
 
-      <div className="ga-glos-toolbar">
+      <div className="ax-glos-toolbar">
         <FilterBar
           facets={[
             { key: "q", type: "search", label: "Search CDEs", placeholder: "Search CDEs by name, column, or owner…" },
@@ -459,7 +459,7 @@ export function CdeRegistry({
         </Button>
       </div>
 
-      <p aria-busy={loading && !rows.length ? true : undefined} className="ga-glos-caption" role="status">
+      <p aria-busy={loading && !rows.length ? true : undefined} className="ax-glos-caption" role="status">
         {loading && !rows.length
           ? "Loading the CDE registry…"
           : `Showing ${visibleRows.length} of ${rows.length} CDE registry rows`}
@@ -484,7 +484,7 @@ export function CdeRegistry({
         stickyHeader
       />
 
-      <p className="ga-glos-footnote">
+      <p className="ax-glos-footnote">
         Status and recertification are registry metadata values. Quality test-run or recertification
         workflow proof appears only when backed evidence is returned.
       </p>

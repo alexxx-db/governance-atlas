@@ -44,12 +44,12 @@ apply and the tables stay empty.
 
 ## 2. Running collection and reconciliation
 
-The job `atlas-ai-collect-and-reconcile` has two tasks: `collect_databricks`
+The job `axiom-ai-collect-and-reconcile` has two tasks: `collect_databricks`
 then `reconcile`. Both share one run ID, `dbx-<job run id>`.
 
 ```bash
 set -a; . ./.env.dev; set +a
-databricks bundle run atlas_ai_collect_and_reconcile -t dev --profile "$ATLAS_PROFILE"
+databricks bundle run axiom_ai_collect_and_reconcile -t dev --profile "$AXIOM_PROFILE"
 ```
 
 What each task does:
@@ -98,7 +98,7 @@ kinds whose source was not `available` are never auto-resolved that run.
 AI Governance, then Intake, then **Import CSV** (stewards and admins only).
 
 1. Upload or paste the CSV. Required columns: intake ID, title, state, owner
-   (accepted spellings are in `atlas/ai/field_maps/intake_csv.yaml`).
+   (accepted spellings are in `axiom/ai/field_maps/intake_csv.yaml`).
 2. **Validate (dry run)**. Nothing is written. The per-row report lists every
    error.
 3. **Commit**, then confirm. The commit is all-or-nothing: any invalid row
@@ -142,7 +142,7 @@ compute. The expected findings are asserted by
 set -a; . ./.env.dev; set +a
 python scripts/seed_ai_sample_data.py            # print the plan
 python scripts/seed_ai_sample_data.py --live     # create
-# add main.atlas_ai_samples to BUNDLE_VAR_ai_tool_schema_allowlist, redeploy, run the job twice
+# add main.axiom_ai_samples to BUNDLE_VAR_ai_tool_schema_allowlist, redeploy, run the job twice
 python scripts/seed_ai_sample_data.py --cleanup  # remove objects and purge sample rows
 ```
 
@@ -160,7 +160,7 @@ python scripts/run_synthetic_stress_validation.py --scenario ai --live \
   --profile DEFAULT --warehouse-id "$BUNDLE_VAR_warehouse_id" --catalog main
 ```
 
-This builds a run-scoped schema `atlas_ga_stress_<run>` with the full
+This builds a run-scoped schema `axiom_ax_stress_<run>` with the full
 governance model and runs three reconciliations of synthetic sample rows. It
 checks idempotency, suppression persistence, the confirmation becoming M2,
 audit/event pairing, and no organic leaks, then drops the schema and verifies

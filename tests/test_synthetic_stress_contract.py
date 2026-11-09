@@ -19,13 +19,13 @@ SPEC.loader.exec_module(stress)
 
 
 class SyntheticStressContractTests(unittest.TestCase):
-    def test_run_id_shape_uses_ga_stress_timestamp_and_short_sha(self) -> None:
+    def test_run_id_shape_uses_ax_stress_timestamp_and_short_sha(self) -> None:
         run_id = stress.build_run_id(
             now=datetime(2026, 4, 27, 14, 15, 16, tzinfo=timezone.utc),
             short_sha="abc1234",
         )
 
-        self.assertEqual(run_id, "ga-stress-20260427141516-abc1234")
+        self.assertEqual(run_id, "ax-stress-20260427141516-abc1234")
         self.assertRegex(run_id, stress.RUN_ID_RE)
 
     def test_scenario_list_covers_required_workflow_domains(self) -> None:
@@ -47,14 +47,14 @@ class SyntheticStressContractTests(unittest.TestCase):
 
     def test_plan_uses_app_owned_test_scoped_schema_and_row_markers(self) -> None:
         plan = stress.build_plan(
-            catalog="datapact",
-            schema_prefix="atlas_ga_stress",
-            run_id="ga-stress-20260427141516-abc1234",
+            catalog="emet",
+            schema_prefix="axiom_ax_stress",
+            run_id="ax-stress-20260427141516-abc1234",
             rows_per_scenario=2,
             cleanup=True,
         )
 
-        self.assertEqual(plan["schema"], "atlas_ga_stress_20260427141516_abc1234")
+        self.assertEqual(plan["schema"], "axiom_ax_stress_20260427141516_abc1234")
         self.assertEqual(plan["expectedRowCount"], len(stress.SCENARIOS) * 2)
         self.assertEqual(plan["expectedWorkflowCount"], 2)
         self.assertEqual(plan["expectedAuditEventCount"], 2 * stress.AUDIT_EVENTS_PER_WORKFLOW)
@@ -62,10 +62,10 @@ class SyntheticStressContractTests(unittest.TestCase):
         self.assertIn(stress.TEST_SCOPED_MARKER, plan["setupStatements"][0])
         self.assertIn(stress.CLEANUP_SAFE_MARKER, plan["setupStatements"][0])
         self.assertIn(stress.EXCLUDE_ORGANIC_MARKER, plan["setupStatements"][0])
-        self.assertIn("'governance_atlas.app_owned' = 'true'", plan["setupStatements"][1])
-        self.assertIn("'governance_atlas.test_scoped' = 'true'", plan["setupStatements"][1])
-        self.assertIn("'governance_atlas.cleanup_safe' = 'true'", plan["setupStatements"][1])
-        self.assertIn("'governance_atlas.exclude_from_organic_evidence' = 'true'", plan["setupStatements"][1])
+        self.assertIn("'axiom.app_owned' = 'true'", plan["setupStatements"][1])
+        self.assertIn("'axiom.test_scoped' = 'true'", plan["setupStatements"][1])
+        self.assertIn("'axiom.cleanup_safe' = 'true'", plan["setupStatements"][1])
+        self.assertIn("'axiom.exclude_from_organic_evidence' = 'true'", plan["setupStatements"][1])
         self.assertEqual(
             plan["tables"],
             [
@@ -76,16 +76,16 @@ class SyntheticStressContractTests(unittest.TestCase):
         )
 
         for statement in plan["insertStatements"]:
-            self.assertIn("`datapact`.`atlas_ga_stress_20260427141516_abc1234`.`validation_events`", statement)
-            self.assertIn("'ga-stress-20260427141516-abc1234'", statement)
+            self.assertIn("`emet`.`axiom_ax_stress_20260427141516_abc1234`.`validation_events`", statement)
+            self.assertIn("'ax-stress-20260427141516-abc1234'", statement)
             self.assertIn(f"'{stress.ROW_MARKER}'", statement)
             self.assertIn("true, true, true, true", statement)
 
     def test_plan_creates_and_mutates_customer_workflows(self) -> None:
         plan = stress.build_plan(
-            catalog="datapact",
-            schema_prefix="atlas_ga_stress",
-            run_id="ga-stress-20260427141516-abc1234",
+            catalog="emet",
+            schema_prefix="axiom_ax_stress",
+            run_id="ax-stress-20260427141516-abc1234",
             rows_per_scenario=1,
             cleanup=True,
         )
@@ -101,7 +101,7 @@ class SyntheticStressContractTests(unittest.TestCase):
         self.assertIn("'quality_run'", workflow_sql)
         self.assertIn("'genie_question'", workflow_sql)
         self.assertIn("'lakebase_mirror'", workflow_sql)
-        self.assertIn("UPDATE `datapact`.`atlas_ga_stress_20260427141516_abc1234`.`workflow_entities`", workflow_sql)
+        self.assertIn("UPDATE `emet`.`axiom_ax_stress_20260427141516_abc1234`.`workflow_entities`", workflow_sql)
         self.assertIn("'request_approved'", workflow_sql)
         self.assertIn("'request_rejected'", workflow_sql)
         self.assertIn("'taxonomy_association_approved'", workflow_sql)
@@ -114,9 +114,9 @@ class SyntheticStressContractTests(unittest.TestCase):
 
     def test_workflow_validation_asserts_required_customer_paths(self) -> None:
         plan = stress.build_plan(
-            catalog="datapact",
-            schema_prefix="atlas_ga_stress",
-            run_id="ga-stress-20260427141516-abc1234",
+            catalog="emet",
+            schema_prefix="axiom_ax_stress",
+            run_id="ax-stress-20260427141516-abc1234",
             rows_per_scenario=1,
             cleanup=True,
         )
@@ -145,9 +145,9 @@ class SyntheticStressContractTests(unittest.TestCase):
 
     def test_cleanup_has_no_unscoped_deletes_or_unscoped_schema_drop(self) -> None:
         plan = stress.build_plan(
-            catalog="datapact",
-            schema_prefix="atlas_ga_stress",
-            run_id="ga-stress-20260427141516-abc1234",
+            catalog="emet",
+            schema_prefix="axiom_ax_stress",
+            run_id="ax-stress-20260427141516-abc1234",
             rows_per_scenario=1,
             cleanup=True,
         )
@@ -158,47 +158,47 @@ class SyntheticStressContractTests(unittest.TestCase):
         self.assertNotIn("DROP TABLE", all_sql)
         self.assertEqual(
             plan["cleanupStatements"],
-            ["DROP SCHEMA IF EXISTS `datapact`.`atlas_ga_stress_20260427141516_abc1234` CASCADE"],
+            ["DROP SCHEMA IF EXISTS `emet`.`axiom_ax_stress_20260427141516_abc1234` CASCADE"],
         )
         self.assertEqual(
             plan["cleanupVerificationStatements"],
-            ["SHOW SCHEMAS IN `datapact` LIKE 'atlas_ga_stress_20260427141516_abc1234'"],
+            ["SHOW SCHEMAS IN `emet` LIKE 'axiom_ax_stress_20260427141516_abc1234'"],
         )
         with self.assertRaises(ValueError):
             stress.cleanup_statement(
-                catalog="datapact",
-                schema="atlas",
-                schema_prefix="atlas_ga_stress",
-                run_id="ga-stress-20260427141516-abc1234",
+                catalog="emet",
+                schema="axiom",
+                schema_prefix="axiom_ax_stress",
+                run_id="ax-stress-20260427141516-abc1234",
             )
 
     def test_live_mutations_require_explicit_default_profile_and_warehouse(self) -> None:
         stress.validate_runtime_safety(
-            argparse.Namespace(live=False, profile=None, warehouse_id="", catalog="datapact")
+            argparse.Namespace(live=False, profile=None, warehouse_id="", catalog="emet")
         )
 
         with self.assertRaisesRegex(ValueError, "explicit --profile DEFAULT"):
             stress.validate_runtime_safety(
-                argparse.Namespace(live=True, profile=None, warehouse_id="abc", catalog="datapact")
+                argparse.Namespace(live=True, profile=None, warehouse_id="abc", catalog="emet")
             )
         with self.assertRaisesRegex(ValueError, "explicit --profile DEFAULT"):
             stress.validate_runtime_safety(
-                argparse.Namespace(live=True, profile="DEV", warehouse_id="abc", catalog="datapact")
+                argparse.Namespace(live=True, profile="DEV", warehouse_id="abc", catalog="emet")
             )
         with self.assertRaisesRegex(ValueError, "--warehouse-id"):
             stress.validate_runtime_safety(
-                argparse.Namespace(live=True, profile="DEFAULT", warehouse_id="", catalog="datapact")
+                argparse.Namespace(live=True, profile="DEFAULT", warehouse_id="", catalog="emet")
             )
 
         stress.validate_runtime_safety(
-            argparse.Namespace(live=True, profile="DEFAULT", warehouse_id="abc", catalog="datapact")
+            argparse.Namespace(live=True, profile="DEFAULT", warehouse_id="abc", catalog="emet")
         )
 
     def test_dry_run_does_not_require_databricks_or_emit_live_mode(self) -> None:
         args = stress.parse_args(
             [
                 "--run-id",
-                "ga-stress-20260427141516-abc1234",
+                "ax-stress-20260427141516-abc1234",
                 "--rows-per-scenario",
                 "1",
             ]
@@ -219,9 +219,9 @@ class SyntheticStressContractTests(unittest.TestCase):
 
     def test_workflow_evaluator_rejects_missing_paths_and_synthetic_leaks(self) -> None:
         plan = stress.build_plan(
-            catalog="datapact",
-            schema_prefix="atlas_ga_stress",
-            run_id="ga-stress-20260427141516-abc1234",
+            catalog="emet",
+            schema_prefix="axiom_ax_stress",
+            run_id="ax-stress-20260427141516-abc1234",
             rows_per_scenario=1,
             cleanup=True,
         )

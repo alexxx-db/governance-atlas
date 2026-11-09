@@ -10,9 +10,9 @@ from unittest.mock import patch
 
 from fastapi import FastAPI
 
-from atlas.config import AppConfig, ai_features_enabled_from_env
+from axiom.config import AppConfig, ai_features_enabled_from_env
 
-_BASE_ENV = {"DATABRICKS_WAREHOUSE_ID": "wh", "GOVAT_CATALOG": "main", "GOVAT_SCHEMA": "atlas"}
+_BASE_ENV = {"DATABRICKS_WAREHOUSE_ID": "wh", "AXIOM_CATALOG": "main", "AXIOM_SCHEMA": "axiom"}
 
 
 def _config(**extra: str) -> AppConfig:
@@ -32,12 +32,12 @@ class AiConfigTests(unittest.TestCase):
 
     def test_env_overrides_and_parsing(self) -> None:
         cfg = _config(
-            GOVAT_AI_FEATURES_ENABLED="true",
-            GOVAT_AI_INTAKE_TAG_KEY="intake_ref",
-            GOVAT_AI_TIER_TAG_KEY="tier",
-            GOVAT_AI_CATALOG_ALLOWLIST="main, ml_prod ,",
-            GOVAT_AI_TOOL_SCHEMA_ALLOWLIST="main.tools",
-            GOVAT_AI_INTAKE_GRACE_DAYS="-4",
+            AXIOM_AI_FEATURES_ENABLED="true",
+            AXIOM_AI_INTAKE_TAG_KEY="intake_ref",
+            AXIOM_AI_TIER_TAG_KEY="tier",
+            AXIOM_AI_CATALOG_ALLOWLIST="main, ml_prod ,",
+            AXIOM_AI_TOOL_SCHEMA_ALLOWLIST="main.tools",
+            AXIOM_AI_INTAKE_GRACE_DAYS="-4",
         )
         self.assertTrue(cfg.ai_features_enabled)
         self.assertEqual(cfg.ai_intake_tag_key, "intake_ref")
@@ -47,14 +47,14 @@ class AiConfigTests(unittest.TestCase):
         self.assertEqual(cfg.ai_intake_grace_days, 0)
 
     def test_not_configured_sentinel_falls_back_to_default(self) -> None:
-        cfg = _config(GOVAT_AI_INTAKE_TAG_KEY="not-configured", GOVAT_AI_CATALOG_ALLOWLIST="not-configured")
+        cfg = _config(AXIOM_AI_INTAKE_TAG_KEY="not-configured", AXIOM_AI_CATALOG_ALLOWLIST="not-configured")
         self.assertEqual(cfg.ai_intake_tag_key, "edw_intake_id")
         self.assertEqual(cfg.ai_catalog_allowlist, [])
 
     def test_flag_helper_reads_env_without_full_config(self) -> None:
         with patch.dict(os.environ, {}, clear=True):
             self.assertFalse(ai_features_enabled_from_env())
-        with patch.dict(os.environ, {"GOVAT_AI_FEATURES_ENABLED": "1"}, clear=True):
+        with patch.dict(os.environ, {"AXIOM_AI_FEATURES_ENABLED": "1"}, clear=True):
             self.assertTrue(ai_features_enabled_from_env())
 
 
@@ -70,7 +70,7 @@ class AiRouteGateTests(unittest.TestCase):
         import runtime_app
 
         if ai_features_enabled_from_env():
-            self.skipTest("GOVAT_AI_FEATURES_ENABLED is set in this environment")
+            self.skipTest("AXIOM_AI_FEATURES_ENABLED is set in this environment")
         # OpenAPI paths, not app.routes: newer FastAPI nests included routers
         # as _IncludedRouter entries without a .path attribute.
         paths = list(runtime_app.app.openapi().get("paths", {}))

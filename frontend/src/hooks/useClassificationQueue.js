@@ -5,9 +5,9 @@
 // hook carries no role gate of its own (the host page gates the decision
 // buttons). fetchClassificationRecommendations already normalizes the payload
 // into a flat { recommendations, count, pendingCount } envelope whose
-// state/meta the shared useAtlasQuery contract resolves.
+// state/meta the shared useAxiomQuery contract resolves.
 import { fetchClassificationRecommendations } from "../lib/api";
-import { useAtlasQuery } from "./useAtlasQuery";
+import { useAxiomQuery } from "./useAxiomQuery";
 
 function textFilter(value) {
   return String(value || "").trim();
@@ -25,8 +25,8 @@ export function useClassificationQueue(filters = {}, options = {}) {
   const assetFqn = textFilter(filters.assetFqn);
   const enabled = options.enabled !== false;
 
-  const query = useAtlasQuery({
-    key: ["atlas", "classification-recommendations", status, assetFqn],
+  const query = useAxiomQuery({
+    key: ["axiom", "classification-recommendations", status, assetFqn],
     enabled,
     fetch: (signal) => fetchClassificationRecommendations({ status, assetFqn, signal }),
     // Keep the previous filter window's rows on screen while the next loads

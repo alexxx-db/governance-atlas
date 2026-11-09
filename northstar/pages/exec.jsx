@@ -21,10 +21,10 @@ function ExecPage({ onAsset }) {
               </span>
             </div>
             <h1 style={{ margin: 0, fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 36, letterSpacing: '-0.025em', color: 'var(--txt-strong)', lineHeight: 1.1 }}>
-              Governance posture, <span style={{ background: 'linear-gradient(90deg, #66C5FF, #CFEFFF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>at a glance</span>
+              Governance posture, <span style={{ background: 'linear-gradient(90deg, #7497DC, #CDDAF4)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>at a glance</span>
             </h1>
             <div style={{ color: 'var(--txt-muted)', fontSize: 14, marginTop: 6, maxWidth: 720, lineHeight: 1.5 }}>
-              Atlas reads Unity Catalog directly — every number below is permission-aware, lineage-verified, and traceable to a system table.
+              Axiom reads Unity Catalog directly — every number below is permission-aware, lineage-verified, and traceable to a system table.
             </div>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>

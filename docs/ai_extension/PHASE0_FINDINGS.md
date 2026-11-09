@@ -167,9 +167,9 @@ Two items limit Phase 1 fidelity and are recorded as risks:
 **V8: hard-coded entity kinds.**
 
 - Backend:
-  - `atlas/services/custom_properties.py:25`
+  - `axiom/services/custom_properties.py:25`
     `SUPPORTED_ENTITY_KINDS = ("asset", "column", "glossary_term")`.
-  - `atlas/api/catalog.py:284` requires an FQN only for `asset` and `column`,
+  - `axiom/api/catalog.py:284` requires an FQN only for `asset` and `column`,
     so AI kinds don't hit it.
 - Frontend:
   - `components/system/refs.js`: `hrefForRef` and `defaultRefLabel` switch on
@@ -199,7 +199,7 @@ Two items limit Phase 1 fidelity and are recorded as risks:
 - Chosen approach:
   - Serverless job with that environment.
   - Tasks run the entry scripts from the bundle's synced files
-    (`${workspace.file_path}/atlas/ai/jobs/*.py`).
+    (`${workspace.file_path}/axiom/ai/jobs/*.py`).
   - Tasks receive the warehouse ID and governance catalog and schema as
     parameters.
   - `run_as` is used only when `ai_collector_sp` is set.
@@ -225,7 +225,7 @@ From the reopened ledgers:
 | Component or pattern | Known open issue | Impact on `/ai` |
 |---|---|---|
 | `Drawer` (peek/selected) | full_page_audit:227-229: header density, tab spacing, and sticky actions differ from the reference; an AI panel can obscure drawer content | Findings evidence drawer inherits the layout; keep the AI dock closed on `/ai` or test overlap |
-| Degraded banner (`StatusBanner`) | full_page_audit:230: degraded state renders a large pale banner that breaks the dark palette | The source-unavailable banner is a core Phase 1 requirement; must use `--ga-*` tokens; check on the live app |
+| Degraded banner (`StatusBanner`) | full_page_audit:230: degraded state renders a large pale banner that breaks the dark palette | The source-unavailable banner is a core Phase 1 requirement; must use `--ax-*` tokens; check on the live app |
 | `DataTable` | full_page_audit:320: columns truncate at 1440x900 and 1280x720 (asset names, owners) | AI inventory has long FQNs and endpoint names; check truncation with titles |
 | Row actions | functional_control_audit:390: row actions can end in local status text instead of a real resource or a disabled state | Finding actions must call real APIs or be visibly disabled with a reason |
 | Mutation controls | functional_control_audit:286: governance mutations lack disposable live proof | Phase 1 walk-through must exercise suppress, confirm, and resolve on sample findings only |
@@ -284,7 +284,7 @@ Applied in `DESIGN.md` under "Verified against SDK 0.95 (2026-09-24)":
 - Catalog access: service principals are members of `account users`, which
   already hold `USE_CATALOG`/`USE_SCHEMA`/`SELECT` on `main`, where the
   sample models live. The verifying user cannot grant on other catalogs (for
-  example `demos`, `datapact`); models there show as `degraded`.
+  example `demos`, `emet`); models there show as `degraded`.
 - **Collector identity in dev (decided 2026-09-24):** no `run_as` in dev. The
   job runs as the deploying user, sees all endpoints, and changes no
   permissions. Staging and prod run as a dedicated service principal through

@@ -122,7 +122,7 @@ function FilterPill({ active, onClick, children }) {
       display: 'flex', alignItems: 'center', gap: 8,
       padding: '6px 10px', borderRadius: 6,
       border: `1px solid ${active ? 'var(--accent)' : 'transparent'}`,
-      background: active ? 'rgba(61,132,173,0.10)' : 'transparent',
+      background: active ? 'rgba(91,127,208,0.10)' : 'transparent',
       cursor: 'pointer', fontSize: 12.5, color: 'var(--txt)',
       transition: 'all 160ms',
     }} onMouseEnter={e => !active && (e.currentTarget.style.background = 'var(--srf-2)')} onMouseLeave={e => !active && (e.currentTarget.style.background = 'transparent')}>

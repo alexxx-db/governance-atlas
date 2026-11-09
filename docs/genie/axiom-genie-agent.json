@@ -1,0 +1,2899 @@
+{
+  "version": 2,
+  "config": {
+    "sample_questions": [
+      {
+        "id": "0aa62476df6a6cfb960cb631d9932c7f",
+        "question": [
+          "Which sensitive assets have no owner?"
+        ]
+      },
+      {
+        "id": "0d511d380d9f512d7146bc6b75c8f17b",
+        "question": [
+          "Which assets have no assigned owner?"
+        ]
+      },
+      {
+        "id": "150c7e30c39dd27a8787bbbac8d1d5ac",
+        "question": [
+          "Which assets have the lowest metadata coverage?"
+        ]
+      },
+      {
+        "id": "32e9a35314366c91882ac8593aa651d9",
+        "question": [
+          "What is the quality pass rate by asset?"
+        ]
+      },
+      {
+        "id": "785cae08cdcf056ec18aa2c1e8b83230",
+        "question": [
+          "Which glossary terms are waiting for review?"
+        ]
+      },
+      {
+        "id": "86b3aadee0340b69376be72510c2bcf6",
+        "question": [
+          "Show me data quality issues impacting critical assets."
+        ]
+      },
+      {
+        "id": "88cc3d12d2da0f6e2e44d3be13daeb23",
+        "question": [
+          "What is the average review turnaround time?"
+        ]
+      },
+      {
+        "id": "8953c1f450eca65765dbcf7cca45e80c",
+        "question": [
+          "What changed in governance metadata recently?"
+        ]
+      },
+      {
+        "id": "97fb8af5028bf895fd768c669d7fe689",
+        "question": [
+          "Which assets have not changed in over 180 days?"
+        ]
+      },
+      {
+        "id": "a499918c35a755845a17947852c44a30",
+        "question": [
+          "Which glossary terms are linked to customer assets?"
+        ]
+      },
+      {
+        "id": "a7a6cce9fb1a1f5df92c6092e235c53b",
+        "question": [
+          "Which domains have the highest risk of policy exceptions?"
+        ]
+      },
+      {
+        "id": "abf17925c8f9f30cf63767abd79abc34",
+        "question": [
+          "What is the oldest open governance work?"
+        ]
+      },
+      {
+        "id": "b0e6a5c392069ea0d84a2dac79784f3c",
+        "question": [
+          "Which assets have the most downstream dependents?"
+        ]
+      },
+      {
+        "id": "e1d74e81df6a1da5781023c59dd05174",
+        "question": [
+          "Which critical assets are not certified?"
+        ]
+      },
+      {
+        "id": "e7acadad1738970898a17aa6e5e17152",
+        "question": [
+          "What is our overall metadata coverage?"
+        ]
+      },
+      {
+        "id": "f3fd4fcfe604c4c94e4ae1a7c6acfb12",
+        "question": [
+          "Who owns the most assets?"
+        ]
+      }
+    ]
+  },
+  "data_sources": {
+    "tables": [
+      {
+        "identifier": "ops_governance.axiom_ai.axiom_ai_assets_current",
+        "description": [
+          "Current Unity Catalog asset inventory (one row per table or view the current user can see) enriched with Unity Catalog tags, Axiom owner assignments, certification, criticality, and pending change-request counts. Default table for any asset, inventory, ownership, certification, sensitivity, or metadata-coverage question."
+        ],
+        "column_configs": [
+          {
+            "column_name": "asset_fqn",
+            "description": [
+              "Fully qualified asset name in catalog.schema.table form. Always return it so users can verify the answer."
+            ],
+            "synonyms": [
+              "asset",
+              "table",
+              "view",
+              "dataset",
+              "data set"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "business_owners",
+            "description": [
+              "Comma-separated owner emails assigned in Axiom. NULL means no Axiom owner. Unity Catalog object owners and owner tags are not included."
+            ],
+            "synonyms": [
+              "owner",
+              "steward",
+              "data owner",
+              "business owner"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "catalog_name",
+            "description": [
+              "Unity Catalog catalog that contains the asset."
+            ]
+          },
+          {
+            "column_name": "certification",
+            "description": [
+              "Raw certification tag value. Only the exact value Certified counts as certified; Trusted, Approved, or Gold are different labels."
+            ],
+            "synonyms": [
+              "certification",
+              "certification label"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "comment",
+            "description": [
+              "Unity Catalog description. NULL or blank means the asset is undocumented."
+            ]
+          },
+          {
+            "column_name": "created",
+            "description": [
+              "Timestamp when the asset was created."
+            ]
+          },
+          {
+            "column_name": "criticality",
+            "description": [
+              "Criticality tag value such as Critical, High, Tier 1, P0, or P1."
+            ],
+            "synonyms": [
+              "criticality",
+              "critical asset",
+              "business criticality"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "data_product",
+            "description": [
+              "Data product from the data_product or product tag."
+            ],
+            "synonyms": [
+              "data product",
+              "product"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "domain",
+            "description": [
+              "Business domain from the domain or business_domain tag. NULL means no domain tag."
+            ],
+            "synonyms": [
+              "domain",
+              "business area",
+              "business domain"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "has_owner",
+            "description": [
+              "True when the asset has at least one Axiom owner."
+            ]
+          },
+          {
+            "column_name": "is_certified",
+            "description": [
+              "True only when the certification tag equals Certified (case-insensitive)."
+            ]
+          },
+          {
+            "column_name": "is_critical",
+            "description": [
+              "True when criticality is critical, high, tier 1, p0, or p1."
+            ]
+          },
+          {
+            "column_name": "last_altered",
+            "description": [
+              "Timestamp of the last schema or metadata change. Use for staleness and recently-changed questions."
+            ]
+          },
+          {
+            "column_name": "open_work_count",
+            "description": [
+              "Number of pending Axiom change requests on the asset. Workflow tasks are counted in axiom_ai_governance_work_current, not here."
+            ]
+          },
+          {
+            "column_name": "owner_count",
+            "description": [
+              "Number of distinct Axiom owners assigned to the asset."
+            ]
+          },
+          {
+            "column_name": "schema_name",
+            "description": [
+              "Unity Catalog schema that contains the asset."
+            ],
+            "synonyms": [
+              "schema",
+              "database"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "sensitivity",
+            "description": [
+              "Sensitivity or classification tag value such as PII, Confidential, Restricted, or Public. NULL means unclassified."
+            ],
+            "synonyms": [
+              "sensitivity",
+              "classification",
+              "pii",
+              "data classification"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "table_name",
+            "description": [
+              "Table or view name without catalog and schema."
+            ],
+            "synonyms": [
+              "table name",
+              "view name"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "table_type",
+            "description": [
+              "Unity Catalog object type such as MANAGED, EXTERNAL, VIEW, MATERIALIZED_VIEW, STREAMING_TABLE, or METRIC_VIEW."
+            ],
+            "synonyms": [
+              "object type",
+              "asset type",
+              "table type"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "tier",
+            "description": [
+              "Data tier from the tier or data_tier tag."
+            ],
+            "synonyms": [
+              "tier",
+              "data tier",
+              "layer"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          }
+        ]
+      },
+      {
+        "identifier": "ops_governance.axiom_ai.axiom_ai_audit_events",
+        "description": [
+          "Axiom metadata audit log: one row per governance action on a visible asset, such as owner, tag, comment, quality, or workflow changes."
+        ],
+        "column_configs": [
+          {
+            "column_name": "action",
+            "description": [
+              "Audit action such as owner-upserted, asset-metadata-updated, asset-metadata-proposed, column-tags-updated, task-created, or quality-run-executed."
+            ],
+            "synonyms": [
+              "change",
+              "event",
+              "activity",
+              "action"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "actor_email",
+            "description": [
+              "Who performed the action."
+            ],
+            "synonyms": [
+              "user",
+              "actor",
+              "changed by",
+              "who"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "actor_role",
+            "description": [
+              "Role of the actor at the time of the action."
+            ]
+          },
+          {
+            "column_name": "asset_fqn",
+            "description": [
+              "Asset affected by the audit event."
+            ],
+            "synonyms": [
+              "asset",
+              "table"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "audit_id",
+            "description": [
+              "Audit event identifier. Return it so users can verify the event."
+            ]
+          },
+          {
+            "column_name": "column_name",
+            "description": [
+              "Column affected, when the change is column-level."
+            ],
+            "synonyms": [
+              "column"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "created_at",
+            "description": [
+              "Event timestamp."
+            ]
+          },
+          {
+            "column_name": "detail",
+            "description": [
+              "Event detail text."
+            ]
+          },
+          {
+            "column_name": "entity_id",
+            "description": [
+              "Identifier of the changed entity."
+            ]
+          },
+          {
+            "column_name": "entity_type",
+            "description": [
+              "Kind of entity changed, such as table or column."
+            ]
+          },
+          {
+            "column_name": "request_id",
+            "description": [
+              "Related change request id, when any."
+            ]
+          },
+          {
+            "column_name": "source",
+            "description": [
+              "Where the change came from, such as ui, api, ai, or job."
+            ],
+            "synonyms": [
+              "origin",
+              "channel"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "status",
+            "description": [
+              "Outcome of the action, such as applied, queued, failed, or skipped."
+            ],
+            "synonyms": [
+              "outcome",
+              "result"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "updated_at",
+            "description": [
+              "Timestamp of the last update to the event."
+            ]
+          }
+        ]
+      },
+      {
+        "identifier": "ops_governance.axiom_ai.axiom_ai_glossary_current",
+        "description": [
+          "Business glossary terms with hierarchy, status, owner, reviewers, and the assets each term is linked to."
+        ],
+        "column_configs": [
+          {
+            "column_name": "definition",
+            "description": [
+              "Business definition of the term. NULL or blank means undefined."
+            ],
+            "synonyms": [
+              "meaning",
+              "definition"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "display_name",
+            "description": [
+              "Display name for the term (same as name)."
+            ]
+          },
+          {
+            "column_name": "domain",
+            "description": [
+              "Business domain of the term."
+            ],
+            "synonyms": [
+              "domain",
+              "business area"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "glossary_id",
+            "description": [
+              "Glossary the term belongs to."
+            ]
+          },
+          {
+            "column_name": "linked_asset_count",
+            "description": [
+              "Number of visible assets linked to the term. 0 means the term is not linked to any asset."
+            ]
+          },
+          {
+            "column_name": "linked_assets_sample",
+            "description": [
+              "Up to 20 linked asset FQNs, comma-separated."
+            ]
+          },
+          {
+            "column_name": "name",
+            "description": [
+              "Glossary term name."
+            ],
+            "synonyms": [
+              "term",
+              "business term",
+              "glossary term"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "owner_email",
+            "description": [
+              "Term owner email."
+            ],
+            "synonyms": [
+              "term owner",
+              "owner"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "parent_term_id",
+            "description": [
+              "Parent term identifier for hierarchical terms. NULL for top-level terms."
+            ]
+          },
+          {
+            "column_name": "review_status",
+            "description": [
+              "Review state for the term (same values as status)."
+            ],
+            "synonyms": [
+              "review state"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "reviewers",
+            "description": [
+              "Comma-separated reviewer emails."
+            ]
+          },
+          {
+            "column_name": "status",
+            "description": [
+              "Term lifecycle status such as draft, in_review, approved, or deprecated."
+            ],
+            "synonyms": [
+              "term status"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "term_id",
+            "description": [
+              "Stable glossary term identifier."
+            ]
+          },
+          {
+            "column_name": "updated_at",
+            "description": [
+              "Timestamp of the last term update."
+            ]
+          },
+          {
+            "column_name": "updated_by",
+            "description": [
+              "Who last updated the term."
+            ]
+          }
+        ]
+      },
+      {
+        "identifier": "ops_governance.axiom_ai.axiom_ai_governance_work_current",
+        "description": [
+          "Axiom governance work: change requests and workflow tasks, one row per work item, with status, requester, and review outcome. Only work on assets visible in axiom_ai_assets_current is included."
+        ],
+        "column_configs": [
+          {
+            "column_name": "asset_fqn",
+            "description": [
+              "Asset the work item changes."
+            ],
+            "synonyms": [
+              "asset",
+              "table"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "created_at",
+            "description": [
+              "Timestamp when the work item was created."
+            ]
+          },
+          {
+            "column_name": "created_by",
+            "description": [
+              "Requester identifier (email or directory entry id)."
+            ],
+            "synonyms": [
+              "requester",
+              "requested by",
+              "submitter"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "requested_tags_json",
+            "description": [
+              "JSON payload of the requested tags or change. Use get_json_object to read fields."
+            ]
+          },
+          {
+            "column_name": "review_note",
+            "description": [
+              "Reviewer note or rejection reason."
+            ]
+          },
+          {
+            "column_name": "reviewed_at",
+            "description": [
+              "Timestamp when the work item was reviewed or closed. NULL while open."
+            ]
+          },
+          {
+            "column_name": "reviewed_by",
+            "description": [
+              "Reviewer identifier when reviewed."
+            ],
+            "synonyms": [
+              "reviewer",
+              "approver"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "status",
+            "description": [
+              "Work status. Open: blank, new, pending, open, in_review, blocked. Closed: approved, rejected, resolved, closed, applied, cancelled, done."
+            ],
+            "synonyms": [
+              "state",
+              "status",
+              "workflow status"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "title",
+            "description": [
+              "Short description of the requested change."
+            ]
+          },
+          {
+            "column_name": "work_id",
+            "description": [
+              "Change request or task identifier. Return it so users can open the item in Axiom."
+            ],
+            "synonyms": [
+              "request",
+              "task",
+              "ticket",
+              "work item"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "work_type",
+            "description": [
+              "change_request for metadata change requests, otherwise the workflow task type."
+            ],
+            "synonyms": [
+              "request type",
+              "task type",
+              "work type"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          }
+        ]
+      },
+      {
+        "identifier": "ops_governance.axiom_ai.axiom_ai_lineage_edges",
+        "description": [
+          "Unity Catalog table lineage edges from system.access.table_lineage for the last 90 days, limited to edges that touch a visible asset. One row per observed lineage event, so count DISTINCT assets. Empty when lineage is unavailable to the workspace or user."
+        ],
+        "column_configs": [
+          {
+            "column_name": "availability_state",
+            "description": [
+              "available when real lineage rows exist; the fallback view is empty."
+            ]
+          },
+          {
+            "column_name": "event_time",
+            "description": [
+              "Timestamp when the lineage event was observed."
+            ]
+          },
+          {
+            "column_name": "lineage_source",
+            "description": [
+              "Kind of lineage event or entity, such as TABLE, NOTEBOOK, JOB, or PIPELINE."
+            ]
+          },
+          {
+            "column_name": "source_asset_fqn",
+            "description": [
+              "Upstream asset (read from). NULL for non-table sources such as files."
+            ],
+            "synonyms": [
+              "upstream",
+              "source",
+              "feeds",
+              "input"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "target_asset_fqn",
+            "description": [
+              "Downstream asset (written to). NULL when the target is not a table, such as a dashboard or notebook read."
+            ],
+            "synonyms": [
+              "downstream",
+              "target",
+              "consumer",
+              "output"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          }
+        ]
+      },
+      {
+        "identifier": "ops_governance.axiom_ai.axiom_ai_quality_latest",
+        "description": [
+          "Latest data quality result per asset, column, and test case (older results are excluded). outcome is passed, failed, errored, or skipped; failed and errored are failing."
+        ],
+        "column_configs": [
+          {
+            "column_name": "asset_fqn",
+            "description": [
+              "Asset tested by the quality result."
+            ],
+            "synonyms": [
+              "asset",
+              "table"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "case_id",
+            "description": [
+              "Quality test case identifier."
+            ],
+            "synonyms": [
+              "test",
+              "check",
+              "rule",
+              "quality check"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "column_name",
+            "description": [
+              "Column tested, when applicable. NULL for table-level checks."
+            ],
+            "synonyms": [
+              "column",
+              "field"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "detail",
+            "description": [
+              "Human-readable result detail."
+            ]
+          },
+          {
+            "column_name": "evidence_json",
+            "description": [
+              "JSON evidence captured for the result."
+            ]
+          },
+          {
+            "column_name": "executed_at",
+            "description": [
+              "Timestamp when the check executed."
+            ]
+          },
+          {
+            "column_name": "metric_value",
+            "description": [
+              "Observed metric value."
+            ]
+          },
+          {
+            "column_name": "outcome",
+            "description": [
+              "Latest outcome: passed, failed, errored, or skipped."
+            ],
+            "synonyms": [
+              "result",
+              "test result",
+              "quality issue",
+              "pass",
+              "fail"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "result_id",
+            "description": [
+              "Quality result identifier."
+            ]
+          },
+          {
+            "column_name": "result_rank",
+            "description": [
+              "Always 1; the view keeps only the latest result per asset, column, and case."
+            ]
+          },
+          {
+            "column_name": "row_bytes_scanned",
+            "description": [
+              "Bytes scanned by the check."
+            ]
+          },
+          {
+            "column_name": "run_id",
+            "description": [
+              "Quality run that produced the result."
+            ]
+          },
+          {
+            "column_name": "run_status",
+            "description": [
+              "Status of the quality run."
+            ]
+          },
+          {
+            "column_name": "severity",
+            "description": [
+              "Severity: critical, high, medium, or low."
+            ],
+            "synonyms": [
+              "severity",
+              "priority"
+            ],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "statement_id",
+            "description": [
+              "Databricks SQL statement id that executed the check."
+            ]
+          },
+          {
+            "column_name": "suite_id",
+            "description": [
+              "Quality suite that owns the run."
+            ]
+          },
+          {
+            "column_name": "threshold_value",
+            "description": [
+              "Configured threshold for the check."
+            ]
+          },
+          {
+            "column_name": "trigger",
+            "description": [
+              "What started the run, such as manual or schedule."
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "instructions": {
+    "text_instructions": [
+      {
+        "id": "ae95c85054911dac8ab9c51fa2c18857",
+        "content": [
+          "You are Axiom AI, the Shore Capital governance assistant. Answer only from the six curated Axiom views in this room. Never invent assets, owners, workflow state, glossary links, quality results, lineage, certification, or audit history.\n",
+          "Evidence rules: Never synthesize fallback rows, sentinel assets, or placeholder identifiers such as unavailable, none, no_data, or n/a. Never use UNION ALL SELECT fallbacks to fabricate a no-results row. If a query returns zero rows, keep the result empty and say that no governed evidence rows were observed for that question; do not guess. When returning rows, include asset_fqn, work_id, audit_id, term_id, or case_id so users can verify the answer, plus the relevant timestamp.\n",
+          "Table choice: use axiom_ai_assets_current as the default inventory. Join to governance work, quality, audit, or lineage on asset_fqn only when the question asks for that evidence. Lineage joins use source_asset_fqn (upstream) or target_asset_fqn (downstream). Glossary links are in linked_assets_sample; there is no join key from glossary to assets.\n",
+          "Definitions: certified means is_certified = TRUE (certification tag exactly Certified). Critical means is_critical = TRUE. Owned means has_owner = TRUE (an Axiom owner assignment; Unity Catalog object owners do not count). Documented means comment is not NULL and not blank. Sensitive means sensitivity is PII, PHI, PCI, Confidential, Highly Confidential, Restricted, Sensitive, or Secret, or contains pii. Unclassified means sensitivity IS NULL. Metadata coverage is a 0-5 score: one point each for a description, an owner, a domain tag, a sensitivity tag, and a certification tag. Stale means last_altered more than 180 days ago.\n",
+          "Workflow: open work has status blank, new, pending, open, in_review, or blocked; closed work has status approved, rejected, resolved, closed, applied, cancelled, or done. Compare status with lower(). Age is datediff(current_date(), created_at) in days. Review turnaround is the time between created_at and reviewed_at for reviewed items. open_work_count on assets counts pending change requests only; count tasks from axiom_ai_governance_work_current.\n",
+          "Quality: axiom_ai_quality_latest holds only the latest result per asset, column, and case. Failing means outcome failed or errored. Pass rate is passed / (passed + failed + errored); exclude skipped. Order severity critical, high, medium, low.\n",
+          "Lineage: rows are lineage events, not unique edges, so use COUNT(DISTINCT ...). The view covers the last 90 days. If the lineage view is empty, say lineage evidence is unavailable rather than claiming an asset has no dependencies.\n",
+          "Risk and stewardship: prefer pending work, missing owner, missing certification on critical assets, failing quality checks, sensitive unowned assets, and recent audit events as evidence. Time windows: recently means the last 30 days unless the user says otherwise; this quarter means created_at >= date_trunc('quarter', current_date()).\n",
+          "Formatting: default to LIMIT 25 for lists, order by the most important signal first then asset_fqn for stable results, round percentages to one decimal place, and show COALESCE(domain, 'Unassigned') for missing domains."
+        ]
+      }
+    ],
+    "example_question_sqls": [
+      {
+        "id": "00cae9ea5cd4d1558567bfdcaf9e55ef",
+        "question": [
+          "Which glossary terms are linked to customer assets?"
+        ],
+        "sql": [
+          "SELECT term_id, name, definition, review_status, linked_asset_count, linked_assets_sample\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_glossary_current`\nWHERE lower(COALESCE(linked_assets_sample, '')) LIKE '%customer%'\n   OR lower(COALESCE(domain, '')) LIKE '%customer%'\n   OR lower(COALESCE(name, '')) LIKE '%customer%'\nORDER BY linked_asset_count DESC, name\nLIMIT 25"
+        ],
+        "usage_guidance": [
+          "Use for glossary questions scoped to a subject such as customer; replace the keyword for other subjects."
+        ]
+      },
+      {
+        "id": "0106961f334cb28b76222b0bf72e6f62",
+        "question": [
+          "Which assets have no lineage activity in the last 90 days?"
+        ],
+        "sql": [
+          "SELECT assets.asset_fqn, assets.table_type, assets.last_altered\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` assets\nWHERE NOT EXISTS (\n  SELECT 1 FROM `ops_governance`.`axiom_ai`.`axiom_ai_lineage_edges` lineage\n  WHERE lineage.source_asset_fqn = assets.asset_fqn OR lineage.target_asset_fqn = assets.asset_fqn\n)\nORDER BY assets.last_altered ASC, assets.asset_fqn\nLIMIT 50"
+        ],
+        "usage_guidance": [
+          "Use for unused or isolated asset questions. If the lineage view is empty, say lineage is unavailable instead of listing every asset."
+        ]
+      },
+      {
+        "id": "05dd74d9daf779289f97be08a1f1fa71",
+        "question": [
+          "What is the certification rate by domain?"
+        ],
+        "sql": [
+          "SELECT COALESCE(domain, 'Unassigned') AS domain,\n  COUNT(*) AS assets,\n  SUM(CASE WHEN is_certified THEN 1 ELSE 0 END) AS certified_assets,\n  ROUND(100.0 * AVG(CASE WHEN is_certified THEN 1 ELSE 0 END), 1) AS certification_rate_pct\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nGROUP BY COALESCE(domain, 'Unassigned')\nORDER BY certification_rate_pct ASC, assets DESC, domain"
+        ],
+        "usage_guidance": [
+          "Use for certification progress by domain."
+        ]
+      },
+      {
+        "id": "060cff4ec4146e9eafae224f55203e72",
+        "question": [
+          "What changed in governance metadata recently?"
+        ],
+        "sql": [
+          "SELECT audit_id, asset_fqn, action, status, actor_email, detail, created_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_audit_events`\nORDER BY created_at DESC, audit_id DESC\nLIMIT 25"
+        ],
+        "usage_guidance": [
+          "Use for recent governance and metadata change questions."
+        ]
+      },
+      {
+        "id": "0b00f058371bc5d1426ffb9633c98a65",
+        "question": [
+          "Which assets were created in the last 30 days?"
+        ],
+        "sql": [
+          "SELECT asset_fqn, table_type, created, has_owner, NULLIF(trim(comment), '') IS NOT NULL AS has_description\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE created >= current_timestamp() - INTERVAL 30 DAYS\nORDER BY created DESC, asset_fqn\nLIMIT 50"
+        ],
+        "usage_guidance": [
+          "Use for newly created asset questions. Change the interval for other windows."
+        ]
+      },
+      {
+        "id": "0b104184249b257eb7db99ab87984b7e",
+        "question": [
+          "How many lineage events were observed per day in the last 30 days?"
+        ],
+        "sql": [
+          "SELECT to_date(event_time) AS event_date,\n  COUNT(*) AS lineage_events,\n  COUNT(DISTINCT source_asset_fqn) AS source_assets,\n  COUNT(DISTINCT target_asset_fqn) AS target_assets\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_lineage_edges`\nWHERE event_time >= current_timestamp() - INTERVAL 30 DAYS\nGROUP BY to_date(event_time)\nORDER BY event_date DESC"
+        ],
+        "usage_guidance": [
+          "Use for pipeline activity and lineage freshness questions."
+        ]
+      },
+      {
+        "id": "0b2d3155a6417fb9ddc65c71cd6f357e",
+        "question": [
+          "Who owns the most assets?"
+        ],
+        "sql": [
+          "WITH owner_assets AS (\n  SELECT asset_fqn, is_critical, is_certified, trim(owner_raw) AS owner_email\n  FROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\n  LATERAL VIEW explode(split(business_owners, ',')) owner_list AS owner_raw\n  WHERE business_owners IS NOT NULL\n)\nSELECT owner_email,\n  COUNT(DISTINCT asset_fqn) AS owned_assets,\n  COUNT(DISTINCT CASE WHEN is_critical THEN asset_fqn END) AS critical_assets,\n  COUNT(DISTINCT CASE WHEN is_certified THEN asset_fqn END) AS certified_assets\nFROM owner_assets\nWHERE owner_email <> ''\nGROUP BY owner_email\nORDER BY owned_assets DESC, owner_email\nLIMIT 25"
+        ],
+        "usage_guidance": [
+          "Use for owner workload and stewardship portfolio questions."
+        ]
+      },
+      {
+        "id": "10a4274234b35a6a7dd017449f6c663a",
+        "question": [
+          "Which assets are missing stewardship attention?"
+        ],
+        "sql": [
+          "SELECT asset_fqn, domain, data_product, owner_count, open_work_count, certification, criticality\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE owner_count = 0 OR open_work_count > 0\nORDER BY open_work_count DESC, owner_count ASC, is_critical DESC, asset_fqn\nLIMIT 25"
+        ],
+        "usage_guidance": [
+          "Use for ownership and stewardship attention questions."
+        ]
+      },
+      {
+        "id": "15d9c4eb480a678c93df3e3cca6e157d",
+        "question": [
+          "Which glossary terms are missing a definition, owner, or reviewers?"
+        ],
+        "sql": [
+          "SELECT term_id, name, domain, status,\n  NULLIF(trim(definition), '') IS NULL AS missing_definition,\n  owner_email IS NULL AS missing_owner,\n  reviewers IS NULL AS missing_reviewers\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_glossary_current`\nWHERE NULLIF(trim(definition), '') IS NULL OR owner_email IS NULL OR reviewers IS NULL\nORDER BY domain, name\nLIMIT 50"
+        ],
+        "usage_guidance": [
+          "Use for glossary completeness questions."
+        ]
+      },
+      {
+        "id": "1f83d7bd11890d2995a6278d9ff00da8",
+        "question": [
+          "How many governance requests are there by status and type?"
+        ],
+        "sql": [
+          "SELECT lower(COALESCE(status, '')) AS status, work_type, COUNT(*) AS work_items\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_governance_work_current`\nGROUP BY lower(COALESCE(status, '')), work_type\nORDER BY work_items DESC, status, work_type"
+        ],
+        "usage_guidance": [
+          "Use for workflow volume and status breakdowns."
+        ]
+      },
+      {
+        "id": "24c15951cdc2def34dbdc23432ea7016",
+        "question": [
+          "Which certification labels are in use?"
+        ],
+        "sql": [
+          "SELECT COALESCE(certification, 'Not tagged') AS certification,\n  COUNT(*) AS assets,\n  SUM(CASE WHEN is_certified THEN 1 ELSE 0 END) AS counted_as_certified\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nGROUP BY COALESCE(certification, 'Not tagged')\nORDER BY assets DESC, certification"
+        ],
+        "usage_guidance": [
+          "Use to explain which certification tag values exist and which count as certified."
+        ]
+      },
+      {
+        "id": "282c31b7396faafe1faae8c493f1414e",
+        "question": [
+          "Which assets have no assigned owner?"
+        ],
+        "sql": [
+          "SELECT asset_fqn, table_type, domain, criticality, sensitivity, open_work_count\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE NOT has_owner\nORDER BY is_critical DESC, open_work_count DESC, asset_fqn\nLIMIT 50"
+        ],
+        "usage_guidance": [
+          "Use for unowned or orphaned asset questions."
+        ]
+      },
+      {
+        "id": "3d4ea725b9890f953d16f5453c62c78b",
+        "question": [
+          "Which critical assets are not certified?"
+        ],
+        "sql": [
+          "SELECT asset_fqn, domain, data_product, criticality, certification, business_owners\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE is_critical = TRUE\n  AND is_certified = FALSE\nORDER BY owner_count ASC, open_work_count DESC, asset_fqn\nLIMIT 25"
+        ],
+        "usage_guidance": [
+          "Use for critical-asset certification gap questions."
+        ]
+      },
+      {
+        "id": "4ae42414fd64051b978365f2133b3002",
+        "question": [
+          "Which assets have not changed in over 180 days?"
+        ],
+        "sql": [
+          "SELECT asset_fqn, table_type, last_altered,\n  datediff(current_date(), last_altered) AS days_since_change, has_owner, is_certified\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE last_altered < current_timestamp() - INTERVAL 180 DAYS\nORDER BY last_altered ASC, asset_fqn\nLIMIT 50"
+        ],
+        "usage_guidance": [
+          "Use for stale, abandoned, or unmaintained asset questions."
+        ]
+      },
+      {
+        "id": "506e6fec9af84cee603226b2e311a20e",
+        "question": [
+          "Which glossary terms are waiting for review?"
+        ],
+        "sql": [
+          "SELECT term_id, name, domain, status, owner_email, reviewers, updated_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_glossary_current`\nWHERE lower(COALESCE(review_status, '')) IN ('', 'draft', 'new', 'pending', 'in_review', 'proposed')\nORDER BY updated_at ASC, name\nLIMIT 50"
+        ],
+        "usage_guidance": [
+          "Use for glossary review backlog questions."
+        ]
+      },
+      {
+        "id": "5b74e8669f281ead2fb0a740dcd304a4",
+        "question": [
+          "Which sensitive assets have no owner?"
+        ],
+        "sql": [
+          "SELECT asset_fqn, sensitivity, domain, criticality, open_work_count\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE (lower(COALESCE(sensitivity, '')) IN ('pii', 'phi', 'pci', 'confidential', 'highly confidential', 'restricted', 'sensitive', 'secret') OR lower(COALESCE(sensitivity, '')) LIKE '%pii%')\n  AND NOT has_owner\nORDER BY is_critical DESC, asset_fqn\nLIMIT 50"
+        ],
+        "usage_guidance": [
+          "Use for high-risk ownership gaps on sensitive data."
+        ]
+      },
+      {
+        "id": "5ef48c3fea292c26dfb3a2f106abba43",
+        "question": [
+          "Which assets have the most open governance work?"
+        ],
+        "sql": [
+          "SELECT work.asset_fqn, assets.domain, assets.is_critical,\n  COUNT(*) AS open_work_items,\n  MIN(work.created_at) AS oldest_open_since\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_governance_work_current` work\nINNER JOIN `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` assets\n  ON assets.asset_fqn = work.asset_fqn\nWHERE lower(COALESCE(work.status, '')) IN ('', 'new', 'pending', 'open', 'in_review', 'blocked')\nGROUP BY work.asset_fqn, assets.domain, assets.is_critical\nORDER BY open_work_items DESC, oldest_open_since ASC, work.asset_fqn\nLIMIT 25"
+        ],
+        "usage_guidance": [
+          "Use for asset hotspots in the governance backlog."
+        ]
+      },
+      {
+        "id": "62eddd5ec07143cec7fce36329765e07",
+        "question": [
+          "How many assets do we have by schema and type?"
+        ],
+        "sql": [
+          "SELECT schema_name, table_type, COUNT(*) AS asset_count\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nGROUP BY schema_name, table_type\nORDER BY asset_count DESC, schema_name, table_type"
+        ],
+        "usage_guidance": [
+          "Use for inventory size and breakdown questions."
+        ]
+      },
+      {
+        "id": "68317f060181eb28002947c3d25d805d",
+        "question": [
+          "Who made the most metadata changes in the last 30 days?"
+        ],
+        "sql": [
+          "SELECT actor_email, COUNT(*) AS changes, COUNT(DISTINCT asset_fqn) AS assets_changed, MAX(created_at) AS last_change_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_audit_events`\nWHERE created_at >= current_timestamp() - INTERVAL 30 DAYS\nGROUP BY actor_email\nORDER BY changes DESC, actor_email\nLIMIT 25"
+        ],
+        "usage_guidance": [
+          "Use for change activity by person."
+        ]
+      },
+      {
+        "id": "6e7c257d23dd2878faa0f9272bd06c78",
+        "question": [
+          "Which quality checks failed in the last 7 days?"
+        ],
+        "sql": [
+          "SELECT asset_fqn, column_name, case_id, outcome, severity, detail, executed_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_quality_latest`\nWHERE lower(COALESCE(outcome, '')) IN ('failed', 'errored')\n  AND executed_at >= current_timestamp() - INTERVAL 7 DAYS\nORDER BY executed_at DESC, asset_fqn\nLIMIT 50"
+        ],
+        "usage_guidance": [
+          "Use for recent quality incidents."
+        ]
+      },
+      {
+        "id": "7036b58aa0d4b04156f54cd20708d9d1",
+        "question": [
+          "Which critical assets have no sensitivity classification?"
+        ],
+        "sql": [
+          "SELECT asset_fqn, domain, criticality, business_owners\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE is_critical\n  AND sensitivity IS NULL\nORDER BY asset_fqn\nLIMIT 50"
+        ],
+        "usage_guidance": [
+          "Use for classification gaps on critical assets."
+        ]
+      },
+      {
+        "id": "775781a12f04bcd5efbfba6c195a2a1e",
+        "question": [
+          "Who submitted the most governance requests this quarter?"
+        ],
+        "sql": [
+          "SELECT created_by, COUNT(*) AS requests,\n  SUM(CASE WHEN lower(COALESCE(status, '')) IN ('', 'new', 'pending', 'open', 'in_review', 'blocked') THEN 1 ELSE 0 END) AS still_open\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_governance_work_current`\nWHERE created_at >= date_trunc('quarter', current_date())\nGROUP BY created_by\nORDER BY requests DESC, created_by\nLIMIT 25"
+        ],
+        "usage_guidance": [
+          "Use for requester activity within a period."
+        ]
+      },
+      {
+        "id": "802dde7fc6e5fe7d8c2a903562e74c30",
+        "question": [
+          "What is our overall metadata coverage?"
+        ],
+        "sql": [
+          "SELECT\n  COUNT(*) AS total_assets,\n  ROUND(100.0 * AVG(CASE WHEN NULLIF(trim(comment), '') IS NOT NULL THEN 1 ELSE 0 END), 1) AS pct_documented,\n  ROUND(100.0 * AVG(CASE WHEN has_owner THEN 1 ELSE 0 END), 1) AS pct_owned,\n  ROUND(100.0 * AVG(CASE WHEN domain IS NOT NULL THEN 1 ELSE 0 END), 1) AS pct_domain_tagged,\n  ROUND(100.0 * AVG(CASE WHEN sensitivity IS NOT NULL THEN 1 ELSE 0 END), 1) AS pct_classified,\n  ROUND(100.0 * AVG(CASE WHEN is_certified THEN 1 ELSE 0 END), 1) AS pct_certified\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`"
+        ],
+        "usage_guidance": [
+          "Use for estate-wide metadata completeness and governance KPI questions."
+        ]
+      },
+      {
+        "id": "80ca9d181600bd70362e6027503019d1",
+        "question": [
+          "Which assets have no description?"
+        ],
+        "sql": [
+          "SELECT asset_fqn, table_type, domain, business_owners, last_altered\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE NOT (NULLIF(trim(comment), '') IS NOT NULL)\nORDER BY is_critical DESC, last_altered DESC, asset_fqn\nLIMIT 50"
+        ],
+        "usage_guidance": [
+          "Use for missing description or undocumented asset lists."
+        ]
+      },
+      {
+        "id": "83ca33ec96f865a496c963767b38d089",
+        "question": [
+          "How are assets distributed across domains?"
+        ],
+        "sql": [
+          "SELECT COALESCE(domain, 'Unassigned') AS domain,\n  COUNT(*) AS assets,\n  SUM(CASE WHEN is_certified THEN 1 ELSE 0 END) AS certified_assets,\n  SUM(CASE WHEN is_critical THEN 1 ELSE 0 END) AS critical_assets,\n  SUM(CASE WHEN has_owner THEN 0 ELSE 1 END) AS unowned_assets\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nGROUP BY COALESCE(domain, 'Unassigned')\nORDER BY assets DESC, domain"
+        ],
+        "usage_guidance": [
+          "Use for domain breakdowns and domain-level governance posture."
+        ]
+      },
+      {
+        "id": "8b794cb6ff1cc63f79fd012b35c2a186",
+        "question": [
+          "Show me data quality issues impacting critical assets."
+        ],
+        "sql": [
+          "SELECT quality.asset_fqn, quality.column_name, quality.case_id, quality.outcome, quality.severity,\n       quality.metric_value, quality.threshold_value, quality.detail, quality.executed_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_quality_latest` quality\nINNER JOIN `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` assets\n  ON assets.asset_fqn = quality.asset_fqn\nWHERE assets.is_critical = TRUE\n  AND lower(COALESCE(quality.outcome, '')) IN ('failed', 'errored')\nORDER BY quality.executed_at DESC, quality.asset_fqn\nLIMIT 25"
+        ],
+        "usage_guidance": [
+          "Use for quality-impact questions on critical assets. Do not UNION in a placeholder row; zero rows means no failing latest results on critical assets."
+        ]
+      },
+      {
+        "id": "98d9225820bd1c783520eea13621ff8d",
+        "question": [
+          "Which requests were rejected and why?"
+        ],
+        "sql": [
+          "SELECT work_id, work_type, asset_fqn, title, created_by, reviewed_by, reviewed_at, review_note\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_governance_work_current`\nWHERE lower(status) = 'rejected'\nORDER BY reviewed_at DESC, work_id\nLIMIT 25"
+        ],
+        "usage_guidance": [
+          "Use for rejection reasons and declined change questions."
+        ]
+      },
+      {
+        "id": "998736c0f28f3687f88137e3965f6ec6",
+        "question": [
+          "Which quality checks are currently failing?"
+        ],
+        "sql": [
+          "SELECT asset_fqn, column_name, case_id, outcome, severity, metric_value, threshold_value, detail, executed_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_quality_latest`\nWHERE lower(COALESCE(outcome, '')) IN ('failed', 'errored')\nORDER BY CASE lower(COALESCE(severity, '')) WHEN 'critical' THEN 1 WHEN 'high' THEN 2 WHEN 'medium' THEN 3 WHEN 'low' THEN 4 ELSE 5 END,\n  executed_at DESC, asset_fqn\nLIMIT 50"
+        ],
+        "usage_guidance": [
+          "Use for current failing data quality checks across all assets."
+        ]
+      },
+      {
+        "id": "9a07facc89958f1bd59127f7f8bb23d2",
+        "question": [
+          "How many audit events happened per day by action over the last 30 days?"
+        ],
+        "sql": [
+          "SELECT to_date(created_at) AS event_date, action, COUNT(*) AS events\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_audit_events`\nWHERE created_at >= current_timestamp() - INTERVAL 30 DAYS\nGROUP BY to_date(created_at), action\nORDER BY event_date DESC, events DESC, action"
+        ],
+        "usage_guidance": [
+          "Use for change trends over time."
+        ]
+      },
+      {
+        "id": "b492f056bad4f33079dd4a4e1092bd13",
+        "question": [
+          "Which data products have the most assets?"
+        ],
+        "sql": [
+          "SELECT data_product,\n  COUNT(*) AS assets,\n  SUM(CASE WHEN is_certified THEN 1 ELSE 0 END) AS certified_assets,\n  SUM(CASE WHEN is_critical THEN 1 ELSE 0 END) AS critical_assets\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE data_product IS NOT NULL\nGROUP BY data_product\nORDER BY assets DESC, data_product\nLIMIT 25"
+        ],
+        "usage_guidance": [
+          "Use for data product size and composition questions."
+        ]
+      },
+      {
+        "id": "b605517f46a2a8f78a137e1c3148f2f4",
+        "question": [
+          "What changed on critical assets in the last 30 days?"
+        ],
+        "sql": [
+          "SELECT audit.audit_id, audit.asset_fqn, audit.action, audit.status, audit.actor_email, audit.created_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_audit_events` audit\nINNER JOIN `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` assets\n  ON assets.asset_fqn = audit.asset_fqn\nWHERE assets.is_critical\n  AND audit.created_at >= current_timestamp() - INTERVAL 30 DAYS\nORDER BY audit.created_at DESC, audit.audit_id DESC\nLIMIT 25"
+        ],
+        "usage_guidance": [
+          "Use for change monitoring on critical assets."
+        ]
+      },
+      {
+        "id": "b644d002b7cd766e18d2a078252a22c9",
+        "question": [
+          "Which assets have the lowest metadata coverage?"
+        ],
+        "sql": [
+          "SELECT asset_fqn, table_type,\n  (CASE WHEN NULLIF(trim(comment), '') IS NOT NULL THEN 1 ELSE 0 END + CASE WHEN has_owner THEN 1 ELSE 0 END + CASE WHEN domain IS NOT NULL THEN 1 ELSE 0 END + CASE WHEN sensitivity IS NOT NULL THEN 1 ELSE 0 END + CASE WHEN certification IS NOT NULL THEN 1 ELSE 0 END) AS coverage_score,\n  NULLIF(trim(comment), '') IS NOT NULL AS has_description, has_owner, domain, sensitivity, certification\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nORDER BY coverage_score ASC, is_critical DESC, asset_fqn\nLIMIT 25"
+        ],
+        "usage_guidance": [
+          "Use for lowest-coverage and metadata-gap questions. Coverage is the 0-5 score from the instructions."
+        ]
+      },
+      {
+        "id": "c64c656c9dccd3da77443cb92bb82b5f",
+        "question": [
+          "Which governance changes failed or were not applied?"
+        ],
+        "sql": [
+          "SELECT audit_id, asset_fqn, action, status, source, actor_email, detail, created_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_audit_events`\nWHERE lower(COALESCE(status, '')) IN ('failed', 'error', 'errored', 'skipped', 'rejected')\nORDER BY created_at DESC, audit_id DESC\nLIMIT 25"
+        ],
+        "usage_guidance": [
+          "Use for failed writes and changes that did not take effect."
+        ]
+      },
+      {
+        "id": "c6a185f9582d1f2dddc83233191942cf",
+        "question": [
+          "Which critical assets feed uncertified downstream assets?"
+        ],
+        "sql": [
+          "SELECT DISTINCT lineage.source_asset_fqn, lineage.target_asset_fqn, downstream.certification AS downstream_certification\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_lineage_edges` lineage\nINNER JOIN `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` upstream\n  ON upstream.asset_fqn = lineage.source_asset_fqn\nINNER JOIN `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` downstream\n  ON downstream.asset_fqn = lineage.target_asset_fqn\nWHERE upstream.is_critical\n  AND NOT downstream.is_certified\nORDER BY lineage.source_asset_fqn, lineage.target_asset_fqn\nLIMIT 50"
+        ],
+        "usage_guidance": [
+          "Use for certification propagation and downstream trust questions."
+        ]
+      },
+      {
+        "id": "cac19b38b9e0865f408096c279010deb",
+        "question": [
+          "How many glossary terms are there per domain and status?"
+        ],
+        "sql": [
+          "SELECT COALESCE(domain, 'Unassigned') AS domain, lower(COALESCE(status, '')) AS status,\n  COUNT(*) AS terms,\n  SUM(CASE WHEN linked_asset_count > 0 THEN 1 ELSE 0 END) AS linked_terms\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_glossary_current`\nGROUP BY COALESCE(domain, 'Unassigned'), lower(COALESCE(status, ''))\nORDER BY terms DESC, domain, status"
+        ],
+        "usage_guidance": [
+          "Use for glossary size and maturity by domain."
+        ]
+      },
+      {
+        "id": "d106aa477410f78cf2398f8e38a63f31",
+        "question": [
+          "What is the average review turnaround time?"
+        ],
+        "sql": [
+          "SELECT work_type,\n  COUNT(*) AS reviewed_items,\n  ROUND(AVG((unix_timestamp(reviewed_at) - unix_timestamp(created_at)) / 3600.0), 1) AS avg_hours_to_review,\n  ROUND(percentile_approx((unix_timestamp(reviewed_at) - unix_timestamp(created_at)) / 3600.0, 0.5), 1) AS median_hours_to_review\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_governance_work_current`\nWHERE reviewed_at IS NOT NULL\n  AND created_at IS NOT NULL\nGROUP BY work_type\nORDER BY reviewed_items DESC, work_type"
+        ],
+        "usage_guidance": [
+          "Use for review SLA, turnaround, and cycle-time questions."
+        ]
+      },
+      {
+        "id": "d321ed29cd802a9c4c88e078a2b17cd4",
+        "question": [
+          "Which reviewers approved or rejected the most requests?"
+        ],
+        "sql": [
+          "SELECT reviewed_by,\n  COUNT(*) AS reviewed_items,\n  SUM(CASE WHEN lower(status) IN ('approved', 'applied', 'resolved') THEN 1 ELSE 0 END) AS approved_items,\n  SUM(CASE WHEN lower(status) = 'rejected' THEN 1 ELSE 0 END) AS rejected_items\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_governance_work_current`\nWHERE reviewed_by IS NOT NULL\nGROUP BY reviewed_by\nORDER BY reviewed_items DESC, reviewed_by\nLIMIT 25"
+        ],
+        "usage_guidance": [
+          "Use for reviewer workload and decision questions."
+        ]
+      },
+      {
+        "id": "d37d94e7d5063a2a7597f60955296e8a",
+        "question": [
+          "Which domains have the highest risk of policy exceptions?"
+        ],
+        "sql": [
+          "SELECT\n  COALESCE(assets.domain, 'Unassigned') AS domain,\n  COUNT(DISTINCT assets.asset_fqn) AS governed_assets,\n  COUNT(DISTINCT CASE WHEN lower(COALESCE(work.status, '')) IN ('', 'new', 'pending', 'open', 'in_review', 'blocked') THEN work.work_id END) AS open_policy_work,\n  COUNT(DISTINCT CASE WHEN assets.is_critical AND NOT assets.is_certified THEN assets.asset_fqn END) AS uncertified_critical_assets,\n  COUNT(DISTINCT CASE WHEN NOT assets.has_owner THEN assets.asset_fqn END) AS unowned_assets\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` assets\nLEFT JOIN `ops_governance`.`axiom_ai`.`axiom_ai_governance_work_current` work\n  ON work.asset_fqn = assets.asset_fqn\nGROUP BY COALESCE(assets.domain, 'Unassigned')\nORDER BY open_policy_work DESC, uncertified_critical_assets DESC, unowned_assets DESC, governed_assets DESC\nLIMIT 10"
+        ],
+        "usage_guidance": [
+          "Use for domain-risk and policy-exception concentration questions."
+        ]
+      },
+      {
+        "id": "d693e3baf4eae882e930d528fe84a2bc",
+        "question": [
+          "Which critical assets have no data quality checks?"
+        ],
+        "sql": [
+          "SELECT assets.asset_fqn, assets.domain, assets.criticality, assets.business_owners\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` assets\nLEFT ANTI JOIN `ops_governance`.`axiom_ai`.`axiom_ai_quality_latest` quality\n  ON quality.asset_fqn = assets.asset_fqn\nWHERE assets.is_critical\nORDER BY assets.asset_fqn\nLIMIT 50"
+        ],
+        "usage_guidance": [
+          "Use for quality test coverage gaps on critical assets."
+        ]
+      },
+      {
+        "id": "e21cb186bebb574333efcf193433c772",
+        "question": [
+          "What open governance work is on critical assets?"
+        ],
+        "sql": [
+          "SELECT work.work_id, work.work_type, work.status, work.asset_fqn, work.title, work.created_at,\n  datediff(current_date(), work.created_at) AS age_days\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_governance_work_current` work\nINNER JOIN `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` assets\n  ON assets.asset_fqn = work.asset_fqn\nWHERE assets.is_critical\n  AND lower(COALESCE(work.status, '')) IN ('', 'new', 'pending', 'open', 'in_review', 'blocked')\nORDER BY work.created_at ASC, work.work_id\nLIMIT 25"
+        ],
+        "usage_guidance": [
+          "Use for prioritizing backlog on critical assets."
+        ]
+      },
+      {
+        "id": "edf661699087fd59a6e56dd990439863",
+        "question": [
+          "What is the oldest open governance work?"
+        ],
+        "sql": [
+          "SELECT work_id, work_type, status, asset_fqn, title, created_by, created_at,\n  datediff(current_date(), created_at) AS age_days\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_governance_work_current`\nWHERE lower(COALESCE(status, '')) IN ('', 'new', 'pending', 'open', 'in_review', 'blocked')\nORDER BY created_at ASC, work_id\nLIMIT 25"
+        ],
+        "usage_guidance": [
+          "Use for backlog aging and overdue governance work."
+        ]
+      },
+      {
+        "id": "efc226b63dfb33973370ca48c0788687",
+        "question": [
+          "What is the quality pass rate by asset?"
+        ],
+        "sql": [
+          "SELECT asset_fqn,\n  COUNT(*) AS evaluated_checks,\n  SUM(CASE WHEN lower(outcome) = 'passed' THEN 1 ELSE 0 END) AS passed_checks,\n  SUM(CASE WHEN lower(outcome) IN ('failed', 'errored') THEN 1 ELSE 0 END) AS failing_checks,\n  ROUND(100.0 * SUM(CASE WHEN lower(outcome) = 'passed' THEN 1 ELSE 0 END) / COUNT(*), 1) AS pass_rate_pct,\n  MAX(executed_at) AS last_checked_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_quality_latest`\nWHERE lower(COALESCE(outcome, '')) <> 'skipped'\nGROUP BY asset_fqn\nORDER BY pass_rate_pct ASC, failing_checks DESC, asset_fqn\nLIMIT 25"
+        ],
+        "usage_guidance": [
+          "Use for quality scorecards and pass-rate questions. Skipped checks are excluded."
+        ]
+      },
+      {
+        "id": "f34e6aecf7c30caec7b73f82b4e695aa",
+        "question": [
+          "Which schemas have the most undocumented assets?"
+        ],
+        "sql": [
+          "SELECT schema_name,\n  COUNT(*) AS assets,\n  SUM(CASE WHEN NULLIF(trim(comment), '') IS NOT NULL THEN 0 ELSE 1 END) AS undocumented_assets,\n  ROUND(100.0 * AVG(CASE WHEN NULLIF(trim(comment), '') IS NOT NULL THEN 0 ELSE 1 END), 1) AS pct_undocumented\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nGROUP BY schema_name\nORDER BY undocumented_assets DESC, schema_name"
+        ],
+        "usage_guidance": [
+          "Use for documentation gaps rolled up by schema."
+        ]
+      },
+      {
+        "id": "f58a940655e2325a19f78c3f7eedf5b5",
+        "question": [
+          "Which glossary terms are not linked to any asset?"
+        ],
+        "sql": [
+          "SELECT term_id, name, domain, status, owner_email, updated_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_glossary_current`\nWHERE linked_asset_count = 0\nORDER BY domain, name\nLIMIT 50"
+        ],
+        "usage_guidance": [
+          "Use for orphaned or unused glossary term questions."
+        ]
+      },
+      {
+        "id": "f5b61335129123a1e820e51c9024ecf6",
+        "question": [
+          "Which assets have the most downstream dependents?"
+        ],
+        "sql": [
+          "SELECT source_asset_fqn AS asset_fqn,\n  COUNT(DISTINCT target_asset_fqn) AS downstream_assets,\n  MAX(event_time) AS last_seen_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_lineage_edges`\nWHERE source_asset_fqn IS NOT NULL\n  AND target_asset_fqn IS NOT NULL\nGROUP BY source_asset_fqn\nORDER BY downstream_assets DESC, asset_fqn\nLIMIT 25"
+        ],
+        "usage_guidance": [
+          "Use for blast-radius and most-depended-on asset questions."
+        ]
+      },
+      {
+        "id": "fa84eb0d64206f5205be53a99305749e",
+        "question": [
+          "Which assets depend on the most upstream sources?"
+        ],
+        "sql": [
+          "SELECT target_asset_fqn AS asset_fqn,\n  COUNT(DISTINCT source_asset_fqn) AS upstream_assets,\n  MAX(event_time) AS last_seen_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_lineage_edges`\nWHERE source_asset_fqn IS NOT NULL\n  AND target_asset_fqn IS NOT NULL\nGROUP BY target_asset_fqn\nORDER BY upstream_assets DESC, asset_fqn\nLIMIT 25"
+        ],
+        "usage_guidance": [
+          "Use for complex or fan-in assets."
+        ]
+      },
+      {
+        "id": "fab027f70af25d94a735d1348d569747",
+        "question": [
+          "Which assets contain sensitive or PII data?"
+        ],
+        "sql": [
+          "SELECT asset_fqn, sensitivity, domain, business_owners, is_certified\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE (lower(COALESCE(sensitivity, '')) IN ('pii', 'phi', 'pci', 'confidential', 'highly confidential', 'restricted', 'sensitive', 'secret') OR lower(COALESCE(sensitivity, '')) LIKE '%pii%')\nORDER BY sensitivity, asset_fqn\nLIMIT 50"
+        ],
+        "usage_guidance": [
+          "Use for PII, confidential, restricted, or sensitive data questions."
+        ]
+      }
+    ],
+    "sql_functions": [],
+    "join_specs": [
+      {
+        "id": "695e76fa0363014d6404d37b8ad123e8",
+        "left": {
+          "identifier": "ops_governance.axiom_ai.axiom_ai_assets_current",
+          "alias": "assets"
+        },
+        "right": {
+          "identifier": "ops_governance.axiom_ai.axiom_ai_audit_events",
+          "alias": "audit"
+        },
+        "sql": [
+          "`assets`.`asset_fqn` = `audit`.`asset_fqn`",
+          "--rt=FROM_RELATIONSHIP_TYPE_ONE_TO_MANY--"
+        ],
+        "comment": [
+          "Join assets to audit events by asset_fqn."
+        ],
+        "instruction": [
+          "Join assets to audit events by asset_fqn."
+        ]
+      },
+      {
+        "id": "807dec852e9ba11d7d2873efa2829378",
+        "left": {
+          "identifier": "ops_governance.axiom_ai.axiom_ai_assets_current",
+          "alias": "assets"
+        },
+        "right": {
+          "identifier": "ops_governance.axiom_ai.axiom_ai_lineage_edges",
+          "alias": "upstream"
+        },
+        "sql": [
+          "`assets`.`asset_fqn` = `upstream`.`target_asset_fqn`",
+          "--rt=FROM_RELATIONSHIP_TYPE_ONE_TO_MANY--"
+        ],
+        "comment": [
+          "Join an asset to the lineage events where it is the downstream target; source_asset_fqn is then an upstream input."
+        ],
+        "instruction": [
+          "Join an asset to the lineage events where it is the downstream target; source_asset_fqn is then an upstream input."
+        ]
+      },
+      {
+        "id": "c695d616c7290751c80969ce73f2fe62",
+        "left": {
+          "identifier": "ops_governance.axiom_ai.axiom_ai_assets_current",
+          "alias": "assets"
+        },
+        "right": {
+          "identifier": "ops_governance.axiom_ai.axiom_ai_quality_latest",
+          "alias": "quality"
+        },
+        "sql": [
+          "`assets`.`asset_fqn` = `quality`.`asset_fqn`",
+          "--rt=FROM_RELATIONSHIP_TYPE_ONE_TO_MANY--"
+        ],
+        "comment": [
+          "Join assets to latest quality outcomes by asset_fqn."
+        ],
+        "instruction": [
+          "Join assets to latest quality outcomes by asset_fqn."
+        ]
+      },
+      {
+        "id": "c7cf59874ef73839af73bf52e4815f03",
+        "left": {
+          "identifier": "ops_governance.axiom_ai.axiom_ai_assets_current",
+          "alias": "assets"
+        },
+        "right": {
+          "identifier": "ops_governance.axiom_ai.axiom_ai_lineage_edges",
+          "alias": "downstream"
+        },
+        "sql": [
+          "`assets`.`asset_fqn` = `downstream`.`source_asset_fqn`",
+          "--rt=FROM_RELATIONSHIP_TYPE_ONE_TO_MANY--"
+        ],
+        "comment": [
+          "Join an asset to the lineage events where it is the upstream source; target_asset_fqn is then a downstream dependent."
+        ],
+        "instruction": [
+          "Join an asset to the lineage events where it is the upstream source; target_asset_fqn is then a downstream dependent."
+        ]
+      },
+      {
+        "id": "f2aaf58ce1abe118610cb96f6d1a194e",
+        "left": {
+          "identifier": "ops_governance.axiom_ai.axiom_ai_assets_current",
+          "alias": "assets"
+        },
+        "right": {
+          "identifier": "ops_governance.axiom_ai.axiom_ai_governance_work_current",
+          "alias": "work"
+        },
+        "sql": [
+          "`assets`.`asset_fqn` = `work`.`asset_fqn`",
+          "--rt=FROM_RELATIONSHIP_TYPE_ONE_TO_MANY--"
+        ],
+        "comment": [
+          "Join assets to current governance work by asset_fqn."
+        ],
+        "instruction": [
+          "Join assets to current governance work by asset_fqn."
+        ]
+      }
+    ],
+    "sql_snippets": {
+      "filters": [],
+      "expressions": [],
+      "measures": []
+    }
+  },
+  "benchmarks": {
+    "questions": [
+      {
+        "id": "0218e9c95d60115508207e661829db63",
+        "question": [
+          "Which critical assets have no sensitivity classification?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT asset_fqn, domain, criticality, business_owners\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE is_critical\n  AND sensitivity IS NULL\nORDER BY asset_fqn\nLIMIT 50"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "050a66b8646cadee6303315ace9d1ff2",
+        "question": [
+          "Which glossary terms are linked to the most assets?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT term_id, name, domain, linked_asset_count\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_glossary_current`\nWHERE linked_asset_count > 0\nORDER BY linked_asset_count DESC, name\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "065d94835581d1107c78afb653bb6ccd",
+        "question": [
+          "List the 10 most recently changed assets."
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT asset_fqn, table_type, last_altered\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nORDER BY last_altered DESC, asset_fqn\nLIMIT 10"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "06e99289c6148431fa3124482ff0fd16",
+        "question": [
+          "Which schemas have the most undocumented assets?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT schema_name,\n  COUNT(*) AS assets,\n  SUM(CASE WHEN NULLIF(trim(comment), '') IS NOT NULL THEN 0 ELSE 1 END) AS undocumented_assets,\n  ROUND(100.0 * AVG(CASE WHEN NULLIF(trim(comment), '') IS NOT NULL THEN 0 ELSE 1 END), 1) AS pct_undocumented\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nGROUP BY schema_name\nORDER BY undocumented_assets DESC, schema_name"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "08a9745c2436bdcc0b2292c371ad29e7",
+        "question": [
+          "Which critical tables have no quality tests?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT assets.asset_fqn, assets.domain, assets.criticality, assets.business_owners\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` assets\nLEFT ANTI JOIN `ops_governance`.`axiom_ai`.`axiom_ai_quality_latest` quality\n  ON quality.asset_fqn = assets.asset_fqn\nWHERE assets.is_critical\nORDER BY assets.asset_fqn\nLIMIT 50"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "0db1ca1a0412a7c2ae159794ed16e47e",
+        "question": [
+          "How are assets distributed across domains?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT COALESCE(domain, 'Unassigned') AS domain,\n  COUNT(*) AS assets,\n  SUM(CASE WHEN is_certified THEN 1 ELSE 0 END) AS certified_assets,\n  SUM(CASE WHEN is_critical THEN 1 ELSE 0 END) AS critical_assets,\n  SUM(CASE WHEN has_owner THEN 0 ELSE 1 END) AS unowned_assets\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nGROUP BY COALESCE(domain, 'Unassigned')\nORDER BY assets DESC, domain"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "0dc77a5b54c4e4f425bbf5d42578ffe4",
+        "question": [
+          "Which assets have not changed in over 180 days?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT asset_fqn, table_type, last_altered,\n  datediff(current_date(), last_altered) AS days_since_change, has_owner, is_certified\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE last_altered < current_timestamp() - INTERVAL 180 DAYS\nORDER BY last_altered ASC, asset_fqn\nLIMIT 50"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "1050bedb496fef3096e42bff94670877",
+        "question": [
+          "Which tables look stale or unmaintained?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT asset_fqn, table_type, last_altered,\n  datediff(current_date(), last_altered) AS days_since_change, has_owner, is_certified\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE last_altered < current_timestamp() - INTERVAL 180 DAYS\nORDER BY last_altered ASC, asset_fqn\nLIMIT 50"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "133199c34c0ea55a1a7c07e9f9fd5e25",
+        "question": [
+          "Which tables have the worst data quality pass rate?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT asset_fqn,\n  COUNT(*) AS evaluated_checks,\n  SUM(CASE WHEN lower(outcome) = 'passed' THEN 1 ELSE 0 END) AS passed_checks,\n  SUM(CASE WHEN lower(outcome) IN ('failed', 'errored') THEN 1 ELSE 0 END) AS failing_checks,\n  ROUND(100.0 * SUM(CASE WHEN lower(outcome) = 'passed' THEN 1 ELSE 0 END) / COUNT(*), 1) AS pass_rate_pct,\n  MAX(executed_at) AS last_checked_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_quality_latest`\nWHERE lower(COALESCE(outcome, '')) <> 'skipped'\nGROUP BY asset_fqn\nORDER BY pass_rate_pct ASC, failing_checks DESC, asset_fqn\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "156a9340259666fc9f575759e74966e8",
+        "question": [
+          "Which assets depend on the most upstream sources?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT target_asset_fqn AS asset_fqn,\n  COUNT(DISTINCT source_asset_fqn) AS upstream_assets,\n  MAX(event_time) AS last_seen_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_lineage_edges`\nWHERE source_asset_fqn IS NOT NULL\n  AND target_asset_fqn IS NOT NULL\nGROUP BY target_asset_fqn\nORDER BY upstream_assets DESC, asset_fqn\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "1c8af117d0b5befa6955f86e6a396b01",
+        "question": [
+          "Which schemas are least documented?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT schema_name,\n  COUNT(*) AS assets,\n  SUM(CASE WHEN NULLIF(trim(comment), '') IS NOT NULL THEN 0 ELSE 1 END) AS undocumented_assets,\n  ROUND(100.0 * AVG(CASE WHEN NULLIF(trim(comment), '') IS NOT NULL THEN 0 ELSE 1 END), 1) AS pct_undocumented\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nGROUP BY schema_name\nORDER BY undocumented_assets DESC, schema_name"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "21df69c9219b3e2de482c5543780e4c3",
+        "question": [
+          "Show the latest governance audit events."
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT audit_id, asset_fqn, action, status, actor_email, detail, created_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_audit_events`\nORDER BY created_at DESC, audit_id DESC\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "23f319a37a0f8a53d2ef94e3990d854e",
+        "question": [
+          "Where are policy exceptions concentrated by domain?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT\n  COALESCE(assets.domain, 'Unassigned') AS domain,\n  COUNT(DISTINCT assets.asset_fqn) AS governed_assets,\n  COUNT(DISTINCT CASE WHEN lower(COALESCE(work.status, '')) IN ('', 'new', 'pending', 'open', 'in_review', 'blocked') THEN work.work_id END) AS open_policy_work,\n  COUNT(DISTINCT CASE WHEN assets.is_critical AND NOT assets.is_certified THEN assets.asset_fqn END) AS uncertified_critical_assets,\n  COUNT(DISTINCT CASE WHEN NOT assets.has_owner THEN assets.asset_fqn END) AS unowned_assets\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` assets\nLEFT JOIN `ops_governance`.`axiom_ai`.`axiom_ai_governance_work_current` work\n  ON work.asset_fqn = assets.asset_fqn\nGROUP BY COALESCE(assets.domain, 'Unassigned')\nORDER BY open_policy_work DESC, uncertified_critical_assets DESC, unowned_assets DESC, governed_assets DESC\nLIMIT 10"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "2620e88d50d353ecffe998b44756f7d8",
+        "question": [
+          "Show the assets with the worst metadata completeness."
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT asset_fqn, table_type,\n  (CASE WHEN NULLIF(trim(comment), '') IS NOT NULL THEN 1 ELSE 0 END + CASE WHEN has_owner THEN 1 ELSE 0 END + CASE WHEN domain IS NOT NULL THEN 1 ELSE 0 END + CASE WHEN sensitivity IS NOT NULL THEN 1 ELSE 0 END + CASE WHEN certification IS NOT NULL THEN 1 ELSE 0 END) AS coverage_score,\n  NULLIF(trim(comment), '') IS NOT NULL AS has_description, has_owner, domain, sensitivity, certification\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nORDER BY coverage_score ASC, is_critical DESC, asset_fqn\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "2838d83f8aa2fc5ba820690ec0a3bacd",
+        "question": [
+          "Which assets had the most audit events in the last 30 days?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT asset_fqn, COUNT(*) AS events, MAX(created_at) AS last_event_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_audit_events`\nWHERE created_at >= current_timestamp() - INTERVAL 30 DAYS\nGROUP BY asset_fqn\nORDER BY events DESC, asset_fqn\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "2975a0363b567e0cae72dd74434d0b2f",
+        "question": [
+          "Who has been changing metadata the most this month?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT actor_email, COUNT(*) AS changes, COUNT(DISTINCT asset_fqn) AS assets_changed, MAX(created_at) AS last_change_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_audit_events`\nWHERE created_at >= current_timestamp() - INTERVAL 30 DAYS\nGROUP BY actor_email\nORDER BY changes DESC, actor_email\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "2b8f07f2784f6de8e1787382eca7db0c",
+        "question": [
+          "Which domains are furthest behind on certification?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT COALESCE(domain, 'Unassigned') AS domain,\n  COUNT(*) AS assets,\n  SUM(CASE WHEN is_certified THEN 1 ELSE 0 END) AS certified_assets,\n  ROUND(100.0 * AVG(CASE WHEN is_certified THEN 1 ELSE 0 END), 1) AS certification_rate_pct\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nGROUP BY COALESCE(domain, 'Unassigned')\nORDER BY certification_rate_pct ASC, assets DESC, domain"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "32442e420a36fa3c9af0ed0358c66303",
+        "question": [
+          "How many glossary terms are there per domain and status?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT COALESCE(domain, 'Unassigned') AS domain, lower(COALESCE(status, '')) AS status,\n  COUNT(*) AS terms,\n  SUM(CASE WHEN linked_asset_count > 0 THEN 1 ELSE 0 END) AS linked_terms\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_glossary_current`\nGROUP BY COALESCE(domain, 'Unassigned'), lower(COALESCE(status, ''))\nORDER BY terms DESC, domain, status"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "3b5cf0fc041401437dc0c485e722672c",
+        "question": [
+          "Give me a breakdown of tables and views per schema."
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT schema_name, table_type, COUNT(*) AS asset_count\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nGROUP BY schema_name, table_type\nORDER BY asset_count DESC, schema_name, table_type"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "3d25d270197ede7af66573693091ad95",
+        "question": [
+          "Which glossary terms are waiting for review?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT term_id, name, domain, status, owner_email, reviewers, updated_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_glossary_current`\nWHERE lower(COALESCE(review_status, '')) IN ('', 'draft', 'new', 'pending', 'in_review', 'proposed')\nORDER BY updated_at ASC, name\nLIMIT 50"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "3fca780f1b3ff592a115093227846626",
+        "question": [
+          "Who submitted the most governance requests this quarter?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT created_by, COUNT(*) AS requests,\n  SUM(CASE WHEN lower(COALESCE(status, '')) IN ('', 'new', 'pending', 'open', 'in_review', 'blocked') THEN 1 ELSE 0 END) AS still_open\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_governance_work_current`\nWHERE created_at >= date_trunc('quarter', current_date())\nGROUP BY created_by\nORDER BY requests DESC, created_by\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "40feb90a834174e056f727b249e31a85",
+        "question": [
+          "Which data products have the most assets?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT data_product,\n  COUNT(*) AS assets,\n  SUM(CASE WHEN is_certified THEN 1 ELSE 0 END) AS certified_assets,\n  SUM(CASE WHEN is_critical THEN 1 ELSE 0 END) AS critical_assets\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE data_product IS NOT NULL\nGROUP BY data_product\nORDER BY assets DESC, data_product\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "43e24a726e2a8e459d117b0ac297343d",
+        "question": [
+          "Which governance tasks have been open the longest?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT work_id, work_type, status, asset_fqn, title, created_by, created_at,\n  datediff(current_date(), created_at) AS age_days\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_governance_work_current`\nWHERE lower(COALESCE(status, '')) IN ('', 'new', 'pending', 'open', 'in_review', 'blocked')\nORDER BY created_at ASC, work_id\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "477559fdaa261ca647b485b95e347ed2",
+        "question": [
+          "Which requests were rejected and why?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT work_id, work_type, asset_fqn, title, created_by, reviewed_by, reviewed_at, review_note\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_governance_work_current`\nWHERE lower(status) = 'rejected'\nORDER BY reviewed_at DESC, work_id\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "48ba5be1ab64a21b0cc530275a7cd6e5",
+        "question": [
+          "How many assets does each owner steward?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "WITH owner_assets AS (\n  SELECT asset_fqn, is_critical, is_certified, trim(owner_raw) AS owner_email\n  FROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\n  LATERAL VIEW explode(split(business_owners, ',')) owner_list AS owner_raw\n  WHERE business_owners IS NOT NULL\n)\nSELECT owner_email,\n  COUNT(DISTINCT asset_fqn) AS owned_assets,\n  COUNT(DISTINCT CASE WHEN is_critical THEN asset_fqn END) AS critical_assets,\n  COUNT(DISTINCT CASE WHEN is_certified THEN asset_fqn END) AS certified_assets\nFROM owner_assets\nWHERE owner_email <> ''\nGROUP BY owner_email\nORDER BY owned_assets DESC, owner_email\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "4b0359051166959e457d352fa3021685",
+        "question": [
+          "What is the average review turnaround time?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT work_type,\n  COUNT(*) AS reviewed_items,\n  ROUND(AVG((unix_timestamp(reviewed_at) - unix_timestamp(created_at)) / 3600.0), 1) AS avg_hours_to_review,\n  ROUND(percentile_approx((unix_timestamp(reviewed_at) - unix_timestamp(created_at)) / 3600.0, 0.5), 1) AS median_hours_to_review\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_governance_work_current`\nWHERE reviewed_at IS NOT NULL\n  AND created_at IS NOT NULL\nGROUP BY work_type\nORDER BY reviewed_items DESC, work_type"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "4bdbaa1f2892b4798c2bcc17f4d1019c",
+        "question": [
+          "How big is the governance backlog by status?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT lower(COALESCE(status, '')) AS status, work_type, COUNT(*) AS work_items\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_governance_work_current`\nGROUP BY lower(COALESCE(status, '')), work_type\nORDER BY work_items DESC, status, work_type"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "4c87c459c73c9847a46837bfa4805f1d",
+        "question": [
+          "What is the oldest open governance work?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT work_id, work_type, status, asset_fqn, title, created_by, created_at,\n  datediff(current_date(), created_at) AS age_days\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_governance_work_current`\nWHERE lower(COALESCE(status, '')) IN ('', 'new', 'pending', 'open', 'in_review', 'blocked')\nORDER BY created_at ASC, work_id\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "4e3e410efd29202cfb6b4e8c7074ed9f",
+        "question": [
+          "Which assets were created in the last 30 days?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT asset_fqn, table_type, created, has_owner, NULLIF(trim(comment), '') IS NOT NULL AS has_description\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE created >= current_timestamp() - INTERVAL 30 DAYS\nORDER BY created DESC, asset_fqn\nLIMIT 50"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "50317218af600f3b7314ffaf8f780c81",
+        "question": [
+          "Which unowned assets have downstream dependents?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT lineage.source_asset_fqn AS asset_fqn,\n  COUNT(DISTINCT lineage.target_asset_fqn) AS downstream_assets\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_lineage_edges` lineage\nINNER JOIN `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` assets\n  ON assets.asset_fqn = lineage.source_asset_fqn\nWHERE NOT assets.has_owner\n  AND lineage.target_asset_fqn IS NOT NULL\nGROUP BY lineage.source_asset_fqn\nORDER BY downstream_assets DESC, asset_fqn\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "599d43e348312500cdc6eb7a4277932f",
+        "question": [
+          "Which reviewers approved or rejected the most requests?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT reviewed_by,\n  COUNT(*) AS reviewed_items,\n  SUM(CASE WHEN lower(status) IN ('approved', 'applied', 'resolved') THEN 1 ELSE 0 END) AS approved_items,\n  SUM(CASE WHEN lower(status) = 'rejected' THEN 1 ELSE 0 END) AS rejected_items\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_governance_work_current`\nWHERE reviewed_by IS NOT NULL\nGROUP BY reviewed_by\nORDER BY reviewed_items DESC, reviewed_by\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "5a2a056c023b638052925f058bb54e7b",
+        "question": [
+          "Which sensitive assets have no owner?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT asset_fqn, sensitivity, domain, criticality, open_work_count\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE (lower(COALESCE(sensitivity, '')) IN ('pii', 'phi', 'pci', 'confidential', 'highly confidential', 'restricted', 'sensitive', 'secret') OR lower(COALESCE(sensitivity, '')) LIKE '%pii%')\n  AND NOT has_owner\nORDER BY is_critical DESC, asset_fqn\nLIMIT 50"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "639a9bca703702b0a4b3c99e0f99eb1b",
+        "question": [
+          "What percent of our assets are documented, owned, and classified?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT\n  COUNT(*) AS total_assets,\n  ROUND(100.0 * AVG(CASE WHEN NULLIF(trim(comment), '') IS NOT NULL THEN 1 ELSE 0 END), 1) AS pct_documented,\n  ROUND(100.0 * AVG(CASE WHEN has_owner THEN 1 ELSE 0 END), 1) AS pct_owned,\n  ROUND(100.0 * AVG(CASE WHEN domain IS NOT NULL THEN 1 ELSE 0 END), 1) AS pct_domain_tagged,\n  ROUND(100.0 * AVG(CASE WHEN sensitivity IS NOT NULL THEN 1 ELSE 0 END), 1) AS pct_classified,\n  ROUND(100.0 * AVG(CASE WHEN is_certified THEN 1 ELSE 0 END), 1) AS pct_certified\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "68d88f8f30046ea36ff1ee302031e1db",
+        "question": [
+          "What is our overall metadata coverage?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT\n  COUNT(*) AS total_assets,\n  ROUND(100.0 * AVG(CASE WHEN NULLIF(trim(comment), '') IS NOT NULL THEN 1 ELSE 0 END), 1) AS pct_documented,\n  ROUND(100.0 * AVG(CASE WHEN has_owner THEN 1 ELSE 0 END), 1) AS pct_owned,\n  ROUND(100.0 * AVG(CASE WHEN domain IS NOT NULL THEN 1 ELSE 0 END), 1) AS pct_domain_tagged,\n  ROUND(100.0 * AVG(CASE WHEN sensitivity IS NOT NULL THEN 1 ELSE 0 END), 1) AS pct_classified,\n  ROUND(100.0 * AVG(CASE WHEN is_certified THEN 1 ELSE 0 END), 1) AS pct_certified\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "6d844d3d9cd1124fadaf18210e2b00b8",
+        "question": [
+          "Which open requests are older than 14 days?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT work_id, work_type, status, asset_fqn, title, created_at,\n  datediff(current_date(), created_at) AS age_days\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_governance_work_current`\nWHERE lower(COALESCE(status, '')) IN ('', 'new', 'pending', 'open', 'in_review', 'blocked')\n  AND created_at < current_timestamp() - INTERVAL 14 DAYS\nORDER BY created_at ASC, work_id\nLIMIT 50"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "6f7e1369742770d0f509de7e88c9d714",
+        "question": [
+          "Which assets are missing stewardship attention?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT asset_fqn, domain, data_product, owner_count, open_work_count, certification, criticality\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE owner_count = 0 OR open_work_count > 0\nORDER BY open_work_count DESC, owner_count ASC, is_critical DESC, asset_fqn\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "7011817a400c059601578207e70ad820",
+        "question": [
+          "How many governance requests were closed in the last 30 days?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT lower(status) AS status, COUNT(*) AS closed_items\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_governance_work_current`\nWHERE lower(COALESCE(status, '')) IN ('approved', 'rejected', 'resolved', 'closed', 'applied', 'cancelled', 'canceled', 'done')\n  AND reviewed_at >= current_timestamp() - INTERVAL 30 DAYS\nGROUP BY lower(status)\nORDER BY closed_items DESC, status"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "71ed850cd08e8c84cb0d48f408bd2c39",
+        "question": [
+          "Which certification labels are in use?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT COALESCE(certification, 'Not tagged') AS certification,\n  COUNT(*) AS assets,\n  SUM(CASE WHEN is_certified THEN 1 ELSE 0 END) AS counted_as_certified\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nGROUP BY COALESCE(certification, 'Not tagged')\nORDER BY assets DESC, certification"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "74dd75286f3e3b147c7266ed392630d5",
+        "question": [
+          "Which glossary terms still need approval?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT term_id, name, domain, status, owner_email, reviewers, updated_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_glossary_current`\nWHERE lower(COALESCE(review_status, '')) IN ('', 'draft', 'new', 'pending', 'in_review', 'proposed')\nORDER BY updated_at ASC, name\nLIMIT 50"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "761782daa4cbb1dbcb0703949fe791ab",
+        "question": [
+          "What percentage of assets are certified?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT COUNT(*) AS total_assets,\n  SUM(CASE WHEN is_certified THEN 1 ELSE 0 END) AS certified_assets,\n  ROUND(100.0 * AVG(CASE WHEN is_certified THEN 1 ELSE 0 END), 1) AS pct_certified\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "78149b2a1a63cf8298b6b3410a15e853",
+        "question": [
+          "Which assets have no domain tag?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT asset_fqn, table_type, business_owners\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE domain IS NULL\nORDER BY is_critical DESC, asset_fqn\nLIMIT 50"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "79767c072a0cd95033e55d1493358707",
+        "question": [
+          "How many assets are unclassified for sensitivity?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT COUNT(*) AS unclassified_assets\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE sensitivity IS NULL"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "7ad1f6cb24420e83dad1ad23234d0a09",
+        "question": [
+          "How many glossary terms are approved?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT COUNT(*) AS approved_terms\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_glossary_current`\nWHERE lower(COALESCE(status, '')) IN ('approved', 'published', 'active')"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "7ba7c8089027e2d4cd7a05dbeef88c5a",
+        "question": [
+          "What changed in governance metadata recently?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT audit_id, asset_fqn, action, status, actor_email, detail, created_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_audit_events`\nORDER BY created_at DESC, audit_id DESC\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "7f5a91fc1e174b809948396a1835b421",
+        "question": [
+          "Which assets have the most upstream inputs?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT target_asset_fqn AS asset_fqn,\n  COUNT(DISTINCT source_asset_fqn) AS upstream_assets,\n  MAX(event_time) AS last_seen_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_lineage_edges`\nWHERE source_asset_fqn IS NOT NULL\n  AND target_asset_fqn IS NOT NULL\nGROUP BY target_asset_fqn\nORDER BY upstream_assets DESC, asset_fqn\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "7f97b3748cf3e5f46156b738dd38c6e9",
+        "question": [
+          "List tables that are missing a description."
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT asset_fqn, table_type, domain, business_owners, last_altered\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE NOT (NULLIF(trim(comment), '') IS NOT NULL)\nORDER BY is_critical DESC, last_altered DESC, asset_fqn\nLIMIT 50"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "813783d8b07c7499c5493dd55acb2e10",
+        "question": [
+          "Show me data quality issues impacting critical assets."
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT quality.asset_fqn, quality.column_name, quality.case_id, quality.outcome, quality.severity,\n       quality.metric_value, quality.threshold_value, quality.detail, quality.executed_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_quality_latest` quality\nINNER JOIN `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` assets\n  ON assets.asset_fqn = quality.asset_fqn\nWHERE assets.is_critical = TRUE\n  AND lower(COALESCE(quality.outcome, '')) IN ('failed', 'errored')\nORDER BY quality.executed_at DESC, quality.asset_fqn\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "81ba9489928259bfd3a371932c517745",
+        "question": [
+          "Which governance changes failed or were not applied?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT audit_id, asset_fqn, action, status, source, actor_email, detail, created_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_audit_events`\nWHERE lower(COALESCE(status, '')) IN ('failed', 'error', 'errored', 'skipped', 'rejected')\nORDER BY created_at DESC, audit_id DESC\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "844735352bd996f3738b799aa6511ff1",
+        "question": [
+          "Which tables need stewardship follow-up?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT asset_fqn, domain, data_product, owner_count, open_work_count, certification, criticality\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE owner_count = 0 OR open_work_count > 0\nORDER BY open_work_count DESC, owner_count ASC, is_critical DESC, asset_fqn\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "86a5004a8efcfacbcf2c99cfe558f34e",
+        "question": [
+          "What is the certification rate by domain?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT COALESCE(domain, 'Unassigned') AS domain,\n  COUNT(*) AS assets,\n  SUM(CASE WHEN is_certified THEN 1 ELSE 0 END) AS certified_assets,\n  ROUND(100.0 * AVG(CASE WHEN is_certified THEN 1 ELSE 0 END), 1) AS certification_rate_pct\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nGROUP BY COALESCE(domain, 'Unassigned')\nORDER BY certification_rate_pct ASC, assets DESC, domain"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "89d5530cf182aacd249898826267327d",
+        "question": [
+          "Who owns the most assets?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "WITH owner_assets AS (\n  SELECT asset_fqn, is_critical, is_certified, trim(owner_raw) AS owner_email\n  FROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\n  LATERAL VIEW explode(split(business_owners, ',')) owner_list AS owner_raw\n  WHERE business_owners IS NOT NULL\n)\nSELECT owner_email,\n  COUNT(DISTINCT asset_fqn) AS owned_assets,\n  COUNT(DISTINCT CASE WHEN is_critical THEN asset_fqn END) AS critical_assets,\n  COUNT(DISTINCT CASE WHEN is_certified THEN asset_fqn END) AS certified_assets\nFROM owner_assets\nWHERE owner_email <> ''\nGROUP BY owner_email\nORDER BY owned_assets DESC, owner_email\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "8a2cdb8e0c6cad725584d7b6020a39c5",
+        "question": [
+          "List uncertified critical tables."
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT asset_fqn, domain, data_product, criticality, certification, business_owners\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE is_critical = TRUE\n  AND is_certified = FALSE\nORDER BY owner_count ASC, open_work_count DESC, asset_fqn\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "909fb29fe51e6948c5d8b737b1e208d6",
+        "question": [
+          "Which assets have no lineage activity in the last 90 days?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT assets.asset_fqn, assets.table_type, assets.last_altered\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` assets\nWHERE NOT EXISTS (\n  SELECT 1 FROM `ops_governance`.`axiom_ai`.`axiom_ai_lineage_edges` lineage\n  WHERE lineage.source_asset_fqn = assets.asset_fqn OR lineage.target_asset_fqn = assets.asset_fqn\n)\nORDER BY assets.last_altered ASC, assets.asset_fqn\nLIMIT 50"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "93d90106a8612f498aa723338e3c0d58",
+        "question": [
+          "Which assets have the lowest metadata coverage?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT asset_fqn, table_type,\n  (CASE WHEN NULLIF(trim(comment), '') IS NOT NULL THEN 1 ELSE 0 END + CASE WHEN has_owner THEN 1 ELSE 0 END + CASE WHEN domain IS NOT NULL THEN 1 ELSE 0 END + CASE WHEN sensitivity IS NOT NULL THEN 1 ELSE 0 END + CASE WHEN certification IS NOT NULL THEN 1 ELSE 0 END) AS coverage_score,\n  NULLIF(trim(comment), '') IS NOT NULL AS has_description, has_owner, domain, sensitivity, certification\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nORDER BY coverage_score ASC, is_critical DESC, asset_fqn\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "9453f35cf9d3cad1caa10cfbb3e1ffb3",
+        "question": [
+          "How long do governance reviews take on average?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT work_type,\n  COUNT(*) AS reviewed_items,\n  ROUND(AVG((unix_timestamp(reviewed_at) - unix_timestamp(created_at)) / 3600.0), 1) AS avg_hours_to_review,\n  ROUND(percentile_approx((unix_timestamp(reviewed_at) - unix_timestamp(created_at)) / 3600.0, 0.5), 1) AS median_hours_to_review\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_governance_work_current`\nWHERE reviewed_at IS NOT NULL\n  AND created_at IS NOT NULL\nGROUP BY work_type\nORDER BY reviewed_items DESC, work_type"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "9b1444e2c84ca6bb83c9e515a37a8467",
+        "question": [
+          "How many critical assets do we have?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT COUNT(*) AS critical_assets\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE is_critical"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "9d130c3b7f5ef219e6fe52a540961245",
+        "question": [
+          "Which critical assets are not certified?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT asset_fqn, domain, data_product, criticality, certification, business_owners\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE is_critical = TRUE\n  AND is_certified = FALSE\nORDER BY owner_count ASC, open_work_count DESC, asset_fqn\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "9e06d84b17ac4a61ce380ddc13c6a71f",
+        "question": [
+          "Which business terms are unused?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT term_id, name, domain, status, owner_email, updated_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_glossary_current`\nWHERE linked_asset_count = 0\nORDER BY domain, name\nLIMIT 50"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a224e10d666b3cd6c6f8679bfb31b31e",
+        "question": [
+          "How many governance requests are there by status and type?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT lower(COALESCE(status, '')) AS status, work_type, COUNT(*) AS work_items\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_governance_work_current`\nGROUP BY lower(COALESCE(status, '')), work_type\nORDER BY work_items DESC, status, work_type"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a5fa4d4699fc9dfe6feb284145d5c767",
+        "question": [
+          "Show orphaned tables with no steward."
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT asset_fqn, table_type, domain, criticality, sensitivity, open_work_count\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE NOT has_owner\nORDER BY is_critical DESC, open_work_count DESC, asset_fqn\nLIMIT 50"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "a82c35ec2a0d5d31c46df216282d4886",
+        "question": [
+          "How many assets do we have by schema and type?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT schema_name, table_type, COUNT(*) AS asset_count\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nGROUP BY schema_name, table_type\nORDER BY asset_count DESC, schema_name, table_type"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "aa69dea43257ae96b924c17cf7b80ff7",
+        "question": [
+          "Who made the most metadata changes in the last 30 days?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT actor_email, COUNT(*) AS changes, COUNT(DISTINCT asset_fqn) AS assets_changed, MAX(created_at) AS last_change_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_audit_events`\nWHERE created_at >= current_timestamp() - INTERVAL 30 DAYS\nGROUP BY actor_email\nORDER BY changes DESC, actor_email\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "aa788e41eff839be50de0cd1048b9a5e",
+        "question": [
+          "Which assets have no assigned owner?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT asset_fqn, table_type, domain, criticality, sensitivity, open_work_count\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE NOT has_owner\nORDER BY is_critical DESC, open_work_count DESC, asset_fqn\nLIMIT 50"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "ad77d5ca53bbb7c8900a3a461ded42e4",
+        "question": [
+          "How many lineage events were observed per day in the last 30 days?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT to_date(event_time) AS event_date,\n  COUNT(*) AS lineage_events,\n  COUNT(DISTINCT source_asset_fqn) AS source_assets,\n  COUNT(DISTINCT target_asset_fqn) AS target_assets\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_lineage_edges`\nWHERE event_time >= current_timestamp() - INTERVAL 30 DAYS\nGROUP BY to_date(event_time)\nORDER BY event_date DESC"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "ade4ecc236b806a8e81074637b34eef4",
+        "question": [
+          "Which owner assignments changed recently?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT audit_id, asset_fqn, actor_email, status, detail, created_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_audit_events`\nWHERE lower(action) = 'owner-upserted'\nORDER BY created_at DESC, audit_id DESC\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "aea14a7a2e7ac4c347458207382af678",
+        "question": [
+          "How many distinct lineage edges were observed in the last 90 days?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT COUNT(DISTINCT source_asset_fqn, target_asset_fqn) AS distinct_edges,\n  COUNT(DISTINCT source_asset_fqn) AS source_assets,\n  COUNT(DISTINCT target_asset_fqn) AS target_assets\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_lineage_edges`\nWHERE source_asset_fqn IS NOT NULL\n  AND target_asset_fqn IS NOT NULL"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "b0cc2f181cd145a79cb64e2f467a85dd",
+        "question": [
+          "Which assets have the most open governance work?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT work.asset_fqn, assets.domain, assets.is_critical,\n  COUNT(*) AS open_work_items,\n  MIN(work.created_at) AS oldest_open_since\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_governance_work_current` work\nINNER JOIN `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` assets\n  ON assets.asset_fqn = work.asset_fqn\nWHERE lower(COALESCE(work.status, '')) IN ('', 'new', 'pending', 'open', 'in_review', 'blocked')\nGROUP BY work.asset_fqn, assets.domain, assets.is_critical\nORDER BY open_work_items DESC, oldest_open_since ASC, work.asset_fqn\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "b530995e0eee02ddfd8e67ed16e2a928",
+        "question": [
+          "Which critical assets have no data quality checks?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT assets.asset_fqn, assets.domain, assets.criticality, assets.business_owners\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` assets\nLEFT ANTI JOIN `ops_governance`.`axiom_ai`.`axiom_ai_quality_latest` quality\n  ON quality.asset_fqn = assets.asset_fqn\nWHERE assets.is_critical\nORDER BY assets.asset_fqn\nLIMIT 50"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "b9adea5e527ab568510da1ea3a52211e",
+        "question": [
+          "Which quality checks failed in the last 7 days?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT asset_fqn, column_name, case_id, outcome, severity, detail, executed_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_quality_latest`\nWHERE lower(COALESCE(outcome, '')) IN ('failed', 'errored')\n  AND executed_at >= current_timestamp() - INTERVAL 7 DAYS\nORDER BY executed_at DESC, asset_fqn\nLIMIT 50"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "ba4d0deb8cc9f324bb986ad6bf4b0d12",
+        "question": [
+          "Are there any PII or confidential tables without an owner?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT asset_fqn, sensitivity, domain, criticality, open_work_count\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE (lower(COALESCE(sensitivity, '')) IN ('pii', 'phi', 'pci', 'confidential', 'highly confidential', 'restricted', 'sensitive', 'secret') OR lower(COALESCE(sensitivity, '')) LIKE '%pii%')\n  AND NOT has_owner\nORDER BY is_critical DESC, asset_fqn\nLIMIT 50"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "bcbeb33fb5f47595a86b5ca8d02630f3",
+        "question": [
+          "Which glossary terms are missing a definition, owner, or reviewers?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT term_id, name, domain, status,\n  NULLIF(trim(definition), '') IS NULL AS missing_definition,\n  owner_email IS NULL AS missing_owner,\n  reviewers IS NULL AS missing_reviewers\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_glossary_current`\nWHERE NULLIF(trim(definition), '') IS NULL OR owner_email IS NULL OR reviewers IS NULL\nORDER BY domain, name\nLIMIT 50"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "c4e20f6b80cf9b80e10a5ce4a45299ee",
+        "question": [
+          "Which tables would break the most things downstream if they changed?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT source_asset_fqn AS asset_fqn,\n  COUNT(DISTINCT target_asset_fqn) AS downstream_assets,\n  MAX(event_time) AS last_seen_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_lineage_edges`\nWHERE source_asset_fqn IS NOT NULL\n  AND target_asset_fqn IS NOT NULL\nGROUP BY source_asset_fqn\nORDER BY downstream_assets DESC, asset_fqn\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "c58dada897e2253668b1d6614482405b",
+        "question": [
+          "Which domains have the highest risk of policy exceptions?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT\n  COALESCE(assets.domain, 'Unassigned') AS domain,\n  COUNT(DISTINCT assets.asset_fqn) AS governed_assets,\n  COUNT(DISTINCT CASE WHEN lower(COALESCE(work.status, '')) IN ('', 'new', 'pending', 'open', 'in_review', 'blocked') THEN work.work_id END) AS open_policy_work,\n  COUNT(DISTINCT CASE WHEN assets.is_critical AND NOT assets.is_certified THEN assets.asset_fqn END) AS uncertified_critical_assets,\n  COUNT(DISTINCT CASE WHEN NOT assets.has_owner THEN assets.asset_fqn END) AS unowned_assets\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` assets\nLEFT JOIN `ops_governance`.`axiom_ai`.`axiom_ai_governance_work_current` work\n  ON work.asset_fqn = assets.asset_fqn\nGROUP BY COALESCE(assets.domain, 'Unassigned')\nORDER BY open_policy_work DESC, uncertified_critical_assets DESC, unowned_assets DESC, governed_assets DESC\nLIMIT 10"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "ca12f1a4a9c6e4a74b77a95965aaf372",
+        "question": [
+          "Which glossary terms are not linked to any asset?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT term_id, name, domain, status, owner_email, updated_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_glossary_current`\nWHERE linked_asset_count = 0\nORDER BY domain, name\nLIMIT 50"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "cf6dfc0f08e8ad319ac63207795304df",
+        "question": [
+          "What changed on critical assets in the last 30 days?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT audit.audit_id, audit.asset_fqn, audit.action, audit.status, audit.actor_email, audit.created_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_audit_events` audit\nINNER JOIN `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` assets\n  ON assets.asset_fqn = audit.asset_fqn\nWHERE assets.is_critical\n  AND audit.created_at >= current_timestamp() - INTERVAL 30 DAYS\nORDER BY audit.created_at DESC, audit.audit_id DESC\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "d1e398ecb488dcef49d8ad9849bdeefa",
+        "question": [
+          "Where is our PII?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT asset_fqn, sensitivity, domain, business_owners, is_certified\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE (lower(COALESCE(sensitivity, '')) IN ('pii', 'phi', 'pci', 'confidential', 'highly confidential', 'restricted', 'sensitive', 'secret') OR lower(COALESCE(sensitivity, '')) LIKE '%pii%')\nORDER BY sensitivity, asset_fqn\nLIMIT 50"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "d502dce60cbcb4f47a499ed4b7b5db00",
+        "question": [
+          "What open governance work is on critical assets?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT work.work_id, work.work_type, work.status, work.asset_fqn, work.title, work.created_at,\n  datediff(current_date(), work.created_at) AS age_days\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_governance_work_current` work\nINNER JOIN `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` assets\n  ON assets.asset_fqn = work.asset_fqn\nWHERE assets.is_critical\n  AND lower(COALESCE(work.status, '')) IN ('', 'new', 'pending', 'open', 'in_review', 'blocked')\nORDER BY work.created_at ASC, work.work_id\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "d711b4a13031c46764bcca8e8465cd89",
+        "question": [
+          "How many assets does each business domain have?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT COALESCE(domain, 'Unassigned') AS domain,\n  COUNT(*) AS assets,\n  SUM(CASE WHEN is_certified THEN 1 ELSE 0 END) AS certified_assets,\n  SUM(CASE WHEN is_critical THEN 1 ELSE 0 END) AS critical_assets,\n  SUM(CASE WHEN has_owner THEN 0 ELSE 1 END) AS unowned_assets\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nGROUP BY COALESCE(domain, 'Unassigned')\nORDER BY assets DESC, domain"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "d7696b61e9bf443aef5c31311ed5df60",
+        "question": [
+          "How many quality checks passed, failed, or errored?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT lower(COALESCE(outcome, '')) AS outcome, COUNT(*) AS checks\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_quality_latest`\nGROUP BY lower(COALESCE(outcome, ''))\nORDER BY checks DESC, outcome"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "d8bf44ac02941b6b00243ea08b40dfc0",
+        "question": [
+          "What data quality tests are failing right now?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT asset_fqn, column_name, case_id, outcome, severity, metric_value, threshold_value, detail, executed_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_quality_latest`\nWHERE lower(COALESCE(outcome, '')) IN ('failed', 'errored')\nORDER BY CASE lower(COALESCE(severity, '')) WHEN 'critical' THEN 1 WHEN 'high' THEN 2 WHEN 'medium' THEN 3 WHEN 'low' THEN 4 ELSE 5 END,\n  executed_at DESC, asset_fqn\nLIMIT 50"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "dba696ba6019f11c36a85f916fc0de2b",
+        "question": [
+          "Which critical assets feed uncertified downstream assets?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT DISTINCT lineage.source_asset_fqn, lineage.target_asset_fqn, downstream.certification AS downstream_certification\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_lineage_edges` lineage\nINNER JOIN `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` upstream\n  ON upstream.asset_fqn = lineage.source_asset_fqn\nINNER JOIN `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` downstream\n  ON downstream.asset_fqn = lineage.target_asset_fqn\nWHERE upstream.is_critical\n  AND NOT downstream.is_certified\nORDER BY lineage.source_asset_fqn, lineage.target_asset_fqn\nLIMIT 50"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "dd97b8a46c6c9ebc50ee354dd34f3fb2",
+        "question": [
+          "Which quality checks are currently failing?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT asset_fqn, column_name, case_id, outcome, severity, metric_value, threshold_value, detail, executed_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_quality_latest`\nWHERE lower(COALESCE(outcome, '')) IN ('failed', 'errored')\nORDER BY CASE lower(COALESCE(severity, '')) WHEN 'critical' THEN 1 WHEN 'high' THEN 2 WHEN 'medium' THEN 3 WHEN 'low' THEN 4 ELSE 5 END,\n  executed_at DESC, asset_fqn\nLIMIT 50"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "def46dd3dd9a4fe6d034443bae46e660",
+        "question": [
+          "Which glossary terms are linked to customer assets?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT term_id, name, definition, review_status, linked_asset_count, linked_assets_sample\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_glossary_current`\nWHERE lower(COALESCE(linked_assets_sample, '')) LIKE '%customer%'\n   OR lower(COALESCE(domain, '')) LIKE '%customer%'\n   OR lower(COALESCE(name, '')) LIKE '%customer%'\nORDER BY linked_asset_count DESC, name\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "dfdcccabf5f9d4758185eca42fc88f75",
+        "question": [
+          "Which columns have failing quality checks?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT asset_fqn, column_name, COUNT(*) AS failing_checks, MAX(executed_at) AS last_failed_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_quality_latest`\nWHERE column_name IS NOT NULL\n  AND lower(COALESCE(outcome, '')) IN ('failed', 'errored')\nGROUP BY asset_fqn, column_name\nORDER BY failing_checks DESC, asset_fqn, column_name\nLIMIT 50"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "e3889aed443b14428f810b9a13fe29ac",
+        "question": [
+          "Which assets contain sensitive or PII data?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT asset_fqn, sensitivity, domain, business_owners, is_certified\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE (lower(COALESCE(sensitivity, '')) IN ('pii', 'phi', 'pci', 'confidential', 'highly confidential', 'restricted', 'sensitive', 'secret') OR lower(COALESCE(sensitivity, '')) LIKE '%pii%')\nORDER BY sensitivity, asset_fqn\nLIMIT 50"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "e6826ef93588c126c1778ffa80e37bee",
+        "question": [
+          "Who is reviewing the most governance requests?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT reviewed_by,\n  COUNT(*) AS reviewed_items,\n  SUM(CASE WHEN lower(status) IN ('approved', 'applied', 'resolved') THEN 1 ELSE 0 END) AS approved_items,\n  SUM(CASE WHEN lower(status) = 'rejected' THEN 1 ELSE 0 END) AS rejected_items\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_governance_work_current`\nWHERE reviewed_by IS NOT NULL\nGROUP BY reviewed_by\nORDER BY reviewed_items DESC, reviewed_by\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "e6c3feb59ad3f9fff0a93cde996602fd",
+        "question": [
+          "What new tables showed up this month?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT asset_fqn, table_type, created, has_owner, NULLIF(trim(comment), '') IS NOT NULL AS has_description\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE created >= current_timestamp() - INTERVAL 30 DAYS\nORDER BY created DESC, asset_fqn\nLIMIT 50"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "e9619f7926bec475692b402f51e789c1",
+        "question": [
+          "Which assets have no description?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT asset_fqn, table_type, domain, business_owners, last_altered\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE NOT (NULLIF(trim(comment), '') IS NOT NULL)\nORDER BY is_critical DESC, last_altered DESC, asset_fqn\nLIMIT 50"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "edac5c67f6cc67af86b000b54f008c88",
+        "question": [
+          "How many tables versus views do we have?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT table_type, COUNT(*) AS asset_count\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nGROUP BY table_type\nORDER BY asset_count DESC, table_type"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "edb269c0a10966b730eceb9cdc6dd0c3",
+        "question": [
+          "How many audit events happened per day by action over the last 30 days?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT to_date(created_at) AS event_date, action, COUNT(*) AS events\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_audit_events`\nWHERE created_at >= current_timestamp() - INTERVAL 30 DAYS\nGROUP BY to_date(created_at), action\nORDER BY event_date DESC, events DESC, action"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "f3ad63dbdba531e57a1ec2923698ab8a",
+        "question": [
+          "Why were change requests rejected?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT work_id, work_type, asset_fqn, title, created_by, reviewed_by, reviewed_at, review_note\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_governance_work_current`\nWHERE lower(status) = 'rejected'\nORDER BY reviewed_at DESC, work_id\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "fe6e018b613552bff9f3096a7fc7eba5",
+        "question": [
+          "Which assets have the most downstream dependents?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT source_asset_fqn AS asset_fqn,\n  COUNT(DISTINCT target_asset_fqn) AS downstream_assets,\n  MAX(event_time) AS last_seen_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_lineage_edges`\nWHERE source_asset_fqn IS NOT NULL\n  AND target_asset_fqn IS NOT NULL\nGROUP BY source_asset_fqn\nORDER BY downstream_assets DESC, asset_fqn\nLIMIT 25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "ff4787bd0273cfda7bde2320e1c47d96",
+        "question": [
+          "What is the quality pass rate by asset?"
+        ],
+        "answer": [
+          {
+            "format": "SQL",
+            "content": [
+              "SELECT asset_fqn,\n  COUNT(*) AS evaluated_checks,\n  SUM(CASE WHEN lower(outcome) = 'passed' THEN 1 ELSE 0 END) AS passed_checks,\n  SUM(CASE WHEN lower(outcome) IN ('failed', 'errored') THEN 1 ELSE 0 END) AS failing_checks,\n  ROUND(100.0 * SUM(CASE WHEN lower(outcome) = 'passed' THEN 1 ELSE 0 END) / COUNT(*), 1) AS pass_rate_pct,\n  MAX(executed_at) AS last_checked_at\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_quality_latest`\nWHERE lower(COALESCE(outcome, '')) <> 'skipped'\nGROUP BY asset_fqn\nORDER BY pass_rate_pct ASC, failing_checks DESC, asset_fqn\nLIMIT 25"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

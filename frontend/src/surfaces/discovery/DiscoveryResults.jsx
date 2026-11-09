@@ -19,7 +19,7 @@ import {
 
 /*
  * Discover result renderings (Wave C1): the system DataTable in list mode,
- * a ga-disc card grid in grid mode. One interaction contract for both:
+ * a ax-disc card grid in grid mode. One interaction contract for both:
  *   - the asset NAME is a real anchor to /assets/<fqn> (cross-linking law) —
  *     middle-click/copy-link always reach the hub;
  *   - a plain left-click anywhere on the row/card opens the ?peek= preview
@@ -30,10 +30,10 @@ import {
 
 function ownerCell(asset) {
   const owners = ownerLabelsForAsset(asset);
-  if (!owners.length) return <span className="ga-disc-muted">Unassigned</span>;
+  if (!owners.length) return <span className="ax-disc-muted">Unassigned</span>;
   const primary = owners[0];
   return (
-    <span className="ga-disc-owner-cell">
+    <span className="ax-disc-owner-cell">
       <EntityChip
         appearance="inline"
         entity={{
@@ -43,7 +43,7 @@ function ownerCell(asset) {
         }}
       />
       {owners.length > 1 ? (
-        <span className="ga-disc-muted" title={owners.join(", ")}>
+        <span className="ax-disc-muted" title={owners.join(", ")}>
           +{owners.length - 1}
         </span>
       ) : null}
@@ -53,7 +53,7 @@ function ownerCell(asset) {
 
 function domainCell(asset) {
   if (!asset.domain || asset.domain === "Unassigned") {
-    return <span className="ga-disc-muted">Unassigned</span>;
+    return <span className="ax-disc-muted">Unassigned</span>;
   }
   return <EntityChip appearance="inline" entity={{ kind: "domain", name: asset.domain }} />;
 }
@@ -63,18 +63,18 @@ function certificationCell(asset) {
   return cert ? (
     <Badge status={cert}>{cert}</Badge>
   ) : (
-    <span className="ga-disc-muted">Not certified</span>
+    <span className="ax-disc-muted">Not certified</span>
   );
 }
 
 function coverageCell(asset, sourceAuthoritative) {
   const coverage = coveragePercent(asset);
-  if (coverage === null) return <span className="ga-disc-muted">Unscored</span>;
-  if (!sourceAuthoritative) return <span className="ga-disc-muted">Unavailable</span>;
+  if (coverage === null) return <span className="ax-disc-muted">Unscored</span>;
+  if (!sourceAuthoritative) return <span className="ax-disc-muted">Unavailable</span>;
   return (
-    <span className="ga-disc-coverage">
+    <span className="ax-disc-coverage">
       <span>{coverage}%</span>
-      <span aria-hidden="true" className="ga-disc-coverage-bar">
+      <span aria-hidden="true" className="ax-disc-coverage-bar">
         <i style={{ width: `${coverage}%` }} />
       </span>
     </span>
@@ -83,7 +83,7 @@ function coverageCell(asset, sourceAuthoritative) {
 
 function sensitivityCell(asset) {
   const sensitivity = sensitivityLabel(asset);
-  if (!sensitivity) return <span className="ga-disc-muted">Unclassified</span>;
+  if (!sensitivity) return <span className="ax-disc-muted">Unclassified</span>;
   const tone = /restricted|pii|personal|critical/i.test(sensitivity)
     ? "bad"
     : /confidential/i.test(sensitivity)
@@ -98,7 +98,7 @@ function linkageCell(asset) {
   const terms = glossaryTermLabels(asset);
   if (isCde || isPii) {
     return (
-      <span className="ga-disc-linkage">
+      <span className="ax-disc-linkage">
         {isCde ? <Badge tone="accent">CDE</Badge> : null}
         {isPii ? <Badge tone="bad">PII</Badge> : null}
       </span>
@@ -106,12 +106,12 @@ function linkageCell(asset) {
   }
   if (terms.length) {
     return (
-      <span className="ga-disc-linkage" title={terms.join(", ")}>
+      <span className="ax-disc-linkage" title={terms.join(", ")}>
         {terms.length} term{terms.length === 1 ? "" : "s"}
       </span>
     );
   }
-  return <span className="ga-disc-muted">No links</span>;
+  return <span className="ax-disc-muted">No links</span>;
 }
 
 function FavoriteStar({ asset, favorites, onToggleFavorite }) {
@@ -120,7 +120,7 @@ function FavoriteStar({ asset, favorites, onToggleFavorite }) {
     <button
       aria-label={isFavorite ? "Remove local favorite" : "Add local favorite"}
       aria-pressed={isFavorite}
-      className={`ga-disc-star ${isFavorite ? "is-favorite" : ""}`.trim()}
+      className={`ax-disc-star ${isFavorite ? "is-favorite" : ""}`.trim()}
       onClick={(event) => {
         event.stopPropagation();
         onToggleFavorite?.(asset.fqn);
@@ -151,7 +151,7 @@ export function DiscoveryResultsTable({
       key: "name",
       header: "Asset Name",
       render: (asset) => (
-        <span className="ga-disc-name">
+        <span className="ax-disc-name">
           <strong>{asset.name}</strong>
           <small>{assetSourceLabel(asset)}</small>
         </span>
@@ -161,7 +161,7 @@ export function DiscoveryResultsTable({
       key: "type",
       header: "Type",
       render: (asset) => (
-        <span className="ga-disc-type">{displayObjectType(asset) || "Asset"}</span>
+        <span className="ax-disc-type">{displayObjectType(asset) || "Asset"}</span>
       ),
     },
     { key: "owner", header: "Owner", render: ownerCell },
@@ -182,7 +182,7 @@ export function DiscoveryResultsTable({
       key: "description",
       header: "Description",
       render: (asset) => (
-        <span className="ga-disc-description" title={asset.description || ""}>
+        <span className="ax-disc-description" title={asset.description || ""}>
           {String(asset.description || "").trim() ||
             "No description has been captured for this asset yet."}
         </span>
@@ -200,7 +200,7 @@ export function DiscoveryResultsTable({
   return (
     <DataTable
       caption="Discovery results"
-      className="ga-disc-table"
+      className="ax-disc-table"
       columns={columns}
       density={density}
       emptyState={emptyState}
@@ -227,7 +227,7 @@ export function DiscoveryResultsGrid({
   sourceAuthoritative = true,
 }) {
   return (
-    <div aria-label="Discovery results" className="ga-disc-cards" role="list">
+    <div aria-label="Discovery results" className="ax-disc-cards" role="list">
       {assets.map((asset) => {
         const usage = usageSummary(asset);
         const workflow = workflowState(asset);
@@ -235,7 +235,7 @@ export function DiscoveryResultsGrid({
         const tags = tagLabelsForAsset(asset).slice(0, 3);
         return (
           <article
-            className="ga-disc-card"
+            className="ax-disc-card"
             data-asset-fqn={asset.fqn}
             key={asset.fqn}
             onClick={(event) => {
@@ -252,15 +252,15 @@ export function DiscoveryResultsGrid({
             role="listitem"
             tabIndex={0}
           >
-            <header className="ga-disc-card-head">
-              <span className="ga-disc-type">{displayObjectType(asset) || "Asset"}</span>
+            <header className="ax-disc-card-head">
+              <span className="ax-disc-type">{displayObjectType(asset) || "Asset"}</span>
               <FavoriteStar asset={asset} favorites={favorites} onToggleFavorite={onToggleFavorite} />
             </header>
-            <h3 className="ga-disc-card-title">
+            <h3 className="ax-disc-card-title">
               {/* The name is the anchor to the hub; the card body previews. */}
               <EntityChip appearance="inline" entity={{ kind: "asset", fqn: asset.fqn, label: asset.name }} />
             </h3>
-            <div className="ga-disc-card-meta">
+            <div className="ax-disc-card-meta">
               {domainCell(asset)}
               {ownerCell(asset)}
               {tags.length ? (
@@ -280,20 +280,20 @@ export function DiscoveryResultsGrid({
                 </Badge>
               ) : null}
             </div>
-            <p className="ga-disc-card-description">
+            <p className="ax-disc-card-description">
               {String(asset.description || "").trim() ||
                 "No description has been captured for this asset yet."}
             </p>
-            <footer className="ga-disc-card-foot">
+            <footer className="ax-disc-card-foot">
               {/* Absence of usage fields is NOT zero usage — no claim without
                   evidence in the payload. */}
               {usage.items.length ? (
-                <span className="ga-disc-card-usage">{usage.items.join(" · ")}</span>
+                <span className="ax-disc-card-usage">{usage.items.join(" · ")}</span>
               ) : usage.none ? (
-                <span className="ga-disc-card-usage ga-disc-muted">No recent usage</span>
+                <span className="ax-disc-card-usage ax-disc-muted">No recent usage</span>
               ) : null}
               {coverage !== null && sourceAuthoritative ? (
-                <span className="ga-disc-card-coverage" title={`Governance score: ${coverage}% (weighted metadata completeness + certification + glossary)`}>
+                <span className="ax-disc-card-coverage" title={`Governance score: ${coverage}% (weighted metadata completeness + certification + glossary)`}>
                   Gov. score {coverage}%
                 </span>
               ) : null}
@@ -309,7 +309,7 @@ export function DiscoveryResultsGrid({
 export function DiscoveryLoadMore({ showing, total, loadingMore = false, onLoadMore }) {
   if (!total || total <= showing) return null;
   return (
-    <div className="ga-disc-load-more">
+    <div className="ax-disc-load-more">
       <span>
         Showing {showing.toLocaleString()} of {total.toLocaleString()} results to keep the catalog
         responsive.

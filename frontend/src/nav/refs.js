@@ -26,7 +26,7 @@
  *
  * resolveRef(ref) → { path, params } with RAW param values (objects for json
  * params); serialization to the wire happens against the route's paramsSchema
- * (refHref / useAtlasNavigate).
+ * (refHref / useAxiomNavigate).
  */
 
 import { matchPattern, routesForSurface, routeForPathname, serializeSearch } from "./routes.js";

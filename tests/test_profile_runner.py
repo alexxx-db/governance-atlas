@@ -61,7 +61,7 @@ class FakeStore:
 
 class RunProfileTests(unittest.TestCase):
     def test_happy_path_writes_run_table_and_column_metrics(self) -> None:
-        from atlas.services.profile_runner import run_profile
+        from axiom.services.profile_runner import run_profile
 
         uc = FakeUC(
             {
@@ -103,7 +103,7 @@ class RunProfileTests(unittest.TestCase):
         self.assertEqual(store.finalized[0]["status"], "succeeded")
 
     def test_column_query_failures_still_write_row(self) -> None:
-        from atlas.services.profile_runner import run_profile
+        from axiom.services.profile_runner import run_profile
 
         class FlakyUC:
             def __init__(self):
@@ -130,7 +130,7 @@ class RunProfileTests(unittest.TestCase):
         self.assertEqual(result.status, "succeeded")
 
     def test_single_bounded_query_with_quoted_identifiers(self) -> None:
-        from atlas.services import profile_runner
+        from axiom.services import profile_runner
 
         seen: List[str] = []
 
@@ -154,7 +154,7 @@ class RunProfileTests(unittest.TestCase):
         self.assertIn("`a``b`", seen[1])
 
     def test_respects_max_columns_cap(self) -> None:
-        from atlas.services.profile_runner import run_profile
+        from axiom.services.profile_runner import run_profile
 
         uc = FakeUC({"count(*)": [{"row_count": 5}]})
         store = FakeStore()
@@ -169,7 +169,7 @@ class RunProfileTests(unittest.TestCase):
         self.assertEqual(len(store.col_metrics), 4)
 
     def test_run_insert_failure_short_circuits(self) -> None:
-        from atlas.services.profile_runner import run_profile
+        from axiom.services.profile_runner import run_profile
 
         class FailingStore(FakeStore):
             def insert_profile_run(self, **kwargs):

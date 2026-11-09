@@ -1,5 +1,5 @@
 import { fetchAssetDatabricksEvidence } from "../lib/api";
-import { useAtlasQuery } from "./useAtlasQuery";
+import { useAxiomQuery } from "./useAxiomQuery";
 
 function objectValue(value) {
   return value && typeof value === "object" && !Array.isArray(value) ? value : {};
@@ -8,7 +8,7 @@ function objectValue(value) {
 export function useAssetDatabricksEvidence(assetFqn, options = {}) {
   const trimmed = String(assetFqn || "").trim();
   const enabled = options.enabled !== false && Boolean(trimmed);
-  const { query } = useAtlasQuery({
+  const { query } = useAxiomQuery({
     key: ["assetDatabricksEvidence", trimmed],
     enabled,
     fetch: (signal) => fetchAssetDatabricksEvidence(trimmed, { signal }),

@@ -8,16 +8,16 @@ from unittest.mock import patch
 
 from pydantic import ValidationError
 
-from atlas.api import atlas as atlas_api
-from atlas.api import assets as assets_api
-from atlas.api import classification as classification_api
-from atlas.api import governance as governance_api
+from axiom.api import axiom as axiom_api
+from axiom.api import assets as assets_api
+from axiom.api import classification as classification_api
+from axiom.api import governance as governance_api
 
 
 class JsonRequest:
     def __init__(self, payload: dict, request_id: str = "sanitize-request-id") -> None:
         self._payload = payload
-        self.headers = {"X-GOVAT-Client-Request-ID": request_id}
+        self.headers = {"X-AXIOM-Client-Request-ID": request_id}
         self.state = SimpleNamespace(http_request_id=request_id)
         self.url = SimpleNamespace(path="/api/governance/requests")
 
@@ -59,8 +59,8 @@ class SanitizationContractTests(unittest.TestCase):
 
         self.assertEqual(payload.note, "&lt;b&gt;false positive&lt;/b&gt;")
 
-    def test_atlas_ai_question_strips_controls(self) -> None:
-        payload = atlas_api.AtlasAiQuestion(question="Which assets?\x00\u202e")
+    def test_axiom_ai_question_strips_controls(self) -> None:
+        payload = axiom_api.AxiomAiQuestion(question="Which assets?\x00\u202e")
 
         self.assertEqual(payload.question, "Which assets?")
 

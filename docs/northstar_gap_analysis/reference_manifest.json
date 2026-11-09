@@ -298,7 +298,7 @@
       "requestFailureCount": 2,
       "sha256": "104f6f9b9bd03b8f11592247841a24d587a171087915e2ebb0c1f3a4aa9d1656"
     },
-    "docs/northstar_visual_qa/live-runtime-current-v216-performance-datapact-test-2026-05-04/performance-report.json": {
+    "docs/northstar_visual_qa/live-runtime-current-v216-performance-emet-test-2026-05-04/performance-report.json": {
       "generatedAt": "2026-05-04T05:40:10.757Z",
       "baseUrl": "http://127.0.0.1:8000",
       "evidenceKind": "runtime_app_performance",
@@ -311,7 +311,7 @@
       "sha256": "089739eba66f044c72b16e9834c66408df112b9b9e145ee2f65d7c4f22c1cc98",
       "buildId": "frontend-39d0070a8f87"
     },
-    "docs/northstar_visual_qa/live-runtime-current-v217-wide-datapact-test-2026-05-04/prototype-current-report.json": {
+    "docs/northstar_visual_qa/live-runtime-current-v217-wide-emet-test-2026-05-04/prototype-current-report.json": {
       "generatedAt": "2026-05-04T05:44:51.770Z",
       "baseUrl": "http://127.0.0.1:8000",
       "evidenceKind": "runtime_app_capture",
@@ -325,7 +325,7 @@
       "buildId": "frontend-39d0070a8f87",
       "deploymentId": ""
     },
-    "docs/northstar_visual_qa/live-runtime-current-v218-command-center-scroll-datapact-test-2026-05-04/prototype-current-report.json": {
+    "docs/northstar_visual_qa/live-runtime-current-v218-command-center-scroll-emet-test-2026-05-04/prototype-current-report.json": {
       "generatedAt": "2026-05-04T05:46:39.699Z",
       "baseUrl": "http://127.0.0.1:8000",
       "evidenceKind": "runtime_app_capture",
@@ -339,7 +339,7 @@
       "buildId": "frontend-39d0070a8f87",
       "deploymentId": ""
     },
-    "docs/northstar_visual_qa/live-runtime-current-v219-discover-selected-datapact-test-2026-05-04/prototype-current-report.json": {
+    "docs/northstar_visual_qa/live-runtime-current-v219-discover-selected-emet-test-2026-05-04/prototype-current-report.json": {
       "generatedAt": "2026-05-04T05:46:39.697Z",
       "baseUrl": "http://127.0.0.1:8000",
       "evidenceKind": "runtime_app_capture",
@@ -379,10 +379,10 @@
     "docs/northstar_visual_qa/live-runtime-current-v136-wide-current-all-routes-2026-05-03/prototype-current-report.json",
     "docs/northstar_visual_qa/live-runtime-current-v137-wide-scroll-command-center-2026-05-03/prototype-current-report.json",
     "docs/northstar_visual_qa/live-runtime-current-v138-wide-discover-selected-2026-05-03/prototype-current-report.json",
-    "docs/northstar_visual_qa/live-runtime-current-v216-performance-datapact-test-2026-05-04/performance-report.json",
-    "docs/northstar_visual_qa/live-runtime-current-v217-wide-datapact-test-2026-05-04/prototype-current-report.json",
-    "docs/northstar_visual_qa/live-runtime-current-v218-command-center-scroll-datapact-test-2026-05-04/prototype-current-report.json",
-    "docs/northstar_visual_qa/live-runtime-current-v219-discover-selected-datapact-test-2026-05-04/prototype-current-report.json"
+    "docs/northstar_visual_qa/live-runtime-current-v216-performance-emet-test-2026-05-04/performance-report.json",
+    "docs/northstar_visual_qa/live-runtime-current-v217-wide-emet-test-2026-05-04/prototype-current-report.json",
+    "docs/northstar_visual_qa/live-runtime-current-v218-command-center-scroll-emet-test-2026-05-04/prototype-current-report.json",
+    "docs/northstar_visual_qa/live-runtime-current-v219-discover-selected-emet-test-2026-05-04/prototype-current-report.json"
   ],
   "allowed_current_visual_evidence_artifacts": [
     {
@@ -1035,10 +1035,10 @@
       "viewport": "1280x720"
     },
     {
-      "path": "docs/northstar_visual_qa/live-runtime-current-v217-wide-datapact-test-2026-05-04/command-center-3037x1269.png",
+      "path": "docs/northstar_visual_qa/live-runtime-current-v217-wide-emet-test-2026-05-04/command-center-3037x1269.png",
       "route": "command-center",
       "viewport": "3037x1269",
-      "sourceReport": "docs/northstar_visual_qa/live-runtime-current-v217-wide-datapact-test-2026-05-04/prototype-current-report.json",
+      "sourceReport": "docs/northstar_visual_qa/live-runtime-current-v217-wide-emet-test-2026-05-04/prototype-current-report.json",
       "generatedAt": "2026-05-04T05:44:51.770Z",
       "baseUrl": "http://127.0.0.1:8000",
       "evidenceKind": "runtime_app_capture",
@@ -1046,10 +1046,10 @@
       "sha256": "e0080a25a6fea9b3e72730826c2da023b1b3292bbfefc062858b7f39e35c1e5f"
     },
     {
-      "path": "docs/northstar_visual_qa/live-runtime-current-v217-wide-datapact-test-2026-05-04/discover-3037x1269.png",
+      "path": "docs/northstar_visual_qa/live-runtime-current-v217-wide-emet-test-2026-05-04/discover-3037x1269.png",
       "route": "discover",
       "viewport": "3037x1269",
-      "sourceReport": "docs/northstar_visual_qa/live-runtime-current-v217-wide-datapact-test-2026-05-04/prototype-current-report.json",
+      "sourceReport": "docs/northstar_visual_qa/live-runtime-current-v217-wide-emet-test-2026-05-04/prototype-current-report.json",
       "generatedAt": "2026-05-04T05:44:51.770Z",
       "baseUrl": "http://127.0.0.1:8000",
       "evidenceKind": "runtime_app_capture",
@@ -1057,10 +1057,10 @@
       "sha256": "41bd0d017cea55e427d01c3de95dca0c7ce3ea57241834617c01a457e4ff1e78"
     },
     {
-      "path": "docs/northstar_visual_qa/live-runtime-current-v217-wide-datapact-test-2026-05-04/stewardship-3037x1269.png",
+      "path": "docs/northstar_visual_qa/live-runtime-current-v217-wide-emet-test-2026-05-04/stewardship-3037x1269.png",
       "route": "stewardship",
       "viewport": "3037x1269",
-      "sourceReport": "docs/northstar_visual_qa/live-runtime-current-v217-wide-datapact-test-2026-05-04/prototype-current-report.json",
+      "sourceReport": "docs/northstar_visual_qa/live-runtime-current-v217-wide-emet-test-2026-05-04/prototype-current-report.json",
       "generatedAt": "2026-05-04T05:44:51.770Z",
       "baseUrl": "http://127.0.0.1:8000",
       "evidenceKind": "runtime_app_capture",
@@ -1068,10 +1068,10 @@
       "sha256": "6295db8f8438791806de297596ccafbc52f9b09b85afc559995323301efc30d7"
     },
     {
-      "path": "docs/northstar_visual_qa/live-runtime-current-v217-wide-datapact-test-2026-05-04/glossary-3037x1269.png",
+      "path": "docs/northstar_visual_qa/live-runtime-current-v217-wide-emet-test-2026-05-04/glossary-3037x1269.png",
       "route": "glossary",
       "viewport": "3037x1269",
-      "sourceReport": "docs/northstar_visual_qa/live-runtime-current-v217-wide-datapact-test-2026-05-04/prototype-current-report.json",
+      "sourceReport": "docs/northstar_visual_qa/live-runtime-current-v217-wide-emet-test-2026-05-04/prototype-current-report.json",
       "generatedAt": "2026-05-04T05:44:51.770Z",
       "baseUrl": "http://127.0.0.1:8000",
       "evidenceKind": "runtime_app_capture",
@@ -1079,10 +1079,10 @@
       "sha256": "e78a421902b40b979822d054359776aad3fc952b53538bce49748aaced41b1ad"
     },
     {
-      "path": "docs/northstar_visual_qa/live-runtime-current-v217-wide-datapact-test-2026-05-04/cde-registry-3037x1269.png",
+      "path": "docs/northstar_visual_qa/live-runtime-current-v217-wide-emet-test-2026-05-04/cde-registry-3037x1269.png",
       "route": "cde-registry",
       "viewport": "3037x1269",
-      "sourceReport": "docs/northstar_visual_qa/live-runtime-current-v217-wide-datapact-test-2026-05-04/prototype-current-report.json",
+      "sourceReport": "docs/northstar_visual_qa/live-runtime-current-v217-wide-emet-test-2026-05-04/prototype-current-report.json",
       "generatedAt": "2026-05-04T05:44:51.770Z",
       "baseUrl": "http://127.0.0.1:8000",
       "evidenceKind": "runtime_app_capture",
@@ -1090,10 +1090,10 @@
       "sha256": "01f631a6a704d554f7836908a0d00cb139feb1a46796f4c6b5b9306cc62ee0c5"
     },
     {
-      "path": "docs/northstar_visual_qa/live-runtime-current-v217-wide-datapact-test-2026-05-04/lineage-3037x1269.png",
+      "path": "docs/northstar_visual_qa/live-runtime-current-v217-wide-emet-test-2026-05-04/lineage-3037x1269.png",
       "route": "lineage",
       "viewport": "3037x1269",
-      "sourceReport": "docs/northstar_visual_qa/live-runtime-current-v217-wide-datapact-test-2026-05-04/prototype-current-report.json",
+      "sourceReport": "docs/northstar_visual_qa/live-runtime-current-v217-wide-emet-test-2026-05-04/prototype-current-report.json",
       "generatedAt": "2026-05-04T05:44:51.770Z",
       "baseUrl": "http://127.0.0.1:8000",
       "evidenceKind": "runtime_app_capture",
@@ -1101,10 +1101,10 @@
       "sha256": "81e8feafa7b9b5caba2e23736edf21a4ce2a0ff9fd948c9f7b15bd98cab84fb4"
     },
     {
-      "path": "docs/northstar_visual_qa/live-runtime-current-v217-wide-datapact-test-2026-05-04/audit-3037x1269.png",
+      "path": "docs/northstar_visual_qa/live-runtime-current-v217-wide-emet-test-2026-05-04/audit-3037x1269.png",
       "route": "audit",
       "viewport": "3037x1269",
-      "sourceReport": "docs/northstar_visual_qa/live-runtime-current-v217-wide-datapact-test-2026-05-04/prototype-current-report.json",
+      "sourceReport": "docs/northstar_visual_qa/live-runtime-current-v217-wide-emet-test-2026-05-04/prototype-current-report.json",
       "generatedAt": "2026-05-04T05:44:51.770Z",
       "baseUrl": "http://127.0.0.1:8000",
       "evidenceKind": "runtime_app_capture",
@@ -1112,10 +1112,10 @@
       "sha256": "92ec8feafa909f3e56700a6685e1918c1bb2b83b44f34b73af84933c665ac587"
     },
     {
-      "path": "docs/northstar_visual_qa/live-runtime-current-v217-wide-datapact-test-2026-05-04/control-center-3037x1269.png",
+      "path": "docs/northstar_visual_qa/live-runtime-current-v217-wide-emet-test-2026-05-04/control-center-3037x1269.png",
       "route": "control-center",
       "viewport": "3037x1269",
-      "sourceReport": "docs/northstar_visual_qa/live-runtime-current-v217-wide-datapact-test-2026-05-04/prototype-current-report.json",
+      "sourceReport": "docs/northstar_visual_qa/live-runtime-current-v217-wide-emet-test-2026-05-04/prototype-current-report.json",
       "generatedAt": "2026-05-04T05:44:51.770Z",
       "baseUrl": "http://127.0.0.1:8000",
       "evidenceKind": "runtime_app_capture",
@@ -1123,10 +1123,10 @@
       "sha256": "d3f23e6fa47069e5206990fc0dec1c5db56e254fce7b06f25a693e1d0ac5a1da"
     },
     {
-      "path": "docs/northstar_visual_qa/live-runtime-current-v218-command-center-scroll-datapact-test-2026-05-04/command-center-3037x1269-main-bottom.png",
+      "path": "docs/northstar_visual_qa/live-runtime-current-v218-command-center-scroll-emet-test-2026-05-04/command-center-3037x1269-main-bottom.png",
       "route": "command-center",
       "viewport": "3037x1269",
-      "sourceReport": "docs/northstar_visual_qa/live-runtime-current-v218-command-center-scroll-datapact-test-2026-05-04/prototype-current-report.json",
+      "sourceReport": "docs/northstar_visual_qa/live-runtime-current-v218-command-center-scroll-emet-test-2026-05-04/prototype-current-report.json",
       "generatedAt": "2026-05-04T05:46:39.699Z",
       "baseUrl": "http://127.0.0.1:8000",
       "evidenceKind": "runtime_app_capture",
@@ -1420,7 +1420,7 @@
     "docs/northstar_visual_qa/all-functional-v122-local/prototype-current-report.json": {
       "consoleErrors": [
         {
-          "reason": "Browser console mirrors the expected Atlas AI 503 response at each reviewed viewport.",
+          "reason": "Browser console mirrors the expected Axiom AI 503 response at each reviewed viewport.",
           "textIncludes": "503 (Service Unavailable)"
         },
         {
@@ -1430,9 +1430,9 @@
       ],
       "requestFailures": [
         {
-          "reason": "Atlas AI unavailable-state interactions intentionally exercise service-unavailable handling at each reviewed viewport.",
+          "reason": "Axiom AI unavailable-state interactions intentionally exercise service-unavailable handling at each reviewed viewport.",
           "status": 503,
-          "urlIncludes": "/api/atlas-ai/recommendations"
+          "urlIncludes": "/api/axiom-ai/recommendations"
         },
         {
           "reason": "Invalid-query interactions intentionally exercise the Discover syntax error state at each reviewed viewport.",
@@ -1464,7 +1464,7 @@
         }
       ]
     },
-    "docs/northstar_visual_qa/live-runtime-current-v215-full-functional-datapact-test-2026-05-04/prototype-current-report.json": {
+    "docs/northstar_visual_qa/live-runtime-current-v215-full-functional-emet-test-2026-05-04/prototype-current-report.json": {
       "requestFailures": [
         {
           "status": 400,
@@ -1893,7 +1893,7 @@
       "requestFailureCount": 2,
       "sha256": "7695d867ce461db216509d0b5202cdbbbd0ed9daae558a1af1119d1a3c300f06"
     },
-    "docs/northstar_visual_qa/live-runtime-current-v215-full-functional-datapact-test-2026-05-04/prototype-current-report.json": {
+    "docs/northstar_visual_qa/live-runtime-current-v215-full-functional-emet-test-2026-05-04/prototype-current-report.json": {
       "generatedAt": "2026-05-04T05:28:54.271Z",
       "baseUrl": "http://127.0.0.1:8000",
       "evidenceKind": "runtime_app_capture",
@@ -1940,7 +1940,7 @@
     "docs/northstar_visual_qa/live-runtime-current-v132-focused-functional-command-lineage-control-2026-05-03/prototype-current-report.json",
     "docs/northstar_visual_qa/live-runtime-current-v134-cde-functional-recheck-2026-05-03/prototype-current-report.json",
     "docs/northstar_visual_qa/live-runtime-current-v135-full-functional-all-routes-2026-05-03/prototype-current-report.json",
-    "docs/northstar_visual_qa/live-runtime-current-v215-full-functional-datapact-test-2026-05-04/prototype-current-report.json"
+    "docs/northstar_visual_qa/live-runtime-current-v215-full-functional-emet-test-2026-05-04/prototype-current-report.json"
   ],
   "allowed_live_visual_evidence_artifacts": [
     {
@@ -2616,7 +2616,7 @@
     },
     {
       "kind": "audit-manifest",
-      "path": "docs/northstar_visual_qa/live-runtime-current-v220-reference-current-datapact-test-audit-2026-05-04/audit-artifact-manifest.json",
+      "path": "docs/northstar_visual_qa/live-runtime-current-v220-reference-current-emet-test-audit-2026-05-04/audit-artifact-manifest.json",
       "evidenceKind": "runtime_app_capture",
       "generatedAt": "2026-05-04T05:49:53+00:00",
       "sha256": "c5b97036f06e81c06d193ca58862b1df049758fb9a1da458910879b3e0ee2231",
@@ -2626,77 +2626,77 @@
       "maxPaletteDelta": 28.6
     }
   ],
-  "global_current_capture_command": "env GOVAT_BASE_URL=http://127.0.0.1:8000 GOVAT_BUILD_ID=frontend-39d0070a8f87 GOVAT_CAPTURE_FORWARDED_EMAIL=smyers@employers.com GOVAT_CAPTURE_FORWARDED_USERNAME=smyers@employers.com GOVAT_CAPTURE_FORWARDED_DISPLAY_NAME='Skyler Myers' GOVAT_PROTOTYPE_ASSET_FQN=excess.main.users GOVAT_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04 GOVAT_PROTOTYPE_VIEWPORTS=3037x1269,1536x1024,1440x900,1280x720 GOVAT_PROTOTYPE_INTERACTIONS=0 GOVAT_PROTOTYPE_SETTLE_TIMEOUT_MS=90000 GOVAT_PROTOTYPE_TEXT_SETTLE_TIMEOUT_MS=120000 node frontend/scripts/atlas_prototype_current_capture.mjs",
+  "global_current_capture_command": "env AXIOM_BASE_URL=http://127.0.0.1:8000 AXIOM_BUILD_ID=frontend-39d0070a8f87 AXIOM_CAPTURE_FORWARDED_EMAIL=smyers@employers.com AXIOM_CAPTURE_FORWARDED_USERNAME=smyers@employers.com AXIOM_CAPTURE_FORWARDED_DISPLAY_NAME='Skyler Myers' AXIOM_PROTOTYPE_ASSET_FQN=excess.main.users AXIOM_PROTOTYPE_CAPTURE_OUT=docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04 AXIOM_PROTOTYPE_VIEWPORTS=3037x1269,1536x1024,1440x900,1280x720 AXIOM_PROTOTYPE_INTERACTIONS=0 AXIOM_PROTOTYPE_SETTLE_TIMEOUT_MS=90000 AXIOM_PROTOTYPE_TEXT_SETTLE_TIMEOUT_MS=120000 node frontend/scripts/axiom_prototype_current_capture.mjs",
   "global_current_evidence_base_url": "http://127.0.0.1:8000",
   "global_current_evidence_capture_count": 32,
   "global_current_evidence_console_error_count": 0,
-  "global_current_evidence_dir": "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04",
+  "global_current_evidence_dir": "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04",
   "global_current_evidence_generated_at": "2026-05-04T05:52:02.371Z",
   "global_current_evidence_hashes": {
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/command-center-3037x1269.png": "c64ddb5c89dd8f67a48f5903b4f40faf6bd6ddf030f9def0da100e2bbdee7170",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/command-center-3037x1269-full.png": "f326249fb65eee286a12db19d9db1844f579b348f6f9eb7f30968339778d1a30",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/discover-3037x1269.png": "41bd0d017cea55e427d01c3de95dca0c7ce3ea57241834617c01a457e4ff1e78",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/discover-3037x1269-full.png": "41bd0d017cea55e427d01c3de95dca0c7ce3ea57241834617c01a457e4ff1e78",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/stewardship-3037x1269.png": "6295db8f8438791806de297596ccafbc52f9b09b85afc559995323301efc30d7",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/stewardship-3037x1269-full.png": "6295db8f8438791806de297596ccafbc52f9b09b85afc559995323301efc30d7",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/glossary-3037x1269.png": "e78a421902b40b979822d054359776aad3fc952b53538bce49748aaced41b1ad",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/glossary-3037x1269-full.png": "e78a421902b40b979822d054359776aad3fc952b53538bce49748aaced41b1ad",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/cde-registry-3037x1269.png": "01f631a6a704d554f7836908a0d00cb139feb1a46796f4c6b5b9306cc62ee0c5",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/cde-registry-3037x1269-full.png": "01f631a6a704d554f7836908a0d00cb139feb1a46796f4c6b5b9306cc62ee0c5",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/lineage-3037x1269.png": "3a3c8d37ad066df154ccea63307fa72c64d41e7ad8569d11392c4fc4ef09222a",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/lineage-3037x1269-full.png": "5ac516ccf9df1c05f99cebf5df59f359ace4c93c40cbe0d8830a97b24388e059",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/audit-3037x1269.png": "92ec8feafa909f3e56700a6685e1918c1bb2b83b44f34b73af84933c665ac587",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/audit-3037x1269-full.png": "92ec8feafa909f3e56700a6685e1918c1bb2b83b44f34b73af84933c665ac587",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/control-center-3037x1269.png": "d3f23e6fa47069e5206990fc0dec1c5db56e254fce7b06f25a693e1d0ac5a1da",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/control-center-3037x1269-full.png": "d3f23e6fa47069e5206990fc0dec1c5db56e254fce7b06f25a693e1d0ac5a1da",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/command-center-1536x1024.png": "1cb8288a49fc28829231d191021d34bca92a83212440eef93e7cf6337de736e9",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/command-center-1536x1024-full.png": "1cb8288a49fc28829231d191021d34bca92a83212440eef93e7cf6337de736e9",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/discover-1536x1024.png": "1264d5a003ae5f0d3a5e595252280da99c125a4e3b2268519bf9e49ec27ebec3",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/discover-1536x1024-full.png": "1264d5a003ae5f0d3a5e595252280da99c125a4e3b2268519bf9e49ec27ebec3",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/stewardship-1536x1024.png": "af18e473accd281131f3398b1c8639b8fbea4681e6de60ee998d2fa780c889a6",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/stewardship-1536x1024-full.png": "af18e473accd281131f3398b1c8639b8fbea4681e6de60ee998d2fa780c889a6",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/glossary-1536x1024.png": "fe6bebea4b7d0fa86d8b7dfcdd217afc7673f6cb29ec6a8e0c9cf619ce2e08b8",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/glossary-1536x1024-full.png": "fe6bebea4b7d0fa86d8b7dfcdd217afc7673f6cb29ec6a8e0c9cf619ce2e08b8",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/cde-registry-1536x1024.png": "23b2a453ea9ed8748fdf1fc472322dadba86bfa954389f15c4fdd31a45145d16",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/cde-registry-1536x1024-full.png": "23b2a453ea9ed8748fdf1fc472322dadba86bfa954389f15c4fdd31a45145d16",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/lineage-1536x1024.png": "a334787ae029215852c15ee26c9f6c7efb9bd4bdd21004a2c758498dab7bf24f",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/lineage-1536x1024-full.png": "ffb2aa2c35f4e63019b340f65e73452a140c8fb1548477014badfe9da7379c77",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/audit-1536x1024.png": "6ad99e6519540b71c47de65bfdc65003c0597c22f155903ac5947e79a484a4c5",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/audit-1536x1024-full.png": "6ad99e6519540b71c47de65bfdc65003c0597c22f155903ac5947e79a484a4c5",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/control-center-1536x1024.png": "655b25fb54655d915884f1305718c637c0476812cefe46f96b9d13bf79e562a6",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/control-center-1536x1024-full.png": "655b25fb54655d915884f1305718c637c0476812cefe46f96b9d13bf79e562a6",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/command-center-1440x900.png": "ee0bfc0521a5ab6adf025a7abba758376017d7d73a03e114a9094968a44c8c88",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/command-center-1440x900-full.png": "ee0bfc0521a5ab6adf025a7abba758376017d7d73a03e114a9094968a44c8c88",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/discover-1440x900.png": "cb8334ad2f3b82425bb1ef8790f635576fb3680d6f1771cba1683fd7b9d7481a",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/discover-1440x900-full.png": "cb8334ad2f3b82425bb1ef8790f635576fb3680d6f1771cba1683fd7b9d7481a",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/stewardship-1440x900.png": "e523996fc0eba0ab0467b2edd2309208dc6d8f05009ae38161664bfcd0ca8b35",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/stewardship-1440x900-full.png": "e523996fc0eba0ab0467b2edd2309208dc6d8f05009ae38161664bfcd0ca8b35",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/glossary-1440x900.png": "ae6149ea59a24967bd39505d1b037d1e04c894de6d26f8b37983b3cb8a492a8e",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/glossary-1440x900-full.png": "ae6149ea59a24967bd39505d1b037d1e04c894de6d26f8b37983b3cb8a492a8e",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/cde-registry-1440x900.png": "aae4dd39ca5dc4ed4e47c2cb90c8746ded71e54835183c1ee2ba4040683f3e35",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/cde-registry-1440x900-full.png": "aae4dd39ca5dc4ed4e47c2cb90c8746ded71e54835183c1ee2ba4040683f3e35",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/lineage-1440x900.png": "d663e2d744d82f278ed4bbeae114e8dd375140b65c1c07eb83bfae7e6d71adf0",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/lineage-1440x900-full.png": "764921a0131febac3a76677ffe5976d27f63b0c65890d0ee38105c3207931b72",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/audit-1440x900.png": "277b0ed94c00ae378ce0294f9a944b3ee6b48917aabf1d886711ef61eb650054",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/audit-1440x900-full.png": "277b0ed94c00ae378ce0294f9a944b3ee6b48917aabf1d886711ef61eb650054",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/control-center-1440x900.png": "060fcf9e99e38702a3e102c418240f38351679ab4ab7c1b965b5bced355aa235",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/control-center-1440x900-full.png": "060fcf9e99e38702a3e102c418240f38351679ab4ab7c1b965b5bced355aa235",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/command-center-1280x720.png": "34d13fe9848f2c9324a05652072f165db1136deb2bcc5c352165e6098f6f1f3b",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/command-center-1280x720-full.png": "34d13fe9848f2c9324a05652072f165db1136deb2bcc5c352165e6098f6f1f3b",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/discover-1280x720.png": "6f20bf72d684936032d33d75e84378e516fc4f16c617a84f2a1588637ff6a2fc",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/discover-1280x720-full.png": "6f20bf72d684936032d33d75e84378e516fc4f16c617a84f2a1588637ff6a2fc",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/stewardship-1280x720.png": "a6980625302e53b1e276a2ab814964542658a8da0546a3ef1dcdd77d31bd78f3",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/stewardship-1280x720-full.png": "a6980625302e53b1e276a2ab814964542658a8da0546a3ef1dcdd77d31bd78f3",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/glossary-1280x720.png": "78d803ddcdd16c8264f4e60d5206bd8a9b6c534b117aca036b666a583656abe7",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/glossary-1280x720-full.png": "78d803ddcdd16c8264f4e60d5206bd8a9b6c534b117aca036b666a583656abe7",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/cde-registry-1280x720.png": "75d2cfd9043774867dbc142309fd3a77be2c20f9eaf57695edbcd9c03806f4db",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/cde-registry-1280x720-full.png": "75d2cfd9043774867dbc142309fd3a77be2c20f9eaf57695edbcd9c03806f4db",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/lineage-1280x720.png": "35f35201b2b76ab5c89100f096cdde34d46f8d1cf1de867453253b8bccc2515e",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/lineage-1280x720-full.png": "ebf4d3c90bc1ba8aa59638e7328ee754fef87dad51b972d093568c285429d6c9",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/audit-1280x720.png": "88bdc6222719a6d27e7fbd6a46d48b62178538982ab6044d2180694d34439d98",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/audit-1280x720-full.png": "88bdc6222719a6d27e7fbd6a46d48b62178538982ab6044d2180694d34439d98",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/control-center-1280x720.png": "dc3fa23c73659cb981bf6aec19cb5e9505e7bfb0f92ddca6d8cf9b4f0173212d",
-    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-datapact-test-2026-05-04/control-center-1280x720-full.png": "dc3fa23c73659cb981bf6aec19cb5e9505e7bfb0f92ddca6d8cf9b4f0173212d"
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/command-center-3037x1269.png": "c64ddb5c89dd8f67a48f5903b4f40faf6bd6ddf030f9def0da100e2bbdee7170",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/command-center-3037x1269-full.png": "f326249fb65eee286a12db19d9db1844f579b348f6f9eb7f30968339778d1a30",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/discover-3037x1269.png": "41bd0d017cea55e427d01c3de95dca0c7ce3ea57241834617c01a457e4ff1e78",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/discover-3037x1269-full.png": "41bd0d017cea55e427d01c3de95dca0c7ce3ea57241834617c01a457e4ff1e78",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/stewardship-3037x1269.png": "6295db8f8438791806de297596ccafbc52f9b09b85afc559995323301efc30d7",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/stewardship-3037x1269-full.png": "6295db8f8438791806de297596ccafbc52f9b09b85afc559995323301efc30d7",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/glossary-3037x1269.png": "e78a421902b40b979822d054359776aad3fc952b53538bce49748aaced41b1ad",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/glossary-3037x1269-full.png": "e78a421902b40b979822d054359776aad3fc952b53538bce49748aaced41b1ad",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/cde-registry-3037x1269.png": "01f631a6a704d554f7836908a0d00cb139feb1a46796f4c6b5b9306cc62ee0c5",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/cde-registry-3037x1269-full.png": "01f631a6a704d554f7836908a0d00cb139feb1a46796f4c6b5b9306cc62ee0c5",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/lineage-3037x1269.png": "3a3c8d37ad066df154ccea63307fa72c64d41e7ad8569d11392c4fc4ef09222a",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/lineage-3037x1269-full.png": "5ac516ccf9df1c05f99cebf5df59f359ace4c93c40cbe0d8830a97b24388e059",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/audit-3037x1269.png": "92ec8feafa909f3e56700a6685e1918c1bb2b83b44f34b73af84933c665ac587",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/audit-3037x1269-full.png": "92ec8feafa909f3e56700a6685e1918c1bb2b83b44f34b73af84933c665ac587",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/control-center-3037x1269.png": "d3f23e6fa47069e5206990fc0dec1c5db56e254fce7b06f25a693e1d0ac5a1da",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/control-center-3037x1269-full.png": "d3f23e6fa47069e5206990fc0dec1c5db56e254fce7b06f25a693e1d0ac5a1da",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/command-center-1536x1024.png": "1cb8288a49fc28829231d191021d34bca92a83212440eef93e7cf6337de736e9",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/command-center-1536x1024-full.png": "1cb8288a49fc28829231d191021d34bca92a83212440eef93e7cf6337de736e9",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/discover-1536x1024.png": "1264d5a003ae5f0d3a5e595252280da99c125a4e3b2268519bf9e49ec27ebec3",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/discover-1536x1024-full.png": "1264d5a003ae5f0d3a5e595252280da99c125a4e3b2268519bf9e49ec27ebec3",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/stewardship-1536x1024.png": "af18e473accd281131f3398b1c8639b8fbea4681e6de60ee998d2fa780c889a6",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/stewardship-1536x1024-full.png": "af18e473accd281131f3398b1c8639b8fbea4681e6de60ee998d2fa780c889a6",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/glossary-1536x1024.png": "fe6bebea4b7d0fa86d8b7dfcdd217afc7673f6cb29ec6a8e0c9cf619ce2e08b8",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/glossary-1536x1024-full.png": "fe6bebea4b7d0fa86d8b7dfcdd217afc7673f6cb29ec6a8e0c9cf619ce2e08b8",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/cde-registry-1536x1024.png": "23b2a453ea9ed8748fdf1fc472322dadba86bfa954389f15c4fdd31a45145d16",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/cde-registry-1536x1024-full.png": "23b2a453ea9ed8748fdf1fc472322dadba86bfa954389f15c4fdd31a45145d16",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/lineage-1536x1024.png": "a334787ae029215852c15ee26c9f6c7efb9bd4bdd21004a2c758498dab7bf24f",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/lineage-1536x1024-full.png": "ffb2aa2c35f4e63019b340f65e73452a140c8fb1548477014badfe9da7379c77",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/audit-1536x1024.png": "6ad99e6519540b71c47de65bfdc65003c0597c22f155903ac5947e79a484a4c5",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/audit-1536x1024-full.png": "6ad99e6519540b71c47de65bfdc65003c0597c22f155903ac5947e79a484a4c5",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/control-center-1536x1024.png": "655b25fb54655d915884f1305718c637c0476812cefe46f96b9d13bf79e562a6",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/control-center-1536x1024-full.png": "655b25fb54655d915884f1305718c637c0476812cefe46f96b9d13bf79e562a6",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/command-center-1440x900.png": "ee0bfc0521a5ab6adf025a7abba758376017d7d73a03e114a9094968a44c8c88",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/command-center-1440x900-full.png": "ee0bfc0521a5ab6adf025a7abba758376017d7d73a03e114a9094968a44c8c88",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/discover-1440x900.png": "cb8334ad2f3b82425bb1ef8790f635576fb3680d6f1771cba1683fd7b9d7481a",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/discover-1440x900-full.png": "cb8334ad2f3b82425bb1ef8790f635576fb3680d6f1771cba1683fd7b9d7481a",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/stewardship-1440x900.png": "e523996fc0eba0ab0467b2edd2309208dc6d8f05009ae38161664bfcd0ca8b35",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/stewardship-1440x900-full.png": "e523996fc0eba0ab0467b2edd2309208dc6d8f05009ae38161664bfcd0ca8b35",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/glossary-1440x900.png": "ae6149ea59a24967bd39505d1b037d1e04c894de6d26f8b37983b3cb8a492a8e",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/glossary-1440x900-full.png": "ae6149ea59a24967bd39505d1b037d1e04c894de6d26f8b37983b3cb8a492a8e",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/cde-registry-1440x900.png": "aae4dd39ca5dc4ed4e47c2cb90c8746ded71e54835183c1ee2ba4040683f3e35",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/cde-registry-1440x900-full.png": "aae4dd39ca5dc4ed4e47c2cb90c8746ded71e54835183c1ee2ba4040683f3e35",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/lineage-1440x900.png": "d663e2d744d82f278ed4bbeae114e8dd375140b65c1c07eb83bfae7e6d71adf0",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/lineage-1440x900-full.png": "764921a0131febac3a76677ffe5976d27f63b0c65890d0ee38105c3207931b72",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/audit-1440x900.png": "277b0ed94c00ae378ce0294f9a944b3ee6b48917aabf1d886711ef61eb650054",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/audit-1440x900-full.png": "277b0ed94c00ae378ce0294f9a944b3ee6b48917aabf1d886711ef61eb650054",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/control-center-1440x900.png": "060fcf9e99e38702a3e102c418240f38351679ab4ab7c1b965b5bced355aa235",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/control-center-1440x900-full.png": "060fcf9e99e38702a3e102c418240f38351679ab4ab7c1b965b5bced355aa235",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/command-center-1280x720.png": "34d13fe9848f2c9324a05652072f165db1136deb2bcc5c352165e6098f6f1f3b",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/command-center-1280x720-full.png": "34d13fe9848f2c9324a05652072f165db1136deb2bcc5c352165e6098f6f1f3b",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/discover-1280x720.png": "6f20bf72d684936032d33d75e84378e516fc4f16c617a84f2a1588637ff6a2fc",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/discover-1280x720-full.png": "6f20bf72d684936032d33d75e84378e516fc4f16c617a84f2a1588637ff6a2fc",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/stewardship-1280x720.png": "a6980625302e53b1e276a2ab814964542658a8da0546a3ef1dcdd77d31bd78f3",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/stewardship-1280x720-full.png": "a6980625302e53b1e276a2ab814964542658a8da0546a3ef1dcdd77d31bd78f3",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/glossary-1280x720.png": "78d803ddcdd16c8264f4e60d5206bd8a9b6c534b117aca036b666a583656abe7",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/glossary-1280x720-full.png": "78d803ddcdd16c8264f4e60d5206bd8a9b6c534b117aca036b666a583656abe7",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/cde-registry-1280x720.png": "75d2cfd9043774867dbc142309fd3a77be2c20f9eaf57695edbcd9c03806f4db",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/cde-registry-1280x720-full.png": "75d2cfd9043774867dbc142309fd3a77be2c20f9eaf57695edbcd9c03806f4db",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/lineage-1280x720.png": "35f35201b2b76ab5c89100f096cdde34d46f8d1cf1de867453253b8bccc2515e",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/lineage-1280x720-full.png": "ebf4d3c90bc1ba8aa59638e7328ee754fef87dad51b972d093568c285429d6c9",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/audit-1280x720.png": "88bdc6222719a6d27e7fbd6a46d48b62178538982ab6044d2180694d34439d98",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/audit-1280x720-full.png": "88bdc6222719a6d27e7fbd6a46d48b62178538982ab6044d2180694d34439d98",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/control-center-1280x720.png": "dc3fa23c73659cb981bf6aec19cb5e9505e7bfb0f92ddca6d8cf9b4f0173212d",
+    "docs/northstar_visual_qa/live-runtime-current-v221-all-viewports-emet-test-2026-05-04/control-center-1280x720-full.png": "dc3fa23c73659cb981bf6aec19cb5e9505e7bfb0f92ddca6d8cf9b4f0173212d"
   },
   "global_current_evidence_interaction_count": 0,
   "global_current_evidence_kind": "runtime_app_capture",
@@ -2964,7 +2964,7 @@
     "docs/northstar_visual_qa/live-runtime-current-v125-wide-finance-shell-2026-05-03/prototype-current-report.json",
     "docs/northstar_visual_qa/live-runtime-current-v126-wide-scroll-finance-shell-2026-05-03/prototype-current-report.json",
     "docs/northstar_visual_qa/live-runtime-current-v127-responsive-finance-shell-2026-05-03/prototype-current-report.json",
-    "docs/northstar_visual_qa/live-runtime-current-v129-all-viewports-entrada-shell-2026-05-03/prototype-current-report.json",
+    "docs/northstar_visual_qa/live-runtime-current-v129-all-viewports-shorecp-shell-2026-05-03/prototype-current-report.json",
     "docs/northstar_visual_qa/live-runtime-current-v130-full-functional-backed-jobs-lineage-2026-05-03/prototype-current-report.json",
     "docs/northstar_visual_qa/live-runtime-current-v131-focused-functional-command-lineage-control-2026-05-03/prototype-current-report.json",
     "docs/northstar_visual_qa/live-runtime-current-v133-full-functional-all-routes-2026-05-03/prototype-current-report.json",

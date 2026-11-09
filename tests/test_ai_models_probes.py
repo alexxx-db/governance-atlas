@@ -5,7 +5,7 @@ from __future__ import annotations
 import unittest
 from datetime import datetime, timezone
 
-from atlas.ai import models, probes
+from axiom.ai import models, probes
 
 
 class ModelTests(unittest.TestCase):

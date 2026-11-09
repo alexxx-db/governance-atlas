@@ -6,8 +6,8 @@ from unittest.mock import patch
 
 import pandas as pd
 
-from atlas.services import lakebase
-from atlas.services import lakebase_store
+from axiom.services import lakebase
+from axiom.services import lakebase_store
 
 
 class LakebaseServiceTests(unittest.TestCase):
@@ -18,7 +18,7 @@ class LakebaseServiceTests(unittest.TestCase):
         self.assertFalse(status["enabled"])
 
     def test_operational_ddl_covers_classified_lakebase_tables(self) -> None:
-        ddl = "\n".join(lakebase._operational_schema_ddl("atlas_app"))
+        ddl = "\n".join(lakebase._operational_schema_ddl("axiom_app"))
 
         for table in lakebase.LAKEBASE_OPERATIONAL_TABLES:
             self.assertIn(f'"{table}"', ddl)
@@ -58,7 +58,7 @@ class LakebaseServiceTests(unittest.TestCase):
     def test_dual_write_wrapper_mirrors_owner_after_delta_success(self) -> None:
         class DeltaStore:
             catalog = "main"
-            schema = "atlas"
+            schema = "axiom"
 
             def __init__(self) -> None:
                 self.calls: list[str] = []
@@ -93,7 +93,7 @@ class LakebaseServiceTests(unittest.TestCase):
     def test_dual_write_wrapper_does_not_mirror_when_delta_fails(self) -> None:
         class DeltaStore:
             catalog = "main"
-            schema = "atlas"
+            schema = "axiom"
 
             def upsert_role(self, **_kwargs):
                 raise RuntimeError("delta failed")
@@ -143,7 +143,7 @@ class LakebaseServiceTests(unittest.TestCase):
 
         conn = Conn()
         mirror = lakebase_store.LakebaseOperationalMirror(
-            config=SimpleNamespace(lakebase_schema="atlas_app"),
+            config=SimpleNamespace(lakebase_schema="axiom_app"),
             delta_store=SimpleNamespace(),
         )
 
@@ -182,7 +182,7 @@ class LakebaseServiceTests(unittest.TestCase):
 
         conn = Conn()
         mirror = lakebase_store.LakebaseOperationalMirror(
-            config=SimpleNamespace(lakebase_schema="atlas_app"),
+            config=SimpleNamespace(lakebase_schema="axiom_app"),
             delta_store=SimpleNamespace(),
         )
 
@@ -230,7 +230,7 @@ class LakebaseServiceTests(unittest.TestCase):
 
         conn = Conn()
         mirror = lakebase_store.LakebaseOperationalMirror(
-            config=SimpleNamespace(lakebase_schema="atlas_app"),
+            config=SimpleNamespace(lakebase_schema="axiom_app"),
             delta_store=SimpleNamespace(),
         )
 
@@ -259,7 +259,7 @@ class LakebaseServiceTests(unittest.TestCase):
 
     def test_delta_retained_tables_never_open_lakebase_connection(self) -> None:
         mirror = lakebase_store.LakebaseOperationalMirror(
-            config=SimpleNamespace(lakebase_schema="atlas_app"),
+            config=SimpleNamespace(lakebase_schema="axiom_app"),
             delta_store=SimpleNamespace(),
         )
 
@@ -312,11 +312,11 @@ class LakebaseServiceTests(unittest.TestCase):
                 self.uc = UC()
 
             def _fq(self, table: str) -> str:
-                return f"`main`.`atlas`.`{table}`"
+                return f"`main`.`axiom`.`{table}`"
 
         mirrored: dict[str, pd.DataFrame | None] = {}
         mirror = lakebase_store.LakebaseOperationalMirror(
-            config=SimpleNamespace(lakebase_schema="atlas_app"),
+            config=SimpleNamespace(lakebase_schema="axiom_app"),
             delta_store=DeltaStore(),
         )
 
@@ -341,6 +341,10 @@ class LakebaseServiceTests(unittest.TestCase):
             def ensure_tables(self) -> None:
                 self.ensured = True
 
+            def bootstrap_schema(self, mode: str = "auto") -> str:
+                self.ensure_tables()
+                return "migrated"
+
             @property
             def fq_schema(self) -> str:
                 return f"`{self.catalog}`.`{self.schema}`"
@@ -354,9 +358,9 @@ class LakebaseServiceTests(unittest.TestCase):
                 runtime_app,
                 _config=lambda: SimpleNamespace(
                     lakebase_enabled=True,
-                    lakebase_schema="atlas_app",
-                    gov_catalog="datapact",
-                    gov_schema="atlas",
+                    lakebase_schema="axiom_app",
+                    gov_catalog="emet",
+                    gov_schema="axiom",
                 ),
                 _uc=lambda: object(),
                 GovernanceStore=FakeStore,
@@ -375,7 +379,7 @@ class LakebaseServiceTests(unittest.TestCase):
         # explicit signature silently dropped them.
         class DeltaStore:
             catalog = "main"
-            schema = "atlas"
+            schema = "axiom"
 
             def __init__(self) -> None:
                 self.kwargs: dict = {}
@@ -421,7 +425,7 @@ class LakebaseServiceTests(unittest.TestCase):
         # *args/**kwargs are pass-through by construction and are skipped.
         import inspect
 
-        from atlas.store import GovernanceStore
+        from axiom.store import GovernanceStore
 
         wrapper_methods = [
             name

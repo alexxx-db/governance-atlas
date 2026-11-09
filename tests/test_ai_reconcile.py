@@ -6,7 +6,7 @@ import unittest
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List
 
-from atlas.ai import controls, models, reconcile
+from axiom.ai import controls, models, reconcile
 
 NOW = datetime(2026, 9, 24, tzinfo=timezone.utc)
 ALL_AVAILABLE = {name: {"state": "available"} for name in ("serving_endpoints", "registered_models", "mcp_connections", "uc_function_tools")}
@@ -269,8 +269,8 @@ class JobWriteTests(unittest.TestCase):
     def test_second_run_is_cheap_and_idempotent(self) -> None:
         import pandas as pd
 
-        from atlas.ai.jobs.reconcile import write_result
-        from atlas.ai.store import AiStore, relationship_id_for
+        from axiom.ai.jobs.reconcile import write_result
+        from axiom.ai.store import AiStore, relationship_id_for
         from test_ai_store import FakeGovernanceStore, FakeUC
 
         result = run([obs("serving_endpoint", "ep1", tags={"edw_intake_id": "INT-1"}), obs("mcp_server", "c1")], [intake("INT-1")])
@@ -288,21 +288,21 @@ class JobWriteTests(unittest.TestCase):
 
         ep = next(s.asset for s in result.units if s.asset.entity_kind == "serving_endpoint")
         rel = pd.DataFrame([{"relationship_id": relationship_id_for("declares", "intake:INT-1", ep.entity_id)}])
-        uc2 = FakeUC(frames={"FROM `main`.`atlas`.`entity_relationships`": rel})
+        uc2 = FakeUC(frames={"FROM `main`.`axiom`.`entity_relationships`": rel})
         gov2 = Gov(uc2)
         prior = {a.entity_id: s for a, s, _ in result.registry}
         counts2 = write_result(AiStore(gov2), result, run_id="run-2", actor="collector", prior_states=prior)
         self.assertEqual(counts2["registryWrites"], 0)
-        self.assertFalse([sql for sql in uc2.executed if sql.startswith("MERGE INTO `main`.`atlas`.`entity_relationships`")])
-        self.assertTrue(any(sql.startswith("MERGE INTO `main`.`atlas`.`reconciliation_findings`") for sql in uc2.executed))
+        self.assertFalse([sql for sql in uc2.executed if sql.startswith("MERGE INTO `main`.`axiom`.`entity_relationships`")])
+        self.assertTrue(any(sql.startswith("MERGE INTO `main`.`axiom`.`reconciliation_findings`") for sql in uc2.executed))
 
 
 class SampleProvenanceTests(unittest.TestCase):
     def test_controls_inherit_asset_provenance(self) -> None:
-        o = obs("serving_endpoint", "ep1", provenance_class="sample", sample_run_id="ga-ai-1")
+        o = obs("serving_endpoint", "ep1", provenance_class="sample", sample_run_id="ax-ai-1")
         res = run([o], [])
         self.assertTrue(res.controls)
-        self.assertTrue(all(c.provenance_class == "sample" and c.sample_run_id == "ga-ai-1" for c in res.controls))
+        self.assertTrue(all(c.provenance_class == "sample" and c.sample_run_id == "ax-ai-1" for c in res.controls))
 
 
 
@@ -322,8 +322,8 @@ class ReviewFixTests(unittest.TestCase):
     def test_write_result_supersedes_stale_declares_but_not_overrides(self) -> None:
         import pandas as pd
 
-        from atlas.ai.jobs.reconcile import write_result
-        from atlas.ai.store import AiStore
+        from axiom.ai.jobs.reconcile import write_result
+        from axiom.ai.store import AiStore
         from test_ai_store import FakeGovernanceStore, FakeUC
 
         result = run([obs("serving_endpoint", "ep1")], [intake("INT-1")])  # tag removed: no declares now
@@ -337,7 +337,7 @@ class ReviewFixTests(unittest.TestCase):
             def list_entity_aliases(self, alias_type=None):
                 return pd.DataFrame()
 
-        uc = FakeUC(frames={"FROM `main`.`atlas`.`entity_relationships`": rels})
+        uc = FakeUC(frames={"FROM `main`.`axiom`.`entity_relationships`": rels})
         counts = write_result(AiStore(Gov(uc)), result, run_id="run-9", actor="collector", prior_states={})
         self.assertEqual(counts["declaresSuperseded"], 1)
         update = next(sql for sql in uc.executed if "SET state = 'superseded'" in sql)
@@ -350,13 +350,13 @@ class RepairGuardTests(unittest.TestCase):
         import os
         from unittest.mock import MagicMock, patch
 
-        from atlas.ai.jobs import reconcile as job
+        from axiom.ai.jobs import reconcile as job
 
         ai = MagicMock()
         ai.get_run.return_value = {"run_id": "dbx-1", "status": "failed", "sources_json": {"x": 1}, "started_at": "2026-09-20T00:00:00"}
         ai.latest_succeeded_run.return_value = {"run_id": "dbx-2", "started_at": "2026-09-21T00:00:00"}
         with patch.object(job.common, "workspace_client"), patch.object(job.common, "job_actor", return_value="c"), \
-                patch.object(job.common, "build_store", return_value=(object(), None)), patch("atlas.ai.store.AiStore", return_value=ai), \
-                patch.dict(os.environ, {"DATABRICKS_WAREHOUSE_ID": "wh", "GOVAT_CATALOG": "main", "GOVAT_SCHEMA": "atlas"}):
+                patch.object(job.common, "build_store", return_value=(object(), None)), patch("axiom.ai.store.AiStore", return_value=ai), \
+                patch.dict(os.environ, {"DATABRICKS_WAREHOUSE_ID": "wh", "AXIOM_CATALOG": "main", "AXIOM_SCHEMA": "axiom"}):
             self.assertEqual(job.main(["--run-id", "dbx-1"]), 1)
         ai.observations_for_run.assert_not_called()

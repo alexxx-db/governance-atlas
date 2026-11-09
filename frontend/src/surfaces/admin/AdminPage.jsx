@@ -37,7 +37,7 @@ import { RolesTab } from "./tabs/RolesTab";
  *   - Absorbs /capabilities as ?tab=diagnostics (nav/routes.js aliases
  *     /capabilities → /admin?tab=diagnostics); the URL is the state, so tab
  *     deep links restore on refresh/back.
- *   - Data loads only through hooks on useAtlasQuery (bounded polls);
+ *   - Data loads only through hooks on useAxiomQuery (bounded polls);
  *     non-authoritative diagnostics are rejected wholesale (CLAUDE.md).
  */
 
@@ -135,7 +135,7 @@ export default function AdminPage({ shell = null, bootstrap = null }) {
 
   return (
     <PageShell
-      className="ga-admin-page"
+      className="ax-admin-page"
       eyebrow="Control Center"
       status={pageStatus}
       subtitle="Integrations, scheduled jobs, policy signals, and capability truth reported by the live runtime. Runtime operations only — governance posture lives on the Command Center."
@@ -145,23 +145,23 @@ export default function AdminPage({ shell = null, bootstrap = null }) {
             ariaLabel="Control Center sections"
             onChange={(key) => setParams({ tab: key === "operations" ? "" : key })}
             tabs={[
-              { key: "operations", label: "Operations", controls: "ga-admin-panel-operations" },
-              { key: "integrations", label: "Integrations", controls: "ga-admin-panel-integrations" },
-              { key: "policy", label: "Policy", controls: "ga-admin-panel-policy" },
-              { key: "roles", label: "Roles", controls: "ga-admin-panel-roles" },
-              { key: "diagnostics", label: "Diagnostics", controls: "ga-admin-panel-diagnostics" },
+              { key: "operations", label: "Operations", controls: "ax-admin-panel-operations" },
+              { key: "integrations", label: "Integrations", controls: "ax-admin-panel-integrations" },
+              { key: "policy", label: "Policy", controls: "ax-admin-panel-policy" },
+              { key: "roles", label: "Roles", controls: "ax-admin-panel-roles" },
+              { key: "diagnostics", label: "Diagnostics", controls: "ax-admin-panel-diagnostics" },
             ]}
             value={activeTab}
           />
         )
       }
-      title="Atlas runtime operations"
+      title="Axiom runtime operations"
     >
       {forbidden ? (
         // Honest access card — same predicate the rail uses to hide the
         // entry; deep links land here instead of a broken fetch loop.
         <UnavailableState
-          className="ga-admin-access-card"
+          className="ax-admin-access-card"
           reason="Ask a workspace admin to grant administration access. Runtime operations expose workspace-wide diagnostics and are limited to platform admins."
           title="Control Center is admin-only"
         />

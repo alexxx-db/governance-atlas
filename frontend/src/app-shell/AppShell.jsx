@@ -4,10 +4,10 @@
  * Replaces components/AppFrame.jsx (1,166 lines) + the shell halves of the
  * old App.jsx. Owns: the canonical-URL gate (every nav/routes.js alias 301s
  * through resolveUrl), the frame chrome (Rail + Header + main), the unified
- * ⌘K palette, the Atlas AI dock, the single ToastHost, the ?peek= asset
+ * ⌘K palette, the Axiom AI dock, the single ToastHost, the ?peek= asset
  * drawer, boot gating, and the workspace-setup diagnostics panel.
  *
- * The frame emits only ga-shell-* class names; the legacy stylesheets carry
+ * The frame emits only ax-shell-* class names; the legacy stylesheets carry
  * selector aliases for them (see legacyShellContract.js) because their
  * surface-squeeze/sticky rules must keep applying until Wave C.
  */
@@ -26,8 +26,8 @@ import { workspaceAccessBanner } from "../lib/capabilities";
 import { isNonAuthoritativeMockEvidence } from "../lib/nonAuthoritativeEvidence";
 import { readLastAsset } from "../lib/prefs";
 import { resolveUrl } from "../nav/routes.js";
-import { usePeek } from "../nav/useAtlasNavigate.js";
-import { AtlasAiDock } from "./AtlasAiDock.jsx";
+import { usePeek } from "../nav/useAxiomNavigate.js";
+import { AxiomAiDock } from "./AxiomAiDock.jsx";
 import { CommandPalette } from "./CommandPalette.jsx";
 import { Header } from "./Header.jsx";
 import { Rail } from "./Rail.jsx";
@@ -71,7 +71,7 @@ function shellHealthStateFor(bootState, shell, shellDisabled) {
  */
 function BootStateCard({ tone, eyebrow, title, message, loading = false, children }) {
   return (
-    <section className="ga-shell-route-state">
+    <section className="ax-shell-route-state">
       <ShellStateCard eyebrow={eyebrow} loading={loading} message={message} title={title} tone={tone} />
       {children}
     </section>
@@ -229,7 +229,7 @@ export function AppShell({ children }) {
     const proceed =
       typeof window.confirm === "function"
         ? window.confirm(
-            "Sign out?\n\nGovernance Atlas uses your Databricks workspace login. Continuing opens the Databricks sign-out page in a new tab.",
+            "Sign out?\n\nAxiom uses your Databricks workspace login. Continuing opens the Databricks sign-out page in a new tab.",
           )
         : true;
     if (!proceed) return;
@@ -335,12 +335,12 @@ export function AppShell({ children }) {
     );
   } else if (diagnosticsOpen) {
     content = (
-      <section className="ga-shell-route-state">
+      <section className="ax-shell-route-state">
         {/* Follow-up 3: the legacy SurfaceHeader primitive is gone — this is
             the one shell-owned header for the settings-entry readiness view. */}
-        <header className="ga-shell-route-state-head">
+        <header className="ax-shell-route-state-head">
           <div>
-            <div className="ga-sys-eyebrow">Workspace setup</div>
+            <div className="ax-sys-eyebrow">Workspace setup</div>
             <h1>Workspace readiness guide</h1>
             <p>
               Operator-only setup truth. Read-only runtime guidance kept in the shell instead of a
@@ -348,7 +348,7 @@ export function AppShell({ children }) {
             </p>
           </div>
           <button
-            className="ga-shell-inline-link"
+            className="ax-shell-inline-link"
             onClick={() => setDiagnosticsOpen(false)}
             type="button"
           >
@@ -392,8 +392,8 @@ export function AppShell({ children }) {
         />
         <header className={SHELL_CLASSNAMES.header} ref={shellHeaderRef}>
           <Header
-            aiCopilotAvailable={runtime.atlasAiAvailable}
-            aiUnavailableReason={runtime.atlasAiUnavailableReason}
+            aiCopilotAvailable={runtime.axiomAiAvailable}
+            aiUnavailableReason={runtime.axiomAiUnavailableReason}
             environmentTone={environmentTone}
             inboxMessage={governanceInbox?.message || ""}
             inboxState={governanceInbox?.state || ""}
@@ -428,13 +428,13 @@ export function AppShell({ children }) {
           {content}
         </main>
 
-        <AtlasAiDock
+        <AxiomAiDock
           assetFqn={contextAssetFqn}
-          available={runtime.atlasAiAvailable}
+          available={runtime.axiomAiAvailable}
           onOpenChange={/** @type {any} */ (setAiDockOpen)}
           open={aiDockOpen}
           surface={surface}
-          unavailableReason={runtime.atlasAiUnavailableReason}
+          unavailableReason={runtime.axiomAiUnavailableReason}
         />
 
         {paletteOpen ? (

@@ -11,7 +11,7 @@ import {
 } from "../../components/system";
 import { GOVERNANCE_WORKBENCH_KEY } from "../../hooks/useGovernanceWorkbench";
 import { useInboxWork } from "../../hooks/useInboxWork";
-import { useAtlasQuery, useAtlasMutation } from "../../hooks/useAtlasQuery";
+import { useAxiomQuery, useAxiomMutation } from "../../hooks/useAxiomQuery";
 import {
   createGovernanceRequest,
   fetchGovernanceRequestDetail,
@@ -20,7 +20,7 @@ import {
 import { envelopeData } from "../../lib/envelope";
 import { isNonAuthoritativeMockEvidence } from "../../lib/nonAuthoritativeEvidence";
 import { useSurfaceParams } from "../../nav/useSurfaceParams";
-import { useAtlasNavigate } from "../../nav/useAtlasNavigate";
+import { useAxiomNavigate } from "../../nav/useAxiomNavigate";
 import {
   canFileWorkItems,
   canMutateRequests,
@@ -58,7 +58,7 @@ import { WorkItemPanel } from "./WorkItemPanel.jsx";
  *
  * Data: useInboxWork (workbench + glossary on the canonical cache keys —
  * the same entries feeding the rail badge and bell popover). Triage writes
- * go through useAtlasMutation with optimistic cache patches + rollback.
+ * go through useAxiomMutation with optimistic cache patches + rollback.
  */
 
 // Mirrors nav/routes.js stewardship paramsSchema; module-level so
@@ -70,7 +70,7 @@ const PARAMS_SCHEMA = {
   lens: { type: "string" },
 };
 
-const REQUEST_DETAIL_KEY = ["atlas", "governance-request"];
+const REQUEST_DETAIL_KEY = ["axiom", "governance-request"];
 
 const LENS_KEYS = new Set(["all", "p1", "overdue", "mine"]);
 
@@ -101,7 +101,7 @@ export function StewardshipPage({ currentUser = null }) {
   useEffect(() => {
     if (typeof document === "undefined") return undefined;
     const previous = document.title;
-    document.title = "Stewardship - Governance Atlas";
+    document.title = "Stewardship - Axiom";
     return () => {
       document.title = previous;
     };
@@ -177,12 +177,12 @@ export function StewardshipPage({ currentUser = null }) {
     [visibleItems],
   );
   const itemParam = textValue(params.item);
-  const navigate = useAtlasNavigate();
+  const navigate = useAxiomNavigate();
   // Term reviews live in the Glossary — their mini-hub IS the term page, so a
   // ?item= deep link to a term id forwards there instead of silently failing
   // to select anything (follow-up verifier claim-3: unreachable state).
   useEffect(() => {
-    if (/^ga-taxonomy-term-/.test(itemParam)) {
+    if (/^ax-taxonomy-term-/.test(itemParam)) {
       navigate({ kind: "term", id: itemParam }, { replace: true });
     }
   }, [itemParam, navigate]);
@@ -201,7 +201,7 @@ export function StewardshipPage({ currentUser = null }) {
   const itemParamUnresolved = Boolean(itemParam) && !selectedRow;
 
   const selectedRequestId = textValue(selectedRow?.requestId);
-  const detail = useAtlasQuery({
+  const detail = useAxiomQuery({
     key: [...REQUEST_DETAIL_KEY, selectedRequestId],
     enabled: Boolean(selectedRequestId),
     fetch: (signal) => fetchGovernanceRequestDetail(selectedRequestId, { signal }),
@@ -216,9 +216,9 @@ export function StewardshipPage({ currentUser = null }) {
 
   /* ---------------------------------------------------------- mutations */
   const [triageFailure, setTriageFailure] = useState("");
-  const triage = useAtlasMutation({
+  const triage = useAxiomMutation({
     mutate: ({ requestId, body }) => updateGovernanceRequest(requestId, body, { fast: true }),
-    // Optimistic patch on the ONE workbench cache entry; useAtlasMutation
+    // Optimistic patch on the ONE workbench cache entry; useAxiomMutation
     // rolls it back automatically when the PATCH fails, and re-syncs from
     // the server either way.
     optimistic: {
@@ -390,7 +390,7 @@ export function StewardshipPage({ currentUser = null }) {
   /* ---------------------------------------------------------- create */
   const [newItemOpen, setNewItemOpen] = useState(false);
   const [createFailure, setCreateFailure] = useState("");
-  const create = useAtlasMutation({
+  const create = useAxiomMutation({
     mutate: (draft) => createGovernanceRequest(draft, { fast: true }),
     invalidates: [GOVERNANCE_WORKBENCH_KEY],
   });
@@ -464,7 +464,7 @@ export function StewardshipPage({ currentUser = null }) {
   ];
 
   const emptyState = (
-    <div className="ga-stew-queue-empty">
+    <div className="ax-stew-queue-empty">
       <strong>{assetFilter ? "No work items for this asset" : "No work items in this view"}</strong>
       <span>
         {assetFilter
@@ -477,7 +477,7 @@ export function StewardshipPage({ currentUser = null }) {
   /* ---------------------------------------------------------- render */
   return (
     <PageShell
-      className="ga-stew-page"
+      className="ax-stew-page"
       eyebrow="Governance"
       title="Stewardship"
       subtitle={
@@ -523,7 +523,7 @@ export function StewardshipPage({ currentUser = null }) {
         />
       ) : workbenchErrorNoData ? null : (
         <>
-          <div className="ga-stew-controls">
+          <div className="ax-stew-controls">
             <TabStrip
               ariaLabel="Queue lenses"
               param={{ value: lensKey, set: setLens }}
@@ -545,7 +545,7 @@ export function StewardshipPage({ currentUser = null }) {
           </div>
 
           <SectionCard
-            className="ga-stew-queue-card"
+            className="ax-stew-queue-card"
             title="Work queue"
             subtitle={
               hydrating
@@ -554,13 +554,13 @@ export function StewardshipPage({ currentUser = null }) {
             }
             status={hydrating ? "loading" : null}
           >
-            {scopeCaption ? <p className="ga-stew-scope-caption">{scopeCaption}</p> : null}
+            {scopeCaption ? <p className="ax-stew-scope-caption">{scopeCaption}</p> : null}
 
             {bulkSelection.size ? (
-              <div className="ga-stew-bulk-bar" role="status">
+              <div className="ax-stew-bulk-bar" role="status">
                 <span>{bulkSelection.size} selected</span>
                 {bulkProgress ? (
-                  <span className="ga-stew-bulk-progress">
+                  <span className="ax-stew-bulk-progress">
                     {`Resolving ${bulkProgress.done} of ${bulkProgress.total}…${bulkProgress.failed ? ` ${bulkProgress.failed} failed` : ""}`}
                   </span>
                 ) : (
@@ -588,7 +588,7 @@ export function StewardshipPage({ currentUser = null }) {
             ) : null}
 
             {bulkConfirmOpen ? (
-              <div aria-label="Confirm bulk resolve" className="ga-stew-bulk-confirm" role="alertdialog">
+              <div aria-label="Confirm bulk resolve" className="ax-stew-bulk-confirm" role="alertdialog">
                 <p>
                   {`Resolve ${bulkSelection.size} selected work item${bulkSelection.size === 1 ? "" : "s"}? Each resolve writes its own request state and audit evidence.`}
                 </p>

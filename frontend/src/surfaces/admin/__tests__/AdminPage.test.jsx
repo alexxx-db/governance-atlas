@@ -26,11 +26,11 @@ vi.mock("../../../lib/api", () => ({
   fetchAdminBackgroundStatus: vi.fn(),
 }));
 
-const ADMIN_SHELL = { role: "Platform Admin", userEmail: "skyler@entrada.ai" };
+const ADMIN_SHELL = { role: "Platform Admin", userEmail: "abarreto@shorecp.com" };
 
 const controlCenterPayload = {
   meta: { source: "runtime-diagnostics+governance-store", state: "available", authoritative: true },
-  environment: { catalog: "datapact", schema: "atlas", target: "dev", warehouseId: "wh-123" },
+  environment: { catalog: "emet", schema: "axiom", target: "dev", warehouseId: "wh-123" },
   role: { value: "admin", label: "Platform Admin", state: "available" },
   coverage: { metadataCoverage: 95.5 },
   runtimeSummary: {
@@ -64,7 +64,7 @@ const controlCenterPayload = {
       state: "unavailable",
       reason: "Dedicated lineage service health is not exposed by the current Admin payload.",
     },
-    { key: "aiCopilot", label: "AI Copilot", subtitle: "Atlas AI Genie", state: "connected" },
+    { key: "aiCopilot", label: "AI Copilot", subtitle: "Axiom AI Genie", state: "connected" },
     { key: "sqlWarehouse", label: "Databricks SQL Warehouse", subtitle: "Warehouse wh-123", state: "connected" },
     { key: "lakeflowJobs", label: "Lakeflow Jobs", subtitle: "12 jobs in workspace inventory", state: "connected" },
   ],
@@ -117,7 +117,7 @@ const controlCenterPayload = {
       title: "Asset Metadata Updated",
       detail: "main.customer.customer_dim",
       createdAt: "2026-05-05T20:38:00Z",
-      actorEmail: "skyler@entrada.ai",
+      actorEmail: "abarreto@shorecp.com",
       status: "success",
     },
   ],
@@ -125,7 +125,7 @@ const controlCenterPayload = {
 
 const runtimeStatusPayload = {
   identity: {
-    actorEmail: "skyler@entrada.ai",
+    actorEmail: "abarreto@shorecp.com",
     authMode: "obo-available",
     visibilityScope: "actor-scoped",
     authenticatedUserPresent: true,
@@ -166,7 +166,7 @@ const backgroundStatusPayload = {
 const truthCheckPayload = {
   meta: { source: "system.information_schema", state: "available" },
   data: {
-    discoveryCatalogs: ["datapact", "ghost"],
+    discoveryCatalogs: ["emet", "ghost"],
     hiddenCatalogs: ["system"],
     metastore: {
       catalogTotal: 7,
@@ -174,7 +174,7 @@ const truthCheckPayload = {
       tableTotalForDiscovery: 5,
       perCatalog: [
         {
-          catalog: "datapact",
+          catalog: "emet",
           configured: true,
           state: "populated",
           stateReason: "",
@@ -236,7 +236,7 @@ describe("AdminPage (Control Center)", () => {
     renderAdmin();
 
     expect(await screen.findByText("UC metadata sweeper")).toBeDefined();
-    expect(screen.getByText("Atlas runtime operations")).toBeDefined();
+    expect(screen.getByText("Axiom runtime operations")).toBeDefined();
     expect(screen.getByText("Runtime summary")).toBeDefined();
     expect(screen.getByText("Scheduled jobs")).toBeDefined();
     expect(screen.getByText("Recent admin activity")).toBeDefined();
@@ -244,7 +244,7 @@ describe("AdminPage (Control Center)", () => {
     expect(screen.getByText("95.5%")).toBeDefined();
     expect(screen.getByText("12 users")).toBeDefined();
     expect(screen.getByText("3 roles")).toBeDefined();
-    expect(screen.getByText("datapact.atlas")).toBeDefined();
+    expect(screen.getByText("emet.axiom")).toBeDefined();
     // Only the operations tab's data is fetched; diagnostics stays cold.
     expect(fetchAdminTruthCheck).not.toHaveBeenCalled();
     expect(fetchRuntimeStatus).not.toHaveBeenCalled();
@@ -342,7 +342,7 @@ describe("AdminPage (Control Center)", () => {
     const assetLink = screen.getByRole("link", { name: /main\.customer\.customer_dim/ });
     expect(assetLink.getAttribute("href")).toBe("/assets/main.customer.customer_dim");
     // The actor is an owner anchor into Discover's owner search.
-    const actorLink = screen.getByRole("link", { name: /skyler@entrada\.ai/ });
+    const actorLink = screen.getByRole("link", { name: /abarreto@shorecp\.com/ });
     expect(actorLink.getAttribute("href")).toContain("/discovery?");
   });
 
@@ -430,7 +430,7 @@ describe("AdminPage (Control Center)", () => {
     expect(await screen.findByText("Capability truth")).toBeDefined();
     const table = screen.getByRole("table", { name: "Capability truth flags" });
     const lineageRow = within(table).getByText("Table lineage").closest("tr");
-    const badges = Array.from(lineageRow.querySelectorAll(".ga-sys-badge")).map((el) => el.textContent);
+    const badges = Array.from(lineageRow.querySelectorAll(".ax-sys-badge")).map((el) => el.textContent);
     expect(badges).toContain("Yes"); // runtime truth
     expect(badges).toContain("Degraded"); // bootstrap's conservative signal
     expect(screen.getByText(/the live runtime wins/)).toBeDefined();
@@ -504,7 +504,7 @@ describe("AdminPage (Control Center)", () => {
     await screen.findByText("Scheduled jobs");
     expect(screen.queryByText("No backed scheduled-job inventory is available yet.")).toBeNull();
     expect(screen.queryByText("No scheduled jobs reported")).toBeNull();
-    expect(document.querySelectorAll(".ga-sys-skeleton").length).toBeGreaterThan(0);
+    expect(document.querySelectorAll(".ax-sys-skeleton").length).toBeGreaterThan(0);
   });
 
   it("keeps missing live signals truthful with honest empty states", async () => {

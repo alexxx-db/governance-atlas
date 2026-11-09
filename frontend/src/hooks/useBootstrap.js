@@ -1,11 +1,11 @@
 import { useMemo } from "react";
 import { fetchBootstrap } from "../lib/api";
-import { useAtlasQuery } from "./useAtlasQuery";
+import { useAxiomQuery } from "./useAxiomQuery";
 
 /** @returns {any} */
 function initialBootstrap() {
   if (typeof window === "undefined") return null;
-  return /** @type {any} */ (window.__GOVAT_BOOTSTRAP__) || null;
+  return /** @type {any} */ (window.__AXIOM_BOOTSTRAP__) || null;
 }
 
 function normalizeRouteContext(routeContext = {}) {
@@ -26,7 +26,7 @@ function isLoadingRouteBootstrap(payload) {
 export function useBootstrap(routeContext = {}) {
   const seeded = useMemo(() => initialBootstrap(), []);
   const resolvedRouteContext = normalizeRouteContext(routeContext);
-  const { query } = useAtlasQuery({
+  const { query } = useAxiomQuery({
     key: [
       "bootstrap",
       resolvedRouteContext.surface,
@@ -48,7 +48,7 @@ export function useBootstrap(routeContext = {}) {
     },
     refetchIntervalInBackground: true,
   });
-  const message = query.error?.message || "Failed to load Governance Atlas bootstrap payload.";
+  const message = query.error?.message || "Failed to load Axiom bootstrap payload.";
   const shellOnly = isInlineShellBootstrap(query.data);
   const hasData = Boolean(query.data);
 

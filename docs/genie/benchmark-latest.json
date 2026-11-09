@@ -1,78 +1,50 @@
 {
   "acceptance": "All benchmark questions must return a non-empty answer, Genie query evidence, expected governance-domain terms, no internal control-plane asset leakage, no certified assets in not-certified answers, and no synthetic no-result fallback SQL or sentinel evidence rows.",
-  "aiSchema": "atlas_ai",
-  "caseCount": 7,
-  "catalog": "datapact",
-  "generatedAt": "2026-05-02T17:42:26.601587Z",
-  "passCount": 7,
+  "aiSchema": "axiom_ai",
+  "caseCount": 22,
+  "catalog": "ops_governance",
+  "generatedAt": "2026-11-10T00:15:33.353566Z",
+  "passCount": 22,
   "passed": true,
   "results": [
     {
-      "answerPreview": "The domain with the **highest risk of policy exceptions** is **Risk**, with 2 open policy work items and 1 uncertified critical asset. Other domains with notable risk include **Customer** and **Finance**, each with 1 open policy work item and 1 uncertified critical asset. All domains have 3 governed assets, but Product and Marketing have no open policy work or uncertified critical assets.\n\nWould you like to see the highest risk domains based on other risk factors like sensitivity or recent audit events instead?",
+      "answerPreview": "Based on the query results, **Unassigned** is the highest-ranked domain shown for policy exception risk, with **74 governed assets**, **0 open policy work items**, **0 uncertified critical assets**, and **74 unowned assets**. In this result set, the risk signal for **Unassigned** comes entirely from ownership gaps, since all **74 assets** in **Unassigned** are unowned.",
       "evaluation": {
-        "answerLength": 516,
+        "answerLength": 371,
         "confidence": "genie-grounded",
-        "conversationId": "01f1464e12b91b1d8e5894e7c7661a96",
+        "conversationId": "01f1dc9a822b1341a44f81b576f02d58",
         "evidenceCount": 1,
         "failures": [],
-        "messageId": "01f1464e12c81357818e0e567cc47d46",
+        "messageId": "01f1dc9a824b10fdaf780ca741174b29",
         "passed": true,
-        "totalRowCount": 6
+        "totalRowCount": 1
       },
       "evidence": [
         {
-          "id": "01f1464e1562117890fd2a7901aa7d88",
+          "id": "01f1dc9a88c517f3a3010cd4c892710e",
           "isTruncated": null,
           "metric": "generatedSql",
           "resultColumns": [
             "domain",
             "governed_assets",
             "open_policy_work",
-            "uncertified_critical_assets"
+            "uncertified_critical_assets",
+            "unowned_assets"
           ],
           "resultRows": [
             {
-              "domain": "Risk",
-              "governed_assets": "3",
-              "open_policy_work": "2",
-              "uncertified_critical_assets": "1"
-            },
-            {
-              "domain": "Customer",
-              "governed_assets": "3",
-              "open_policy_work": "1",
-              "uncertified_critical_assets": "1"
-            },
-            {
-              "domain": "Finance",
-              "governed_assets": "3",
-              "open_policy_work": "1",
-              "uncertified_critical_assets": "1"
-            },
-            {
-              "domain": "Operations",
-              "governed_assets": "3",
-              "open_policy_work": "1",
-              "uncertified_critical_assets": "0"
-            },
-            {
-              "domain": "Product",
-              "governed_assets": "3",
+              "domain": "Unassigned",
+              "governed_assets": "74",
               "open_policy_work": "0",
-              "uncertified_critical_assets": "0"
-            },
-            {
-              "domain": "Marketing",
-              "governed_assets": "3",
-              "open_policy_work": "0",
-              "uncertified_critical_assets": "0"
+              "uncertified_critical_assets": "0",
+              "unowned_assets": "74"
             }
           ],
-          "rowCount": 6,
-          "sql": "SELECT\n  COALESCE(assets.domain, 'Unassigned') AS domain,\n  COUNT(DISTINCT assets.asset_fqn) AS governed_assets,\n  SUM(CASE WHEN lower(COALESCE(work.status, '')) IN ('pending', 'open') THEN 1 ELSE 0 END) AS open_policy_work,\n  SUM(CASE WHEN assets.is_critical AND NOT assets.is_certified THEN 1 ELSE 0 END) AS uncertified_critical_assets\nFROM `datapact`.`atlas_ai`.`atlas_ai_assets_current` assets\nLEFT JOIN `datapact`.`atlas_ai`.`atlas_ai_governance_work_current` work\n  ON work.asset_fqn = assets.asset_fqn\nGROUP BY COALESCE(assets.domain, 'Unassigned')\nORDER BY open_policy_work DESC, uncertified_critical_assets DESC, governed_assets DESC\nLIMIT 10",
-          "statementId": "01f1464e-156a-16d0-9280-df5dda07b257",
+          "rowCount": 1,
+          "sql": "SELECT\n  COALESCE(assets.`domain`, 'Unassigned') AS `domain`,\n  COUNT(DISTINCT assets.`asset_fqn`) AS `governed_assets`,\n  COUNT(DISTINCT CASE WHEN lower(COALESCE(work.`status`, '')) IN ('', 'new', 'pending', 'open', 'in_review', 'blocked') THEN work.`work_id` END) AS `open_policy_work`,\n  COUNT(DISTINCT CASE WHEN assets.`is_critical` AND NOT assets.`is_certified` THEN assets.`asset_fqn` END) AS `uncertified_critical_assets`,\n  COUNT(DISTINCT CASE WHEN NOT assets.`has_owner` THEN assets.`asset_fqn` END) AS `unowned_assets`\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` assets\nLEFT JOIN `ops_governance`.`axiom_ai`.`axiom_ai_governance_work_current` work\n  ON `assets`.`asset_fqn` = `work`.`asset_fqn`\nGROUP BY COALESCE(assets.`domain`, 'Unassigned')\nORDER BY `open_policy_work` DESC, `uncertified_critical_assets` DESC, `unowned_assets` DESC, `governed_assets` DESC\nLIMIT 10",
+          "statementId": "01f1dc9a-88d3-1e7b-8ca5-befd0e60dfc5",
           "title": "",
-          "totalRowCount": 6,
+          "totalRowCount": 1,
           "type": "genie_query"
         }
       ],
@@ -82,20 +54,20 @@
       "warnings": []
     },
     {
-      "answerPreview": "There are **three critical assets** that are not certified. These include:\n- **datapact.governance_atlas_demo.finance_exception_review** (Finance, Lien Intelligence)\n- **datapact.governance_atlas_demo.risk_data_quality_review** (Risk)\n- **datapact.governance_atlas_demo.customer_identity_quality** (Customer, Customer 360)\nAll three assets have a high or critical level of importance and currently lack certification.",
+      "answerPreview": "No governed evidence rows were observed for **critical assets that are not certified** in the returned results; the query returned **0 rows**.",
       "evaluation": {
-        "answerLength": 417,
+        "answerLength": 142,
         "confidence": "genie-grounded",
-        "conversationId": "01f1464e1aff1ec3935589d42d55dbf1",
+        "conversationId": "01f1dc9a91ed18bfbbcbba31483221b5",
         "evidenceCount": 1,
         "failures": [],
-        "messageId": "01f1464e1b081750a6a6e49772573871",
+        "messageId": "01f1dc9a91fc1a26a716a67345202688",
         "passed": true,
-        "totalRowCount": 3
+        "totalRowCount": 0
       },
       "evidence": [
         {
-          "id": "01f1464e1e7d1ecdb6604f774aa46c58",
+          "id": "01f1dc9a9b92156cbddf28786b9967a4",
           "isTruncated": null,
           "metric": "generatedSql",
           "resultColumns": [
@@ -104,39 +76,14 @@
             "data_product",
             "criticality",
             "certification",
-            "business_owners"
+            "business_owners",
+            "last_altered"
           ],
-          "resultRows": [
-            {
-              "asset_fqn": "datapact.governance_atlas_demo.finance_exception_review",
-              "business_owners": null,
-              "certification": null,
-              "criticality": "High",
-              "data_product": "Lien Intelligence",
-              "domain": "Finance"
-            },
-            {
-              "asset_fqn": "datapact.governance_atlas_demo.risk_data_quality_review",
-              "business_owners": null,
-              "certification": null,
-              "criticality": "High",
-              "data_product": null,
-              "domain": "Risk"
-            },
-            {
-              "asset_fqn": "datapact.governance_atlas_demo.customer_identity_quality",
-              "business_owners": "atlas-demo-technical@entrada.ai, customer-steward@entrada.ai",
-              "certification": null,
-              "criticality": "Critical",
-              "data_product": "Customer 360",
-              "domain": "Customer"
-            }
-          ],
-          "rowCount": 3,
-          "sql": "SELECT asset_fqn, domain, data_product, criticality, certification, business_owners\nFROM `datapact`.`atlas_ai`.`atlas_ai_assets_current`\nWHERE is_critical = TRUE\n  AND is_certified = FALSE\nORDER BY owner_count ASC, open_work_count DESC, asset_fqn\nLIMIT 25",
-          "statementId": "01f1464e-1e86-101d-8c28-d7eac79256d1",
+          "rowCount": 0,
+          "sql": "SELECT `asset_fqn`, COALESCE(`domain`, 'Unassigned') AS `domain`, `data_product`, `criticality`, `certification`, `business_owners`, `last_altered` FROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` WHERE `is_critical` = TRUE AND `is_certified` = FALSE ORDER BY `owner_count` ASC, `open_work_count` DESC, `asset_fqn` LIMIT 25",
+          "statementId": "01f1dc9a-9ba2-1155-968f-0a11a06f5485",
           "title": "",
-          "totalRowCount": 3,
+          "totalRowCount": 0,
           "type": "genie_query"
         }
       ],
@@ -146,20 +93,20 @@
       "warnings": []
     },
     {
-      "answerPreview": "Recent governance metadata changes include updates to stewardship status, detection of policy exceptions, opening of critical metadata reviews, certification reviews, and assignment of stewardship owners. All actions were performed by **skyler@entrada.ai** across various assets, with most changes marked as **success** except for one failed policy exception. The most recent actions involved comment recording, risk policy exception detection, and opening of metadata reviews.",
+      "answerPreview": "No governed evidence rows were observed for recent governance metadata changes: the audit events query returned **0 rows** for the last **30 days**. Based on the visible data, there were **no recorded governance metadata audit events** in that period.",
       "evaluation": {
-        "answerLength": 477,
+        "answerLength": 251,
         "confidence": "genie-grounded",
-        "conversationId": "01f1464e23921809a918a779e3daf9a6",
+        "conversationId": "01f1dc9aa0bd1d82929bbb94444fae44",
         "evidenceCount": 1,
         "failures": [],
-        "messageId": "01f1464e239a1cb2b3f52d2f49503c5e",
+        "messageId": "01f1dc9aa0c91330996b0e95ee6d5101",
         "passed": true,
-        "totalRowCount": 13
+        "totalRowCount": 0
       },
       "evidence": [
         {
-          "id": "01f1464e25951166be0d5c473c4c3e8a",
+          "id": "01f1dc9aa825127fbd65f24d952908cd",
           "isTruncated": null,
           "metric": "generatedSql",
           "resultColumns": [
@@ -171,103 +118,11 @@
             "detail",
             "created_at"
           ],
-          "resultRows": [
-            {
-              "action": "change-request-status-updated",
-              "actor_email": "skyler@entrada.ai",
-              "asset_fqn": "datapact.governance_atlas_demo.customer_stewardship_queue",
-              "audit_id": "30b9bc84b4d1495ca7ddaa0d8a84edf6",
-              "created_at": "2026-04-29T21:34:38.000Z",
-              "detail": "Comment recorded from Stewardship Workbench.",
-              "status": "success"
-            },
-            {
-              "action": "policy-exception-detected",
-              "actor_email": "skyler@entrada.ai",
-              "asset_fqn": "datapact.governance_atlas_demo.risk_policy_exception_register",
-              "audit_id": "ga-home-seed-audit-01",
-              "created_at": "2026-04-28T00:24:36.957Z",
-              "detail": "Risk policy exception from governed seed evidence.",
-              "status": "failed"
-            },
-            {
-              "action": "critical-metadata-review-opened",
-              "actor_email": "skyler@entrada.ai",
-              "asset_fqn": "datapact.governance_atlas_demo.risk_data_quality_review",
-              "audit_id": "ga-home-seed-audit-02",
-              "created_at": "2026-04-27T23:54:36.957Z",
-              "detail": "Risk metadata review needs steward action.",
-              "status": "flagged"
-            },
-            {
-              "action": "certification-review-opened",
-              "actor_email": "skyler@entrada.ai",
-              "asset_fqn": "datapact.governance_atlas_demo.operations_certification_backlog",
-              "audit_id": "ga-home-seed-audit-03",
-              "created_at": "2026-04-27T23:09:36.957Z",
-              "detail": "Operations certification review opened.",
-              "status": "success"
-            },
-            {
-              "action": "owner-stewardship-updated",
-              "actor_email": "skyler@entrada.ai",
-              "asset_fqn": "datapact.governance_atlas_demo.customer_stewardship_queue",
-              "audit_id": "ga-home-seed-audit-04",
-              "created_at": "2026-04-27T22:39:36.957Z",
-              "detail": "Customer stewardship owners assigned.",
-              "status": "success"
-            },
-            {
-              "action": "policy-exception-review-opened",
-              "actor_email": "skyler@entrada.ai",
-              "asset_fqn": "datapact.governance_atlas_demo.finance_exception_review",
-              "audit_id": "ga-home-seed-audit-05",
-              "created_at": "2026-04-27T21:39:36.957Z",
-              "detail": "Finance policy exception review opened.",
-              "status": "success"
-            },
-            {
-              "action": "metadata-curated",
-              "actor_email": "skyler@entrada.ai",
-              "asset_fqn": "datapact.governance_atlas_demo.customer_profile_coverage",
-              "audit_id": "ga-home-seed-audit-06",
-              "created_at": "2026-04-27T20:39:36.957Z",
-              "detail": "Customer metadata curated from Cotality source.",
-              "status": "success"
-            },
-            {
-              "action": "task-status-updated",
-              "actor_email": "skyler@entrada.ai",
-              "asset_fqn": "datapact.governance_atlas_demo.customer_stewardship_queue",
-              "audit_id": "8476cc7ff9e74efdad657c7f29590598",
-              "created_at": "2026-04-26T14:28:48.000Z",
-              "detail": "Closed stale Lakebase mirror validation request after route evidence passed.",
-              "status": "success"
-            },
-            {
-              "action": "task-created",
-              "actor_email": "skyler@entrada.ai",
-              "asset_fqn": "datapact.governance_atlas_demo.customer_stewardship_queue",
-              "audit_id": "62f26675c18f41aa908d103fe09cb286",
-              "created_at": "2026-04-25T09:11:55.000Z",
-              "detail": null,
-              "status": "success"
-            },
-            {
-              "action": "entity-registry-upserted",
-              "actor_email": "skyler@entrada.ai",
-              "asset_fqn": "datapact.governance_atlas_demo.customer_stewardship_queue",
-              "audit_id": "725f92c5373e4faa8fdd10c8a0675328",
-              "created_at": "2026-04-25T09:11:05.000Z",
-              "detail": null,
-              "status": "success"
-            }
-          ],
-          "rowCount": 13,
-          "sql": "SELECT audit_id, asset_fqn, action, status, actor_email, detail, created_at\nFROM `datapact`.`atlas_ai`.`atlas_ai_audit_events`\nORDER BY created_at DESC, audit_id DESC\nLIMIT 25",
-          "statementId": "01f1464e-259c-1e4d-af34-7eda6a151287",
+          "rowCount": 0,
+          "sql": "SELECT `audit_id`, `asset_fqn`, `action`, `status`, `actor_email`, `detail`, `created_at`\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_audit_events`\nWHERE `created_at` >= current_timestamp() - INTERVAL 30 DAYS\nORDER BY `created_at` DESC, `audit_id` DESC\nLIMIT 25",
+          "statementId": "01f1dc9a-a831-1b7d-8b9f-68d0b377d59a",
           "title": "",
-          "totalRowCount": 13,
+          "totalRowCount": 0,
           "type": "genie_query"
         }
       ],
@@ -277,20 +132,20 @@
       "warnings": []
     },
     {
-      "answerPreview": "There are **5 assets** currently missing stewardship attention, either due to having no assigned owner or open stewardship work. Examples include:\n- **datapact.governance_atlas_demo.finance_exception_review** (Finance, Lien Intelligence, 0 owners, 1 open work, High criticality)\n- **datapact.governance_atlas_demo.risk_data_quality_review** (Risk, no data product, 0 owners, 1 open work, High criticality)\n- **datapact.governance_atlas_demo.operations_certification_backlog** (Operations, Transfer Operations, 1 owner, 1 open work)\n- **datapact.governance_atlas_demo.customer_stewardship_queue** (Customer, Customer 360, 2 owners, 1 open work, Critical, Trusted)\n- **datapact.governance_atlas_demo.ri",
+      "answerPreview": "The visible results show **25 assets** missing stewardship attention, and in this sample **all 25 have no assigned owner** and **no open work items**. A few representative values include:\n- **ops_governance.finops_cost._finops_provenance** \u2014 domain **Unassigned**, owners **0**, open work **0**\n- **ops_governance.finops_cost.dim_dbr_contract_price** \u2014 domain **Unassigned**, owners **0**, open work **0**\n- **ops_governance.finops_cost.fact_cloud_cost_raw** \u2014 domain **Unassigned**, owners **0**, open work **0**\n- **ops_governance.finops_cost.mart_unified_cost_daily** \u2014 domain **Unassigned**, owners **0**, open work **0**\n- **ops_governance.observability.cost_forecast_accuracy** \u2014 domain **Unass",
       "evaluation": {
-        "answerLength": 892,
+        "answerLength": 927,
         "confidence": "genie-grounded",
-        "conversationId": "01f1464e28d81f20bd3a7dd24f6253d5",
+        "conversationId": "01f1dc9aac941b6d9153df1ce698b064",
         "evidenceCount": 1,
         "failures": [],
-        "messageId": "01f1464e28e0186d87a74c1d1c8eea08",
+        "messageId": "01f1dc9aac9e1cac966a3794ef804b95",
         "passed": true,
-        "totalRowCount": 5
+        "totalRowCount": 25
       },
       "evidence": [
         {
-          "id": "01f1464e2ade19a7be88a187e2842859",
+          "id": "01f1dc9aaebe1410b365cbc2aee642fc",
           "isTruncated": null,
           "metric": "generatedSql",
           "resultColumns": [
@@ -304,56 +159,101 @@
           ],
           "resultRows": [
             {
-              "asset_fqn": "datapact.governance_atlas_demo.finance_exception_review",
-              "certification": null,
-              "criticality": "High",
-              "data_product": "Lien Intelligence",
-              "domain": "Finance",
-              "open_work_count": "1",
-              "owner_count": "0"
-            },
-            {
-              "asset_fqn": "datapact.governance_atlas_demo.risk_data_quality_review",
-              "certification": null,
-              "criticality": "High",
-              "data_product": null,
-              "domain": "Risk",
-              "open_work_count": "1",
-              "owner_count": "0"
-            },
-            {
-              "asset_fqn": "datapact.governance_atlas_demo.operations_certification_backlog",
+              "asset_fqn": "ops_governance.finops_cost._finops_provenance",
               "certification": null,
               "criticality": null,
-              "data_product": "Transfer Operations",
-              "domain": "Operations",
-              "open_work_count": "1",
-              "owner_count": "1"
+              "data_product": null,
+              "domain": "Unassigned",
+              "open_work_count": "0",
+              "owner_count": "0"
             },
             {
-              "asset_fqn": "datapact.governance_atlas_demo.customer_stewardship_queue",
-              "certification": "Trusted",
-              "criticality": "Critical",
-              "data_product": "Customer 360",
-              "domain": "Customer",
-              "open_work_count": "1",
-              "owner_count": "2"
+              "asset_fqn": "ops_governance.finops_cost.dim_dbr_contract_price",
+              "certification": null,
+              "criticality": null,
+              "data_product": null,
+              "domain": "Unassigned",
+              "open_work_count": "0",
+              "owner_count": "0"
             },
             {
-              "asset_fqn": "datapact.governance_atlas_demo.risk_policy_exception_register",
-              "certification": "Certified",
-              "criticality": "Critical",
-              "data_product": "Risk Controls",
-              "domain": "Risk",
-              "open_work_count": "1",
-              "owner_count": "2"
+              "asset_fqn": "ops_governance.finops_cost.dim_service_principal_owner",
+              "certification": null,
+              "criticality": null,
+              "data_product": null,
+              "domain": "Unassigned",
+              "open_work_count": "0",
+              "owner_count": "0"
+            },
+            {
+              "asset_fqn": "ops_governance.finops_cost.dim_workspace_cloud_account",
+              "certification": null,
+              "criticality": null,
+              "data_product": null,
+              "domain": "Unassigned",
+              "open_work_count": "0",
+              "owner_count": "0"
+            },
+            {
+              "asset_fqn": "ops_governance.finops_cost.fact_classic_iaas_attributed",
+              "certification": null,
+              "criticality": null,
+              "data_product": null,
+              "domain": "Unassigned",
+              "open_work_count": "0",
+              "owner_count": "0"
+            },
+            {
+              "asset_fqn": "ops_governance.finops_cost.fact_classic_iaas_attributed_delta",
+              "certification": null,
+              "criticality": null,
+              "data_product": null,
+              "domain": "Unassigned",
+              "open_work_count": "0",
+              "owner_count": "0"
+            },
+            {
+              "asset_fqn": "ops_governance.finops_cost.fact_cloud_cost_attributed",
+              "certification": null,
+              "criticality": null,
+              "data_product": null,
+              "domain": "Unassigned",
+              "open_work_count": "0",
+              "owner_count": "0"
+            },
+            {
+              "asset_fqn": "ops_governance.finops_cost.fact_cloud_cost_normalized",
+              "certification": null,
+              "criticality": null,
+              "data_product": null,
+              "domain": "Unassigned",
+              "open_work_count": "0",
+              "owner_count": "0"
+            },
+            {
+              "asset_fqn": "ops_governance.finops_cost.fact_cloud_cost_raw",
+              "certification": null,
+              "criticality": null,
+              "data_product": null,
+              "domain": "Unassigned",
+              "open_work_count": "0",
+              "owner_count": "0"
+            },
+            {
+              "asset_fqn": "ops_governance.finops_cost.fact_dbr_classic_compute_cluster_daily",
+              "certification": null,
+              "criticality": null,
+              "data_product": null,
+              "domain": "Unassigned",
+              "open_work_count": "0",
+              "owner_count": "0"
             }
           ],
-          "rowCount": 5,
-          "sql": "SELECT asset_fqn, domain, data_product, owner_count, open_work_count, certification, criticality\nFROM `datapact`.`atlas_ai`.`atlas_ai_assets_current`\nWHERE owner_count = 0 OR open_work_count > 0\nORDER BY open_work_count DESC, owner_count ASC, is_critical DESC, asset_fqn\nLIMIT 25",
-          "statementId": "01f1464e-2ae6-10e0-b519-015c9703fb8d",
+          "rowCount": 25,
+          "sql": "SELECT\n  `asset_fqn`,\n  COALESCE(`domain`, 'Unassigned') AS `domain`,\n  `data_product`,\n  `owner_count`,\n  `open_work_count`,\n  `certification`,\n  `criticality`\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE `owner_count` = 0 OR `open_work_count` > 0\nORDER BY `open_work_count` DESC, `owner_count` ASC, `is_critical` DESC, `asset_fqn`\nLIMIT 25",
+          "statementId": "01f1dc9a-aecb-131a-989c-0a33c8953ca7",
           "title": "",
-          "totalRowCount": 5,
+          "totalRowCount": 25,
           "type": "genie_query"
         }
       ],
@@ -363,83 +263,139 @@
       "warnings": []
     },
     {
-      "answerPreview": "Would you like to see assets with the least complete metadata fields instead of those missing owners or having open governance work?\n\nThe assets with the lowest metadata coverage are those with either no owners or open work items. All five assets listed have at least one open work item, and two have zero owners, indicating gaps in stewardship. Examples include:\n- **datapact.governance_atlas_demo.finance_exception_review** (Finance, Lien Intelligence, 0 owners, 1 open work)\n- **datapact.governance_atlas_demo.risk_data_quality_review** (Risk, no data product, 0 owners, 1 open work)\n- **datapact.governance_atlas_demo.operations_certification_backlog** (Operations, Transfer Operations, 1 owner, ",
+      "answerPreview": "The **lowest metadata coverage** shown is **0**, and all **25 returned assets** are tied at that level with **no description, no owner, no domain, no sensitivity tag, and no certification**. Examples include:\n- **ops_governance.finops_cost._finops_provenance**\n- **ops_governance.finops_cost.fact_classic_iaas_attributed**\n- **ops_governance.finops_cost.fact_cloud_cost_raw**\n- **ops_governance.observability.user_dbu_cost_summary**\n- **ops_governance.ops_review_1551.t02d_failure_trend_weekly**\n\nIn this sample, the lowest-coverage assets are concentrated in the **finops_cost** and **ops_review_1551** areas.",
       "evaluation": {
-        "answerLength": 1012,
+        "answerLength": 610,
         "confidence": "genie-grounded",
-        "conversationId": "01f1464e310b104498bfb717a0c4b8b2",
+        "conversationId": "01f1dc9ab528121584109960d4a4f4aa",
         "evidenceCount": 1,
         "failures": [],
-        "messageId": "01f1464e311217a9b9a8e5b26870065c",
+        "messageId": "01f1dc9ab53217869ecef7f5320d0136",
         "passed": true,
-        "totalRowCount": 5
+        "totalRowCount": 25
       },
       "evidence": [
         {
-          "id": "01f1464e34ba1e07997c7d44f55db256",
+          "id": "01f1dc9ab94c136d94a7ad7a8af46c83",
           "isTruncated": null,
           "metric": "generatedSql",
           "resultColumns": [
             "asset_fqn",
+            "table_type",
+            "coverage_score",
+            "has_description",
+            "has_owner",
             "domain",
-            "data_product",
-            "owner_count",
-            "open_work_count",
-            "certification",
-            "criticality"
+            "sensitivity",
+            "certification"
           ],
           "resultRows": [
             {
-              "asset_fqn": "datapact.governance_atlas_demo.finance_exception_review",
+              "asset_fqn": "ops_governance.finops_cost._finops_provenance",
               "certification": null,
-              "criticality": "High",
-              "data_product": "Lien Intelligence",
-              "domain": "Finance",
-              "open_work_count": "1",
-              "owner_count": "0"
+              "coverage_score": "0",
+              "domain": null,
+              "has_description": "false",
+              "has_owner": "false",
+              "sensitivity": null,
+              "table_type": "MANAGED"
             },
             {
-              "asset_fqn": "datapact.governance_atlas_demo.risk_data_quality_review",
+              "asset_fqn": "ops_governance.finops_cost.fact_classic_iaas_attributed",
               "certification": null,
-              "criticality": "High",
-              "data_product": null,
-              "domain": "Risk",
-              "open_work_count": "1",
-              "owner_count": "0"
+              "coverage_score": "0",
+              "domain": null,
+              "has_description": "false",
+              "has_owner": "false",
+              "sensitivity": null,
+              "table_type": "VIEW"
             },
             {
-              "asset_fqn": "datapact.governance_atlas_demo.operations_certification_backlog",
+              "asset_fqn": "ops_governance.finops_cost.fact_classic_iaas_attributed_delta",
               "certification": null,
-              "criticality": null,
-              "data_product": "Transfer Operations",
-              "domain": "Operations",
-              "open_work_count": "1",
-              "owner_count": "1"
+              "coverage_score": "0",
+              "domain": null,
+              "has_description": "false",
+              "has_owner": "false",
+              "sensitivity": null,
+              "table_type": "MANAGED"
             },
             {
-              "asset_fqn": "datapact.governance_atlas_demo.customer_stewardship_queue",
-              "certification": "Trusted",
-              "criticality": "Critical",
-              "data_product": "Customer 360",
-              "domain": "Customer",
-              "open_work_count": "1",
-              "owner_count": "2"
+              "asset_fqn": "ops_governance.finops_cost.fact_cloud_cost_attributed",
+              "certification": null,
+              "coverage_score": "0",
+              "domain": null,
+              "has_description": "false",
+              "has_owner": "false",
+              "sensitivity": null,
+              "table_type": "VIEW"
             },
             {
-              "asset_fqn": "datapact.governance_atlas_demo.risk_policy_exception_register",
-              "certification": "Certified",
-              "criticality": "Critical",
-              "data_product": "Risk Controls",
-              "domain": "Risk",
-              "open_work_count": "1",
-              "owner_count": "2"
+              "asset_fqn": "ops_governance.finops_cost.fact_cloud_cost_normalized",
+              "certification": null,
+              "coverage_score": "0",
+              "domain": null,
+              "has_description": "false",
+              "has_owner": "false",
+              "sensitivity": null,
+              "table_type": "VIEW"
+            },
+            {
+              "asset_fqn": "ops_governance.finops_cost.fact_cloud_cost_raw",
+              "certification": null,
+              "coverage_score": "0",
+              "domain": null,
+              "has_description": "false",
+              "has_owner": "false",
+              "sensitivity": null,
+              "table_type": "VIEW"
+            },
+            {
+              "asset_fqn": "ops_governance.finops_cost.fact_dbr_classic_compute_cluster_daily",
+              "certification": null,
+              "coverage_score": "0",
+              "domain": null,
+              "has_description": "false",
+              "has_owner": "false",
+              "sensitivity": null,
+              "table_type": "VIEW"
+            },
+            {
+              "asset_fqn": "ops_governance.finops_cost.fact_dbr_dbu_cost",
+              "certification": null,
+              "coverage_score": "0",
+              "domain": null,
+              "has_description": "false",
+              "has_owner": "false",
+              "sensitivity": null,
+              "table_type": "VIEW"
+            },
+            {
+              "asset_fqn": "ops_governance.finops_cost.fact_dbr_usage_net",
+              "certification": null,
+              "coverage_score": "0",
+              "domain": null,
+              "has_description": "false",
+              "has_owner": "false",
+              "sensitivity": null,
+              "table_type": "VIEW"
+            },
+            {
+              "asset_fqn": "ops_governance.finops_cost.fact_dbr_usage_raw",
+              "certification": null,
+              "coverage_score": "0",
+              "domain": null,
+              "has_description": "false",
+              "has_owner": "false",
+              "sensitivity": null,
+              "table_type": "VIEW"
             }
           ],
-          "rowCount": 5,
-          "sql": "SELECT asset_fqn, domain, data_product, owner_count, open_work_count, certification, criticality\nFROM `datapact`.`atlas_ai`.`atlas_ai_assets_current`\nWHERE owner_count = 0 OR open_work_count > 0\nORDER BY open_work_count DESC, owner_count ASC, is_critical DESC, asset_fqn\nLIMIT 25",
-          "statementId": "01f1464e-34c1-1888-84e8-61f892f14b06",
+          "rowCount": 25,
+          "sql": "WITH coverage AS (\n  SELECT\n    `asset_fqn`,\n    `table_type`,\n    `is_critical`,\n    (CASE WHEN NULLIF(TRIM(`comment`), '') IS NOT NULL THEN 1 ELSE 0 END\n     + CASE WHEN `has_owner` THEN 1 ELSE 0 END\n     + CASE WHEN `domain` IS NOT NULL THEN 1 ELSE 0 END\n     + CASE WHEN `sensitivity` IS NOT NULL THEN 1 ELSE 0 END\n     + CASE WHEN `certification` IS NOT NULL THEN 1 ELSE 0 END) AS `coverage_score`,\n    NULLIF(TRIM(`comment`), '') IS NOT NULL AS `has_description`,\n    `has_owner`,\n    `domain`,\n    `sensitivity`,\n    `certification`\n  FROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\n), ranked AS (\n  SELECT\n    *,\n    RANK() OVER (ORDER BY `coverage_score` ASC, `is_critical` DESC, `asset_fqn` ASC) AS `coverage_rank`\n  FROM coverage\n)\nSELECT\n  `asset_fqn`,\n  `table_type`,\n  `coverage_score`,\n  `has_description`,\n  `has_owner`,\n  `domain`,\n  `sensitivity`,\n  `certification`\nFROM ranked\nWHERE `coverage_rank` <= 25\nORDER BY `coverage_score` ASC, `is_critical` DESC, `asset_fqn` ASC",
+          "statementId": "01f1dc9a-b958-10e0-8973-a8d9c53acf37",
           "title": "",
-          "totalRowCount": 5,
+          "totalRowCount": 25,
           "type": "genie_query"
         }
       ],
@@ -449,53 +405,37 @@
       "warnings": []
     },
     {
-      "answerPreview": "There are **two glossary terms** linked to customer assets: **Customer Identifier** and **Customer Segment**. Both terms have an approved review status and are associated with assets such as customer identity quality and customer profile coverage. Customer Identifier is linked to two assets, while Customer Segment is linked to one asset.",
+      "answerPreview": "No governed evidence rows were observed for this question: the query returned **0 glossary terms** linked to the customer-related assets identified by the search criteria. Based on these results, there are **no glossary links shown** for those customer assets in the available data.",
       "evaluation": {
-        "answerLength": 339,
+        "answerLength": 282,
         "confidence": "genie-grounded",
-        "conversationId": "01f1464e39101d68864ab3e475cd2995",
+        "conversationId": "01f1dc9ac0761070b8748d86ec9eff92",
         "evidenceCount": 1,
         "failures": [],
-        "messageId": "01f1464e39171ecbb8309fe70ebc542d",
+        "messageId": "01f1dc9ac0881a9b8168f074911137a9",
         "passed": true,
-        "totalRowCount": 2
+        "totalRowCount": 0
       },
       "evidence": [
         {
-          "id": "01f1464e3ab21bab905804e3d03690a8",
+          "id": "01f1dc9aca7c1968b10ce86becabd130",
           "isTruncated": null,
           "metric": "generatedSql",
           "resultColumns": [
             "term_id",
             "name",
+            "display_name",
             "definition",
             "review_status",
             "linked_asset_count",
-            "linked_assets_sample"
+            "linked_assets_sample",
+            "updated_at"
           ],
-          "resultRows": [
-            {
-              "definition": "Business-approved identifier used to recognize and join customer records across governed analytics assets.",
-              "linked_asset_count": "2",
-              "linked_assets_sample": "datapact.governance_atlas_demo.customer_identity_quality, datapact.governance_atlas_demo.customer_profile_coverage",
-              "name": "Customer Identifier",
-              "review_status": "approved",
-              "term_id": "ga-customer-identifier"
-            },
-            {
-              "definition": "Business grouping used for customer analytics and campaign segmentation.",
-              "linked_asset_count": "1",
-              "linked_assets_sample": "datapact.governance_atlas_demo.customer_profile_coverage",
-              "name": "Customer Segment",
-              "review_status": "approved",
-              "term_id": "ga-taxonomy-seed-customer-segment"
-            }
-          ],
-          "rowCount": 2,
-          "sql": "SELECT term_id, name, definition, review_status, linked_asset_count, linked_assets_sample\nFROM `datapact`.`atlas_ai`.`atlas_ai_glossary_current`\nWHERE lower(COALESCE(linked_assets_sample, '')) LIKE '%customer%'\n   OR lower(COALESCE(domain, '')) LIKE '%customer%'\n   OR lower(COALESCE(name, '')) LIKE '%customer%'\nORDER BY linked_asset_count DESC, name\nLIMIT 25",
-          "statementId": "01f1464e-3ab9-1a92-aa2f-67874cd1593e",
+          "rowCount": 0,
+          "sql": "WITH `customer_assets` AS ( SELECT `asset_fqn` FROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` WHERE lower(COALESCE(`asset_fqn`, '')) RLIKE 'customer|client|account|consumer|subscriber|member|party|crm|buyer|household' OR lower(COALESCE(`table_name`, '')) RLIKE 'customer|client|account|consumer|subscriber|member|party|crm|buyer|household' OR lower(COALESCE(`comment`, '')) RLIKE 'customer|client|account|consumer|subscriber|member|party|crm|buyer|household' OR lower(COALESCE(`domain`, '')) RLIKE 'customer|client|account|consumer|subscriber|member|party|crm|buyer|household' OR lower(COALESCE(`data_product`, '')) RLIKE 'customer|client|account|consumer|subscriber|member|party|crm|buyer|household' ) SELECT `g`.`term_id`, `g`.`name`, `g`.`display_name`, `g`.`definition`, `g`.`review_status`, `g`.`linked_asset_count`, `g`.`linked_assets_sample`, `g`.`updated_at` FROM `ops_governance`.`axiom_ai`.`axiom_ai_glossary_current` AS `g` WHERE `g`.`linked_asset_count` > 0 AND EXISTS ( SELECT 1 FROM `customer_assets` AS `a` WHERE instr(lower(COALESCE(`g`.`linked_assets_sample`, '')), lower(`a`.`asset_fqn`)) > 0 ) ORDER BY `g`.`linked_asset_count` DESC, `g`.`name` LIMIT 25",
+          "statementId": "01f1dc9a-ca88-1655-952e-2c9ad882c78d",
           "title": "",
-          "totalRowCount": 2,
+          "totalRowCount": 0,
           "type": "genie_query"
         }
       ],
@@ -505,25 +445,26 @@
       "warnings": []
     },
     {
-      "answerPreview": "There are **no data quality issues** currently impacting critical assets based on the available evidence. No governed evidence rows were observed for failed, error, partial, or warning outcomes on critical assets.",
+      "answerPreview": "No governed evidence rows were observed for data quality issues impacting **critical assets** in the query results; **0 rows** were returned. Based on the visible data, there were no latest quality results with an outcome of **failed** or **errored** for assets marked critical by the query criteria.",
       "evaluation": {
-        "answerLength": 213,
+        "answerLength": 300,
         "confidence": "genie-grounded",
-        "conversationId": "01f1464e3e63135bab2d21959ca084ec",
+        "conversationId": "01f1dc9ace831bd58fbcc930805b9141",
         "evidenceCount": 1,
         "failures": [],
-        "messageId": "01f1464e3e6b1339a3bb413aaded1b99",
+        "messageId": "01f1dc9ace8e1cef8aa879bac4603546",
         "passed": true,
         "totalRowCount": 0
       },
       "evidence": [
         {
-          "id": "01f1464e447b1e82b1d91a7a48dbbba7",
+          "id": "01f1dc9ad7ce1017b2776b50cffbd321",
           "isTruncated": null,
           "metric": "generatedSql",
           "resultColumns": [
             "asset_fqn",
             "column_name",
+            "case_id",
             "outcome",
             "severity",
             "metric_value",
@@ -532,8 +473,8 @@
             "executed_at"
           ],
           "rowCount": 0,
-          "sql": "SELECT quality.asset_fqn, quality.column_name, quality.outcome, quality.severity, quality.metric_value, quality.threshold_value, quality.detail, quality.executed_at FROM `datapact`.`atlas_ai`.`atlas_ai_quality_latest` quality INNER JOIN `datapact`.`atlas_ai`.`atlas_ai_assets_current` assets ON assets.asset_fqn = quality.asset_fqn WHERE assets.is_critical = TRUE AND lower(COALESCE(quality.outcome, '')) IN ('fail', 'failed', 'error', 'partial', 'warning') ORDER BY quality.executed_at DESC, quality.severity DESC, quality.asset_fqn LIMIT 25",
-          "statementId": "01f1464e-4483-1373-ba18-8c05d87a1741",
+          "sql": "SELECT `quality`.`asset_fqn`, `quality`.`column_name`, `quality`.`case_id`, `quality`.`outcome`, `quality`.`severity`, `quality`.`metric_value`, `quality`.`threshold_value`, `quality`.`detail`, `quality`.`executed_at` FROM `ops_governance`.`axiom_ai`.`axiom_ai_quality_latest` AS `quality` INNER JOIN `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` AS `assets` ON `assets`.`asset_fqn` = `quality`.`asset_fqn` WHERE lower(COALESCE(`quality`.`outcome`, '')) IN ('failed', 'errored') AND (`assets`.`is_critical` = TRUE OR lower(COALESCE(`assets`.`criticality`, '')) IN ('critical', 'high', 'tier 1', 'p0', 'p1')) ORDER BY CASE lower(COALESCE(`quality`.`severity`, '')) WHEN 'critical' THEN 1 WHEN 'high' THEN 2 WHEN 'medium' THEN 3 WHEN 'low' THEN 4 ELSE 5 END, `quality`.`executed_at` DESC, `quality`.`asset_fqn` LIMIT 25",
+          "statementId": "01f1dc9a-d7dc-1959-a0f2-b761628898a1",
           "title": "",
           "totalRowCount": 0,
           "type": "genie_query"
@@ -543,9 +484,772 @@
       "passed": true,
       "question": "Show me data quality issues impacting critical assets.",
       "warnings": []
+    },
+    {
+      "answerPreview": "Across **74 assets**, metadata coverage is currently **32.4% documented**, **0.0% owned**, **0.0% domain-tagged**, **0.0% classified**, and **0.0% certified**. This means documentation is the only metadata area with any coverage in the current inventory, while owner, domain, sensitivity, and certification coverage are all at **0.0%**.",
+      "evaluation": {
+        "answerLength": 336,
+        "confidence": "genie-grounded",
+        "conversationId": "01f1dc9ade4318e8a63e9c247de52b7b",
+        "evidenceCount": 1,
+        "failures": [],
+        "messageId": "01f1dc9ade4e1b12a4891e7443e6f056",
+        "passed": true,
+        "totalRowCount": 1
+      },
+      "evidence": [
+        {
+          "id": "01f1dc9ae0fe13cf8c9729cb3b171780",
+          "isTruncated": null,
+          "metric": "generatedSql",
+          "resultColumns": [
+            "total_assets",
+            "pct_documented",
+            "pct_owned",
+            "pct_domain_tagged",
+            "pct_classified",
+            "pct_certified"
+          ],
+          "resultRows": [
+            {
+              "pct_certified": "0.0",
+              "pct_classified": "0.0",
+              "pct_documented": "32.4",
+              "pct_domain_tagged": "0.0",
+              "pct_owned": "0.0",
+              "total_assets": "74"
+            }
+          ],
+          "rowCount": 1,
+          "sql": "SELECT\n  COUNT(*) AS total_assets,\n  ROUND(100.0 * AVG(CASE WHEN NULLIF(trim(`comment`), '') IS NOT NULL THEN 1 ELSE 0 END), 1) AS pct_documented,\n  ROUND(100.0 * AVG(CASE WHEN `has_owner` THEN 1 ELSE 0 END), 1) AS pct_owned,\n  ROUND(100.0 * AVG(CASE WHEN `domain` IS NOT NULL THEN 1 ELSE 0 END), 1) AS pct_domain_tagged,\n  ROUND(100.0 * AVG(CASE WHEN `sensitivity` IS NOT NULL THEN 1 ELSE 0 END), 1) AS pct_classified,\n  ROUND(100.0 * AVG(CASE WHEN `is_certified` THEN 1 ELSE 0 END), 1) AS pct_certified\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`",
+          "statementId": "01f1dc9a-e109-186e-8148-83dbf39dec21",
+          "title": "",
+          "totalRowCount": 1,
+          "type": "genie_query"
+        }
+      ],
+      "id": "e9054e8056b3e2c6c960fec8dbcd2c33",
+      "passed": true,
+      "question": "What is our overall metadata coverage?",
+      "warnings": []
+    },
+    {
+      "answerPreview": "No governed evidence rows were observed for sensitive assets without an owner in the results returned by this query. Based on the visible data, **0 assets** matched the sensitive-and-unowned criteria.",
+      "evaluation": {
+        "answerLength": 200,
+        "confidence": "genie-grounded",
+        "conversationId": "01f1dc9ae8e9133f95d48e92f1c2db3f",
+        "evidenceCount": 1,
+        "failures": [],
+        "messageId": "01f1dc9ae8f41586abbb9fcdb4ccc993",
+        "passed": true,
+        "totalRowCount": 0
+      },
+      "evidence": [
+        {
+          "id": "01f1dc9af49013a6a552c51e5a058a0b",
+          "isTruncated": null,
+          "metric": "generatedSql",
+          "resultColumns": [
+            "asset_fqn",
+            "sensitivity",
+            "domain",
+            "criticality",
+            "open_work_count"
+          ],
+          "rowCount": 0,
+          "sql": "SELECT `asset_fqn`, `sensitivity`, COALESCE(`domain`, 'Unassigned') AS `domain`, `criticality`, `open_work_count` FROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` WHERE (lower(trim(COALESCE(`sensitivity`, ''))) IN ('pii', 'phi', 'pci', 'confidential', 'highly confidential', 'restricted', 'sensitive', 'secret') OR lower(trim(COALESCE(`sensitivity`, ''))) LIKE '%pii%') AND COALESCE(`has_owner`, false) = false ORDER BY `is_critical` DESC, `asset_fqn` LIMIT 50",
+          "statementId": "01f1dc9a-f49a-1064-b532-9d69d4c6c0d6",
+          "title": "",
+          "totalRowCount": 0,
+          "type": "genie_query"
+        }
+      ],
+      "id": "bb3bbe14a64e919a064689f4b1832ff4",
+      "passed": true,
+      "question": "Which sensitive assets have no owner?",
+      "warnings": []
+    },
+    {
+      "answerPreview": "No governed evidence rows were returned, so there is **no visible owner** in the results to identify as owning the most assets. Based on this query, **0 owners** were found with owned assets.",
+      "evaluation": {
+        "answerLength": 191,
+        "confidence": "genie-grounded",
+        "conversationId": "01f1dc9afcd910d38070c31753dd71c4",
+        "evidenceCount": 1,
+        "failures": [],
+        "messageId": "01f1dc9afce316689a1a11bb2b5f6fce",
+        "passed": true,
+        "totalRowCount": 0
+      },
+      "evidence": [
+        {
+          "id": "01f1dc9b09a614fe81d2c69de418b7d4",
+          "isTruncated": null,
+          "metric": "generatedSql",
+          "resultColumns": [
+            "owner_email",
+            "owned_assets",
+            "critical_assets",
+            "certified_assets",
+            "sample_asset_fqns"
+          ],
+          "rowCount": 0,
+          "sql": "WITH `owner_assets` AS ( SELECT `asset_fqn`, `is_critical`, `is_certified`, trim(`owner_raw`) AS `owner_email` FROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` LATERAL VIEW explode_outer(split(coalesce(`business_owners`, ''), ',')) `owner_list` AS `owner_raw` WHERE `has_owner` = TRUE ), `owner_counts` AS ( SELECT `owner_email`, COUNT(DISTINCT `asset_fqn`) AS `owned_assets`, COUNT(DISTINCT CASE WHEN `is_critical` THEN `asset_fqn` END) AS `critical_assets`, COUNT(DISTINCT CASE WHEN `is_certified` THEN `asset_fqn` END) AS `certified_assets`, slice(sort_array(collect_set(`asset_fqn`)), 1, 20) AS `sample_asset_fqns` FROM `owner_assets` WHERE `owner_email` IS NOT NULL AND `owner_email` <> '' GROUP BY `owner_email` ), `ranked_owners` AS ( SELECT `owner_email`, `owned_assets`, `critical_assets`, `certified_assets`, `sample_asset_fqns`, RANK() OVER (ORDER BY `owned_assets` DESC) AS `owner_rank` FROM `owner_counts` ) SELECT `owner_email`, `owned_assets`, `critical_assets`, `certified_assets`, `sample_asset_fqns` FROM `ranked_owners` WHERE `owner_rank` = 1 ORDER BY `owned_assets` DESC, `owner_email`",
+          "statementId": "01f1dc9b-09b3-18d9-98bb-6194697dec40",
+          "title": "",
+          "totalRowCount": 0,
+          "type": "genie_query"
+        }
+      ],
+      "id": "d301870910561978a339abd1cadfab2e",
+      "passed": true,
+      "question": "Who owns the most assets?",
+      "warnings": []
+    },
+    {
+      "answerPreview": "For domain **Unassigned**, there are **74** assets and **0** certified assets, so the certification rate is **0.0%**. In the visible result, **Unassigned** is the lowest certification-rate domain at **0.0%**.",
+      "evaluation": {
+        "answerLength": 208,
+        "confidence": "genie-grounded",
+        "conversationId": "01f1dc9b11241b38a15186b0c578003b",
+        "evidenceCount": 1,
+        "failures": [],
+        "messageId": "01f1dc9b112f1884ac8e6ecfea042a22",
+        "passed": true,
+        "totalRowCount": 1
+      },
+      "evidence": [
+        {
+          "id": "01f1dc9b13a61bd2b208a176ee1eaef1",
+          "isTruncated": null,
+          "metric": "generatedSql",
+          "resultColumns": [
+            "domain",
+            "assets",
+            "certified_assets",
+            "certification_rate_pct"
+          ],
+          "resultRows": [
+            {
+              "assets": "74",
+              "certification_rate_pct": "0.0",
+              "certified_assets": "0",
+              "domain": "Unassigned"
+            }
+          ],
+          "rowCount": 1,
+          "sql": "SELECT COALESCE(`domain`, 'Unassigned') AS `domain`,\n  COUNT(*) AS `assets`,\n  SUM(CASE WHEN `is_certified` THEN 1 ELSE 0 END) AS `certified_assets`,\n  ROUND(try_divide(100.0 * SUM(CASE WHEN `is_certified` THEN 1 ELSE 0 END),COUNT(*)), 1) AS `certification_rate_pct`\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current`\nGROUP BY COALESCE(`domain`, 'Unassigned')\nORDER BY `certification_rate_pct` ASC, `assets` DESC, `domain`",
+          "statementId": "01f1dc9b-13b1-17df-871e-02024d024333",
+          "title": "",
+          "totalRowCount": 1,
+          "type": "genie_query"
+        }
+      ],
+      "id": "208a1b48b17dbfd32128738774f59ee0",
+      "passed": true,
+      "question": "What is the certification rate by domain?",
+      "warnings": []
+    },
+    {
+      "answerPreview": "Based on the 25 rows returned, **none of these tables look stale by last update date**: every table was altered **2 days ago**. What does stand out as potentially unmaintained is that **all 25** are **uncertified**, **ownerless**, have **no description**, and show **0 open work items**.\n\nExamples include:\n- **ops_governance.finops_cost._finops_provenance** \u2014 changed **2 days ago**, with **no owner**, **not certified**, and **no description**\n- **ops_governance.finops_cost.fact_classic_iaas_attributed_delta** \u2014 changed **2 days ago**, with **no owner**, **not certified**, and **no description**\n- **ops_governance.observability.user_dbu_cost_summary** \u2014 changed **2 days ago**, with **no owner*",
+      "evaluation": {
+        "answerLength": 1028,
+        "confidence": "genie-grounded",
+        "conversationId": "01f1dc9b19c016a983800d6eaf4af49d",
+        "evidenceCount": 1,
+        "failures": [],
+        "messageId": "01f1dc9b19ca1d3c90e593ce982994fc",
+        "passed": true,
+        "totalRowCount": 25
+      },
+      "evidence": [
+        {
+          "id": "01f1dc9b25a21cde85badf2acdc7584c",
+          "isTruncated": null,
+          "metric": "generatedSql",
+          "resultColumns": [
+            "asset_fqn",
+            "table_type",
+            "last_altered",
+            "days_since_change",
+            "has_owner",
+            "is_certified",
+            "open_work_count",
+            "has_description",
+            "criticality",
+            "domain"
+          ],
+          "resultRows": [
+            {
+              "asset_fqn": "ops_governance.finops_cost._finops_provenance",
+              "criticality": null,
+              "days_since_change": "2",
+              "domain": null,
+              "has_description": "false",
+              "has_owner": "false",
+              "is_certified": "false",
+              "last_altered": "2026-11-08T00:39:59.279Z",
+              "open_work_count": "0",
+              "table_type": "MANAGED"
+            },
+            {
+              "asset_fqn": "ops_governance.finops_cost.fact_classic_iaas_attributed_delta",
+              "criticality": null,
+              "days_since_change": "2",
+              "domain": null,
+              "has_description": "false",
+              "has_owner": "false",
+              "is_certified": "false",
+              "last_altered": "2026-11-08T00:40:00.043Z",
+              "open_work_count": "0",
+              "table_type": "MANAGED"
+            },
+            {
+              "asset_fqn": "ops_governance.observability.user_dbu_cost_summary",
+              "criticality": null,
+              "days_since_change": "2",
+              "domain": null,
+              "has_description": "false",
+              "has_owner": "false",
+              "is_certified": "false",
+              "last_altered": "2026-11-08T00:38:41.543Z",
+              "open_work_count": "0",
+              "table_type": "MANAGED"
+            },
+            {
+              "asset_fqn": "ops_governance.ops_review_1551.inv_run_manifest",
+              "criticality": null,
+              "days_since_change": "2",
+              "domain": null,
+              "has_description": "false",
+              "has_owner": "false",
+              "is_certified": "false",
+              "last_altered": "2026-11-08T00:40:55.360Z",
+              "open_work_count": "0",
+              "table_type": "MANAGED"
+            },
+            {
+              "asset_fqn": "ops_governance.ops_review_1551.t01_job_definition",
+              "criticality": null,
+              "days_since_change": "2",
+              "domain": null,
+              "has_description": "false",
+              "has_owner": "false",
+              "is_certified": "false",
+              "last_altered": "2026-11-08T00:37:40.481Z",
+              "open_work_count": "0",
+              "table_type": "MANAGED"
+            },
+            {
+              "asset_fqn": "ops_governance.ops_review_1551.t01b_child_job_callers",
+              "criticality": null,
+              "days_since_change": "2",
+              "domain": null,
+              "has_description": "false",
+              "has_owner": "false",
+              "is_certified": "false",
+              "last_altered": "2026-11-08T00:38:01.019Z",
+              "open_work_count": "0",
+              "table_type": "MANAGED"
+            },
+            {
+              "asset_fqn": "ops_governance.ops_review_1551.t02_outcome_summary",
+              "criticality": null,
+              "days_since_change": "2",
+              "domain": null,
+              "has_description": "false",
+              "has_owner": "false",
+              "is_certified": "false",
+              "last_altered": "2026-11-08T00:36:43.497Z",
+              "open_work_count": "0",
+              "table_type": "MANAGED"
+            },
+            {
+              "asset_fqn": "ops_governance.ops_review_1551.t02b_failed_runs",
+              "criticality": null,
+              "days_since_change": "2",
+              "domain": null,
+              "has_description": "false",
+              "has_owner": "false",
+              "is_certified": "false",
+              "last_altered": "2026-11-08T00:39:27.403Z",
+              "open_work_count": "0",
+              "table_type": "MANAGED"
+            },
+            {
+              "asset_fqn": "ops_governance.ops_review_1551.t02c_failed_run_task_chain",
+              "criticality": null,
+              "days_since_change": "2",
+              "domain": null,
+              "has_description": "false",
+              "has_owner": "false",
+              "is_certified": "false",
+              "last_altered": "2026-11-08T00:42:20.769Z",
+              "open_work_count": "0",
+              "table_type": "MANAGED"
+            },
+            {
+              "asset_fqn": "ops_governance.ops_review_1551.t02d_failure_trend_weekly",
+              "criticality": null,
+              "days_since_change": "2",
+              "domain": null,
+              "has_description": "false",
+              "has_owner": "false",
+              "is_certified": "false",
+              "last_altered": "2026-11-08T00:35:43.597Z",
+              "open_work_count": "0",
+              "table_type": "MANAGED"
+            }
+          ],
+          "rowCount": 25,
+          "sql": "SELECT `asset_fqn`, `table_type`, `last_altered`, datediff(current_date(), `last_altered`) AS `days_since_change`, `has_owner`, `is_certified`, `open_work_count`, (NULLIF(trim(`comment`), '') IS NOT NULL) AS `has_description`, `criticality`, `domain` FROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` WHERE `last_altered` IS NOT NULL AND `table_type` IN ('MANAGED', 'EXTERNAL', 'STREAMING_TABLE') ORDER BY CASE WHEN NOT `has_owner` THEN 0 ELSE 1 END, CASE WHEN NOT `is_certified` THEN 0 ELSE 1 END, CASE WHEN NULLIF(trim(`comment`), '') IS NULL THEN 0 ELSE 1 END, `open_work_count` DESC, `days_since_change` DESC, `asset_fqn` LIMIT 25",
+          "statementId": "01f1dc9b-25ae-1d0c-a2a7-d158787abe10",
+          "title": "",
+          "totalRowCount": 25,
+          "type": "genie_query"
+        }
+      ],
+      "id": "2f004709702e1e96d8b95803069b0b5f",
+      "passed": true,
+      "question": "Which tables look stale or unmaintained?",
+      "warnings": []
+    },
+    {
+      "answerPreview": "No governed evidence rows were observed for open governance work, so there is **no oldest open governance work** in the current results. The query returned **0 rows**, which means there are currently **no open items** in the governance work view based on the statuses checked.",
+      "evaluation": {
+        "answerLength": 276,
+        "confidence": "genie-grounded",
+        "conversationId": "01f1dc9b2d5b1938a85596640e04bf49",
+        "evidenceCount": 1,
+        "failures": [],
+        "messageId": "01f1dc9b2d67155a98a14006fb75a74b",
+        "passed": true,
+        "totalRowCount": 0
+      },
+      "evidence": [
+        {
+          "id": "01f1dc9b36261cc2af610f013643339c",
+          "isTruncated": null,
+          "metric": "generatedSql",
+          "resultColumns": [
+            "work_id",
+            "work_type",
+            "status",
+            "asset_fqn",
+            "title",
+            "created_by",
+            "created_at",
+            "age_days"
+          ],
+          "rowCount": 0,
+          "sql": "WITH `open_work` AS ( SELECT `work_id`, `work_type`, `status`, `asset_fqn`, `title`, `created_by`, `created_at`, datediff(current_date(), `created_at`) AS `age_days`, RANK() OVER (ORDER BY `created_at` ASC, `work_id` ASC) AS `rnk` FROM `ops_governance`.`axiom_ai`.`axiom_ai_governance_work_current` WHERE lower(trim(COALESCE(`status`, ''))) IN ('', 'new', 'pending', 'open', 'in_review', 'blocked') ) SELECT `work_id`, `work_type`, `status`, `asset_fqn`, `title`, `created_by`, `created_at`, `age_days` FROM `open_work` WHERE `rnk` = 1 ORDER BY `created_at` ASC, `work_id` ASC",
+          "statementId": "01f1dc9b-363e-11a3-b532-cb121138f577",
+          "title": "",
+          "totalRowCount": 0,
+          "type": "genie_query"
+        }
+      ],
+      "id": "e276bc154cd5c9a5d97a806368892081",
+      "passed": true,
+      "question": "What is the oldest open governance work?",
+      "warnings": []
+    },
+    {
+      "answerPreview": "Based on the reviewed governance work in `axiom_ai_governance_work_current`, **0** items had both `created_at` and `reviewed_at`, so the average review time is **null** hours and the median review time is **null** hours. This means no completed review-duration evidence was available to calculate an average governance review time.",
+      "evaluation": {
+        "answerLength": 331,
+        "confidence": "genie-grounded",
+        "conversationId": "01f1dc9b3d04131c9519d7f484ed0ea7",
+        "evidenceCount": 1,
+        "failures": [],
+        "messageId": "01f1dc9b3d0f14cfbdfc86abbe4abecc",
+        "passed": true,
+        "totalRowCount": 1
+      },
+      "evidence": [
+        {
+          "id": "01f1dc9b46fe179abf05bed103684ff4",
+          "isTruncated": null,
+          "metric": "generatedSql",
+          "resultColumns": [
+            "reviewed_items",
+            "avg_hours_to_review",
+            "median_hours_to_review"
+          ],
+          "resultRows": [
+            {
+              "avg_hours_to_review": null,
+              "median_hours_to_review": null,
+              "reviewed_items": "0"
+            }
+          ],
+          "rowCount": 1,
+          "sql": "SELECT COUNT(*) AS `reviewed_items`, ROUND(AVG(try_divide((unix_timestamp(`reviewed_at`) - unix_timestamp(`created_at`)),3600.0)), 1) AS `avg_hours_to_review`, ROUND(percentile_approx(try_divide((unix_timestamp(`reviewed_at`) - unix_timestamp(`created_at`)),3600.0), 0.5), 1) AS `median_hours_to_review` FROM `ops_governance`.`axiom_ai`.`axiom_ai_governance_work_current` WHERE `reviewed_at` IS NOT NULL AND `created_at` IS NOT NULL",
+          "statementId": "01f1dc9b-470c-134d-ae7e-dd41f51b13b2",
+          "title": "",
+          "totalRowCount": 1,
+          "type": "genie_query"
+        }
+      ],
+      "id": "79e1d2b8cf4bc7ba08844afc1e7d6856",
+      "passed": true,
+      "question": "How long do governance reviews take on average?",
+      "warnings": []
+    },
+    {
+      "answerPreview": "No governed evidence rows were observed for rejected requests: this result returned **0** requests with a status of **rejected**, **declined**, or **denied**, so there are no rejection reasons shown in the visible data. Based on this result, there are no reviewed rejection notes available to report.",
+      "evaluation": {
+        "answerLength": 300,
+        "confidence": "genie-grounded",
+        "conversationId": "01f1dc9b4cbd1a2ca4eee15bf3dd5912",
+        "evidenceCount": 1,
+        "failures": [],
+        "messageId": "01f1dc9b4cc81aceb38c8949f703db5a",
+        "passed": true,
+        "totalRowCount": 0
+      },
+      "evidence": [
+        {
+          "id": "01f1dc9b53e414ed8cb84100bfde0349",
+          "isTruncated": null,
+          "metric": "generatedSql",
+          "resultColumns": [
+            "work_id",
+            "work_type",
+            "asset_fqn",
+            "title",
+            "created_by",
+            "reviewed_by",
+            "reviewed_at",
+            "review_note"
+          ],
+          "rowCount": 0,
+          "sql": "SELECT `work_id`, `work_type`, `asset_fqn`, `title`, `created_by`, `reviewed_by`, `reviewed_at`, `review_note` FROM `ops_governance`.`axiom_ai`.`axiom_ai_governance_work_current` WHERE trim(lower(coalesce(`status`, ''))) IN ('rejected', 'declined', 'denied') ORDER BY `reviewed_at` DESC, `work_id` LIMIT 25",
+          "statementId": "01f1dc9b-53f1-13e8-bbe7-b026ac764f8b",
+          "title": "",
+          "totalRowCount": 0,
+          "type": "genie_query"
+        }
+      ],
+      "id": "f8f4648129feb6f826de657d8d0fb572",
+      "passed": true,
+      "question": "Which requests were rejected and why?",
+      "warnings": []
+    },
+    {
+      "answerPreview": "No governed evidence rows were observed for glossary terms with **0 linked assets** in the results returned by this query.",
+      "evaluation": {
+        "answerLength": 122,
+        "confidence": "genie-grounded",
+        "conversationId": "01f1dc9b5c081dcf9e36260a0170317f",
+        "evidenceCount": 1,
+        "failures": [],
+        "messageId": "01f1dc9b5c1414918d28338eb76920a6",
+        "passed": true,
+        "totalRowCount": 0
+      },
+      "evidence": [
+        {
+          "id": "01f1dc9b62af1c2e85b0db83e3a944a9",
+          "isTruncated": null,
+          "metric": "generatedSql",
+          "resultColumns": [
+            "term_id",
+            "name",
+            "domain",
+            "status",
+            "owner_email",
+            "updated_at"
+          ],
+          "rowCount": 0,
+          "sql": "SELECT `term_id`, `name`, COALESCE(`domain`, 'Unassigned') AS `domain`, `status`, `owner_email`, `updated_at` FROM `ops_governance`.`axiom_ai`.`axiom_ai_glossary_current` WHERE `linked_asset_count` = 0 ORDER BY COALESCE(`domain`, 'Unassigned'), `name` LIMIT 50",
+          "statementId": "01f1dc9b-62c0-1823-a8ce-e80064ab7449",
+          "title": "",
+          "totalRowCount": 0,
+          "type": "genie_query"
+        }
+      ],
+      "id": "b2872df95639235b907d4178c412fb0d",
+      "passed": true,
+      "question": "Which glossary terms are not linked to any asset?",
+      "warnings": []
+    },
+    {
+      "answerPreview": "No governed evidence rows were observed for currently failing quality checks: the result returned **0** checks with an outcome of **failed** or **errored**. Based on this data, there are **no failing quality checks currently shown** in the latest quality results.",
+      "evaluation": {
+        "answerLength": 263,
+        "confidence": "genie-grounded",
+        "conversationId": "01f1dc9b67e316e9ba837a173cee5c1f",
+        "evidenceCount": 1,
+        "failures": [],
+        "messageId": "01f1dc9b67ee1f548e23f15f96ec1707",
+        "passed": true,
+        "totalRowCount": 0
+      },
+      "evidence": [
+        {
+          "id": "01f1dc9b6fe41a0db2d14f53d61b6ef9",
+          "isTruncated": null,
+          "metric": "generatedSql",
+          "resultColumns": [
+            "asset_fqn",
+            "column_name",
+            "case_id",
+            "outcome",
+            "severity",
+            "metric_value",
+            "threshold_value",
+            "detail",
+            "executed_at"
+          ],
+          "rowCount": 0,
+          "sql": "SELECT `asset_fqn`, `column_name`, `case_id`, `outcome`, `severity`, `metric_value`, `threshold_value`, `detail`, `executed_at` FROM `ops_governance`.`axiom_ai`.`axiom_ai_quality_latest` WHERE lower(COALESCE(`outcome`, '')) IN ('failed', 'errored') ORDER BY CASE lower(COALESCE(`severity`, '')) WHEN 'critical' THEN 1 WHEN 'high' THEN 2 WHEN 'medium' THEN 3 WHEN 'low' THEN 4 ELSE 5 END, `executed_at` DESC, `asset_fqn`, `case_id` LIMIT 50",
+          "statementId": "01f1dc9b-6ff0-1e20-aa34-47292e84ac25",
+          "title": "",
+          "totalRowCount": 0,
+          "type": "genie_query"
+        }
+      ],
+      "id": "86a16308f5aca4b99f955ace1782689d",
+      "passed": true,
+      "question": "Which quality checks are currently failing?",
+      "warnings": []
+    },
+    {
+      "answerPreview": "No governed evidence rows were observed for this question: the result returned **0 critical assets** without any data quality checks. Based on the visible data, every critical asset in scope had at least one quality record linked to it.",
+      "evaluation": {
+        "answerLength": 236,
+        "confidence": "genie-grounded",
+        "conversationId": "01f1dc9b77a118ccaa3e05f3b2584b95",
+        "evidenceCount": 1,
+        "failures": [],
+        "messageId": "01f1dc9b77ae14e987a4d5ead360e506",
+        "passed": true,
+        "totalRowCount": 0
+      },
+      "evidence": [
+        {
+          "id": "01f1dc9b81781bf3ab22fbae38db067c",
+          "isTruncated": null,
+          "metric": "generatedSql",
+          "resultColumns": [
+            "asset_fqn",
+            "domain",
+            "criticality",
+            "business_owners"
+          ],
+          "rowCount": 0,
+          "sql": "SELECT `assets`.`asset_fqn`, COALESCE(`assets`.`domain`, 'Unassigned') AS `domain`, `assets`.`criticality`, `assets`.`business_owners` FROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` AS `assets` LEFT ANTI JOIN `ops_governance`.`axiom_ai`.`axiom_ai_quality_latest` AS `quality` ON `quality`.`asset_fqn` = `assets`.`asset_fqn` WHERE `assets`.`is_critical` = TRUE ORDER BY `assets`.`asset_fqn` LIMIT 25",
+          "statementId": "01f1dc9b-8184-1028-a177-73c108784a1e",
+          "title": "",
+          "totalRowCount": 0,
+          "type": "genie_query"
+        }
+      ],
+      "id": "8035943113d5b5f88b906759d17bccc7",
+      "passed": true,
+      "question": "Which critical assets have no data quality checks?",
+      "warnings": []
+    },
+    {
+      "answerPreview": "No governed evidence rows were observed for this question in the last **30 days**, so the visible data does not identify anyone who made the most metadata changes. The result set contains **0 rows**, which means no actor with recorded metadata changes was returned by this query.",
+      "evaluation": {
+        "answerLength": 279,
+        "confidence": "genie-grounded",
+        "conversationId": "01f1dc9b87171c41840fed95ebe178a3",
+        "evidenceCount": 1,
+        "failures": [],
+        "messageId": "01f1dc9b87231891bad1e405b6ab3f9a",
+        "passed": true,
+        "totalRowCount": 0
+      },
+      "evidence": [
+        {
+          "id": "01f1dc9b913612c989d98e15c0d9ce94",
+          "isTruncated": null,
+          "metric": "generatedSql",
+          "resultColumns": [
+            "actor_email",
+            "changes",
+            "assets_changed",
+            "last_change_at"
+          ],
+          "rowCount": 0,
+          "sql": "WITH `actor_changes` AS ( SELECT `actor_email`, COUNT(*) AS `changes`, COUNT(DISTINCT `asset_fqn`) AS `assets_changed`, MAX(`created_at`) AS `last_change_at` FROM `ops_governance`.`axiom_ai`.`axiom_ai_audit_events` WHERE CAST(`created_at` AS DATE) BETWEEN date_sub(current_date(), 29) AND current_date() AND `actor_email` IS NOT NULL GROUP BY `actor_email` ), `ranked_changes` AS ( SELECT `actor_email`, `changes`, `assets_changed`, `last_change_at`, RANK() OVER (ORDER BY `changes` DESC) AS `change_rank` FROM `actor_changes` ) SELECT `actor_email`, `changes`, `assets_changed`, `last_change_at` FROM `ranked_changes` WHERE `change_rank` = 1 ORDER BY `changes` DESC, `actor_email`",
+          "statementId": "01f1dc9b-9140-1958-8b16-5907128b983e",
+          "title": "",
+          "totalRowCount": 0,
+          "type": "genie_query"
+        }
+      ],
+      "id": "f138c9b703f1765e19c143bc7086c4b4",
+      "passed": true,
+      "question": "Who made the most metadata changes in the last 30 days?",
+      "warnings": []
+    },
+    {
+      "answerPreview": "Examples include:\n- **system.billing.usage** \u2014 **12** downstream dependents, last seen **2026-11-08 16:17:42 UTC**\n- **system.compute.clusters** \u2014 **9** downstream dependents, last seen **2026-11-08 16:16:41 UTC**\n- **system.compute.node_timeline** \u2014 **9** downstream dependents, last seen **2026-11-08 16:16:41 UTC**\n- **system.query.history** \u2014 **9** downstream dependents, last seen **2026-11-08 00:03:50 UTC**\n- **ops_governance.finops_cost.fact_dbr_dbu_cost** \u2014 **8** downstream dependents, last seen **2026-11-07 23:42:07 UTC**\nAcross the 25 assets returned, downstream dependent counts range from **1 to 12**, with **system.billing.usage** clearly leading this sample.",
+      "evaluation": {
+        "answerLength": 675,
+        "confidence": "genie-grounded",
+        "conversationId": "01f1dc9b96ab17f68a19c3889542c9fb",
+        "evidenceCount": 1,
+        "failures": [],
+        "messageId": "01f1dc9b96b61be49f817a7ffd0b0aec",
+        "passed": true,
+        "totalRowCount": 25
+      },
+      "evidence": [
+        {
+          "id": "01f1dc9b995a14ef918dc151965b8682",
+          "isTruncated": null,
+          "metric": "generatedSql",
+          "resultColumns": [
+            "asset_fqn",
+            "downstream_assets",
+            "last_seen_at"
+          ],
+          "resultRows": [
+            {
+              "asset_fqn": "system.billing.usage",
+              "downstream_assets": "12",
+              "last_seen_at": "2026-11-08T16:17:42.431Z"
+            },
+            {
+              "asset_fqn": "system.compute.clusters",
+              "downstream_assets": "9",
+              "last_seen_at": "2026-11-08T16:16:41.170Z"
+            },
+            {
+              "asset_fqn": "system.compute.node_timeline",
+              "downstream_assets": "9",
+              "last_seen_at": "2026-11-08T16:16:41.170Z"
+            },
+            {
+              "asset_fqn": "system.query.history",
+              "downstream_assets": "9",
+              "last_seen_at": "2026-11-08T00:03:50.152Z"
+            },
+            {
+              "asset_fqn": "ops_governance.finops_cost.fact_dbr_dbu_cost",
+              "downstream_assets": "8",
+              "last_seen_at": "2026-11-07T23:42:07.490Z"
+            },
+            {
+              "asset_fqn": "system.lakeflow.job_task_run_timeline",
+              "downstream_assets": "7",
+              "last_seen_at": "2026-11-05T00:23:02.302Z"
+            },
+            {
+              "asset_fqn": "ops_governance.ops_review_1551.t02c_failed_run_task_chain",
+              "downstream_assets": "6",
+              "last_seen_at": "2026-11-04T23:15:25.141Z"
+            },
+            {
+              "asset_fqn": "system.billing.list_prices",
+              "downstream_assets": "6",
+              "last_seen_at": "2026-11-08T16:09:48.714Z"
+            },
+            {
+              "asset_fqn": "system.lakeflow.jobs",
+              "downstream_assets": "6",
+              "last_seen_at": "2026-11-07T23:57:16.577Z"
+            },
+            {
+              "asset_fqn": "system.compute.node_types",
+              "downstream_assets": "5",
+              "last_seen_at": "2026-11-08T16:16:41.170Z"
+            }
+          ],
+          "rowCount": 25,
+          "sql": "SELECT\n  `source_asset_fqn` AS `asset_fqn`,\n  COUNT(DISTINCT `target_asset_fqn`) AS `downstream_assets`,\n  MAX(`event_time`) AS `last_seen_at`\nFROM `ops_governance`.`axiom_ai`.`axiom_ai_lineage_edges`\nWHERE `source_asset_fqn` IS NOT NULL\n  AND `target_asset_fqn` IS NOT NULL\nGROUP BY `source_asset_fqn`\nORDER BY `downstream_assets` DESC, `asset_fqn` ASC\nLIMIT 25",
+          "statementId": "01f1dc9b-9969-192e-8099-42bb2d3b2256",
+          "title": "",
+          "totalRowCount": 25,
+          "type": "genie_query"
+        }
+      ],
+      "id": "94ae1a0ff94f6ebcab669b94beb6dbdf",
+      "passed": true,
+      "question": "Which assets have the most downstream dependents?",
+      "warnings": []
+    },
+    {
+      "answerPreview": "No governed evidence rows were observed for this question: the query returned **0** critical-to-downstream lineage pairs where the downstream asset was not **Certified**. Based on the visible lineage evidence, there are **no** critical assets shown feeding uncertified downstream assets.",
+      "evaluation": {
+        "answerLength": 287,
+        "confidence": "genie-grounded",
+        "conversationId": "01f1dc9ba580178092704ab7c82df19b",
+        "evidenceCount": 1,
+        "failures": [],
+        "messageId": "01f1dc9ba58b13ec88209d56adca7408",
+        "passed": true,
+        "totalRowCount": 0
+      },
+      "evidence": [
+        {
+          "id": "01f1dc9bb75c1b38b5e2ba3bd23905d8",
+          "isTruncated": null,
+          "metric": "generatedSql",
+          "resultColumns": [
+            "critical_asset_fqn",
+            "downstream_asset_fqn",
+            "downstream_certification"
+          ],
+          "rowCount": 0,
+          "sql": "SELECT DISTINCT `upstream`.`asset_fqn` AS `critical_asset_fqn`, `lineage`.`target_asset_fqn` AS `downstream_asset_fqn`, `downstream`.`certification` AS `downstream_certification` FROM `ops_governance`.`axiom_ai`.`axiom_ai_lineage_edges` AS `lineage` INNER JOIN `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` AS `upstream` ON `upstream`.`asset_fqn` = `lineage`.`source_asset_fqn` INNER JOIN `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` AS `downstream` ON `downstream`.`asset_fqn` = `lineage`.`target_asset_fqn` WHERE `lineage`.`source_asset_fqn` IS NOT NULL AND `lineage`.`target_asset_fqn` IS NOT NULL AND `upstream`.`is_critical` = TRUE AND (`downstream`.`certification` IS NULL OR trim(`downstream`.`certification`) = '' OR lower(trim(`downstream`.`certification`)) <> 'certified') ORDER BY `critical_asset_fqn`, `downstream_asset_fqn` LIMIT 50",
+          "statementId": "01f1dc9b-b766-1bc3-9780-f15bc13927f8",
+          "title": "",
+          "totalRowCount": 0,
+          "type": "genie_query"
+        }
+      ],
+      "id": "88a93b75cac9da2fed38861c6eabd669",
+      "passed": true,
+      "question": "Which critical assets feed uncertified downstream assets?",
+      "warnings": []
+    },
+    {
+      "answerPreview": "No governed evidence rows were observed for assets tagged as **PII** in the current asset inventory, so this result does not show any locations for PII. Based on this query, **0 assets** matched a sensitivity value containing \u201cpii.\u201d",
+      "evaluation": {
+        "answerLength": 232,
+        "confidence": "genie-grounded",
+        "conversationId": "01f1dc9bc48612808acebfbfbbc2cae3",
+        "evidenceCount": 1,
+        "failures": [],
+        "messageId": "01f1dc9bc4901b57b510cac4f68c92d2",
+        "passed": true,
+        "totalRowCount": 0
+      },
+      "evidence": [
+        {
+          "id": "01f1dc9bcfc6155c8c49e6d68f8ef3f5",
+          "isTruncated": null,
+          "metric": "generatedSql",
+          "resultColumns": [
+            "asset_fqn",
+            "sensitivity",
+            "domain",
+            "business_owners",
+            "is_certified",
+            "last_altered"
+          ],
+          "rowCount": 0,
+          "sql": "SELECT `asset_fqn`, `sensitivity`, COALESCE(`domain`, 'Unassigned') AS `domain`, `business_owners`, `is_certified`, `last_altered` FROM `ops_governance`.`axiom_ai`.`axiom_ai_assets_current` WHERE lower(trim(COALESCE(`sensitivity`, ''))) LIKE '%pii%' ORDER BY `asset_fqn` LIMIT 50",
+          "statementId": "01f1dc9b-cfd2-182b-ae9d-601dcedcdb19",
+          "title": "",
+          "totalRowCount": 0,
+          "type": "genie_query"
+        }
+      ],
+      "id": "d4afc3c2e791c01dd379c28e6ea09534",
+      "passed": true,
+      "question": "Where is our PII?",
+      "warnings": []
     }
   ],
-  "spaceId": "01f1406a11221afa985d3fe64c9fbea1",
-  "storeSchema": "atlas",
-  "title": "Governance Atlas Metadata Room"
+  "spaceId": "01f1dc9a77591032ac18f6898e5072b4",
+  "storeSchema": "axiom_alex",
+  "title": "Axiom Metadata Room"
 }

@@ -142,7 +142,7 @@
         "title": "AssetTagsPatch",
         "type": "object"
       },
-      "AtlasAiQuestion": {
+      "AxiomAiQuestion": {
         "properties": {
           "question": {
             "default": "",
@@ -151,7 +151,7 @@
             "type": "string"
           }
         },
-        "title": "AtlasAiQuestion",
+        "title": "AxiomAiQuestion",
         "type": "object"
       },
       "ClassificationReviewPayload": {
@@ -635,7 +635,7 @@
     }
   },
   "info": {
-    "title": "Governance Atlas Runtime",
+    "title": "Axiom Runtime",
     "version": "0.1.0"
   },
   "openapi": "3.1.0",
@@ -1429,14 +1429,14 @@
         ]
       }
     },
-    "/api/atlas-ai/chat": {
+    "/api/axiom-ai/chat": {
       "post": {
-        "operationId": "api_atlas_ai_chat_api_atlas_ai_chat_post",
+        "operationId": "api_axiom_ai_chat_api_axiom_ai_chat_post",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AtlasAiQuestion"
+                "$ref": "#/components/schemas/AxiomAiQuestion"
               }
             }
           },
@@ -1462,22 +1462,22 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Api Atlas Ai Chat",
+        "summary": "Api Axiom Ai Chat",
         "tags": [
-          "atlas-ai"
+          "axiom-ai"
         ]
       }
     },
-    "/api/atlas-ai/recommendations": {
+    "/api/axiom-ai/recommendations": {
       "post": {
-        "operationId": "api_atlas_ai_recommendations_api_atlas_ai_recommendations_post",
+        "operationId": "api_axiom_ai_recommendations_api_axiom_ai_recommendations_post",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
                 "anyOf": [
                   {
-                    "$ref": "#/components/schemas/AtlasAiQuestion"
+                    "$ref": "#/components/schemas/AxiomAiQuestion"
                   },
                   {
                     "type": "null"
@@ -1508,15 +1508,15 @@
             "description": "Validation Error"
           }
         },
-        "summary": "Api Atlas Ai Recommendations",
+        "summary": "Api Axiom Ai Recommendations",
         "tags": [
-          "atlas-ai"
+          "axiom-ai"
         ]
       }
     },
-    "/api/atlas/admin/control-center": {
+    "/api/axiom/admin/control-center": {
       "get": {
-        "operationId": "api_admin_control_center_api_atlas_admin_control_center_get",
+        "operationId": "api_admin_control_center_api_axiom_admin_control_center_get",
         "responses": {
           "200": {
             "content": {
@@ -1529,13 +1529,13 @@
         },
         "summary": "Api Admin Control Center",
         "tags": [
-          "atlas"
+          "axiom"
         ]
       }
     },
-    "/api/atlas/assets/{asset_fqn}/360": {
+    "/api/axiom/assets/{asset_fqn}/360": {
       "get": {
-        "operationId": "api_asset_360_api_atlas_assets__asset_fqn__360_get",
+        "operationId": "api_asset_360_api_axiom_assets__asset_fqn__360_get",
         "parameters": [
           {
             "in": "path",
@@ -1569,13 +1569,13 @@
         },
         "summary": "Api Asset 360",
         "tags": [
-          "atlas"
+          "axiom"
         ]
       }
     },
-    "/api/atlas/audit/evidence": {
+    "/api/axiom/audit/evidence": {
       "get": {
-        "operationId": "api_audit_evidence_api_atlas_audit_evidence_get",
+        "operationId": "api_audit_evidence_api_axiom_audit_evidence_get",
         "parameters": [
           {
             "in": "query",
@@ -1628,13 +1628,13 @@
         },
         "summary": "Api Audit Evidence",
         "tags": [
-          "atlas"
+          "axiom"
         ]
       }
     },
-    "/api/atlas/cde": {
+    "/api/axiom/cde": {
       "get": {
-        "operationId": "api_cde_dashboard_api_atlas_cde_get",
+        "operationId": "api_cde_dashboard_api_axiom_cde_get",
         "responses": {
           "200": {
             "content": {
@@ -1647,13 +1647,13 @@
         },
         "summary": "Api Cde Dashboard",
         "tags": [
-          "atlas"
+          "axiom"
         ]
       }
     },
-    "/api/atlas/cde/{cde_id}": {
+    "/api/axiom/cde/{cde_id}": {
       "get": {
-        "operationId": "api_cde_detail_api_atlas_cde__cde_id__get",
+        "operationId": "api_cde_detail_api_axiom_cde__cde_id__get",
         "parameters": [
           {
             "in": "path",
@@ -1687,13 +1687,13 @@
         },
         "summary": "Api Cde Detail",
         "tags": [
-          "atlas"
+          "axiom"
         ]
       }
     },
-    "/api/atlas/command-center": {
+    "/api/axiom/command-center": {
       "get": {
-        "operationId": "api_command_center_api_atlas_command_center_get",
+        "operationId": "api_command_center_api_axiom_command_center_get",
         "parameters": [
           {
             "in": "query",
@@ -1734,13 +1734,13 @@
         },
         "summary": "Api Command Center",
         "tags": [
-          "atlas"
+          "axiom"
         ]
       }
     },
-    "/api/atlas/governance/requests/{request_id}": {
+    "/api/axiom/governance/requests/{request_id}": {
       "get": {
-        "operationId": "api_governance_request_detail_api_atlas_governance_requests__request_id__get",
+        "operationId": "api_governance_request_detail_api_axiom_governance_requests__request_id__get",
         "parameters": [
           {
             "in": "path",
@@ -1774,13 +1774,13 @@
         },
         "summary": "Api Governance Request Detail",
         "tags": [
-          "atlas"
+          "axiom"
         ]
       }
     },
-    "/api/atlas/governance/workbench": {
+    "/api/axiom/governance/workbench": {
       "get": {
-        "operationId": "api_governance_workbench_api_atlas_governance_workbench_get",
+        "operationId": "api_governance_workbench_api_axiom_governance_workbench_get",
         "responses": {
           "200": {
             "content": {
@@ -1793,13 +1793,13 @@
         },
         "summary": "Api Governance Workbench",
         "tags": [
-          "atlas"
+          "axiom"
         ]
       }
     },
-    "/api/atlas/insights": {
+    "/api/axiom/insights": {
       "get": {
-        "operationId": "api_insights_dashboard_api_atlas_insights_get",
+        "operationId": "api_insights_dashboard_api_axiom_insights_get",
         "responses": {
           "200": {
             "content": {
@@ -1812,13 +1812,13 @@
         },
         "summary": "Api Insights Dashboard",
         "tags": [
-          "atlas"
+          "axiom"
         ]
       }
     },
-    "/api/atlas/taxonomy/overview": {
+    "/api/axiom/taxonomy/overview": {
       "get": {
-        "operationId": "api_taxonomy_overview_api_atlas_taxonomy_overview_get",
+        "operationId": "api_taxonomy_overview_api_axiom_taxonomy_overview_get",
         "responses": {
           "200": {
             "content": {
@@ -1831,7 +1831,7 @@
         },
         "summary": "Api Taxonomy Overview",
         "tags": [
-          "atlas"
+          "axiom"
         ]
       }
     },

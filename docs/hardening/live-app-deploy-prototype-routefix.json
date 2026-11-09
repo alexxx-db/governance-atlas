@@ -1,13 +1,13 @@
 {
   "active_deployment": {
     "create_time":"2026-04-28T21:01:32Z",
-    "creator":"skyler@entrada.ai",
+    "creator":"abarreto@shorecp.com",
     "deployment_artifacts": {
       "source_code_path":"/Workspace/Users/6cc86299-e989-42b7-9268-4f4335124812/src/01f143456f4d17eab6651aa7f2e2dcb9"
     },
     "deployment_id":"01f143456f4d17eab6651aa7f2e2dcb9",
     "mode":"SNAPSHOT",
-    "source_code_path":"/Workspace/Users/skyler@entrada.ai/.bundle/atlas/dev/files",
+    "source_code_path":"/Workspace/Users/abarreto@shorecp.com/.bundle/axiom/dev/files",
     "status": {
       "message":"App started successfully",
       "state":"SUCCEEDED"
@@ -24,9 +24,9 @@
     "state":"ACTIVE"
   },
   "create_time":"2026-04-24T06:19:19Z",
-  "creator":"skyler@entrada.ai",
-  "default_source_code_path":"/Workspace/Users/skyler@entrada.ai/.bundle/atlas/dev/files",
-  "description":"Governance Atlas - a Databricks-native enterprise metadata workspace extending Unity Catalog, deployable to any Databricks workspace.\n",
+  "creator":"abarreto@shorecp.com",
+  "default_source_code_path":"/Workspace/Users/abarreto@shorecp.com/.bundle/axiom/dev/files",
+  "description":"Axiom - a Databricks-native enterprise metadata workspace extending Unity Catalog, deployable to any Databricks workspace.\n",
   "effective_user_api_scopes": [
     "sql",
     "catalog.connections",
@@ -38,7 +38,7 @@
     "catalog.catalogs:read"
   ],
   "id":"6cc86299-e989-42b7-9268-4f4335124812",
-  "name":"atlas",
+  "name":"axiom",
   "oauth2_app_client_id":"551ed2fa-4d54-4dc4-bc7f-abb6e9bdb9ad",
   "oauth2_app_integration_id":"551ed2fa-4d54-4dc4-bc7f-abb6e9bdb9ad",
   "resources": [
@@ -51,26 +51,26 @@
     },
     {
       "genie_space": {
-        "name":"Governance Atlas Metadata Room",
+        "name":"Axiom Metadata Room",
         "permission":"CAN_RUN",
         "space_id":"01f1406a11221afa985d3fe64c9fbea1"
       },
-      "name":"atlas-genie-space"
+      "name":"axiom-genie-space"
     },
     {
-      "name":"atlas-lakebase",
+      "name":"axiom-lakebase",
       "postgres": {
-        "branch":"projects/governance-atlas-state/branches/production",
-        "database":"projects/governance-atlas-state/branches/production/databases/db-y68x-6gpq0zhrl4",
+        "branch":"projects/axiom-state/branches/production",
+        "database":"projects/axiom-state/branches/production/databases/db-y68x-6gpq0zhrl4",
         "permission":"CAN_CONNECT_AND_CREATE"
       }
     }
   ],
   "service_principal_client_id":"6cc86299-e989-42b7-9268-4f4335124812",
   "service_principal_id":73650668244367,
-  "service_principal_name":"app-5q741p atlas",
+  "service_principal_name":"app-5q741p axiom",
   "update_time":"2026-04-28T21:01:32Z",
-  "updater":"skyler@entrada.ai",
+  "updater":"abarreto@shorecp.com",
   "url":"https://atlas-2543889327043640.aws.databricksapps.com",
   "user_api_scopes": [
     "sql",

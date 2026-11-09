@@ -4,7 +4,7 @@ import unittest
 
 import pandas as pd
 
-from atlas.services import lineage as lineage_service
+from axiom.services import lineage as lineage_service
 
 
 class _FakeSystemClient:
@@ -87,16 +87,16 @@ class LineageNeighborRecordsBatchTests(unittest.TestCase):
     def test_seed_totals_survive_per_seed_truncation(self) -> None:
         # seed_total_edges rides on every SQL row so truncation copy can
         # honestly say "showing N of M" even when the per-seed cap trimmed
-        # the result (e.g. 40 of 655 for main.datapact.run_history).
+        # the result (e.g. 40 of 655 for main.emet.run_history).
         client = _FakeSystemClient(
             [
                 {
-                    "target_table_full_name": "main.datapact.run_history",
+                    "target_table_full_name": "main.emet.run_history",
                     "source_table_full_name": "main.demo.users",
                     "seed_total_edges": 655,
                 },
                 {
-                    "target_table_full_name": "main.datapact.run_history",
+                    "target_table_full_name": "main.emet.run_history",
                     "source_table_full_name": "main.demo.transactions",
                     "seed_total_edges": 655,
                 },
@@ -104,12 +104,12 @@ class LineageNeighborRecordsBatchTests(unittest.TestCase):
         )
         out, meta = lineage_service._lineage_neighbor_records_batch(
             client,
-            ["main.datapact.run_history"],
+            ["main.emet.run_history"],
             direction="upstream",
             per_seed_limit=2,
         )
-        self.assertEqual(len(out["main.datapact.run_history"]), 2)
-        self.assertEqual(meta["totalsBySeed"], {"main.datapact.run_history": 655})
+        self.assertEqual(len(out["main.emet.run_history"]), 2)
+        self.assertEqual(meta["totalsBySeed"], {"main.emet.run_history": 655})
 
     def test_empty_sql_result_yields_empty_map(self) -> None:
         client = _FakeSystemClient()

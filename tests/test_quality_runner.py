@@ -56,13 +56,13 @@ class FakeStore:
 
 
 def _spec(**kwargs):
-    from atlas.services.quality_runner import TestCaseSpec
+    from axiom.services.quality_runner import TestCaseSpec
     return TestCaseSpec(**kwargs)
 
 
 class RunQualitySuiteTests(unittest.TestCase):
     def test_row_count_passes_within_range(self) -> None:
-        from atlas.services.quality_runner import run_quality_suite
+        from axiom.services.quality_runner import run_quality_suite
 
         uc = ScriptedUC([("count(*)", [{"c": 500}])])
         store = FakeStore()
@@ -84,7 +84,7 @@ class RunQualitySuiteTests(unittest.TestCase):
         self.assertEqual(store.results[0]["metric_value"], 500)
 
     def test_row_count_fails_below_minimum(self) -> None:
-        from atlas.services.quality_runner import run_quality_suite
+        from axiom.services.quality_runner import run_quality_suite
 
         uc = ScriptedUC([("count(*)", [{"c": 50}])])
         store = FakeStore()
@@ -104,7 +104,7 @@ class RunQualitySuiteTests(unittest.TestCase):
         self.assertEqual(store.results[0]["outcome"], "failed")
 
     def test_null_fraction_passes_under_threshold(self) -> None:
-        from atlas.services.quality_runner import run_quality_suite
+        from axiom.services.quality_runner import run_quality_suite
 
         uc = ScriptedUC([
             ("sum(case when", [{"nulls": 2, "total": 100}]),
@@ -125,7 +125,7 @@ class RunQualitySuiteTests(unittest.TestCase):
         self.assertAlmostEqual(store.results[0]["metric_value"], 0.02)
 
     def test_unique_fails_on_duplicates(self) -> None:
-        from atlas.services.quality_runner import run_quality_suite
+        from axiom.services.quality_runner import run_quality_suite
 
         uc = ScriptedUC([("count(distinct", [{"total": 100, "distinct_count": 95}])])
         store = FakeStore()
@@ -144,7 +144,7 @@ class RunQualitySuiteTests(unittest.TestCase):
         self.assertEqual(store.results[0]["metric_value"], 5)
 
     def test_accepted_values_catches_violations(self) -> None:
-        from atlas.services.quality_runner import run_quality_suite
+        from axiom.services.quality_runner import run_quality_suite
 
         uc = ScriptedUC([("not in", [{"violating": 3}])])
         store = FakeStore()
@@ -162,7 +162,7 @@ class RunQualitySuiteTests(unittest.TestCase):
         self.assertEqual(result.failed, 1)
 
     def test_regex_catches_bad_emails(self) -> None:
-        from atlas.services.quality_runner import run_quality_suite
+        from axiom.services.quality_runner import run_quality_suite
 
         uc = ScriptedUC([("not rlike", [{"violating": 1}])])
         store = FakeStore()
@@ -180,7 +180,7 @@ class RunQualitySuiteTests(unittest.TestCase):
         self.assertEqual(result.failed, 1)
 
     def test_custom_sql_guard_rejects_non_select(self) -> None:
-        from atlas.services.quality_runner import run_quality_suite
+        from axiom.services.quality_runner import run_quality_suite
 
         store = FakeStore()
         result = run_quality_suite(
@@ -197,7 +197,7 @@ class RunQualitySuiteTests(unittest.TestCase):
         self.assertIn("guard rejected", store.results[0]["detail"])
 
     def test_custom_sql_passes_threshold_check(self) -> None:
-        from atlas.services.quality_runner import run_quality_suite
+        from axiom.services.quality_runner import run_quality_suite
 
         uc = ScriptedUC([
             ("select count", [{"c": 3}]),  # the normalized custom SQL
@@ -220,7 +220,7 @@ class RunQualitySuiteTests(unittest.TestCase):
         self.assertEqual(result.passed, 1)
 
     def test_custom_sql_refused_on_app_principal_and_limited(self) -> None:
-        from atlas.services.quality_runner import run_quality_suite
+        from axiom.services.quality_runner import run_quality_suite
 
         seen: List[str] = []
 
@@ -247,7 +247,7 @@ class RunQualitySuiteTests(unittest.TestCase):
         self.assertTrue(seen[0].rstrip().endswith("LIMIT 1"))
 
     def test_unknown_test_key_skipped(self) -> None:
-        from atlas.services.quality_runner import run_quality_suite
+        from axiom.services.quality_runner import run_quality_suite
 
         store = FakeStore()
         result = run_quality_suite(
@@ -261,19 +261,19 @@ class RunQualitySuiteTests(unittest.TestCase):
 
 class IdentifierEscapingTests(unittest.TestCase):
     def test_safe_table_quotes_three_part_fqn(self) -> None:
-        from atlas.services.quality_runner import _safe_table
+        from axiom.services.quality_runner import _safe_table
 
         self.assertEqual(_safe_table("cat.sch.tbl"), "`cat`.`sch`.`tbl`")
 
     def test_safe_col_escapes_backticks(self) -> None:
-        from atlas.services.quality_runner import _safe_col
+        from axiom.services.quality_runner import _safe_col
 
         # A malicious column name cannot break out of the backtick quoting.
         self.assertEqual(_safe_col("x`) AS a, (SELECT 1"), "`x``) AS a, (SELECT 1`")
 
     def test_null_count_query_quotes_identifiers(self) -> None:
-        from atlas.services.quality_runner import _eval_null_count
-        from atlas.services.quality_runner import TestCaseSpec
+        from axiom.services.quality_runner import _eval_null_count
+        from axiom.services.quality_runner import TestCaseSpec
 
         captured = {}
 

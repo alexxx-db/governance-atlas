@@ -80,7 +80,7 @@ function formatDelta(delta, unit) {
 function CategorySparkline({ points, collecting, tone }) {
   const values = points.map((p) => numeric(p.value)).filter((v) => v !== null);
   if (!values.length) {
-    return <div className="ga-home-cat-spark is-empty" aria-hidden="true" />;
+    return <div className="ax-home-cat-spark is-empty" aria-hidden="true" />;
   }
   const min = Math.min(...values);
   const max = Math.max(...values);
@@ -94,24 +94,24 @@ function CategorySparkline({ points, collecting, tone }) {
   const last = pairs[pairs.length - 1];
   return (
     <svg
-      className={`ga-home-cat-spark ${toneClass(tone)}`.trim()}
+      className={`ax-home-cat-spark ${toneClass(tone)}`.trim()}
       viewBox={`0 0 ${SPARK_W} ${SPARK_H}`}
       preserveAspectRatio="none"
       aria-hidden="true"
     >
-      {drawLine ? <path className="ga-home-cat-spark-line" d={smoothLinePath(pairs)} /> : null}
+      {drawLine ? <path className="ax-home-cat-spark-line" d={smoothLinePath(pairs)} /> : null}
       {collecting
         ? pairs.map((pair, index) => (
             <circle
               key={index}
-              className="ga-home-cat-spark-collecting-dot"
+              className="ax-home-cat-spark-collecting-dot"
               cx={pair[0]}
               cy={pair[1]}
               r="2.4"
             />
           ))
         : last
-          ? <circle className="ga-home-cat-spark-dot" cx={last[0]} cy={last[1]} r="3" />
+          ? <circle className="ax-home-cat-spark-dot" cx={last[0]} cy={last[1]} r="3" />
           : null}
     </svg>
   );
@@ -126,24 +126,24 @@ function CategoryRow({ category, unit }) {
   const assetCount = numeric(category.assetCount);
 
   return (
-    <li className="ga-home-cat-row">
-      <div className="ga-home-cat-head">
-        <span className="ga-home-cat-label" title={category.label}>
+    <li className="ax-home-cat-row">
+      <div className="ax-home-cat-head">
+        <span className="ax-home-cat-label" title={category.label}>
           {category.label || category.key}
         </span>
         {assetCount !== null ? (
-          <span className="ga-home-cat-count">{assetCount.toLocaleString()} assets</span>
+          <span className="ax-home-cat-count">{assetCount.toLocaleString()} assets</span>
         ) : null}
       </div>
       <CategorySparkline points={realPoints} collecting={collecting} tone={category.deltaTone} />
-      <div className="ga-home-cat-meta">
-        <span className="ga-home-cat-latest">{formatValue(category.latest, unit)}</span>
+      <div className="ax-home-cat-meta">
+        <span className="ax-home-cat-latest">{formatValue(category.latest, unit)}</span>
         {collecting ? (
-          <span className="ga-home-cat-collecting">
+          <span className="ax-home-cat-collecting">
             {since ? `collecting since ${since}` : "collecting"}
           </span>
         ) : delta ? (
-          <span className={`ga-home-cat-delta ${toneClass(category.deltaTone)}`.trim()}>{delta}</span>
+          <span className={`ax-home-cat-delta ${toneClass(category.deltaTone)}`.trim()}>{delta}</span>
         ) : null}
       </div>
     </li>
@@ -181,7 +181,7 @@ export function CategoryTrendCard({ categoryTrends = null }) {
   if (!categoryTrends || !kinds.length || !hasAnySeries) {
     return (
       <SectionCard
-        className="ga-home-cat-card"
+        className="ax-home-cat-card"
         title="Category trends"
         subtitle="Per-category governance history"
         tooltip="Domain and tier histories are shown only from recorded daily snapshots; nothing is interpolated."
@@ -200,7 +200,7 @@ export function CategoryTrendCard({ categoryTrends = null }) {
 
   return (
     <SectionCard
-      className="ga-home-cat-card"
+      className="ax-home-cat-card"
       title={activeKind?.label || "Category trends"}
       subtitle="Daily snapshots, worst-first"
       tooltip="Domain and tier histories are shown only from recorded daily snapshots; categories still collecting are labeled, never drawn as a full line."
@@ -216,7 +216,7 @@ export function CategoryTrendCard({ categoryTrends = null }) {
       }
     >
       {visible.length ? (
-        <ul className="ga-home-cat-list">
+        <ul className="ax-home-cat-list">
           {visible.map((category) => (
             <CategoryRow key={category.key || category.label} category={category} unit={unit} />
           ))}
@@ -228,7 +228,7 @@ export function CategoryTrendCard({ categoryTrends = null }) {
         />
       )}
       {overflow > 0 ? (
-        <p className="ga-home-cat-footer">
+        <p className="ax-home-cat-footer">
           Showing the {MAX_ROWS} categories needing the most attention · {overflow} more not shown
         </p>
       ) : null}

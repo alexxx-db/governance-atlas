@@ -4,7 +4,7 @@
  * the legacy TaxonomyWorkspace/CdeWorkspace normalizers; no React, no I/O.
  *
  * Honesty rules carried over from the legacy gap fixes:
- *   - internal taxonomy ids ("ga-taxonomy-node-revenue") never render raw —
+ *   - internal taxonomy ids ("ax-taxonomy-node-revenue") never render raw —
  *     humanizeTaxonomyRef() title-cases the slug tail;
  *   - hierarchy is REAL only: a parent renders when it resolves (or
  *     humanizes), children only when other terms actually point here;
@@ -68,14 +68,14 @@ export function titleFromValue(value) {
 }
 
 /**
- * Internal taxonomy ids ("ga-taxonomy-node-revenue") must never render as
+ * Internal taxonomy ids ("ax-taxonomy-node-revenue") must never render as
  * user-facing labels: strip the machine prefix and title-case the slug tail
  * ("Revenue"). Non-prefixed values just get title-cased.
  */
 export function humanizeTaxonomyRef(value) {
   const raw = text(value);
   if (!raw) return "";
-  const tail = raw.replace(/^ga-taxonomy-(?:node|term)-/i, "");
+  const tail = raw.replace(/^ax-taxonomy-(?:node|term)-/i, "");
   return titleFromValue(tail) || raw;
 }
 

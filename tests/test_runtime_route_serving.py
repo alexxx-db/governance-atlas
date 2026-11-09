@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from atlas import runtime_contract
+from axiom import runtime_contract
 import run_app
 
 
@@ -42,7 +42,7 @@ class RuntimeRouteServingTests(unittest.TestCase):
         self.assertTrue(run_app.FRONTEND_ASSETS.as_posix().endswith("frontend/dist/assets"))
         self.assertTrue(
             run_app.FRONTEND_BUILD_MANIFEST.as_posix().endswith(
-                "frontend/dist/atlas-build-manifest.json"
+                "frontend/dist/axiom-build-manifest.json"
             )
         )
 
@@ -55,7 +55,7 @@ class RuntimeRouteServingTests(unittest.TestCase):
         self.assertEqual(manifest["runtime"]["frontend_dist"], "frontend/dist/index.html")
         self.assertEqual(
             manifest["runtime"]["frontend_build_manifest"],
-            "frontend/dist/atlas-build-manifest.json",
+            "frontend/dist/axiom-build-manifest.json",
         )
 
     def test_runtime_app_exposes_shell_and_runtime_routes(self) -> None:
@@ -113,10 +113,10 @@ class RuntimeRouteServingTests(unittest.TestCase):
             "lineage-atlas/finance_prod.curated.revenue_daily",
             "audit-evidence",
             "control-center",
-            # DataPact Control Center + its aliases must hard-load to the SPA
-            # shell (regression: /datapact 404'd server-side on first deploy).
-            "datapact",
-            "datapact?tab=jobs",
+            # emet Control Center + its aliases must hard-load to the SPA
+            # shell (regression: /emet 404'd server-side on first deploy).
+            "emet",
+            "emet?tab=jobs",
             "data-quality",
         ]
 

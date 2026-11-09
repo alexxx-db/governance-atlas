@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   fetchAdminControlCenter,
-  fetchAtlasAiRecommendations,
+  fetchAxiomAiRecommendations,
   fetchAiAutofill,
   fetchAssetDetail,
   fetchCdeDashboard,
@@ -30,13 +30,13 @@ function stubJsonResponse(payload) {
 
 describe("asset metadata API contract", () => {
   afterEach(() => {
-    delete window.__GOVAT_BOOTSTRAP__;
+    delete window.__AXIOM_BOOTSTRAP__;
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
   });
 
   it("does not treat a PATCH-only metadata update route as a GET editor capability route", () => {
-    window.__GOVAT_BOOTSTRAP__ = {
+    window.__AXIOM_BOOTSTRAP__ = {
       apiContract: {
         assetMetadataUpdate: "/api/assets/:fqn/metadata",
       },
@@ -50,7 +50,7 @@ describe("asset metadata API contract", () => {
   });
 
   it("keeps a dedicated metadata editor route available for capability reads", () => {
-    window.__GOVAT_BOOTSTRAP__ = {
+    window.__AXIOM_BOOTSTRAP__ = {
       apiContract: {
         assetMetadataEditor: "/api/assets/:fqn/metadata-editor",
         assetMetadataUpdate: "/api/assets/:fqn/metadata",
@@ -66,7 +66,7 @@ describe("asset metadata API contract", () => {
 
   it("keeps backed asset detail while filtering non-authoritative nested audit rows", async () => {
     stubJsonResponse({
-      fqn: "datapact.enterprise_metadata_ops.risk_data_quality_review",
+      fqn: "emet.enterprise_metadata_ops.risk_data_quality_review",
       name: "risk_data_quality_review",
       objectType: "View",
       source: "unity-catalog-inventory",
@@ -81,9 +81,9 @@ describe("asset metadata API contract", () => {
       ],
     });
 
-    await expect(fetchAssetDetail("datapact.enterprise_metadata_ops.risk_data_quality_review")).resolves.toEqual(
+    await expect(fetchAssetDetail("emet.enterprise_metadata_ops.risk_data_quality_review")).resolves.toEqual(
       expect.objectContaining({
-        fqn: "datapact.enterprise_metadata_ops.risk_data_quality_review",
+        fqn: "emet.enterprise_metadata_ops.risk_data_quality_review",
         metadataAudit: [{ id: "audit-live-01", source: "store" }],
         activity: [{ id: "activity-live-01", title: "Backed request", source: "governance-store" }],
       }),
@@ -197,7 +197,7 @@ describe("governance API normalization", () => {
 
   it("forwards page context (surface, assetFqn, active-filter scope) into the request body", async () => {
     stubJsonResponse({ answer: "ok", authoritative: true, evidence: [] });
-    await fetchAtlasAiRecommendations("how many assets here lack an owner?", {
+    await fetchAxiomAiRecommendations("how many assets here lack an owner?", {
       context: { surface: "discovery", assetFqn: "", scope: { domain: ["Finance"], owner: "__unassigned__" } },
     });
     const body = JSON.parse(fetch.mock.calls[0][1].body);
@@ -205,15 +205,15 @@ describe("governance API normalization", () => {
     expect(body.context.scope).toEqual({ domain: ["Finance"], owner: "__unassigned__" });
     // An unfiltered call sends no context object at all.
     stubJsonResponse({ answer: "ok", authoritative: true, evidence: [] });
-    await fetchAtlasAiRecommendations("hello");
+    await fetchAxiomAiRecommendations("hello");
     expect(JSON.parse(fetch.mock.calls[0][1].body).context).toBeUndefined();
   });
 
   it("fetchAiAutofill posts kind+context and returns drafted fields", async () => {
-    stubJsonResponse({ kind: "glossaryTerm", fields: { definition: "A drafted definition.", domain: "Finance" }, model: "databricks-claude-opus-4-8", warnings: [] });
+    stubJsonResponse({ kind: "glossaryTerm", fields: { definition: "A drafted definition.", domain: "Finance" }, model: "databricks-claude-sonnet-4-6", warnings: [] });
     const result = await fetchAiAutofill("glossaryTerm", { termName: "Net Revenue" });
     expect(result.fields).toEqual({ definition: "A drafted definition.", domain: "Finance" });
-    expect(result.model).toBe("databricks-claude-opus-4-8");
+    expect(result.model).toBe("databricks-claude-sonnet-4-6");
     const body = JSON.parse(fetch.mock.calls[0][1].body);
     expect(body.kind).toBe("glossaryTerm");
     expect(body.context.termName).toBe("Net Revenue");
@@ -243,7 +243,7 @@ describe("governance API normalization", () => {
     );
 
     const stages = [];
-    const result = await fetchAtlasAiRecommendations("How many certified assets in Finance?", {
+    const result = await fetchAxiomAiRecommendations("How many certified assets in Finance?", {
       pollIntervalMs: 1,
       onStage: (stage) => stages.push(stage),
     });
@@ -253,10 +253,10 @@ describe("governance API normalization", () => {
     expect(stages).toContain("Selecting relevant tables");
     // POST + 2 polls
     expect(fetch.mock.calls.length).toBe(3);
-    expect(fetch.mock.calls[1][0]).toContain("/atlas-ai/message");
+    expect(fetch.mock.calls[1][0]).toContain("/axiom-ai/message");
   });
 
-  it("returns an unavailable Atlas AI recommendation response for non-authoritative providers", async () => {
+  it("returns an unavailable Axiom AI recommendation response for non-authoritative providers", async () => {
     stubJsonResponse({
       provider: "local-prototype-mock",
       recommendations: [{
@@ -265,15 +265,15 @@ describe("governance API normalization", () => {
       }],
     });
 
-    await expect(fetchAtlasAiRecommendations("recommend assets")).resolves.toEqual({
+    await expect(fetchAxiomAiRecommendations("recommend assets")).resolves.toEqual({
       recommendations: [],
       authoritative: false,
       nonAuthoritative: true,
-      warning: "Atlas AI recommendations unavailable until live evidence-backed provider returns results.",
+      warning: "Axiom AI recommendations unavailable until live evidence-backed provider returns results.",
     });
   });
 
-  it("returns an unavailable Atlas AI recommendation response for explicitly non-authoritative payloads", async () => {
+  it("returns an unavailable Axiom AI recommendation response for explicitly non-authoritative payloads", async () => {
     stubJsonResponse({
       nonAuthoritative: true,
       recommendations: [{
@@ -282,15 +282,15 @@ describe("governance API normalization", () => {
       }],
     });
 
-    await expect(fetchAtlasAiRecommendations("recommend assets")).resolves.toEqual({
+    await expect(fetchAxiomAiRecommendations("recommend assets")).resolves.toEqual({
       recommendations: [],
       authoritative: false,
       nonAuthoritative: true,
-      warning: "Atlas AI recommendations unavailable until live evidence-backed provider returns results.",
+      warning: "Axiom AI recommendations unavailable until live evidence-backed provider returns results.",
     });
   });
 
-  it("rejects populated Atlas AI recommendations from authoritative-false degraded live envelopes", async () => {
+  it("rejects populated Axiom AI recommendations from authoritative-false degraded live envelopes", async () => {
     stubJsonResponse({
       authoritative: false,
       state: "degraded",
@@ -302,26 +302,26 @@ describe("governance API normalization", () => {
       evidence: [],
     });
 
-    await expect(fetchAtlasAiRecommendations("recommend assets")).resolves.toEqual({
+    await expect(fetchAxiomAiRecommendations("recommend assets")).resolves.toEqual({
       recommendations: [],
       authoritative: false,
       nonAuthoritative: true,
-      warning: "Atlas AI recommendations unavailable until live evidence-backed provider returns results.",
+      warning: "Axiom AI recommendations unavailable until live evidence-backed provider returns results.",
     });
   });
 });
 
 describe("insights API contract", () => {
   afterEach(() => {
-    delete window.__GOVAT_BOOTSTRAP__;
+    delete window.__AXIOM_BOOTSTRAP__;
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
   });
 
-  it("returns the Atlas envelope so degraded metadata reaches the Insights hook", async () => {
-    window.__GOVAT_BOOTSTRAP__ = {
+  it("returns the Axiom envelope so degraded metadata reaches the Insights hook", async () => {
+    window.__AXIOM_BOOTSTRAP__ = {
       apiContract: {
-        insightsDashboard: "/atlas/insights",
+        insightsDashboard: "/axiom/insights",
       },
     };
     const envelope = {
@@ -338,7 +338,7 @@ describe("insights API contract", () => {
 
     await expect(fetchInsightsDashboard()).resolves.toEqual(envelope);
     expect(globalThis.fetch).toHaveBeenCalledWith(
-      "/api/atlas/insights",
+      "/api/axiom/insights",
       expect.objectContaining({ method: "GET" }),
     );
   });
@@ -349,10 +349,10 @@ describe("discovery + retired-endpoint contract guards", () => {
   // client POSTed to /api/discovery/search (→ 405) and called removed endpoints
   // /api/discovery/facets and /api/insights/dashboard (→ 404). The current
   // contract consolidated all three — search is GET (facets ride inside its
-  // payload) and insights moved to /atlas/insights. These lock the migration so
+  // payload) and insights moved to /axiom/insights. These lock the migration so
   // a stale endpoint call can't silently creep back in.
   afterEach(() => {
-    delete window.__GOVAT_BOOTSTRAP__;
+    delete window.__AXIOM_BOOTSTRAP__;
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
   });
@@ -378,7 +378,7 @@ describe("discovery + retired-endpoint contract guards", () => {
       expect(url).not.toContain("/api/insights/dashboard");
     }
     // Insights resolves to the consolidated route, not the retired one.
-    expect(calledUrls.some((url) => url.includes("/api/atlas/insights"))).toBe(true);
+    expect(calledUrls.some((url) => url.includes("/api/axiom/insights"))).toBe(true);
   });
 });
 
@@ -426,15 +426,15 @@ describe("API error formatting", () => {
 
 describe("taxonomy API contract", () => {
   afterEach(() => {
-    delete window.__GOVAT_BOOTSTRAP__;
+    delete window.__AXIOM_BOOTSTRAP__;
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
   });
 
-  it("returns the Atlas envelope so taxonomy metadata and capabilities reach the page", async () => {
-    window.__GOVAT_BOOTSTRAP__ = {
+  it("returns the Axiom envelope so taxonomy metadata and capabilities reach the page", async () => {
+    window.__AXIOM_BOOTSTRAP__ = {
       apiContract: {
-        taxonomyOverview: "/atlas/taxonomy/overview",
+        taxonomyOverview: "/axiom/taxonomy/overview",
       },
     };
     const envelope = {
@@ -462,7 +462,7 @@ describe("taxonomy API contract", () => {
 
     await expect(fetchTaxonomyOverview()).resolves.toEqual(envelope);
     expect(globalThis.fetch).toHaveBeenCalledWith(
-      "/api/atlas/taxonomy/overview",
+      "/api/axiom/taxonomy/overview",
       expect.objectContaining({ method: "GET" }),
     );
   });
@@ -470,15 +470,15 @@ describe("taxonomy API contract", () => {
 
 describe("CDE API contract", () => {
   afterEach(() => {
-    delete window.__GOVAT_BOOTSTRAP__;
+    delete window.__AXIOM_BOOTSTRAP__;
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
   });
 
-  it("returns the Atlas envelope for CDE dashboard metadata and degraded capabilities", async () => {
-    window.__GOVAT_BOOTSTRAP__ = {
+  it("returns the Axiom envelope for CDE dashboard metadata and degraded capabilities", async () => {
+    window.__AXIOM_BOOTSTRAP__ = {
       apiContract: {
-        cdeDashboard: "/atlas/cde",
+        cdeDashboard: "/axiom/cde",
       },
     };
     const envelope = {
@@ -509,15 +509,15 @@ describe("CDE API contract", () => {
 
     await expect(fetchCdeDashboard()).resolves.toEqual(envelope);
     expect(globalThis.fetch).toHaveBeenCalledWith(
-      "/api/atlas/cde",
+      "/api/axiom/cde",
       expect.objectContaining({ method: "GET" }),
     );
   });
 
   it("encodes CDE detail ids through the route contract and preserves the envelope", async () => {
-    window.__GOVAT_BOOTSTRAP__ = {
+    window.__AXIOM_BOOTSTRAP__ = {
       apiContract: {
-        cdeDetail: "/atlas/cde/{cde_id}",
+        cdeDetail: "/axiom/cde/{cde_id}",
       },
     };
     const envelope = {
@@ -543,7 +543,7 @@ describe("CDE API contract", () => {
 
     await expect(fetchCdeDetail("main.customer.customer_dim")).resolves.toEqual(envelope);
     expect(globalThis.fetch).toHaveBeenCalledWith(
-      "/api/atlas/cde/main.customer.customer_dim",
+      "/api/axiom/cde/main.customer.customer_dim",
       expect.objectContaining({ method: "GET" }),
     );
   });
@@ -551,15 +551,15 @@ describe("CDE API contract", () => {
 
 describe("Audit API contract", () => {
   afterEach(() => {
-    delete window.__GOVAT_BOOTSTRAP__;
+    delete window.__AXIOM_BOOTSTRAP__;
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
   });
 
   it("encodes audit ids through the route contract and preserves the envelope", async () => {
-    window.__GOVAT_BOOTSTRAP__ = {
+    window.__AXIOM_BOOTSTRAP__ = {
       apiContract: {
-        auditEvidence: "/atlas/audit/evidence",
+        auditEvidence: "/axiom/audit/evidence",
       },
     };
     const envelope = {
@@ -584,7 +584,7 @@ describe("Audit API contract", () => {
 
     await expect(fetchAuditEvidence({ auditId: "AUD-1", limit: 25 })).resolves.toEqual(envelope);
     expect(globalThis.fetch).toHaveBeenCalledWith(
-      "/api/atlas/audit/evidence?audit_id=AUD-1&limit=25",
+      "/api/axiom/audit/evidence?audit_id=AUD-1&limit=25",
       expect.objectContaining({ method: "GET" }),
     );
   });
@@ -592,15 +592,15 @@ describe("Audit API contract", () => {
 
 describe("Admin API contract", () => {
   afterEach(() => {
-    delete window.__GOVAT_BOOTSTRAP__;
+    delete window.__AXIOM_BOOTSTRAP__;
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
   });
 
   it("returns the Admin control-center envelope from the bootstrap route contract", async () => {
-    window.__GOVAT_BOOTSTRAP__ = {
+    window.__AXIOM_BOOTSTRAP__ = {
       apiContract: {
-        adminControlCenter: "/atlas/admin/control-center",
+        adminControlCenter: "/axiom/admin/control-center",
       },
     };
     const envelope = {
@@ -624,7 +624,7 @@ describe("Admin API contract", () => {
 
     await expect(fetchAdminControlCenter()).resolves.toEqual(envelope);
     expect(globalThis.fetch).toHaveBeenCalledWith(
-      "/api/atlas/admin/control-center",
+      "/api/axiom/admin/control-center",
       expect.objectContaining({ method: "GET" }),
     );
   });

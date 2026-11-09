@@ -5,9 +5,9 @@ from unittest.mock import patch
 
 import pandas as pd
 
-from atlas.services import assets as asset_service
-from atlas.services import governance as governance_service
-from atlas.store import GovernanceStore
+from axiom.services import assets as asset_service
+from axiom.services import governance as governance_service
+from axiom.store import GovernanceStore
 
 
 class FakeUC:
@@ -77,20 +77,20 @@ class GovernanceWorkflowTests(unittest.TestCase):
 
     def test_ensure_tables_bootstraps_projection_tables(self) -> None:
         uc = FakeUC()
-        store = GovernanceStore(uc, "main", "atlas")
+        store = GovernanceStore(uc, "main", "axiom")
 
         store.ensure_tables()
 
         self.assertTrue(
             any(
-                "CREATE TABLE IF NOT EXISTS `main`.`atlas`.`governance_queue_projection`"
+                "CREATE TABLE IF NOT EXISTS `main`.`axiom`.`governance_queue_projection`"
                 in sql
                 for sql in uc.executed
             )
         )
         self.assertTrue(
             any(
-                "CREATE TABLE IF NOT EXISTS `main`.`atlas`.`glossary_summary_projection`"
+                "CREATE TABLE IF NOT EXISTS `main`.`axiom`.`glossary_summary_projection`"
                 in sql
                 for sql in uc.executed
             )
@@ -98,7 +98,7 @@ class GovernanceWorkflowTests(unittest.TestCase):
 
     def test_create_change_request_persists_threads_tasks_and_activity(self) -> None:
         uc = FakeUC()
-        store = GovernanceStore(uc, "main", "atlas")
+        store = GovernanceStore(uc, "main", "axiom")
 
         request_id = store.create_change_request(
             created_by="writer@example.com",
@@ -108,18 +108,18 @@ class GovernanceWorkflowTests(unittest.TestCase):
         )
 
         self.assertTrue(request_id)
-        self.assertTrue(any("INSERT INTO `main`.`atlas`.`threads`" in sql for sql in uc.executed))
-        self.assertTrue(any("INSERT INTO `main`.`atlas`.`thread_posts`" in sql for sql in uc.executed))
-        self.assertTrue(any("INSERT INTO `main`.`atlas`.`tasks`" in sql for sql in uc.executed))
-        self.assertTrue(any("INSERT INTO `main`.`atlas`.`activity_events`" in sql for sql in uc.executed))
+        self.assertTrue(any("INSERT INTO `main`.`axiom`.`threads`" in sql for sql in uc.executed))
+        self.assertTrue(any("INSERT INTO `main`.`axiom`.`thread_posts`" in sql for sql in uc.executed))
+        self.assertTrue(any("INSERT INTO `main`.`axiom`.`tasks`" in sql for sql in uc.executed))
+        self.assertTrue(any("INSERT INTO `main`.`axiom`.`activity_events`" in sql for sql in uc.executed))
         self.assertTrue(any("task-created" in sql for sql in uc.executed))
-        self.assertFalse(any("INSERT INTO `main`.`atlas`.`change_requests`" in sql for sql in uc.executed))
+        self.assertFalse(any("INSERT INTO `main`.`axiom`.`change_requests`" in sql for sql in uc.executed))
 
     def test_workflow_identity_ensure_reuses_existing_actor_without_noop_write(self) -> None:
         uc = FakeUC(
             responses=[
                 (
-                    "FROM `main`.`atlas`.`identity_directory_entries`",
+                    "FROM `main`.`axiom`.`identity_directory_entries`",
                     pd.DataFrame(
                         [
                             {
@@ -138,7 +138,7 @@ class GovernanceWorkflowTests(unittest.TestCase):
                 )
             ]
         )
-        store = GovernanceStore(uc, "main", "atlas")
+        store = GovernanceStore(uc, "main", "axiom")
 
         actor = store._ensure_actor_identity_entry("writer@example.com", actor_role="writer")
 
@@ -149,7 +149,7 @@ class GovernanceWorkflowTests(unittest.TestCase):
         uc = FakeUC(
             responses=[
                 (
-                    "FROM `main`.`atlas`.`entity_registry`",
+                    "FROM `main`.`axiom`.`entity_registry`",
                     pd.DataFrame(
                         [
                             {
@@ -161,12 +161,12 @@ class GovernanceWorkflowTests(unittest.TestCase):
                     ),
                 ),
                 (
-                    "FROM `main`.`atlas`.`entity_aliases`",
+                    "FROM `main`.`axiom`.`entity_aliases`",
                     pd.DataFrame([{"alias_id": "alias-1"}]),
                 ),
             ]
         )
-        store = GovernanceStore(uc, "main", "atlas")
+        store = GovernanceStore(uc, "main", "axiom")
 
         entity = store._ensure_entity_registry_reference(
             "main.sales.orders",
@@ -210,11 +210,11 @@ class GovernanceWorkflowTests(unittest.TestCase):
         )
         uc = FakeUC(
             responses=[
-                ("FROM `main`.`atlas`.`tasks` t", workflow_rows),
-                ("FROM `main`.`atlas`.`change_requests`", pd.DataFrame()),
+                ("FROM `main`.`axiom`.`tasks` t", workflow_rows),
+                ("FROM `main`.`axiom`.`change_requests`", pd.DataFrame()),
             ]
         )
-        store = GovernanceStore(uc, "main", "atlas")
+        store = GovernanceStore(uc, "main", "axiom")
 
         requests_df = store.list_change_requests(status="pending", limit=10)
 
@@ -270,11 +270,11 @@ class GovernanceWorkflowTests(unittest.TestCase):
         )
         uc = FakeUC(
             responses=[
-                ("FROM `main`.`atlas`.`tasks` t", workflow_rows),
-                ("FROM `main`.`atlas`.`change_requests`", legacy_rows),
+                ("FROM `main`.`axiom`.`tasks` t", workflow_rows),
+                ("FROM `main`.`axiom`.`change_requests`", legacy_rows),
             ]
         )
-        store = GovernanceStore(uc, "main", "atlas")
+        store = GovernanceStore(uc, "main", "axiom")
 
         requests_df = store.list_change_requests(status="pending", limit=10)
 
@@ -314,10 +314,10 @@ class GovernanceWorkflowTests(unittest.TestCase):
         )
         uc = FakeUC(
             responses=[
-                ("FROM `main`.`atlas`.`tasks` t", workflow_rows),
+                ("FROM `main`.`axiom`.`tasks` t", workflow_rows),
             ]
         )
-        store = GovernanceStore(uc, "main", "atlas")
+        store = GovernanceStore(uc, "main", "axiom")
 
         store.set_request_status(
             request_id="task-123",
@@ -327,12 +327,12 @@ class GovernanceWorkflowTests(unittest.TestCase):
             actor_role="steward",
         )
 
-        self.assertTrue(any("UPDATE `main`.`atlas`.`tasks`" in sql for sql in uc.executed))
-        self.assertTrue(any("UPDATE `main`.`atlas`.`threads`" in sql for sql in uc.executed))
-        self.assertTrue(any("INSERT INTO `main`.`atlas`.`thread_posts`" in sql for sql in uc.executed))
-        self.assertTrue(any("INSERT INTO `main`.`atlas`.`activity_events`" in sql for sql in uc.executed))
+        self.assertTrue(any("UPDATE `main`.`axiom`.`tasks`" in sql for sql in uc.executed))
+        self.assertTrue(any("UPDATE `main`.`axiom`.`threads`" in sql for sql in uc.executed))
+        self.assertTrue(any("INSERT INTO `main`.`axiom`.`thread_posts`" in sql for sql in uc.executed))
+        self.assertTrue(any("INSERT INTO `main`.`axiom`.`activity_events`" in sql for sql in uc.executed))
         self.assertTrue(any("task-status-updated" in sql for sql in uc.executed))
-        self.assertFalse(any("UPDATE `main`.`atlas`.`change_requests`" in sql for sql in uc.executed))
+        self.assertFalse(any("UPDATE `main`.`axiom`.`change_requests`" in sql for sql in uc.executed))
 
     def test_set_request_status_resolved_closes_task_rows(self) -> None:
         workflow_rows = pd.DataFrame(
@@ -365,8 +365,8 @@ class GovernanceWorkflowTests(unittest.TestCase):
                 }
             ]
         )
-        uc = FakeUC(responses=[("FROM `main`.`atlas`.`tasks` t", workflow_rows)])
-        store = GovernanceStore(uc, "main", "atlas")
+        uc = FakeUC(responses=[("FROM `main`.`axiom`.`tasks` t", workflow_rows)])
+        store = GovernanceStore(uc, "main", "axiom")
 
         store.set_request_status(
             request_id="task-123",
@@ -379,8 +379,8 @@ class GovernanceWorkflowTests(unittest.TestCase):
         executed_sql = "\n".join(uc.executed)
         self.assertIn("status = 'resolved'", executed_sql)
         self.assertIn("resolution_code = 'approved'", executed_sql)
-        self.assertIn("INSERT INTO `main`.`atlas`.`thread_posts`", executed_sql)
-        self.assertIn("INSERT INTO `main`.`atlas`.`activity_events`", executed_sql)
+        self.assertIn("INSERT INTO `main`.`axiom`.`thread_posts`", executed_sql)
+        self.assertIn("INSERT INTO `main`.`axiom`.`activity_events`", executed_sql)
 
     def test_set_request_status_applies_assignee_and_priority_triage(self) -> None:
         # Triage-only update: status stays "pending" (task stays open) while
@@ -416,8 +416,8 @@ class GovernanceWorkflowTests(unittest.TestCase):
                 }
             ]
         )
-        uc = FakeUC(responses=[("FROM `main`.`atlas`.`tasks` t", workflow_rows)])
-        store = GovernanceStore(uc, "main", "atlas")
+        uc = FakeUC(responses=[("FROM `main`.`axiom`.`tasks` t", workflow_rows)])
+        store = GovernanceStore(uc, "main", "axiom")
 
         store.set_request_status(
             request_id="task-123",
@@ -430,7 +430,7 @@ class GovernanceWorkflowTests(unittest.TestCase):
         )
 
         executed_sql = "\n".join(uc.executed)
-        self.assertIn("UPDATE `main`.`atlas`.`tasks`", executed_sql)
+        self.assertIn("UPDATE `main`.`axiom`.`tasks`", executed_sql)
         self.assertIn("assignee_entry_id =", executed_sql)
         # Priority is stashed in requested_payload_json.requestedTags (the
         # tasks table has no priority column) so the workbench payload can
@@ -472,8 +472,8 @@ class GovernanceWorkflowTests(unittest.TestCase):
                 }
             ]
         )
-        uc = FakeUC(responses=[("FROM `main`.`atlas`.`tasks` t", workflow_rows)])
-        store = GovernanceStore(uc, "main", "atlas")
+        uc = FakeUC(responses=[("FROM `main`.`axiom`.`tasks` t", workflow_rows)])
+        store = GovernanceStore(uc, "main", "axiom")
 
         store.set_request_status(
             request_id="task-321",
@@ -492,7 +492,7 @@ class GovernanceWorkflowTests(unittest.TestCase):
     def test_governance_request_status_patch_validates_triage_fields(self) -> None:
         from pydantic import ValidationError
 
-        from atlas.api.governance import GovernanceRequestStatusPatch
+        from axiom.api.governance import GovernanceRequestStatusPatch
 
         patch = GovernanceRequestStatusPatch(
             status="Pending",
@@ -544,8 +544,8 @@ class GovernanceWorkflowTests(unittest.TestCase):
                 }
             ]
         )
-        uc = FakeUC(responses=[("FROM `main`.`atlas`.`tasks` t", workflow_rows)])
-        store = GovernanceStore(uc, "main", "atlas")
+        uc = FakeUC(responses=[("FROM `main`.`axiom`.`tasks` t", workflow_rows)])
+        store = GovernanceStore(uc, "main", "axiom")
 
         frame = store.list_change_requests()
 
@@ -567,10 +567,10 @@ class GovernanceWorkflowTests(unittest.TestCase):
         )
         uc = FakeUC(
             responses=[
-                ("FROM `main`.`atlas`.`data_owners`", owners_df),
+                ("FROM `main`.`axiom`.`data_owners`", owners_df),
             ]
         )
-        store = GovernanceStore(uc, "main", "atlas")
+        store = GovernanceStore(uc, "main", "axiom")
 
         store.create_change_request(
             created_by="writer@example.com",
@@ -579,8 +579,8 @@ class GovernanceWorkflowTests(unittest.TestCase):
             actor_role="writer",
         )
 
-        self.assertTrue(any("MERGE INTO `main`.`atlas`.`notifications`" in sql for sql in uc.executed))
-        self.assertTrue(any("MERGE INTO `main`.`atlas`.`notification_receipts`" in sql for sql in uc.executed))
+        self.assertTrue(any("MERGE INTO `main`.`axiom`.`notifications`" in sql for sql in uc.executed))
+        self.assertTrue(any("MERGE INTO `main`.`axiom`.`notification_receipts`" in sql for sql in uc.executed))
 
     def test_set_request_status_fans_out_creator_inbox_notification(self) -> None:
         workflow_rows = pd.DataFrame(
@@ -629,11 +629,11 @@ class GovernanceWorkflowTests(unittest.TestCase):
         )
         uc = FakeUC(
             responses=[
-                ("FROM `main`.`atlas`.`tasks` t", workflow_rows),
-                ("FROM `main`.`atlas`.`thread_posts` p", thread_posts),
+                ("FROM `main`.`axiom`.`tasks` t", workflow_rows),
+                ("FROM `main`.`axiom`.`thread_posts` p", thread_posts),
             ]
         )
-        store = GovernanceStore(uc, "main", "atlas")
+        store = GovernanceStore(uc, "main", "axiom")
 
         store.set_request_status(
             request_id="task-123",
@@ -643,8 +643,8 @@ class GovernanceWorkflowTests(unittest.TestCase):
             actor_role="steward",
         )
 
-        self.assertTrue(any("MERGE INTO `main`.`atlas`.`notifications`" in sql for sql in uc.executed))
-        self.assertTrue(any("MERGE INTO `main`.`atlas`.`notification_receipts`" in sql for sql in uc.executed))
+        self.assertTrue(any("MERGE INTO `main`.`axiom`.`notifications`" in sql for sql in uc.executed))
+        self.assertTrue(any("MERGE INTO `main`.`axiom`.`notification_receipts`" in sql for sql in uc.executed))
 
     def test_update_notification_receipt_marks_read_and_audits(self) -> None:
         receipt_df = pd.DataFrame(
@@ -660,10 +660,10 @@ class GovernanceWorkflowTests(unittest.TestCase):
         )
         uc = FakeUC(
             responses=[
-                ("FROM `main`.`atlas`.`notification_receipts`", receipt_df),
+                ("FROM `main`.`axiom`.`notification_receipts`", receipt_df),
             ]
         )
-        store = GovernanceStore(uc, "main", "atlas")
+        store = GovernanceStore(uc, "main", "axiom")
 
         store.update_notification_receipt(
             notification_id="note-1",
@@ -671,7 +671,7 @@ class GovernanceWorkflowTests(unittest.TestCase):
             action="read",
         )
 
-        self.assertTrue(any("UPDATE `main`.`atlas`.`notification_receipts`" in sql for sql in uc.executed))
+        self.assertTrue(any("UPDATE `main`.`axiom`.`notification_receipts`" in sql for sql in uc.executed))
         self.assertTrue(any("notification-receipt-updated" in sql for sql in uc.executed))
 
     def test_governance_summary_does_not_fabricate_backlog_from_owner_gaps(self) -> None:
@@ -997,15 +997,15 @@ class GovernanceWorkflowTests(unittest.TestCase):
         # displayAuditId ("AUD-"+first-8-hex) + auditEventId (full id) so the
         # client can deep-link to the Evidence page. Rows with no backing
         # event emit empty strings — never fabricated ids.
-        from atlas.services.atlas_metrics import audit_display_id
+        from axiom.services.axiom_metrics import audit_display_id
 
         inventory = pd.DataFrame(
             [
                 {
-                    "fqn": "main.datapact.run_history",
+                    "fqn": "main.emet.run_history",
                     "table_name": "run_history",
                     "table_catalog": "main",
-                    "table_schema": "datapact",
+                    "table_schema": "emet",
                     "table_type": "TABLE",
                     "data_source_format": "DELTA",
                     "governance_status": "Needs Work",
@@ -1026,38 +1026,38 @@ class GovernanceWorkflowTests(unittest.TestCase):
                         {
                             "event_id": "evt-comment",
                             "event_type": "comment_created",
-                            "entity_fqn_snapshot": "main.datapact.run_history",
+                            "entity_fqn_snapshot": "main.emet.run_history",
                             "task_id": task_id,
                             "payload_json": '{"body":"Please review"}',
                             "created_at": "2026-05-05 02:51:37",
-                            "actor_email": "skyler@entrada.ai",
+                            "actor_email": "abarreto@shorecp.com",
                         },
                         {
                             "event_id": "evt-created",
                             "event_type": "task_created",
-                            "entity_fqn_snapshot": "main.datapact.run_history",
+                            "entity_fqn_snapshot": "main.emet.run_history",
                             "task_id": task_id,
                             "payload_json": '{"title":"Review run_history"}',
                             "created_at": "2026-05-05 02:51:38",
-                            "actor_email": "skyler@entrada.ai",
+                            "actor_email": "abarreto@shorecp.com",
                         },
                         {
                             "event_id": "evt-triage",
                             "event_type": "task_state_changed",
-                            "entity_fqn_snapshot": "main.datapact.run_history",
+                            "entity_fqn_snapshot": "main.emet.run_history",
                             "task_id": task_id,
                             "payload_json": '{"status":"open"}',
                             "created_at": "2026-07-21 14:59:35",
-                            "actor_email": "skyler@entrada.ai",
+                            "actor_email": "abarreto@shorecp.com",
                         },
                         {
                             "event_id": "evt-orphan",
                             "event_type": "task_state_changed",
-                            "entity_fqn_snapshot": "main.datapact.run_history",
+                            "entity_fqn_snapshot": "main.emet.run_history",
                             "task_id": "deadbeefdeadbeefdeadbeefdeadbeef",
                             "payload_json": '{"status":"open"}',
                             "created_at": "2026-07-21 15:10:00",
-                            "actor_email": "skyler@entrada.ai",
+                            "actor_email": "abarreto@shorecp.com",
                         },
                     ]
                 )
@@ -1179,7 +1179,7 @@ class GovernanceWorkflowTests(unittest.TestCase):
 
     def test_list_metadata_audit_for_requests_queries_by_request_id(self) -> None:
         uc = FakeUC()
-        store = GovernanceStore(uc, "main", "atlas")
+        store = GovernanceStore(uc, "main", "axiom")
 
         result = store.list_metadata_audit_for_requests(
             ["596357596fa8474c865d9cf02488a167", "", "task-b"]
@@ -1187,13 +1187,13 @@ class GovernanceWorkflowTests(unittest.TestCase):
 
         self.assertTrue(result.empty)
         query = uc.queries[-1]
-        self.assertIn("`main`.`atlas`.`metadata_audit_log`", query)
+        self.assertIn("`main`.`axiom`.`metadata_audit_log`", query)
         self.assertIn("request_id IN ('596357596fa8474c865d9cf02488a167', 'task-b')", query)
         self.assertIn("ORDER BY created_at ASC, audit_id ASC", query)
 
     def test_list_metadata_audit_for_requests_empty_ids_skip_query(self) -> None:
         uc = FakeUC()
-        store = GovernanceStore(uc, "main", "atlas")
+        store = GovernanceStore(uc, "main", "axiom")
 
         result = store.list_metadata_audit_for_requests(["", None])
 
@@ -1360,10 +1360,10 @@ class GovernanceWorkflowTests(unittest.TestCase):
         )
         uc = FakeUC(
             responses=[
-                ("FROM `main`.`atlas`.`governance_queue_projection`", projection_rows),
+                ("FROM `main`.`axiom`.`governance_queue_projection`", projection_rows),
             ]
         )
-        store = GovernanceStore(uc, "main", "atlas")
+        store = GovernanceStore(uc, "main", "axiom")
 
         upserted = store.upsert_governance_queue_projection(
             scope_key="workspace:default",
@@ -1377,7 +1377,7 @@ class GovernanceWorkflowTests(unittest.TestCase):
 
         self.assertTrue(
             any(
-                "MERGE INTO `main`.`atlas`.`governance_queue_projection`" in sql
+                "MERGE INTO `main`.`axiom`.`governance_queue_projection`" in sql
                 for sql in uc.executed
             )
         )
@@ -1421,11 +1421,11 @@ class GovernanceWorkflowTests(unittest.TestCase):
         )
         uc = FakeUC(
             responses=[
-                ("FROM `main`.`atlas`.`tasks` t", workflow_rows),
-                ("FROM `main`.`atlas`.`change_requests`", pd.DataFrame()),
+                ("FROM `main`.`axiom`.`tasks` t", workflow_rows),
+                ("FROM `main`.`axiom`.`change_requests`", pd.DataFrame()),
             ]
         )
-        store = GovernanceStore(uc, "main", "atlas")
+        store = GovernanceStore(uc, "main", "axiom")
 
         projection = store.refresh_governance_queue_projection(updated_by="system")
 
@@ -1434,7 +1434,7 @@ class GovernanceWorkflowTests(unittest.TestCase):
         self.assertEqual(projection["laneCounts"]["ownership"], 1)
         self.assertTrue(
             any(
-                "MERGE INTO `main`.`atlas`.`governance_queue_projection`" in sql
+                "MERGE INTO `main`.`axiom`.`governance_queue_projection`" in sql
                 for sql in uc.executed
             )
         )
@@ -1458,10 +1458,10 @@ class GovernanceWorkflowTests(unittest.TestCase):
         )
         uc = FakeUC(
             responses=[
-                ("FROM `main`.`atlas`.`glossary_summary_projection`", projection_rows),
+                ("FROM `main`.`axiom`.`glossary_summary_projection`", projection_rows),
             ]
         )
-        store = GovernanceStore(uc, "main", "atlas")
+        store = GovernanceStore(uc, "main", "axiom")
 
         upserted = store.upsert_glossary_summary_projection(
             term_id="term-1",
@@ -1476,7 +1476,7 @@ class GovernanceWorkflowTests(unittest.TestCase):
 
         self.assertTrue(
             any(
-                "MERGE INTO `main`.`atlas`.`glossary_summary_projection`" in sql
+                "MERGE INTO `main`.`axiom`.`glossary_summary_projection`" in sql
                 for sql in uc.executed
             )
         )
@@ -1529,13 +1529,13 @@ class GovernanceWorkflowTests(unittest.TestCase):
         )
         uc = FakeUC(
             responses=[
-                ("SELECT * FROM `main`.`atlas`.`glossary_terms` WHERE term_id = 'term-1' LIMIT 1", glossary_terms_df.head(1)),
-                ("FROM `main`.`atlas`.`glossary_term_reviewers` WHERE term_id = 'term-1'", glossary_reviewers_df),
-                ("SELECT * FROM `main`.`atlas`.`glossary_terms`  ORDER BY lower(name) LIMIT 5000", glossary_terms_df),
-                ("FROM `main`.`atlas`.`glossary_term_links`", glossary_links_df),
+                ("SELECT term_id, glossary_id, name, definition, parent_term_id, domain, owner_email, status, is_mutually_exclusive, created_at, created_by, updated_at, updated_by FROM `main`.`axiom`.`glossary_terms` WHERE term_id = 'term-1' LIMIT 1", glossary_terms_df.head(1)),
+                ("FROM `main`.`axiom`.`glossary_term_reviewers` WHERE term_id = 'term-1'", glossary_reviewers_df),
+                ("SELECT term_id, glossary_id, name, definition, parent_term_id, domain, owner_email, status, is_mutually_exclusive, created_at, created_by, updated_at, updated_by FROM `main`.`axiom`.`glossary_terms`  ORDER BY lower(name) LIMIT 5000", glossary_terms_df),
+                ("FROM `main`.`axiom`.`glossary_term_links`", glossary_links_df),
             ]
         )
-        store = GovernanceStore(uc, "main", "atlas")
+        store = GovernanceStore(uc, "main", "axiom")
 
         projection = store.refresh_glossary_summary_projection(term_id="term-1", updated_by="system")
 
@@ -1545,7 +1545,7 @@ class GovernanceWorkflowTests(unittest.TestCase):
         self.assertEqual(projection["reviewerCount"], 2)
         self.assertTrue(
             any(
-                "MERGE INTO `main`.`atlas`.`glossary_summary_projection`" in sql
+                "MERGE INTO `main`.`axiom`.`glossary_summary_projection`" in sql
                 for sql in uc.executed
             )
         )

@@ -1,6 +1,6 @@
 /*
  * Wave-A2 query status contract (COHESION_BLUEPRINT "Three system layers" #2,
- * FRONTEND_BLUEPRINT §7). `useAtlasQuery` returns
+ * FRONTEND_BLUEPRINT §7). `useAxiomQuery` returns
  * `{ data, status, meta, warnings, refresh, isPolling }` with
  * status ∈ loading | hydrating | available | degraded | unavailable | error.
  *
@@ -22,7 +22,7 @@ export const QUERY_STATUSES = Object.freeze([
 ]);
 
 /**
- * Accepts a status string, a `useAtlasQuery`-shaped object, or null.
+ * Accepts a status string, a `useAxiomQuery`-shaped object, or null.
  * Returns `{ status, warnings, reason, refresh }` or null when there is
  * nothing recognizable — callers treat null as "no status supplied" and
  * render nothing status-related (never guess).

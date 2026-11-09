@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { scopeFromSearch } from "../AtlasAiDock.jsx";
+import { scopeFromSearch } from "../AxiomAiDock.jsx";
 
 // scopeFromSearch turns the active Discover URL facets into the AI "here"
 // scope. The caller gates it to the Discover surface; these tests lock the

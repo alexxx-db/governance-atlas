@@ -15,7 +15,7 @@ describe("StateViews primitives", () => {
     const region = screen.getByRole("status");
     expect(region.getAttribute("aria-live")).toBe("polite");
     expect(region.className).toContain("is-table");
-    expect(region.querySelectorAll(".ga-sys-skeleton").length).toBeGreaterThan(0);
+    expect(region.querySelectorAll(".ax-sys-skeleton").length).toBeGreaterThan(0);
   });
 
   it("EmptyState renders title, body and action", () => {
@@ -64,7 +64,7 @@ describe("StateViews.ForQuery — Wave-A2 status contract rendering", () => {
 
   it("loading → skeleton", () => {
     render(<ForQuery query={{ status: "loading" }}>{content}</ForQuery>);
-    expect(screen.getByRole("status").querySelector(".ga-sys-skeleton")).not.toBeNull();
+    expect(screen.getByRole("status").querySelector(".ax-sys-skeleton")).not.toBeNull();
   });
 
   it("available → children as render function receiving data", () => {
@@ -92,7 +92,7 @@ describe("StateViews.ForQuery — Wave-A2 status contract rendering", () => {
   it("hydrating with no seed yet → skeleton, never a wrong empty state", () => {
     render(<ForQuery query={{ status: "hydrating", data: [] }}>{content}</ForQuery>);
     expect(screen.queryByText("Nothing to show")).toBeNull();
-    expect(screen.getByRole("status").querySelector(".ga-sys-skeleton")).not.toBeNull();
+    expect(screen.getByRole("status").querySelector(".ax-sys-skeleton")).not.toBeNull();
   });
 
   it("degraded → banner with warnings + retry ABOVE intact children (data never wiped)", () => {

@@ -31,7 +31,7 @@ describe("SectionCard", () => {
         <p>seed</p>
       </SectionCard>,
     );
-    const card = document.querySelector(".ga-sys-section-card");
+    const card = document.querySelector(".ax-sys-section-card");
     expect(card.getAttribute("aria-busy")).toBe("true");
     expect(card.className).toContain("is-hydrating");
     expect(screen.getByText("seed")).not.toBeNull();
@@ -66,7 +66,7 @@ describe("SectionCard", () => {
         <p>x</p>
       </SectionCard>,
     );
-    const card = document.querySelector(".ga-sys-section-card");
+    const card = document.querySelector(".ax-sys-section-card");
     expect(card.getAttribute("aria-busy")).toBeNull();
     expect(screen.queryByRole("status")).toBeNull();
   });

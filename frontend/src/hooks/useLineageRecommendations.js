@@ -1,6 +1,6 @@
 import { fetchLineageRecommendations } from "../lib/api";
 import { isNonAuthoritativeMockEvidence } from "../lib/nonAuthoritativeEvidence";
-import { pollBudgetExhausted, resetPollAttempts, useAtlasQuery } from "./useAtlasQuery";
+import { pollBudgetExhausted, resetPollAttempts, useAxiomQuery } from "./useAxiomQuery";
 
 function normalizeRecommendation(item) {
   if (!item || typeof item !== "object" || Array.isArray(item)) return null;
@@ -31,7 +31,7 @@ function lineageRecommendationHydrating(payload) {
 // warmer used to re-poll every 3s indefinitely while the backend reported a
 // loading envelope. Stop as soon as items exist or after a bounded number
 // of attempts, then surface an honest "still warming" state via `warming`.
-// The attempt ledger itself now lives in useAtlasQuery's shared bounded-poll
+// The attempt ledger itself now lives in useAxiomQuery's shared bounded-poll
 // engine; this hook only supplies the terminality predicate (`until` returns
 // true to STOP: not hydrating anymore, or items already renderable).
 const RECOMMENDATION_POLL_ATTEMPT_LIMIT = 10;
@@ -49,7 +49,7 @@ export function useLineageRecommendations(options = {}) {
     ? Math.max(1, Math.min(25, Math.trunc(Number(options.limit))))
     : 8;
   const queryKey = ["lineageRecommendations", limit];
-  const { query } = useAtlasQuery({
+  const { query } = useAxiomQuery({
     key: queryKey,
     enabled,
     staleTime: 120_000,

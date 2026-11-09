@@ -1,8 +1,8 @@
 {
   "acceptance": "All benchmark questions must return a non-empty answer, Genie query evidence, expected governance-domain terms, no internal control-plane asset leakage, no certified assets in not-certified answers, and no synthetic no-result fallback SQL or sentinel evidence rows.",
-  "aiSchema": "atlas_ai",
+  "aiSchema": "axiom_ai",
   "caseCount": 7,
-  "catalog": "datapact",
+  "catalog": "emet",
   "generatedAt": "2026-04-25T21:08:34.281429Z",
   "passCount": 7,
   "passed": true,
@@ -69,7 +69,7 @@
             }
           ],
           "rowCount": 6,
-          "sql": "SELECT\n  COALESCE(assets.domain, 'Unassigned') AS domain,\n  COUNT(DISTINCT assets.asset_fqn) AS governed_assets,\n  SUM(CASE WHEN lower(COALESCE(work.status, '')) IN ('pending', 'open') THEN 1 ELSE 0 END) AS open_policy_work,\n  SUM(CASE WHEN assets.is_critical AND NOT assets.is_certified THEN 1 ELSE 0 END) AS uncertified_critical_assets\nFROM `datapact`.`atlas_ai`.`atlas_ai_assets_current` assets\nLEFT JOIN `datapact`.`atlas_ai`.`atlas_ai_governance_work_current` work\n  ON work.asset_fqn = assets.asset_fqn\nGROUP BY COALESCE(assets.domain, 'Unassigned')\nORDER BY open_policy_work DESC, uncertified_critical_assets DESC, governed_assets DESC\nLIMIT 10",
+          "sql": "SELECT\n  COALESCE(assets.domain, 'Unassigned') AS domain,\n  COUNT(DISTINCT assets.asset_fqn) AS governed_assets,\n  SUM(CASE WHEN lower(COALESCE(work.status, '')) IN ('pending', 'open') THEN 1 ELSE 0 END) AS open_policy_work,\n  SUM(CASE WHEN assets.is_critical AND NOT assets.is_certified THEN 1 ELSE 0 END) AS uncertified_critical_assets\nFROM `emet`.`axiom_ai`.`axiom_ai_assets_current` assets\nLEFT JOIN `emet`.`axiom_ai`.`axiom_ai_governance_work_current` work\n  ON work.asset_fqn = assets.asset_fqn\nGROUP BY COALESCE(assets.domain, 'Unassigned')\nORDER BY open_policy_work DESC, uncertified_critical_assets DESC, governed_assets DESC\nLIMIT 10",
           "statementId": "01f140ea-b6bb-11bb-ac96-99060e6a5991",
           "title": "",
           "totalRowCount": 6,
@@ -108,24 +108,24 @@
           ],
           "resultRows": [
             {
-              "asset_fqn": "datapact.governance_atlas_demo.finance_exception_review",
-              "business_owners": "atlas-demo-technical@entrada.ai, finance-steward@entrada.ai",
+              "asset_fqn": "emet.axiom_demo.finance_exception_review",
+              "business_owners": "axiom-demo-technical@shorecp.com, finance-steward@shorecp.com",
               "certification": "Draft",
               "criticality": "High",
               "data_product": "Lien Intelligence",
               "domain": "Finance"
             },
             {
-              "asset_fqn": "datapact.governance_atlas_demo.operations_certification_backlog",
-              "business_owners": "atlas-demo-technical@entrada.ai, operations-steward@entrada.ai",
+              "asset_fqn": "emet.axiom_demo.operations_certification_backlog",
+              "business_owners": "axiom-demo-technical@shorecp.com, operations-steward@shorecp.com",
               "certification": "Draft",
               "criticality": "High",
               "data_product": "Transfer Operations",
               "domain": "Operations"
             },
             {
-              "asset_fqn": "datapact.governance_atlas_demo.risk_data_quality_review",
-              "business_owners": "atlas-demo-technical@entrada.ai, risk-steward@entrada.ai",
+              "asset_fqn": "emet.axiom_demo.risk_data_quality_review",
+              "business_owners": "axiom-demo-technical@shorecp.com, risk-steward@shorecp.com",
               "certification": "Draft",
               "criticality": "High",
               "data_product": "Risk Controls",
@@ -133,7 +133,7 @@
             }
           ],
           "rowCount": 3,
-          "sql": "SELECT asset_fqn, domain, data_product, criticality, certification, business_owners\nFROM `datapact`.`atlas_ai`.`atlas_ai_assets_current`\nWHERE is_critical = TRUE\n  AND is_certified = FALSE\nORDER BY owner_count ASC, open_work_count DESC, asset_fqn\nLIMIT 25",
+          "sql": "SELECT asset_fqn, domain, data_product, criticality, certification, business_owners\nFROM `emet`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE is_critical = TRUE\n  AND is_certified = FALSE\nORDER BY owner_count ASC, open_work_count DESC, asset_fqn\nLIMIT 25",
           "statementId": "01f140ea-be25-1c89-8f1e-19c56e9f266a",
           "title": "",
           "totalRowCount": 3,
@@ -146,7 +146,7 @@
       "warnings": []
     },
     {
-      "answerPreview": "Recent changes in governance metadata include actions such as task creation, entity registry updates, owner assignments, policy exception detections, and metadata curation. All actions were performed by skyler@entrada.ai, with most resulting in a \"success\" status, except for one failed policy exception and one flagged critical metadata review. Notable recent events include:\n- **Task created** for datapact.governance_atlas_demo.customer_stewardship_queue\n- **Entity registry upserted** for datapact.governance_atlas_demo.customer_stewardship_queue\n- **Owner upserted** multiple times for datapact.governance_atlas_demo.customer_stewardship_queue\n- **Policy exception detected** (failed) for datapa",
+      "answerPreview": "Recent changes in governance metadata include actions such as task creation, entity registry updates, owner assignments, policy exception detections, and metadata curation. All actions were performed by abarreto@shorecp.com, with most resulting in a \"success\" status, except for one failed policy exception and one flagged critical metadata review. Notable recent events include:\n- **Task created** for emet.axiom_demo.customer_stewardship_queue\n- **Entity registry upserted** for emet.axiom_demo.customer_stewardship_queue\n- **Owner upserted** multiple times for emet.axiom_demo.customer_stewardship_queue\n- **Policy exception detected** (failed) for datapa",
       "evaluation": {
         "answerLength": 934,
         "confidence": "genie-grounded",
@@ -174,8 +174,8 @@
           "resultRows": [
             {
               "action": "task-created",
-              "actor_email": "skyler@entrada.ai",
-              "asset_fqn": "datapact.governance_atlas_demo.customer_stewardship_queue",
+              "actor_email": "abarreto@shorecp.com",
+              "asset_fqn": "emet.axiom_demo.customer_stewardship_queue",
               "audit_id": "62f26675c18f41aa908d103fe09cb286",
               "created_at": "2026-04-25T09:11:55.000Z",
               "detail": null,
@@ -183,8 +183,8 @@
             },
             {
               "action": "entity-registry-upserted",
-              "actor_email": "skyler@entrada.ai",
-              "asset_fqn": "datapact.governance_atlas_demo.customer_stewardship_queue",
+              "actor_email": "abarreto@shorecp.com",
+              "asset_fqn": "emet.axiom_demo.customer_stewardship_queue",
               "audit_id": "725f92c5373e4faa8fdd10c8a0675328",
               "created_at": "2026-04-25T09:11:05.000Z",
               "detail": null,
@@ -192,8 +192,8 @@
             },
             {
               "action": "owner-upserted",
-              "actor_email": "skyler@entrada.ai",
-              "asset_fqn": "datapact.governance_atlas_demo.customer_stewardship_queue",
+              "actor_email": "abarreto@shorecp.com",
+              "asset_fqn": "emet.axiom_demo.customer_stewardship_queue",
               "audit_id": "7086a3dc37004912abf1871127b0191b",
               "created_at": "2026-04-25T09:10:52.000Z",
               "detail": null,
@@ -201,8 +201,8 @@
             },
             {
               "action": "owner-upserted",
-              "actor_email": "skyler@entrada.ai",
-              "asset_fqn": "datapact.governance_atlas_demo.customer_stewardship_queue",
+              "actor_email": "abarreto@shorecp.com",
+              "asset_fqn": "emet.axiom_demo.customer_stewardship_queue",
               "audit_id": "9fd64fa91c914ac88cd4267bfa737c2a",
               "created_at": "2026-04-25T09:00:35.000Z",
               "detail": null,
@@ -210,8 +210,8 @@
             },
             {
               "action": "owner-upserted",
-              "actor_email": "skyler@entrada.ai",
-              "asset_fqn": "datapact.governance_atlas_demo.customer_stewardship_queue",
+              "actor_email": "abarreto@shorecp.com",
+              "asset_fqn": "emet.axiom_demo.customer_stewardship_queue",
               "audit_id": "f28eab5b43f549d99117cfcbe5f1a7a4",
               "created_at": "2026-04-25T08:35:15.000Z",
               "detail": null,
@@ -219,52 +219,52 @@
             },
             {
               "action": "policy-exception-detected",
-              "actor_email": "skyler@entrada.ai",
-              "asset_fqn": "datapact.governance_atlas_demo.risk_policy_exception_register",
-              "audit_id": "ga-home-seed-audit-01",
+              "actor_email": "abarreto@shorecp.com",
+              "asset_fqn": "emet.axiom_demo.risk_policy_exception_register",
+              "audit_id": "ax-home-seed-audit-01",
               "created_at": "2026-04-25T03:05:48.579Z",
               "detail": "Risk policy exception from governed seed evidence.",
               "status": "failed"
             },
             {
               "action": "critical-metadata-review-opened",
-              "actor_email": "skyler@entrada.ai",
-              "asset_fqn": "datapact.governance_atlas_demo.risk_data_quality_review",
-              "audit_id": "ga-home-seed-audit-02",
+              "actor_email": "abarreto@shorecp.com",
+              "asset_fqn": "emet.axiom_demo.risk_data_quality_review",
+              "audit_id": "ax-home-seed-audit-02",
               "created_at": "2026-04-25T02:35:48.579Z",
               "detail": "Risk metadata review needs steward action.",
               "status": "flagged"
             },
             {
               "action": "certification-review-opened",
-              "actor_email": "skyler@entrada.ai",
-              "asset_fqn": "datapact.governance_atlas_demo.operations_certification_backlog",
-              "audit_id": "ga-home-seed-audit-03",
+              "actor_email": "abarreto@shorecp.com",
+              "asset_fqn": "emet.axiom_demo.operations_certification_backlog",
+              "audit_id": "ax-home-seed-audit-03",
               "created_at": "2026-04-25T01:50:48.579Z",
               "detail": "Operations certification review opened.",
               "status": "success"
             },
             {
               "action": "owner-stewardship-updated",
-              "actor_email": "skyler@entrada.ai",
-              "asset_fqn": "datapact.governance_atlas_demo.customer_stewardship_queue",
-              "audit_id": "ga-home-seed-audit-04",
+              "actor_email": "abarreto@shorecp.com",
+              "asset_fqn": "emet.axiom_demo.customer_stewardship_queue",
+              "audit_id": "ax-home-seed-audit-04",
               "created_at": "2026-04-25T01:20:48.579Z",
               "detail": "Customer stewardship owners assigned.",
               "status": "success"
             },
             {
               "action": "policy-exception-review-opened",
-              "actor_email": "skyler@entrada.ai",
-              "asset_fqn": "datapact.governance_atlas_demo.finance_exception_review",
-              "audit_id": "ga-home-seed-audit-05",
+              "actor_email": "abarreto@shorecp.com",
+              "asset_fqn": "emet.axiom_demo.finance_exception_review",
+              "audit_id": "ax-home-seed-audit-05",
               "created_at": "2026-04-25T00:20:48.579Z",
               "detail": "Finance policy exception review opened.",
               "status": "success"
             }
           ],
           "rowCount": 11,
-          "sql": "SELECT audit_id, asset_fqn, action, status, actor_email, detail, created_at\nFROM `datapact`.`atlas_ai`.`atlas_ai_audit_events`\nORDER BY created_at DESC, audit_id DESC\nLIMIT 25",
+          "sql": "SELECT audit_id, asset_fqn, action, status, actor_email, detail, created_at\nFROM `emet`.`axiom_ai`.`axiom_ai_audit_events`\nORDER BY created_at DESC, audit_id DESC\nLIMIT 25",
           "statementId": "01f140ea-c3d5-1ec2-bfbf-931969153f3f",
           "title": "",
           "totalRowCount": 11,
@@ -277,7 +277,7 @@
       "warnings": []
     },
     {
-      "answerPreview": "There are **5 assets** currently missing stewardship attention, as indicated by either having open work or no owners. Examples include:\n- **datapact.governance_atlas_demo.finance_exception_review** (Finance, Lien Intelligence, High criticality, 1 open work, 2 owners)\n- **datapact.governance_atlas_demo.operations_certification_backlog** (Operations, Transfer Operations, High criticality, 1 open work, 2 owners)\n- **datapact.governance_atlas_demo.risk_data_quality_review** (Risk, Risk Controls, High criticality, 1 open work, 2 owners)\n- **datapact.governance_atlas_demo.risk_policy_exception_register** (Risk, Risk Controls, Critical criticality, 1 open work, 2 owners)\n- **datapact.governance_atl",
+      "answerPreview": "There are **5 assets** currently missing stewardship attention, as indicated by either having open work or no owners. Examples include:\n- **emet.axiom_demo.finance_exception_review** (Finance, Lien Intelligence, High criticality, 1 open work, 2 owners)\n- **emet.axiom_demo.operations_certification_backlog** (Operations, Transfer Operations, High criticality, 1 open work, 2 owners)\n- **emet.axiom_demo.risk_data_quality_review** (Risk, Risk Controls, High criticality, 1 open work, 2 owners)\n- **emet.axiom_demo.risk_policy_exception_register** (Risk, Risk Controls, Critical criticality, 1 open work, 2 owners)\n- **emet.governance_atl",
       "evaluation": {
         "answerLength": 920,
         "confidence": "genie-grounded",
@@ -304,7 +304,7 @@
           ],
           "resultRows": [
             {
-              "asset_fqn": "datapact.governance_atlas_demo.finance_exception_review",
+              "asset_fqn": "emet.axiom_demo.finance_exception_review",
               "certification": "Draft",
               "criticality": "High",
               "data_product": "Lien Intelligence",
@@ -313,7 +313,7 @@
               "owner_count": "2"
             },
             {
-              "asset_fqn": "datapact.governance_atlas_demo.operations_certification_backlog",
+              "asset_fqn": "emet.axiom_demo.operations_certification_backlog",
               "certification": "Draft",
               "criticality": "High",
               "data_product": "Transfer Operations",
@@ -322,7 +322,7 @@
               "owner_count": "2"
             },
             {
-              "asset_fqn": "datapact.governance_atlas_demo.risk_data_quality_review",
+              "asset_fqn": "emet.axiom_demo.risk_data_quality_review",
               "certification": "Draft",
               "criticality": "High",
               "data_product": "Risk Controls",
@@ -331,7 +331,7 @@
               "owner_count": "2"
             },
             {
-              "asset_fqn": "datapact.governance_atlas_demo.risk_policy_exception_register",
+              "asset_fqn": "emet.axiom_demo.risk_policy_exception_register",
               "certification": "Certified",
               "criticality": "Critical",
               "data_product": "Risk Controls",
@@ -340,7 +340,7 @@
               "owner_count": "2"
             },
             {
-              "asset_fqn": "datapact.governance_atlas_demo.customer_stewardship_queue",
+              "asset_fqn": "emet.axiom_demo.customer_stewardship_queue",
               "certification": "Trusted",
               "criticality": "Critical",
               "data_product": "Customer 360",
@@ -350,7 +350,7 @@
             }
           ],
           "rowCount": 5,
-          "sql": "SELECT asset_fqn, domain, data_product, owner_count, open_work_count, certification, criticality\nFROM `datapact`.`atlas_ai`.`atlas_ai_assets_current`\nWHERE owner_count = 0 OR open_work_count > 0\nORDER BY open_work_count DESC, owner_count ASC, is_critical DESC, asset_fqn\nLIMIT 25",
+          "sql": "SELECT asset_fqn, domain, data_product, owner_count, open_work_count, certification, criticality\nFROM `emet`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE owner_count = 0 OR open_work_count > 0\nORDER BY open_work_count DESC, owner_count ASC, is_critical DESC, asset_fqn\nLIMIT 25",
           "statementId": "01f140ea-c9f1-1866-8e68-1d03bbffbbe5",
           "title": "",
           "totalRowCount": 5,
@@ -363,7 +363,7 @@
       "warnings": []
     },
     {
-      "answerPreview": "The assets with the lowest metadata coverage are those with open work items and low owner counts. All five assets listed have only **1 open work item** each, and most have just **2 owners**. Examples include:\n- **datapact.governance_atlas_demo.finance_exception_review** (Finance, Lien Intelligence, 2 owners, Draft certification)\n- **datapact.governance_atlas_demo.operations_certification_backlog** (Operations, Transfer Operations, 2 owners, Draft certification)\n- **datapact.governance_atlas_demo.risk_data_quality_review** (Risk, Risk Controls, 2 owners, Draft certification)\n- **datapact.governance_atlas_demo.risk_policy_exception_register** (Risk, Risk Controls, 2 owners, Certified)\n- **data",
+      "answerPreview": "The assets with the lowest metadata coverage are those with open work items and low owner counts. All five assets listed have only **1 open work item** each, and most have just **2 owners**. Examples include:\n- **emet.axiom_demo.finance_exception_review** (Finance, Lien Intelligence, 2 owners, Draft certification)\n- **emet.axiom_demo.operations_certification_backlog** (Operations, Transfer Operations, 2 owners, Draft certification)\n- **emet.axiom_demo.risk_data_quality_review** (Risk, Risk Controls, 2 owners, Draft certification)\n- **emet.axiom_demo.risk_policy_exception_register** (Risk, Risk Controls, 2 owners, Certified)\n- **data",
       "evaluation": {
         "answerLength": 948,
         "confidence": "genie-grounded",
@@ -390,7 +390,7 @@
           ],
           "resultRows": [
             {
-              "asset_fqn": "datapact.governance_atlas_demo.finance_exception_review",
+              "asset_fqn": "emet.axiom_demo.finance_exception_review",
               "certification": "Draft",
               "criticality": "High",
               "data_product": "Lien Intelligence",
@@ -399,7 +399,7 @@
               "owner_count": "2"
             },
             {
-              "asset_fqn": "datapact.governance_atlas_demo.operations_certification_backlog",
+              "asset_fqn": "emet.axiom_demo.operations_certification_backlog",
               "certification": "Draft",
               "criticality": "High",
               "data_product": "Transfer Operations",
@@ -408,7 +408,7 @@
               "owner_count": "2"
             },
             {
-              "asset_fqn": "datapact.governance_atlas_demo.risk_data_quality_review",
+              "asset_fqn": "emet.axiom_demo.risk_data_quality_review",
               "certification": "Draft",
               "criticality": "High",
               "data_product": "Risk Controls",
@@ -417,7 +417,7 @@
               "owner_count": "2"
             },
             {
-              "asset_fqn": "datapact.governance_atlas_demo.risk_policy_exception_register",
+              "asset_fqn": "emet.axiom_demo.risk_policy_exception_register",
               "certification": "Certified",
               "criticality": "Critical",
               "data_product": "Risk Controls",
@@ -426,7 +426,7 @@
               "owner_count": "2"
             },
             {
-              "asset_fqn": "datapact.governance_atlas_demo.customer_stewardship_queue",
+              "asset_fqn": "emet.axiom_demo.customer_stewardship_queue",
               "certification": "Trusted",
               "criticality": "Critical",
               "data_product": "Customer 360",
@@ -436,7 +436,7 @@
             }
           ],
           "rowCount": 5,
-          "sql": "SELECT asset_fqn, domain, data_product, owner_count, open_work_count, certification, criticality\nFROM `datapact`.`atlas_ai`.`atlas_ai_assets_current`\nWHERE owner_count = 0 OR open_work_count > 0\nORDER BY open_work_count DESC, owner_count ASC, is_critical DESC, asset_fqn\nLIMIT 25",
+          "sql": "SELECT asset_fqn, domain, data_product, owner_count, open_work_count, certification, criticality\nFROM `emet`.`axiom_ai`.`axiom_ai_assets_current`\nWHERE owner_count = 0 OR open_work_count > 0\nORDER BY open_work_count DESC, owner_count ASC, is_critical DESC, asset_fqn\nLIMIT 25",
           "statementId": "01f140ea-d05c-1910-a543-7f1ad305d8c6",
           "title": "",
           "totalRowCount": 5,
@@ -474,7 +474,7 @@
             "linked_assets_sample"
           ],
           "rowCount": 0,
-          "sql": "SELECT term_id, name, definition, review_status, linked_asset_count, linked_assets_sample FROM `datapact`.`atlas_ai`.`atlas_ai_glossary_current` WHERE lower(COALESCE(linked_assets_sample, '')) LIKE '%customer%' OR lower(COALESCE(domain, '')) LIKE '%customer%' OR lower(COALESCE(name, '')) LIKE '%customer%' ORDER BY linked_asset_count DESC, name LIMIT 25",
+          "sql": "SELECT term_id, name, definition, review_status, linked_asset_count, linked_assets_sample FROM `emet`.`axiom_ai`.`axiom_ai_glossary_current` WHERE lower(COALESCE(linked_assets_sample, '')) LIKE '%customer%' OR lower(COALESCE(domain, '')) LIKE '%customer%' OR lower(COALESCE(name, '')) LIKE '%customer%' ORDER BY linked_asset_count DESC, name LIMIT 25",
           "statementId": "01f140ea-daf9-19aa-92bb-e68379b02ec6",
           "title": "",
           "totalRowCount": 0,
@@ -514,7 +514,7 @@
             "executed_at"
           ],
           "rowCount": 0,
-          "sql": "SELECT quality.asset_fqn, quality.column_name, quality.outcome, quality.severity, quality.metric_value, quality.threshold_value, quality.detail, quality.executed_at FROM `datapact`.`atlas_ai`.`atlas_ai_quality_latest` quality INNER JOIN `datapact`.`atlas_ai`.`atlas_ai_assets_current` assets ON assets.asset_fqn = quality.asset_fqn WHERE assets.is_critical = TRUE AND lower(COALESCE(quality.outcome, '')) NOT IN ('pass', 'passed', 'success', 'succeeded') ORDER BY quality.executed_at DESC, quality.severity DESC, quality.asset_fqn LIMIT 25",
+          "sql": "SELECT quality.asset_fqn, quality.column_name, quality.outcome, quality.severity, quality.metric_value, quality.threshold_value, quality.detail, quality.executed_at FROM `emet`.`axiom_ai`.`axiom_ai_quality_latest` quality INNER JOIN `emet`.`axiom_ai`.`axiom_ai_assets_current` assets ON assets.asset_fqn = quality.asset_fqn WHERE assets.is_critical = TRUE AND lower(COALESCE(quality.outcome, '')) NOT IN ('pass', 'passed', 'success', 'succeeded') ORDER BY quality.executed_at DESC, quality.severity DESC, quality.asset_fqn LIMIT 25",
           "statementId": "01f140ea-e634-100e-ae7e-b072f75c1259",
           "title": "",
           "totalRowCount": 0,
@@ -528,6 +528,6 @@
     }
   ],
   "spaceId": "01f1406a11221afa985d3fe64c9fbea1",
-  "storeSchema": "atlas",
-  "title": "Governance Atlas Metadata Room"
+  "storeSchema": "axiom",
+  "title": "Axiom Metadata Room"
 }

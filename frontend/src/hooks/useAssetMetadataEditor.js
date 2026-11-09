@@ -4,7 +4,7 @@ import {
   getAssetMetadataApiContract,
   updateAssetMetadata,
 } from "../lib/api";
-import { useAtlasMutation, useAtlasQuery } from "./useAtlasQuery";
+import { useAxiomMutation, useAxiomQuery } from "./useAxiomQuery";
 
 const EDITABLE_FIELD_KEYS = [
   "description",
@@ -151,7 +151,7 @@ export function useAssetMetadataEditor({ assetFqn, asset, bootstrap }) {
   // API contract claims editing exists. Resolution order is preserved —
   // inline config wins, then the remote probe, then nothing.
   const remoteEnabled = Boolean(assetFqn) && !localConfig && contract.available;
-  const editorProbe = useAtlasQuery({
+  const editorProbe = useAxiomQuery({
     key: ["assetMetadataEditor", String(assetFqn || "")],
     enabled: remoteEnabled,
     fetch: () => fetchAssetMetadataEditor(assetFqn),
@@ -172,7 +172,7 @@ export function useAssetMetadataEditor({ assetFqn, asset, bootstrap }) {
       ? remoteConfig.available || false
       : false;
 
-  const saveMutation = useAtlasMutation({
+  const saveMutation = useAxiomMutation({
     mutate: (payload) => updateAssetMetadata(assetFqn, payload, config || {}),
   });
 

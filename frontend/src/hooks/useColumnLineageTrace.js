@@ -1,6 +1,6 @@
 import { fetchColumnLineageTrace } from "../lib/api";
 import { isNonAuthoritativeMockEvidence } from "../lib/nonAuthoritativeEvidence";
-import { useAtlasQuery } from "./useAtlasQuery";
+import { useAxiomQuery } from "./useAxiomQuery";
 
 function tracePayload(data) {
   if (!data || typeof data !== "object" || Array.isArray(data)) return null;
@@ -26,7 +26,7 @@ export function useColumnLineageTrace(assetFqn, columnName, options = {}) {
   const depth = Number.isFinite(Number(options.depth))
     ? Math.max(1, Math.min(4, Math.trunc(Number(options.depth))))
     : 3;
-  const upstream = useAtlasQuery({
+  const upstream = useAxiomQuery({
     key: ["columnLineageTrace", trimmedAsset, trimmedColumn, "upstream", depth],
     enabled,
     retry: false,
@@ -37,7 +37,7 @@ export function useColumnLineageTrace(assetFqn, columnName, options = {}) {
         depth,
       }),
   }).query;
-  const downstream = useAtlasQuery({
+  const downstream = useAxiomQuery({
     key: ["columnLineageTrace", trimmedAsset, trimmedColumn, "downstream", depth],
     enabled,
     retry: false,

@@ -3,7 +3,7 @@
  * legacy DiscoveryWorkspace suites, rewritten against the system-layer DOM:
  * search → URL, filters → URL, preview → ?peek=, deep links, empty-state
  * honesty (no-matches / didYouMean / diagnostics), invalid queries, saved
- * searches + favorites via lib/prefs (with gh-* migration), Atlas AI
+ * searches + favorites via lib/prefs (with gh-* migration), Axiom AI
  * authority rules, and facet-bucket honesty (Show all / zero-count hiding).
  */
 
@@ -12,14 +12,14 @@ import { MemoryRouter, useLocation } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const resultsMock = vi.fn();
-const aiMock = vi.hoisted(() => ({ fetchAtlasAiRecommendations: vi.fn() }));
+const aiMock = vi.hoisted(() => ({ fetchAxiomAiRecommendations: vi.fn() }));
 
 vi.mock("../../../hooks/useDiscoveryResults", () => ({
   useDiscoveryResults: (...args) => resultsMock(...args),
 }));
 
 vi.mock("../../../lib/api", () => ({
-  fetchAtlasAiRecommendations: (...args) => aiMock.fetchAtlasAiRecommendations(...args),
+  fetchAxiomAiRecommendations: (...args) => aiMock.fetchAxiomAiRecommendations(...args),
 }));
 
 import { readFavoriteAssets, readRecentAssets } from "../../../lib/prefs";
@@ -44,7 +44,7 @@ const orders = {
   name: "orders",
   description: "Orders fact table",
   coverageScore: 88,
-  owners: [{ name: "Skyler Myers", email: "skyler@entrada.ai" }],
+  owners: [{ name: "Skyler Myers", email: "abarreto@shorecp.com" }],
   domain: "Finance",
   tier: "Gold",
   certification: "Certified",
@@ -67,7 +67,7 @@ const churn = {
 function bootstrapPayload() {
   return {
     bootState: "live",
-    shell: { userEmail: "skyler@entrada.ai" },
+    shell: { userEmail: "abarreto@shorecp.com" },
     identity: { authMode: "obo-available", visibilityScope: "actor" },
     discovery: {
       sortOptions: ["Best match", "Coverage score"],
@@ -119,8 +119,8 @@ function renderPage(initialUrl = "/discovery", props = {}) {
     <MemoryRouter initialEntries={[initialUrl]}>
       <LocationProbe />
       <DiscoveryPage
-        atlasAiAvailable
-        atlasAiUnavailableReason=""
+        axiomAiAvailable
+        axiomAiUnavailableReason=""
         bootMessage=""
         bootState="live"
         bootstrap={bootstrapPayload()}
@@ -133,8 +133,8 @@ function renderPage(initialUrl = "/discovery", props = {}) {
 beforeEach(() => {
   resultsMock.mockReset();
   resultsMock.mockImplementation(() => resultsState());
-  aiMock.fetchAtlasAiRecommendations.mockReset();
-  aiMock.fetchAtlasAiRecommendations.mockResolvedValue({ recommendations: [] });
+  aiMock.fetchAxiomAiRecommendations.mockReset();
+  aiMock.fetchAxiomAiRecommendations.mockResolvedValue({ recommendations: [] });
   lastLocation = null;
   Object.defineProperty(window, "localStorage", {
     value: storageStub(),
@@ -203,14 +203,14 @@ describe("DiscoveryPage — URL is the state", () => {
 describe("DiscoveryPage — results and preview", () => {
   it("renders asset names as real anchors to the Asset 360 hub", () => {
     const { container } = renderPage();
-    const rowLink = container.querySelector("a.ga-sys-table-rowlink");
+    const rowLink = container.querySelector("a.ax-sys-table-rowlink");
     expect(rowLink).not.toBeNull();
     expect(rowLink.getAttribute("href")).toContain("/assets/main.sales.orders");
   });
 
   it("opens the ?peek= preview drawer on plain left-click and records the recent", () => {
     const { container } = renderPage();
-    fireEvent.click(container.querySelector("a.ga-sys-table-rowlink"));
+    fireEvent.click(container.querySelector("a.ax-sys-table-rowlink"));
     expect(new URLSearchParams(lastLocation.search).get("peek")).toBe("main.sales.orders");
     expect(readRecentAssets()).toContain("main.sales.orders");
   });
@@ -280,22 +280,22 @@ describe("DiscoveryPage — empty-state honesty", () => {
     );
     renderPage("/discovery", { bootState: "degraded", bootMessage: "Principal sees no assets." });
     expect(screen.getByText("No visible assets are being returned.")).toBeTruthy();
-    const strip = screen.getByTestId("ga-disc-diagnostics");
-    expect(within(strip).getByTestId("ga-disc-diagnostics-runtime").textContent).toBe(
+    const strip = screen.getByTestId("ax-disc-diagnostics");
+    expect(within(strip).getByTestId("ax-disc-diagnostics-runtime").textContent).toBe(
       "Partially available",
     );
-    expect(within(strip).getByTestId("ga-disc-diagnostics-auth").textContent).toBe(
+    expect(within(strip).getByTestId("ax-disc-diagnostics-auth").textContent).toBe(
       "Permission-aware (your access)",
     );
     // Humanized state — never the raw enum.
-    expect(within(strip).getByTestId("ga-disc-diagnostics-state").textContent).toBe(
+    expect(within(strip).getByTestId("ax-disc-diagnostics-state").textContent).toBe(
       "No assets are visible to your account",
     );
   });
 
   it("does not render the diagnostics strip when results exist", () => {
     renderPage();
-    expect(screen.queryByTestId("ga-disc-diagnostics")).toBeNull();
+    expect(screen.queryByTestId("ax-disc-diagnostics")).toBeNull();
   });
 
   it("renders invalid queries as a dedicated invalid-search state", () => {
@@ -350,7 +350,7 @@ describe("DiscoveryPage — facet-bucket honesty", () => {
   });
 });
 
-/* ---- saved searches + Atlas AI ---------------------------------------- */
+/* ---- saved searches + Axiom AI ---------------------------------------- */
 
 describe("DiscoveryPage — saved searches (prefs-backed)", () => {
   it("migrates legacy gh-saved-searches and applies an entry into URL state", () => {
@@ -377,20 +377,20 @@ describe("DiscoveryPage — saved searches (prefs-backed)", () => {
       target: { value: "Finance revenue" },
     });
     fireEvent.click(within(dialog).getByRole("button", { name: "Save current search" }));
-    const stored = JSON.parse(window.localStorage.getItem("ga.prefs.savedSearches"));
+    const stored = JSON.parse(window.localStorage.getItem("ax.prefs.savedSearches"));
     expect(stored).toHaveLength(1);
     expect(stored[0].query).toBe("revenue");
     expect(stored[0].domains).toEqual(["Finance"]);
     fireEvent.click(
       within(dialog).getByRole("button", { name: "Delete saved search Finance revenue" }),
     );
-    expect(JSON.parse(window.localStorage.getItem("ga.prefs.savedSearches"))).toHaveLength(0);
+    expect(JSON.parse(window.localStorage.getItem("ax.prefs.savedSearches"))).toHaveLength(0);
   });
 });
 
-describe("DiscoveryPage — Atlas AI recommendations", () => {
+describe("DiscoveryPage — Axiom AI recommendations", () => {
   it("runs recommendations on demand and renders evidence-backed results", async () => {
-    aiMock.fetchAtlasAiRecommendations.mockResolvedValue({
+    aiMock.fetchAxiomAiRecommendations.mockResolvedValue({
       authoritative: true,
       state: "available",
       recommendations: [
@@ -403,21 +403,21 @@ describe("DiscoveryPage — Atlas AI recommendations", () => {
       ],
     });
     renderPage();
-    fireEvent.click(screen.getByRole("button", { name: "Ask Atlas AI" }));
+    fireEvent.click(screen.getByRole("button", { name: "Ask Axiom AI" }));
     expect(await screen.findByText("Certify orders")).toBeTruthy();
-    expect(aiMock.fetchAtlasAiRecommendations).toHaveBeenCalledTimes(1);
+    expect(aiMock.fetchAxiomAiRecommendations).toHaveBeenCalledTimes(1);
   });
 
   it("rejects non-authoritative responses instead of rendering them", async () => {
-    aiMock.fetchAtlasAiRecommendations.mockResolvedValue({
+    aiMock.fetchAxiomAiRecommendations.mockResolvedValue({
       nonAuthoritative: true,
       recommendations: [{ title: "Fake rec" }],
     });
     renderPage();
-    fireEvent.click(screen.getByRole("button", { name: "Ask Atlas AI" }));
+    fireEvent.click(screen.getByRole("button", { name: "Ask Axiom AI" }));
     expect(
       await screen.findByText(
-        "Atlas AI recommendations unavailable until live evidence-backed provider returns results.",
+        "Axiom AI recommendations unavailable until live evidence-backed provider returns results.",
       ),
     ).toBeTruthy();
     expect(screen.queryByText("Fake rec")).toBeNull();
@@ -425,9 +425,9 @@ describe("DiscoveryPage — Atlas AI recommendations", () => {
 
   it("disables the ask button when no backed endpoint is available", () => {
     renderPage("/discovery", {
-      atlasAiAvailable: false,
-      atlasAiUnavailableReason: "No Genie endpoint configured.",
+      axiomAiAvailable: false,
+      axiomAiUnavailableReason: "No Genie endpoint configured.",
     });
-    expect(screen.getByRole("button", { name: "Ask Atlas AI" }).disabled).toBe(true);
+    expect(screen.getByRole("button", { name: "Ask Axiom AI" }).disabled).toBe(true);
   });
 });

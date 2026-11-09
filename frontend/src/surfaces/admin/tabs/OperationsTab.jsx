@@ -35,11 +35,11 @@ function absoluteHost(raw) {
 function SummaryTile({ heading, value, hint, href, linkTitle }) {
   const strong = <strong>{value}</strong>;
   return (
-    <div className="ga-admin-summary-tile">
+    <div className="ax-admin-summary-tile">
       <small>{heading}</small>
       {href ? (
         <a
-          className="ga-admin-summary-link"
+          className="ax-admin-summary-link"
           href={href}
           target="_blank"
           rel="noopener noreferrer"
@@ -47,7 +47,7 @@ function SummaryTile({ heading, value, hint, href, linkTitle }) {
         >
           {strong}
           <svg
-            className="ga-admin-summary-ext"
+            className="ax-admin-summary-ext"
             viewBox="0 0 24 24"
             width="13"
             height="13"
@@ -95,14 +95,14 @@ function RuntimeSummary({ dashboard, hydrating }) {
 
   return (
     <SectionCard
-      className="ga-admin-card"
+      className="ax-admin-card"
       subtitle="Live diagnostics reported by the app runtime"
       title="Runtime summary"
     >
       {hydrating && !hasSignal ? (
         <LoadingState label="Loading runtime summary" variant="tile" />
       ) : (
-        <div aria-label="Runtime summary tiles" className="ga-admin-summary-grid" role="group">
+        <div aria-label="Runtime summary tiles" className="ax-admin-summary-grid" role="group">
           <SummaryTile
             heading="Runtime"
             hint={text(runtime.host) || text(runtime.authMode) || "workspace client"}
@@ -151,7 +151,7 @@ const JOB_COLUMNS = [
     render: (job) => (
       // Hash tails truncate for display; the raw job name stays reachable
       // on the title attribute.
-      <strong className="ga-admin-job-name" title={job.name}>
+      <strong className="ax-admin-job-name" title={job.name}>
         {job.displayName || job.name}
       </strong>
     ),
@@ -172,7 +172,7 @@ const JOB_COLUMNS = [
     render: (job) =>
       job.url ? (
         <a
-          className="ga-admin-external-link"
+          className="ax-admin-external-link"
           // Defense-in-depth: a schemeless job.url resolves relative to the app
           // origin and 404s (the reported dead run-link). Force an absolute URL.
           href={absoluteHost(job.url)}
@@ -193,13 +193,13 @@ const JOB_COLUMNS = [
 function ScheduledJobs({ jobs, hydrating, emptyMessage }) {
   return (
     <SectionCard
-      className="ga-admin-card"
+      className="ax-admin-card"
       subtitle={jobs.length ? "Backed scheduled-job inventory" : "Scheduled-job inventory"}
       title="Scheduled jobs"
     >
       <DataTable
         caption="Scheduled jobs reported by runtime diagnostics"
-        className="ga-admin-jobs-table"
+        className="ax-admin-jobs-table"
         columns={JOB_COLUMNS}
         // While diagnostics hydrate, show skeleton rows — an "Unavailable"
         // wall during a background warm-up reads as a broken product.
@@ -219,20 +219,20 @@ function ScheduledJobs({ jobs, hydrating, emptyMessage }) {
 function ActivityFeed({ events, hydrating }) {
   return (
     <SectionCard
-      className="ga-admin-card"
+      className="ax-admin-card"
       subtitle="Visibility-scoped governance activity from the audit stream — internal bookkeeping rows are filtered server-side"
       title="Recent admin activity"
     >
       {!events.length && hydrating ? (
         <LoadingState label="Loading admin activity" variant="card" />
       ) : events.length ? (
-        <ul aria-label="Recent admin activity" className="ga-admin-activity-list">
+        <ul aria-label="Recent admin activity" className="ax-admin-activity-list">
           {events.map((event) => (
             <li key={event.id}>
               <b aria-hidden="true">{(event.title || "?").charAt(0).toUpperCase()}</b>
-              <div className="ga-admin-activity-copy">
+              <div className="ax-admin-activity-copy">
                 <strong>{event.title}</strong>
-                <span className="ga-admin-activity-detail">
+                <span className="ax-admin-activity-detail">
                   {/* Cross-linking LAW: asset mentions and actors are real
                       anchors, never raw text. Non-FQN detail stays text. */}
                   {looksLikeAssetFqn(event.detail) ? (
@@ -243,7 +243,7 @@ function ActivityFeed({ events, hydrating }) {
                   {event.actorEmail ? (
                     <EntityChip
                       appearance="inline"
-                      className="ga-admin-activity-actor"
+                      className="ax-admin-activity-actor"
                       entity={{ kind: "owner", id: event.actorEmail }}
                     />
                   ) : null}
@@ -265,7 +265,7 @@ function ActivityFeed({ events, hydrating }) {
 
 export function OperationsTab({ dashboard, jobs, activity, hydrating, jobsEmptyMessage }) {
   return (
-    <div className="ga-admin-tab-body" id="ga-admin-panel-operations" role="tabpanel">
+    <div className="ax-admin-tab-body" id="ax-admin-panel-operations" role="tabpanel">
       <RuntimeSummary dashboard={dashboard} hydrating={hydrating} />
       <ScheduledJobs emptyMessage={jobsEmptyMessage} hydrating={hydrating} jobs={jobs} />
       <ActivityFeed events={activity} hydrating={hydrating} />

@@ -2,7 +2,7 @@ import "../asset.css";
 import { useState } from "react";
 import { createGovernanceRequest } from "../../../lib/api";
 import { Badge, Button, LoadingState, SectionCard, UnavailableState, toast } from "../../../components/system";
-import { useAtlasMutation } from "../../../hooks/useAtlasQuery";
+import { useAxiomMutation } from "../../../hooks/useAxiomQuery";
 
 /*
  * Access tab = access content ONLY (teardown P1-8 killed the "Composite
@@ -23,7 +23,7 @@ export function AccessTab({ access, fqn }) {
   const [note, setNote] = useState("");
   // Single mutation contract; createGovernanceRequest is the same api-lib call
   // the header Request-change / Certify-stage flows use.
-  const requestAccess = useAtlasMutation({
+  const requestAccess = useAxiomMutation({
     mutate: (payload) => createGovernanceRequest(payload, { fast: true }),
   });
 
@@ -58,8 +58,8 @@ export function AccessTab({ access, fqn }) {
       subtitle="File a governance request for a steward to widen your access to this asset."
     >
       {formOpen ? (
-        <form className="ga-asset-dialog-form" onSubmit={handleSubmit}>
-          <label className="ga-asset-field">
+        <form className="ax-asset-dialog-form" onSubmit={handleSubmit}>
+          <label className="ax-asset-field">
             <span>Why do you need access?</span>
             <textarea
               value={note}
@@ -70,11 +70,11 @@ export function AccessTab({ access, fqn }) {
             />
           </label>
           {requestAccess.errorMessage ? (
-            <p className="ga-asset-form-error" role="alert">
+            <p className="ax-asset-form-error" role="alert">
               {requestAccess.errorMessage}
             </p>
           ) : null}
-          <div className="ga-asset-dialog-footer">
+          <div className="ax-asset-dialog-footer">
             <Button
               variant="tertiary"
               type="button"
@@ -119,7 +119,7 @@ export function AccessTab({ access, fqn }) {
   }
   if (state !== "available") {
     return (
-      <div className="ga-asset-tab-grid">
+      <div className="ax-asset-tab-grid">
         <SectionCard title="Access">
           <UnavailableState
             title="Access context unavailable"
@@ -136,20 +136,20 @@ export function AccessTab({ access, fqn }) {
   const grants = access.grants || {};
 
   return (
-    <div className="ga-asset-tab-grid">
+    <div className="ax-asset-tab-grid">
       <SectionCard title="Authorization">
-        <dl className="ga-asset-facts">
-          <div className="ga-asset-fact">
+        <dl className="ax-asset-facts">
+          <div className="ax-asset-fact">
             <dt>Auth mode</dt>
             <dd>
               <Badge tone={access.authMode === "obo" ? "good" : "info"}>{access.authMode || "unknown"}</Badge>
             </dd>
           </div>
-          <div className="ga-asset-fact">
+          <div className="ax-asset-fact">
             <dt>Visibility scope</dt>
             <dd>{access.visibilityScope || "—"}</dd>
           </div>
-          <div className="ga-asset-fact">
+          <div className="ax-asset-fact">
             <dt>Acting identity</dt>
             <dd>{access.actorEmail || "—"}</dd>
           </div>
@@ -160,7 +160,7 @@ export function AccessTab({ access, fqn }) {
         {String(grants.state || "").toLowerCase() === "available" ? (
           // No grants source exists today; this branch is future-proofing for
           // a real grants payload — never an empty fabricated table.
-          <p className="ga-asset-description">{grants.summary || ""}</p>
+          <p className="ax-asset-description">{grants.summary || ""}</p>
         ) : (
           <UnavailableState
             title="Grants not collected"
@@ -171,9 +171,9 @@ export function AccessTab({ access, fqn }) {
           />
         )}
         {deepLinks.catalogExplorer ? (
-          <p className="ga-asset-deeplink-row">
+          <p className="ax-asset-deeplink-row">
             <a
-              className="ga-asset-deeplink"
+              className="ax-asset-deeplink"
               href={deepLinks.catalogExplorer}
               target="_blank"
               rel="noreferrer"
@@ -186,7 +186,7 @@ export function AccessTab({ access, fqn }) {
 
       {remediation.length ? (
         <SectionCard title="Remediation" subtitle="Steps to widen the current access scope.">
-          <ul className="ga-asset-remediation-list">
+          <ul className="ax-asset-remediation-list">
             {remediation.map((item, index) => (
               <li key={item.label || index}>
                 <strong>{item.label}</strong>

@@ -4,7 +4,7 @@ import ast
 import unittest
 from pathlib import Path
 
-from atlas.services import capabilities as capability_service
+from axiom.services import capabilities as capability_service
 
 
 class ExportCapabilityTests(unittest.TestCase):
@@ -189,8 +189,8 @@ class CapabilityPayloadTests(unittest.TestCase):
 
 class RuntimeCapabilityWiringTests(unittest.TestCase):
     def test_runtime_surfaces_thread_capability_payload_helper(self) -> None:
-        runtime_source = Path("atlas/api/runtime.py").read_text(encoding="utf-8")
-        runtime_tree = ast.parse(runtime_source, filename="atlas/api/runtime.py")
+        runtime_source = Path("axiom/api/runtime.py").read_text(encoding="utf-8")
+        runtime_tree = ast.parse(runtime_source, filename="axiom/api/runtime.py")
 
         runtime_status_node = next(
             item

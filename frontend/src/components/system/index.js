@@ -1,8 +1,8 @@
 /*
- * Governance Atlas system component kit — Wave A1
+ * Axiom system component kit — Wave A1
  * (docs/architecture/FRONTEND_BLUEPRINT.md §6, COHESION_BLUEPRINT "Three
  * system layers" #1). One kit, one directory, one stylesheet, all
- * `ga-sys-*` classes on `--ga-*` tokens. Dependencies point inward only:
+ * `ax-sys-*` classes on `--ax-*` tokens. Dependencies point inward only:
  * nothing in system/ imports from components/* outside system/.
  *
  * The kit ships unused in Wave A by design — consumers arrive in Waves B/C.

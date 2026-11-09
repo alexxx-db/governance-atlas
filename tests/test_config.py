@@ -4,7 +4,7 @@ import os
 import unittest
 from unittest.mock import patch
 
-from atlas.config import AppConfig, _normalize_workspace_host
+from axiom.config import AppConfig, _normalize_workspace_host
 
 ROOT = os.path.dirname(os.path.dirname(__file__))
 
@@ -35,8 +35,8 @@ class WorkspaceHostNormalizationTests(unittest.TestCase):
             {
                 "DATABRICKS_HOST": "dbc-xyz.cloud.databricks.com",
                 "DATABRICKS_WAREHOUSE_ID": "warehouse-1",
-                "GOVAT_CATALOG": "main",
-                "GOVAT_SCHEMA": "atlas",
+                "AXIOM_CATALOG": "main",
+                "AXIOM_SCHEMA": "axiom",
             },
             clear=True,
         ):
@@ -49,8 +49,8 @@ class AppConfigTests(unittest.TestCase):
         os.environ,
         {
             "DATABRICKS_WAREHOUSE_ID": "warehouse-1",
-            "GOVAT_CATALOG": "main",
-            "GOVAT_SCHEMA": "atlas",
+            "AXIOM_CATALOG": "main",
+            "AXIOM_SCHEMA": "axiom",
         },
         clear=True,
     )
@@ -60,22 +60,22 @@ class AppConfigTests(unittest.TestCase):
         self.assertEqual(config.build_id, "")
         self.assertTrue(config.diagnostics_enabled)
         self.assertEqual(config.slow_request_ms, 1500)
-        self.assertEqual(config.atlas_ai_provider, "local")
+        self.assertEqual(config.axiom_ai_provider, "local")
         self.assertEqual(config.genie_space_id, "")
-        self.assertFalse(config.atlas_ai_require_benchmark)
+        self.assertFalse(config.axiom_ai_require_benchmark)
         self.assertFalse(config.lakebase_enabled)
         self.assertEqual(config.lakebase_endpoint_name, "")
-        self.assertEqual(config.lakebase_schema, "atlas_app")
+        self.assertEqual(config.lakebase_schema, "axiom_app")
 
     @patch.dict(
         os.environ,
         {
             "DATABRICKS_WAREHOUSE_ID": "warehouse-1",
-            "GOVAT_CATALOG": "main",
-            "GOVAT_SCHEMA": "atlas",
-            "GOVAT_BUILD_ID": "build-123",
-            "GOVAT_DIAGNOSTICS_ENABLED": "false",
-            "GOVAT_SLOW_REQUEST_MS": "2400",
+            "AXIOM_CATALOG": "main",
+            "AXIOM_SCHEMA": "axiom",
+            "AXIOM_BUILD_ID": "build-123",
+            "AXIOM_DIAGNOSTICS_ENABLED": "false",
+            "AXIOM_SLOW_REQUEST_MS": "2400",
         },
         clear=True,
     )
@@ -90,19 +90,19 @@ class AppConfigTests(unittest.TestCase):
         os.environ,
         {
             "DATABRICKS_WAREHOUSE_ID": "warehouse-1",
-            "GOVAT_CATALOG": "main",
-            "GOVAT_SCHEMA": "atlas",
-            "GOVAT_BUILD_ID": "build-456",
-            "GOVAT_DIAGNOSTICS_ENABLED": "false",
-            "GOVAT_SLOW_REQUEST_MS": "3100",
+            "AXIOM_CATALOG": "main",
+            "AXIOM_SCHEMA": "axiom",
+            "AXIOM_BUILD_ID": "build-456",
+            "AXIOM_DIAGNOSTICS_ENABLED": "false",
+            "AXIOM_SLOW_REQUEST_MS": "3100",
         },
         clear=True,
     )
-    def test_from_env_reads_govat_runtime_settings(self) -> None:
+    def test_from_env_reads_axiom_runtime_settings(self) -> None:
         config = AppConfig.from_env()
 
         self.assertEqual(config.gov_catalog, "main")
-        self.assertEqual(config.gov_schema, "atlas")
+        self.assertEqual(config.gov_schema, "axiom")
         self.assertEqual(config.build_id, "build-456")
         self.assertFalse(config.diagnostics_enabled)
         self.assertEqual(config.slow_request_ms, 3100)
@@ -111,48 +111,48 @@ class AppConfigTests(unittest.TestCase):
         os.environ,
         {
             "DATABRICKS_WAREHOUSE_ID": "warehouse-1",
-            "GOVAT_CATALOG": "preferred",
-            "GOVAT_SCHEMA": "atlas",
+            "AXIOM_CATALOG": "preferred",
+            "AXIOM_SCHEMA": "axiom",
         },
         clear=True,
     )
-    def test_from_env_uses_govat_catalog_and_schema(self) -> None:
+    def test_from_env_uses_axiom_catalog_and_schema(self) -> None:
         config = AppConfig.from_env()
 
         self.assertEqual(config.gov_catalog, "preferred")
-        self.assertEqual(config.gov_schema, "atlas")
+        self.assertEqual(config.gov_schema, "axiom")
 
     def test_source_app_yaml_keeps_genie_and_lakebase_optional(self) -> None:
         content = open(os.path.join(ROOT, "app.yaml"), encoding="utf-8").read()
 
-        self.assertIn("name: GOVAT_CATALOG\n    value: \"main\"", content)
-        self.assertIn("name: GOVAT_ADMIN_EMAILS\n    value: \"\"", content)
-        self.assertIn("name: GOVAT_ATLAS_AI_PROVIDER\n    value: \"local\"", content)
-        self.assertIn("name: GOVAT_GENIE_SPACE_ID\n    value: \"not-configured\"", content)
-        self.assertIn("name: GOVAT_ATLAS_AI_REQUIRE_BENCHMARK\n    value: \"false\"", content)
-        self.assertIn("name: GOVAT_LAKEBASE_ENABLED\n    value: \"false\"", content)
-        self.assertIn("name: GOVAT_LAKEBASE_ENDPOINT_NAME\n    value: \"not-configured\"", content)
-        self.assertNotIn("skyler@entrada.ai", content)
-        self.assertNotIn('value: "datapact"', content)
+        self.assertIn("name: AXIOM_CATALOG\n    value: \"main\"", content)
+        self.assertIn("name: AXIOM_ADMIN_EMAILS\n    value: \"\"", content)
+        self.assertIn("name: AXIOM_AI_PROVIDER\n    value: \"local\"", content)
+        self.assertIn("name: AXIOM_GENIE_SPACE_ID\n    value: \"not-configured\"", content)
+        self.assertIn("name: AXIOM_AI_REQUIRE_BENCHMARK\n    value: \"false\"", content)
+        self.assertIn("name: AXIOM_LAKEBASE_ENABLED\n    value: \"false\"", content)
+        self.assertIn("name: AXIOM_LAKEBASE_ENDPOINT_NAME\n    value: \"not-configured\"", content)
+        self.assertNotIn("abarreto@shorecp.com", content)
+        self.assertNotIn('value: "emet"', content)
         self.assertNotIn("01f1406a11221afa985d3fe64c9fbea1", content)
-        self.assertNotIn("projects/governance-atlas-state/branches/production", content)
+        self.assertNotIn("projects/axiom-state/branches/production", content)
 
     def test_bundle_commits_no_workspace_specific_values(self) -> None:
         content = open(os.path.join(ROOT, "databricks.yml"), encoding="utf-8").read()
 
         # dev still binds the optional resources, fed only by BUNDLE_VAR_*.
-        self.assertIn("atlas-genie-space", content)
-        self.assertIn("atlas-lakebase", content)
+        self.assertIn("axiom-genie-space", content)
+        self.assertIn("axiom-lakebase", content)
         self.assertIn("space_id: ${var.genie_space_id}", content)
         self.assertIn("name: ${var.ai_generation_endpoint}", content)
         self.assertNotIn("profile: DEFAULT", content)
         for literal in (
-            "@entrada.ai",
+            "@shorecp.com",
             "01f1406a11221afa985d3fe64c9fbea1",
-            "governance-atlas-state",
+            "axiom-state",
             "da02d15a9490650b",
             "finance_prod",
-            "gov_catalog: datapact",
+            "gov_catalog: emet",
         ):
             self.assertNotIn(literal, content)
 

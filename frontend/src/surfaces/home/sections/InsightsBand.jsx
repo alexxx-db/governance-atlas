@@ -59,28 +59,28 @@ export function RiskHeatmapCard({ cells, evidenceAt }) {
   const stamp = evidenceStampLabel(evidenceAt);
   return (
     <SectionCard
-      className="ga-home-riskmap-card"
+      className="ax-home-riskmap-card"
       title="Risk heatmap"
       subtitle="Impact (criticality) × likelihood (metadata gap) — cell = asset count"
       tooltip="Rows are business impact from criticality/tier; columns are likelihood from the metadata-completeness gap. Each cell counts assets; colour shows severity. Click a populated cell to open that impact level in Discovery."
     >
       {/* Date-stamp quality-derived evidence so stale runs never masquerade
           as today's signal. */}
-      {stamp ? <p className="ga-home-evidence-stamp">{`Evidence from ${stamp} (UTC)`}</p> : null}
+      {stamp ? <p className="ax-home-evidence-stamp">{`Evidence from ${stamp} (UTC)`}</p> : null}
       {hasData ? (
         <>
           {/* Axis labels + colour key: the map read as an unlabelled grid
               before — "Impact" runs down the rows, "Likelihood" across the
               columns, and the legend decodes the colour ramp. */}
-          <div className="ga-home-riskmap-frame">
-            <span className="ga-home-riskmap-yaxis" aria-hidden="true">
+          <div className="ax-home-riskmap-frame">
+            <span className="ax-home-riskmap-yaxis" aria-hidden="true">
               Impact
             </span>
-            <div className="ga-home-riskmap" role="table" aria-label="Governance risk heatmap: impact by likelihood">
+            <div className="ax-home-riskmap" role="table" aria-label="Governance risk heatmap: impact by likelihood">
               {RISK_ROWS.map((row) => {
                 const impactFilter = filtersByImpact.get(row);
                 return (
-                  <div className="ga-home-riskmap-row" role="row" key={row}>
+                  <div className="ax-home-riskmap-row" role="row" key={row}>
                     <strong role="rowheader">{row}</strong>
                     {RISK_COLUMNS.map((column) => {
                       const value = values.get(`${row}::${column}`) || 0;
@@ -119,17 +119,17 @@ export function RiskHeatmapCard({ cells, evidenceAt }) {
                   </div>
                 );
               })}
-              <div className="ga-home-riskmap-axis" aria-hidden="true">
+              <div className="ax-home-riskmap-axis" aria-hidden="true">
                 {RISK_COLUMNS.map((column) => (
                   <span key={column}>{column}</span>
                 ))}
               </div>
-              <p className="ga-home-riskmap-xaxis" aria-hidden="true">
+              <p className="ax-home-riskmap-xaxis" aria-hidden="true">
                 Likelihood (metadata gap) →
               </p>
             </div>
           </div>
-          <ul className="ga-home-riskmap-legend" aria-label="Severity colour key">
+          <ul className="ax-home-riskmap-legend" aria-label="Severity colour key">
             {RISK_LEGEND.map((entry) => (
               <li key={entry.tone}>
                 <i className={`tone-${entry.tone}`} aria-hidden="true" />
@@ -161,19 +161,19 @@ export function CoverageMatrixCard({ cells }) {
   const tone = (value) => (value >= 85 ? "high" : value >= 65 ? "mid" : value > 0 ? "low" : "empty");
   return (
     <SectionCard
-      className="ga-home-matrix-card"
+      className="ax-home-matrix-card"
       title="Metadata coverage by domain"
       subtitle="Coverage dimensions computed from visible asset metadata"
       tooltip="Each cell is the domain's completeness for one governance metadata dimension."
     >
       {rows.length && columns.length ? (
         <div
-          className="ga-home-matrix"
+          className="ax-home-matrix"
           role="table"
           aria-label="Metadata coverage by domain"
-          style={/** @type {import('react').CSSProperties} */ ({ "--ga-home-matrix-columns": columns.length })}
+          style={/** @type {import('react').CSSProperties} */ ({ "--ax-home-matrix-columns": columns.length })}
         >
-          <div className="ga-home-matrix-row is-header" role="row">
+          <div className="ax-home-matrix-row is-header" role="row">
             <span role="columnheader" />
             {columns.map((column) => (
               <span key={column} role="columnheader">
@@ -182,7 +182,7 @@ export function CoverageMatrixCard({ cells }) {
             ))}
           </div>
           {rows.map((row) => (
-            <div className="ga-home-matrix-row" key={row.domain} role="row">
+            <div className="ax-home-matrix-row" key={row.domain} role="row">
               {/* The domain row header links to Discovery filtered to that
                   domain — the one Risk & quality tile whose payload carries a
                   value that maps to a real filter. (Risk-heatmap cells and
@@ -191,7 +191,7 @@ export function CoverageMatrixCard({ cells }) {
               {hrefForRef({ kind: "domain", name: row.domain }) ? (
                 <Link
                   role="rowheader"
-                  className="ga-home-matrix-rowlink"
+                  className="ax-home-matrix-rowlink"
                   to={hrefForRef({ kind: "domain", name: row.domain })}
                   title={`Open ${row.domain} assets in Discovery`}
                 >
@@ -214,7 +214,7 @@ export function CoverageMatrixCard({ cells }) {
               })}
             </div>
           ))}
-          <div className="ga-home-matrix-scale" aria-hidden="true">
+          <div className="ax-home-matrix-scale" aria-hidden="true">
             <span>Low</span>
             <i />
             <span>High</span>
@@ -242,13 +242,13 @@ export function CertificationTierCard({ rows }) {
   }));
   return (
     <SectionCard
-      className="ga-home-tier-card"
+      className="ax-home-tier-card"
       title="Certification coverage by tier"
       subtitle="Certified asset share by live tier metadata"
       tooltip='Share of each tier whose assets are strictly certified (certification == "Certified"). Click a tier to open its assets in Discovery.'
     >
       {items.length ? (
-        <div className="ga-home-tier-rows">
+        <div className="ax-home-tier-rows">
           {items.map((item) => {
             const href = item.filterValues.length
               ? hrefForRef({ surface: "discovery", params: { criticality: item.filterValues } })
@@ -258,11 +258,11 @@ export function CertificationTierCard({ rows }) {
                 ? ` — ${item.certified} of ${item.total} certified`
                 : "";
             return (
-              <div className="ga-home-tier-row" key={item.label}>
+              <div className="ax-home-tier-row" key={item.label}>
                 {href ? (
                   <Link
                     aria-label={`Open ${item.label} assets in Discovery${countHint}`}
-                    className="ga-home-tier-rowlink"
+                    className="ax-home-tier-rowlink"
                     to={href}
                     title={`Open ${item.label} assets in Discovery${countHint}`}
                   >
@@ -290,7 +290,7 @@ export function CertificationTierCard({ rows }) {
 }
 
 /*
- * Atlas AI recommendations: ONLY evidence-backed rows render — one card per
+ * Axiom AI recommendations: ONLY evidence-backed rows render — one card per
  * recommendation, ZERO cards render nothing at all (kill list §7.1: the
  * "No additional evidence-backed recommendation" filler slots die).
  */
@@ -334,21 +334,21 @@ export function RecommendationsCard({ recommendations }) {
   if (!rows.length) return null;
   return (
     <SectionCard
-      className="ga-home-recs-card"
-      title="Atlas AI recommendations"
+      className="ax-home-recs-card"
+      title="Axiom AI recommendations"
       subtitle="Evidence-backed recommendations only"
       tooltip="Each recommendation cites live governance evidence; slots without evidence render nothing."
     >
-      <ul className="ga-home-rec-list">
+      <ul className="ax-home-rec-list">
         {rows.map((item) => (
           <li key={item.key || item.title}>
             <Link
-              className="ga-home-rec"
+              className="ax-home-rec"
               to={hrefForRef(recTarget(item)) || hrefForRef({ surface: "stewardship" })}
             >
               <strong>{item.title || "Evidence-backed recommendation"}</strong>
               <small>{item.detail || ""}</small>
-              <span className="ga-home-rec-action">{recActionLabel(item)} →</span>
+              <span className="ax-home-rec-action">{recActionLabel(item)} →</span>
             </Link>
           </li>
         ))}
@@ -364,16 +364,16 @@ export function InsightsBand({ insights }) {
   const data = insights.data || {};
   if (insights.loading) {
     return (
-      <section className="ga-home-insights-band" aria-label="Risk and quality" aria-busy="true">
-        <h2 className="ga-home-band-title">Risk &amp; quality</h2>
+      <section className="ax-home-insights-band" aria-label="Risk and quality" aria-busy="true">
+        <h2 className="ax-home-band-title">Risk &amp; quality</h2>
         <LoadingState variant="card" label="Loading risk and quality widgets" />
       </section>
     );
   }
   if (insights.error) {
     return (
-      <section className="ga-home-insights-band" aria-label="Risk and quality">
-        <h2 className="ga-home-band-title">Risk &amp; quality</h2>
+      <section className="ax-home-insights-band" aria-label="Risk and quality">
+        <h2 className="ax-home-band-title">Risk &amp; quality</h2>
         <UnavailableState
           title="Risk and quality widgets unavailable"
           reason={insights.error}
@@ -383,9 +383,9 @@ export function InsightsBand({ insights }) {
     );
   }
   return (
-    <section className="ga-home-insights-band" aria-label="Risk and quality">
-      <h2 className="ga-home-band-title">Risk &amp; quality</h2>
-      <div className="ga-home-insights-grid">
+    <section className="ax-home-insights-band" aria-label="Risk and quality">
+      <h2 className="ax-home-band-title">Risk &amp; quality</h2>
+      <div className="ax-home-insights-grid">
         <RiskHeatmapCard
           cells={data.riskHeatmap}
           evidenceAt={data.riskEvidenceAt || data.qualityEvidenceAt}

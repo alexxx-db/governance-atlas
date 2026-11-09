@@ -68,23 +68,23 @@ export function systemInventoryReason(
   return capability?.reason || fallback;
 }
 
-export function datapactCapability(bootstrap) {
-  return bootstrap?.capabilities?.datapact || null;
+export function emetCapability(bootstrap) {
+  return bootstrap?.capabilities?.emet || null;
 }
 
-export function datapactAvailable(bootstrap) {
+export function emetAvailable(bootstrap) {
   // Best-effort bootstrap signal (app-principal probe). The Control Center
   // surface performs the authoritative OBO detection on load, so this only
   // decorates the nav — treat "degraded" as available.
-  const capability = datapactCapability(bootstrap);
+  const capability = emetCapability(bootstrap);
   if (!capability) return false;
   if (capability.available === true) return true;
   const state = String(capability.state || "").trim().toLowerCase();
   return state === "available" || state === "degraded";
 }
 
-export function datapactReason(bootstrap, fallback = "") {
-  const capability = datapactCapability(bootstrap);
+export function emetReason(bootstrap, fallback = "") {
+  const capability = emetCapability(bootstrap);
   return capability?.reason || fallback;
 }
 

@@ -1,12 +1,12 @@
-# Governance Atlas — Experience-Layer Rebuild Blueprint
+# Axiom — Experience-Layer Rebuild Blueprint
 
-Principal frontend architecture blueprint. Scope: the experience layer only (shell, routing, page composition, data loading, styling). Backend contracts (canonical semantics module, real lineage, honest envelopes) are treated as fixed and truthful. Repo: `/Users/entrada-mac/repos/governance_atlas`, branch `main`. All citations are `file:line` under `frontend/src` unless absolute.
+Principal frontend architecture blueprint. Scope: the experience layer only (shell, routing, page composition, data loading, styling). Backend contracts (canonical semantics module, real lineage, honest envelopes) are treated as fixed and truthful. Repo: `/Users/axbo/Development/alexxx-db/axiom//axiom`, branch `main`. All citations are `file:line` under `frontend/src` unless absolute.
 
 ## Executive summary
 
-The experience layer is not under-built — it is **triple-built**. Three component generations coexist (gh shell primitives, ga northstar kit, lineage-v2 kit); 9 of 14 northstar components are orphans while 11 surfaces hand-roll their own heroes, 7 their own KPI systems, 8 their own tables. 32,972 lines of CSS (87% legacy `gh-*`, 1,451 `!important`, `.gh-primary-button` declared in 4 files) style them. Cross-surface navigation runs on **7 parallel mechanisms** (URL, 16 drilled callbacks, 5 sessionStorage families, 6 localStorage keys, 3 window events, a sessionStorage intent singleton, the query-client-as-bus) with zero React Context. Data loading has good bones (24/27 hooks on react-query, one envelope, one client) but **11+ copy-pasted hydration predicates, 10-12 divergent status renderings, and 12 of 14 polls unbounded**. The flagship record page (EntityWorkspace, 3,227 lines) is old-shell, has no nav address for its tabs, and loads through a 4-stage waterfall.
+The experience layer is not under-built — it is **triple-built**. Three component generations coexist (gh shell primitives, ax northstar kit, lineage-v2 kit); 9 of 14 northstar components are orphans while 11 surfaces hand-roll their own heroes, 7 their own KPI systems, 8 their own tables. 32,972 lines of CSS (87% legacy `gh-*`, 1,451 `!important`, `.gh-primary-button` declared in 4 files) style them. Cross-surface navigation runs on **7 parallel mechanisms** (URL, 16 drilled callbacks, 5 sessionStorage families, 6 localStorage keys, 3 window events, a sessionStorage intent singleton, the query-client-as-bus) with zero React Context. Data loading has good bones (24/27 hooks on react-query, one envelope, one client) but **11+ copy-pasted hydration predicates, 10-12 divergent status renderings, and 12 of 14 polls unbounded**. The flagship record page (EntityWorkspace, 3,227 lines) is old-shell, has no nav address for its tabs, and loads through a 4-stage waterfall.
 
-The fix is three system layers — a component kit (`components/system/`), one data contract (`useAtlasQuery` + `lib/envelope.js`), one navigation fabric (`navigate(ref)` + full URL addressability) — landed with no visual change (Wave A), proven on a rebuilt Asset 360 + new shell (Wave B), then rolled surface-by-surface (Wave C), with CI guardrails that make re-dispersion a build failure. Target: ~9k lines of CSS (-73%), one implementation per concept, every view addressable, every poll bounded.
+The fix is three system layers — a component kit (`components/system/`), one data contract (`useAxiomQuery` + `lib/envelope.js`), one navigation fabric (`navigate(ref)` + full URL addressability) — landed with no visual change (Wave A), proven on a rebuilt Asset 360 + new shell (Wave B), then rolled surface-by-surface (Wave C), with CI guardrails that make re-dispersion a build failure. Target: ~9k lines of CSS (-73%), one implementation per concept, every view addressable, every poll bounded.
 
 ---
 
@@ -18,7 +18,7 @@ The fix is three system layers — a component kit (`components/system/`), one d
 
 - `main.jsx` mounts `BrowserRouter → QueryClientProvider → ReactFlowProvider → AppErrorBoundary → App` and imports **10 global stylesheets in load-order-significant sequence** (`app.css` → … → `northstar.css` → `lineage-v2.css`), with tokens entering only transitively via `app.css:1`'s `@import` (main.jsx:9-18).
 - `App.jsx` (1,172 lines) is a **god component**: it is simultaneously the route switch (13-branch if/else over `surface`, App.jsx:805-1096), a lifted data bus (`liveDiscoveryState`, `liveGovernanceState` — App.jsx:267-278), a seed-merging engine (`mergeAssetGroups`/`visibleAssetSetFromGroups`/`searchSeedAssets`/`contextSeedAssets`, App.jsx:42-61, 619-639), the inbox-badge computer (App.jsx:96-116, 403-422), the command-center seed synthesizer (App.jsx:707-765), the Asset 360 drawer owner (App.jsx:284-291), and a hand-rolled navigation-pending state machine with 8s/24s timeouts (App.jsx:539-560).
-- `AppFrame.jsx` (1,166 lines) is the `gh-*` prototype shell: header (`gh-shell-header` AppFrame.jsx:895), side rail, command palette wiring, **and a fully inlined floating Atlas AI chat** (~700 lines: `AtlasAiEvidenceDetail`, `AtlasAiMessageList`, drag/clamp positioning, prompts — AppFrame.jsx:224-388, 981-1130). The shell file owns a product feature.
+- `AppFrame.jsx` (1,166 lines) is the `gh-*` prototype shell: header (`gh-shell-header` AppFrame.jsx:895), side rail, command palette wiring, **and a fully inlined floating Axiom AI chat** (~700 lines: `AxiomAiEvidenceDetail`, `AxiomAiMessageList`, drag/clamp positioning, prompts — AppFrame.jsx:224-388, 981-1130). The shell file owns a product feature.
 - Every workspace receives 10-20 props from App (bootstrap, seeds, callbacks, boot state, feature flags, workspaceAccess) — e.g. DiscoveryWorkspace gets 22 props (App.jsx:816-844).
 
 ### 1.2 Page-shell generations — three coexisting kits
@@ -28,24 +28,24 @@ There are **three generations of "shared" layout primitives**, all live simultan
 | Generation | Files | Classes | Used by |
 |---|---|---|---|
 | 1. `gh-*` shell primitives | `ShellLayoutPrimitives.jsx` (SurfaceHeader/SurfaceTabs/SurfaceRail/SurfacePanelSection/SurfaceWorkbench/SurfaceDrawer, :56-249), `ShellStatePrimitives.jsx` (WorkspaceStateCard/InlineStatusBanner/EmptyStateBlock/LoadingState/SkeletonBlock, :5-94), `components/primitives/*` (28 files: Breadcrumbs, StatusBadge, MetadataChip, EntityHero, UserChip, GlobalHeader, SideIconRail…) | `gh-*` | App shell, EntityWorkspace, Discovery, most workspaces |
-| 2. `ga-*` northstar kit | `components/northstar/*` (14 exports: PageHero, MetricCard, SectionCard, DataTable, EmptyState, DegradedBanner, StatusPill, BarList, DonutMetric, Sparkline, HeatmapMatrix, ActionTile, RightInspector, AtlasAiPanel — northstar/index.js:1-14) | `ga-*` | HomePage, InsightsWorkspace, parts of ops surfaces |
-| 3. lineage-v2 kit | `components/lineage-v2/*` (LineageCanvasV2, LineageNodeCard, useLineageGraphV2 adapter) | `ga-lineage-v2-*` | Lineage surface + Entity lineage tab |
+| 2. `ax-*` northstar kit | `components/northstar/*` (14 exports: PageHero, MetricCard, SectionCard, DataTable, EmptyState, DegradedBanner, StatusPill, BarList, DonutMetric, Sparkline, HeatmapMatrix, ActionTile, RightInspector, AxiomAiPanel — northstar/index.js:1-14) | `ax-*` | HomePage, InsightsWorkspace, parts of ops surfaces |
+| 3. lineage-v2 kit | `components/lineage-v2/*` (LineageCanvasV2, LineageNodeCard, useLineageGraphV2 adapter) | `ax-lineage-v2-*` | Lineage surface + Entity lineage tab |
 
-So a "page header" can be `SurfaceHeader` (gh), `PageHero` (ga), or hand-rolled hero markup per workspace; the duplication table in §5 quantifies this.
+So a "page header" can be `SurfaceHeader` (gh), `PageHero` (ax), or hand-rolled hero markup per workspace; the duplication table in §5 quantifies this.
 
 ### 1.3 CSS census (quantified)
 
 32,972 lines across 11 stylesheets + 10 token files (241 lines). Three files hold 73%: `northstar.css` 8,102, `operations-pages.css` 8,092, `app.css` 7,744; then `shell-rail.css` 2,690, `discovery.css` 2,630, `insights.css` 1,256, `lineage-v2.css` 984, `entity.css` 781, `lineage.css` 421, `capability-dashboard.css` 137, `governance.css` 135.
 
-**Prefix reality: only two prefixes exist** — `gh-*` (legacy prototype) and `ga-*` (system). Repo-wide **6,251 `.gh-` selector occurrences vs 934 `.ga-`** (~87% legacy). Per file (unique gh/ga selectors): app.css 481/23; shell-rail.css 193/0; operations-pages.css 341/16; discovery.css 234/0; entity.css 126/0; governance.css 24/0; capability-dashboard.css 19/0; insights.css 58/2; northstar.css 342/152 (the "north star" file is itself 69% legacy); lineage.css 6/8; **lineage-v2.css 1/62 — the only clean system file**.
+**Prefix reality: only two prefixes exist** — `gh-*` (legacy prototype) and `ax-*` (system). Repo-wide **6,251 `.gh-` selector occurrences vs 934 `.ga-`** (~87% legacy). Per file (unique gh/ax selectors): app.css 481/23; shell-rail.css 193/0; operations-pages.css 341/16; discovery.css 234/0; entity.css 126/0; governance.css 24/0; capability-dashboard.css 19/0; insights.css 58/2; northstar.css 342/152 (the "north star" file is itself 69% legacy); lineage.css 6/8; **lineage-v2.css 1/62 — the only clean system file**.
 
-**Literal cascade collisions**: `.gh-primary-button` is re-declared in **4 files** (app.css:375, discovery.css:2018, northstar.css:5221, shell-rail.css:2231); `.gh-secondary-button` in 3 files (app.css re-declares it internally at 9+ line ranges); `.gh-tertiary-button` in 3; `.gh-icon-button` in 2 plus a parallel `.ga-icon-button` (northstar.css:1335).
+**Literal cascade collisions**: `.gh-primary-button` is re-declared in **4 files** (app.css:375, discovery.css:2018, northstar.css:5221, shell-rail.css:2231); `.gh-secondary-button` in 3 files (app.css re-declares it internally at 9+ line ranges); `.gh-tertiary-button` in 3; `.gh-icon-button` in 2 plus a parallel `.ax-icon-button` (northstar.css:1335).
 
-**Duplication by concept (independent CSS implementations)**: buttons ~42 distinct selectors across 6 files; chips/pills/badges ~147 across 8; tabs ~84 across 9 (e.g. `gh-subtab` app.css:382, `gh-discovery-subtabs` discovery.css:9, `gh-entity-record-tabs` entity.css:52, `ga-tab-button` operations-pages.css:2187, `ga-lineage-v2-rail-tabs` lineage-v2.css:601); cards/panels ~181 across 9; **hero/KPI/stat tiles ~190 across 10 files — the single worst concept**; tables ~43 across 7; empty states ~56 across 8; toasts ~18 across 3; drawers/overlays ~36 across 5.
+**Duplication by concept (independent CSS implementations)**: buttons ~42 distinct selectors across 6 files; chips/pills/badges ~147 across 8; tabs ~84 across 9 (e.g. `gh-subtab` app.css:382, `gh-discovery-subtabs` discovery.css:9, `gh-entity-record-tabs` entity.css:52, `ax-tab-button` operations-pages.css:2187, `ax-lineage-v2-rail-tabs` lineage-v2.css:601); cards/panels ~181 across 9; **hero/KPI/stat tiles ~190 across 10 files — the single worst concept**; tables ~43 across 7; empty states ~56 across 8; toasts ~18 across 3; drawers/overlays ~36 across 5.
 
-**Theme debt**: app.css is a light base with dark bolted on — **36 `:root[data-theme="dark"]` override blocks and 756 `!important`** in that one file (**1,451 `!important` repo-wide**). discovery.css carries 18 cream fallbacks like `var(--gh-surface-muted, #f3f6fb)` (discovery.css:721) and `var(--gh-accent, #5b3ff2)` (discovery.css:724-728). Raw hex literals: app.css 160, discovery.css 148, northstar.css 136, entity.css 52; fully tokenized files: operations-pages.css (5 hexes, 485 `var(--ga-*)`), lineage-v2.css, lineage.css, capability-dashboard.css (0 hexes).
+**Theme debt**: app.css is a light base with dark bolted on — **36 `:root[data-theme="dark"]` override blocks and 756 `!important`** in that one file (**1,451 `!important` repo-wide**). discovery.css carries 18 cream fallbacks like `var(--gh-surface-muted, #f3f6fb)` (discovery.css:721) and `var(--gh-accent, #5b3ff2)` (discovery.css:724-728). Raw hex literals: app.css 160, discovery.css 148, northstar.css 136, entity.css 52; fully tokenized files: operations-pages.css (5 hexes, 485 `var(--ax-*)`), lineage-v2.css, lineage.css, capability-dashboard.css (0 hexes).
 
-**Token layer** (`design/tokens/`, 133 tokens, guarded by tokens.test.js): well-structured, `--ga-*` declared the contract with `--gh-*` kept as aliases (`--gh-bg: var(--ga-bg)`) — the token file itself encodes the migration debt. But 38 `--ga-`/`--gh-` custom properties are **locally re-defined outside the token dir** (app.css/northstar.css/shell-rail.css), shadowing the source of truth.
+**Token layer** (`design/tokens/`, 133 tokens, guarded by tokens.test.js): well-structured, `--ax-*` declared the contract with `--gh-*` kept as aliases (`--gh-bg: var(--ax-bg)`) — the token file itself encodes the migration debt. But 38 `--ga-`/`--gh-` custom properties are **locally re-defined outside the token dir** (app.css/northstar.css/shell-rail.css), shadowing the source of truth.
 
 **Import wiring hazard**: `operations-pages.css` (8,092 lines) is *not* in main.jsx — it is component-imported by 5 workspaces (AdminWorkspace.jsx:7, AuditBrowserWorkspace.jsx:6, CdeWorkspace.jsx:5, GovernanceWorkspace.jsx:21, TaxonomyWorkspace.jsx:14), so it enters the cascade *after* all globals whenever any of those mounts. northstar.css contains rules that depend on loading before/after operations-pages.css (northstar.css:7738, 7895). Cascade order is nondeterministic by navigation path; the 1,451 `!important`s are the workaround.
 
@@ -68,7 +68,7 @@ Addressable: the 13 surfaces, entity/lineage focus asset (path), governance asse
 - Lineage context (Data Lineage vs Operational Context) — workspaceIntent only (LineageWorkspace.jsx:1404-1408)
 - Taxonomy selected term/node/detail tab/status filter/search — local state; `?term=` is deleted after consumption via **raw `window.history.replaceState` bypassing the router** (TaxonomyWorkspace.jsx:697, and `?tab` sync at :877)
 - Asset 360 drawer open/fqn — App.jsx local state (:284)
-- Insights risk-focus — sessionStorage `ga-insights-focus` handoff
+- Insights risk-focus — sessionStorage `ax-insights-focus` handoff
 - Discovery density/favorites/recents/saved-searches/pins — localStorage only; discovery filter session snapshot — sessionStorage, revived only when the URL is blank (useDiscoveryWorkspace.js:213, 370)
 
 ### 2.3 Cross-surface handoff mechanisms — 7 distinct systems (the core dispersion cause)
@@ -77,11 +77,11 @@ Verified by exhaustive sweep; **zero React Context anywhere** (no createContext/
 
 1. **Router URL state** (§2.1), including the non-URL `location.state.fresh` boolean riding in history entries (useAppRouteState.js:334, 352, 430, 543).
 2. **~16 distinct props-drilled navigation callbacks**, all wired in App.jsx: `onOpenAsset` (App.jsx:833,895,912,926,941,1089), `onOpenGovernance` (:834,867,894,1015), `onOpenLineage` (:835,868,927,942,1090,1164), `onSelectAsset` (:871), `onNavigate` (:983,997,1057), `onModuleChange` (:1119), `onOpenGlossaryTerm` (:1016), `onOpenAsset360Drawer` (:1058), `onOpenDiscoveryWithFilter` (:1059-1063), `onOpenAsset360` (:1120-1133), `onOpenCapabilities` (:1147), `onSearchResultSelect` (:1135-1142), `onBrowseCatalog` (:1118), `onRouteAssetChange` (:1088), plus intra-surface `onOpenSchema`/`onOpenLinkedAsset`/`onOpenAssetReference`. Three different prop names (`onOpenAsset`, `onSelectAsset`, `onOpenAsset360`) mean "go to this asset."
-3. **5 sessionStorage handoff families**: `ga-pending-glossary-term` (written App.jsx:1020 + AppFrame.jsx:1146; read TaxonomyWorkspace.jsx:683), `ga-insights-focus` (HomePage.jsx:1369 → InsightsWorkspace.jsx:633), `gh.workspace.intent.v1:<path>:<kind>:<fqn>` (lib/workspaceIntent.js), `gh.discovery.session.v1:*` (useDiscoveryWorkspace.js:370/213), `governance-atlas.discovery-ai.*` AI-response cache (DiscoveryWorkspace.jsx:96-116).
-4. **6 localStorage keys**: `gh-favorite-assets`, `gh-recent-assets` (DiscoveryWorkspace.jsx:378-412, shared into CommandPalette.jsx:11-38), `gh-saved-searches` (:427-455), `gh-discovery-density` (:4840-4846), `gh-pinned-assets` (EntityHero.jsx:13-26), `governance-atlas:profile-avatar:*` (UserChip.jsx:179-228).
-5. **3 custom window events**: `ga:select-glossary-term` (dispatched App.jsx:1024, AppFrame.jsx:1150; listened TaxonomyWorkspace.jsx:1203 — paired with the sessionStorage key because the target may not be mounted), `gh:open-command-palette` (DiscoveryWorkspace.jsx:5963 → AppFrame.jsx:469), `ga:insights-focus` (listener InsightsWorkspace.jsx:654 with **no dispatcher in the repo — dormant code**).
+3. **5 sessionStorage handoff families**: `ax-pending-glossary-term` (written App.jsx:1020 + AppFrame.jsx:1146; read TaxonomyWorkspace.jsx:683), `ax-insights-focus` (HomePage.jsx:1369 → InsightsWorkspace.jsx:633), `gh.workspace.intent.v1:<path>:<kind>:<fqn>` (lib/workspaceIntent.js), `gh.discovery.session.v1:*` (useDiscoveryWorkspace.js:370/213), `axiom.discovery-ai.*` AI-response cache (DiscoveryWorkspace.jsx:96-116).
+4. **6 localStorage keys**: `gh-favorite-assets`, `gh-recent-assets` (DiscoveryWorkspace.jsx:378-412, shared into CommandPalette.jsx:11-38), `gh-saved-searches` (:427-455), `gh-discovery-density` (:4840-4846), `gh-pinned-assets` (EntityHero.jsx:13-26), `axiom:profile-avatar:*` (UserChip.jsx:179-228).
+5. **3 custom window events**: `ax:select-glossary-term` (dispatched App.jsx:1024, AppFrame.jsx:1150; listened TaxonomyWorkspace.jsx:1203 — paired with the sessionStorage key because the target may not be mounted), `gh:open-command-palette` (DiscoveryWorkspace.jsx:5963 → AppFrame.jsx:469), `ax:insights-focus` (listener InsightsWorkspace.jsx:654 with **no dispatcher in the repo — dormant code**).
 6. **`workspaceIntent` module singleton** (set/peek/consume over sessionStorage, keyed by `window.location.pathname`) — the sanctioned side channel for entity tab + lineage context (lib/workspaceIntent.js:1-43).
-7. **`atlasQueryClient` module singleton used as a bus** — imported directly (not via hooks) in useAssetDetail.js, useLineage.js, useAssetSearch.js; `setQueryData`/`invalidateQueries` called from TaxonomyWorkspace.jsx:1056-1086, 1802, 2018-2019, useGapAnalysis.js:62, useClassificationRecommendations.js:87-92 to coordinate cross-surface freshness.
+7. **`axiomQueryClient` module singleton used as a bus** — imported directly (not via hooks) in useAssetDetail.js, useLineage.js, useAssetSearch.js; `setQueryData`/`invalidateQueries` called from TaxonomyWorkspace.jsx:1056-1086, 1802, 2018-2019, useGapAnalysis.js:62, useClassificationRecommendations.js:87-92 to coordinate cross-surface freshness.
 
 **The same user intent — "open this glossary term" — takes three mechanisms at once** (sessionStorage + custom event + module change, App.jsx:1016-1026). That is the dispersion disease in one line.
 
@@ -99,7 +99,7 @@ Verified by exhaustive sweep; **zero React Context anywhere** (no createContext/
 
 ### 3.2 Pattern census
 
-Of ~27 data hooks, **~24 are react-query**, 2 are genuinely ad-hoc (`useAtlasAiConversation.js:55-62`, `useAssetMetadataEditor.js:142-207` — manual loading/error state), and `useDiscoveryWorkspace.js` is a hybrid (RQ-backed via `useDiscoveryResults` :417 plus its own filter/debounce state layer, setTimeout debounce :318).
+Of ~27 data hooks, **~24 are react-query**, 2 are genuinely ad-hoc (`useAxiomAiConversation.js:55-62`, `useAssetMetadataEditor.js:142-207` — manual loading/error state), and `useDiscoveryWorkspace.js` is a hybrid (RQ-backed via `useDiscoveryResults` :417 plus its own filter/debounce state layer, setTimeout debounce :318).
 
 But components bypass the hooks layer in two ways:
 - **10 inline `useQuery` declarations in component bodies** (AuditBrowserWorkspace.jsx:510, 526; CdeWorkspace.jsx:213, 227; AdminWorkspace.jsx:662, 894; TaxonomyWorkspace.jsx:735, 742; InboxPage.jsx:89, 94).
@@ -119,7 +119,7 @@ Envelope status strings are interpreted in **~55 non-test files**; heaviest: Hom
 ## 4. EntityWorkspace deep-dive (the Asset 360 record)
 
 - **Size/structure**: `EntityWorkspace.jsx` is 3,227 lines, one file, ~30 internal components (`Asset360Hero` :573, `Asset360Overview` :820, `EntityShellPlaceholder` :1003, `MetadataEditorPanel` :1153, `ActivityFeed` :1323, `QueryRecords` :1385, `Asset360Panel` :1508, plus AttributeList/MetricTile/OwnerList/PropertyList/CoverageSignalRows…). The default export starts at :1594 and declares **~15 useState + ~25 useMemo** before the first render branch.
-- **Old shell**: imports gh-generation primitives throughout — `SurfacePanelSection`/`SurfaceTabs` (:47), `LoadingState`/`SkeletonBlock` (:48), gh-primitives Breadcrumbs/OwnerAvatar/TabIcon/ProfilePanel/QualityPanel (:49-57); styled by pure-legacy `entity.css` (126 gh / 0 ga selectors, 52 raw hexes). Zero northstar imports. The one modern element is the embedded `LineageCanvasV2` (:45-46).
+- **Old shell**: imports gh-generation primitives throughout — `SurfacePanelSection`/`SurfaceTabs` (:47), `LoadingState`/`SkeletonBlock` (:48), gh-primitives Breadcrumbs/OwnerAvatar/TabIcon/ProfilePanel/QualityPanel (:49-57); styled by pure-legacy `entity.css` (126 gh / 0 ax selectors, 52 raw hexes). Zero northstar imports. The one modern element is the embedded `LineageCanvasV2` (:45-46).
 - **Why it isn't nav-reachable**: it has no rail entry — `ASSET_360_NAV_ITEM.requiresAsset: true` means the rail shows Asset 360 only when App passes a `currentAssetFqn` (which is `routeAssetFqn || discoveryRouteState.previewAssetFqn`, App.jsx:527). With no asset in the route there is no way to reach any entity page from the shell; and clicking it doesn't navigate directly — it runs `openAssetRecordSafely` (App.jsx:1120-1133), a pre-flight availability check that can *redirect you to Discovery instead*. The page is a destination without an address book: reachable only via other surfaces' `onOpenAsset` callbacks or a hand-typed `/entity/<fqn>` URL.
 - **Capability-gate labyrinth**: :1610-1698 computes ~25 booleans crossing 4 signal sources (bootstrap capabilities × runtime feature flags × workspaceAccess gates × non-authoritative-evidence detection) to decide tab visibility — e.g. `lineageTabAvailable = lineageAvailable && lineageRolloutAvailable && workspaceLineageRouteAvailable` (:1654). This is exactly the "bootstrap pessimism" CLAUDE.md warns about, re-derived ad hoc per surface.
 - **Data dependencies & load waterfall** (4 stages deep):
@@ -136,18 +136,18 @@ Headline finding: **the design system was largely built and then not adopted.** 
 
 | Concept | Shared impl(s) | Adoption | Independent inline impls (file:line) |
 |---|---|---|---|
-| Page hero | northstar/PageHero (`ga-page-hero`), primitives/EntityHero | **both orphans — 0 usages** | **11**: `gh-discovery-hero` DiscoveryWorkspace.jsx:2206; `ga-asset360-hero` EntityWorkspace.jsx:605/1026; `gh-taxonomy-ns-hero`+`-prototype-hero` TaxonomyWorkspace.jsx:902/1220; `gh-command-center-hero` HomePage.jsx:1621; `gh-governance-ns-hero` GovernanceWorkspace.jsx:1309; `ga-lineage-v2-hero` LineageWorkspace.jsx:505 (+:364); `gh-audit-hero` AuditBrowserWorkspace.jsx:872; `gh-admin-*-hero` AdminWorkspace.jsx:705/1009; `gh-insights-hero` InsightsWorkspace.jsx:728; `gh-cde-hero` CdeWorkspace.jsx:317 |
-| KPI/stat tiles | northstar/MetricCard + DonutMetric/BarList/Sparkline | **orphans — 0 usages** | **7 systems**: `gh-command-center-kpi-*` (Home), `gh-insights-kpi-*`, `gh-cde-kpis`, `gh-audit-kpis`, `gh-entity-metric-card`/`gh-preview-stat-*` (Entity), `gh-discovery-preview-metric-grid`, `ga-lineage-v2-rail-stats` |
-| Section cards | northstar/SectionCard; ShellLayout SurfacePanelSection/SurfaceWorkbench | SectionCard: **HomePage only** (6×, :1845-2129); SurfacePanelSection: Entity/Capability/Diagnostics | ~10 surfaces roll their own: `gh-taxonomy-panel`, `gh-governance-ns-*-panel`, `gh-insights-card` (+6 variants), `gh-admin-control-card`, `ga-lineage-*-panel`, `ga-asset360-panel` (+4), `gh-asset-preview-section`, `gh-capability-section-*`, `gh-panel` |
-| Badges/chips | **3 competing shared**: primitives/StatusBadge (`gh-status-chip`), primitives/MetadataChip (`gh-chip`), northstar/StatusPill (`ga-status-pill`) | StatusBadge: Capability 7×; StatusPill: Taxonomy 5×/Admin 5×/Cde 7×; MetadataChip: Capability 1× | inline spans bypassing all three: Discovery **38**, Entity **27** (own `gh-state-pill`), Diagnostics **26** raw `gh-chip` spans, Governance 5, Home 2; Asset360Drawer defines a private `Chip` (Asset360Drawer.jsx:69); Discovery has own `gh-discovery-status-pill` |
+| Page hero | northstar/PageHero (`ax-page-hero`), primitives/EntityHero | **both orphans — 0 usages** | **11**: `gh-discovery-hero` DiscoveryWorkspace.jsx:2206; `ax-asset360-hero` EntityWorkspace.jsx:605/1026; `gh-taxonomy-ns-hero`+`-prototype-hero` TaxonomyWorkspace.jsx:902/1220; `gh-command-center-hero` HomePage.jsx:1621; `gh-governance-ns-hero` GovernanceWorkspace.jsx:1309; `ax-lineage-v2-hero` LineageWorkspace.jsx:505 (+:364); `gh-audit-hero` AuditBrowserWorkspace.jsx:872; `gh-admin-*-hero` AdminWorkspace.jsx:705/1009; `gh-insights-hero` InsightsWorkspace.jsx:728; `gh-cde-hero` CdeWorkspace.jsx:317 |
+| KPI/stat tiles | northstar/MetricCard + DonutMetric/BarList/Sparkline | **orphans — 0 usages** | **7 systems**: `gh-command-center-kpi-*` (Home), `gh-insights-kpi-*`, `gh-cde-kpis`, `gh-audit-kpis`, `gh-entity-metric-card`/`gh-preview-stat-*` (Entity), `gh-discovery-preview-metric-grid`, `ax-lineage-v2-rail-stats` |
+| Section cards | northstar/SectionCard; ShellLayout SurfacePanelSection/SurfaceWorkbench | SectionCard: **HomePage only** (6×, :1845-2129); SurfacePanelSection: Entity/Capability/Diagnostics | ~10 surfaces roll their own: `gh-taxonomy-panel`, `gh-governance-ns-*-panel`, `gh-insights-card` (+6 variants), `gh-admin-control-card`, `ax-lineage-*-panel`, `ax-asset360-panel` (+4), `gh-asset-preview-section`, `gh-capability-section-*`, `gh-panel` |
+| Badges/chips | **3 competing shared**: primitives/StatusBadge (`gh-status-chip`), primitives/MetadataChip (`gh-chip`), northstar/StatusPill (`ax-status-pill`) | StatusBadge: Capability 7×; StatusPill: Taxonomy 5×/Admin 5×/Cde 7×; MetadataChip: Capability 1× | inline spans bypassing all three: Discovery **38**, Entity **27** (own `gh-state-pill`), Diagnostics **26** raw `gh-chip` spans, Governance 5, Home 2; Asset360Drawer defines a private `Chip` (Asset360Drawer.jsx:69); Discovery has own `gh-discovery-status-pill` |
 | Tables | northstar/DataTable | **orphan — 0 usages** | **8 inline tables**: EntityWorkspace.jsx:739 (bare), :2768 `gh-schema-table`, :3059 `gh-table`; AdminWorkspace.jsx:780; CapabilityDashboard.jsx:240/357; Asset360Drawer.jsx:232 (inline-styled) |
-| Empty/loading/degraded | **two shared families doing the same job**: northstar EmptyState/DegradedBanner (ga) vs ShellState EmptyStateBlock/LoadingState/WorkspaceStateCard/InlineStatusBanner (gh) | northstar: 6 surfaces; ShellState: 7 surfaces + AppFrame + primitives | plus inline: `gh-discovery-empty-state`, `gh-empty-state` (Entity), `ga-lineage-zero-state`, `gh-insights-empty-panel`, `gh-home-status-spinner` |
+| Empty/loading/degraded | **two shared families doing the same job**: northstar EmptyState/DegradedBanner (ax) vs ShellState EmptyStateBlock/LoadingState/WorkspaceStateCard/InlineStatusBanner (gh) | northstar: 6 surfaces; ShellState: 7 surfaces + AppFrame + primitives | plus inline: `gh-discovery-empty-state`, `gh-empty-state` (Entity), `ax-lineage-zero-state`, `gh-insights-empty-panel`, `gh-home-status-spinner` |
 | Toasts | **none shared** | — | `gh-discovery-preview-action-toast` DiscoveryWorkspace.jsx:4237; Governance status-banner-as-toast (:687-1161); Taxonomy inline banner (:1231) |
 | Drawers/modals | ShellLayout SurfaceDrawer (used only by 2 orphan primitive drawers); Asset360Drawer (self-contained, App-only); northstar/RightInspector (orphan) | — | inline dialogs: Discovery popovers :2560/:6547 (`role="dialog"`), Taxonomy scrim+modal :1565/:1663 |
 | Tab strips | ShellLayout SurfaceTabs | **EntityWorkspace only** (:1096, :2636) | **6 inline tablists**: DiscoveryWorkspace.jsx:4011/:4407, TaxonomyWorkspace.jsx:1259, LineageWorkspace.jsx:943, AdminWorkspace.jsx:1019, CdeWorkspace.jsx:579, Asset360Drawer.jsx:420 |
-| Entity mentions (asset/term/owner/request as link) | **no shared component.** OwnerAvatar(Stack) shared for owners; UserChip/AssetHoverCard orphans | — | per-surface inline `<button onClick={openAssetRecordSafely…}>` with divergent classes: Discovery 24× (`gh-discovery-row-title`), Taxonomy 31×, Cde 14× (`gh-cde-asset-link`), Audit 8×, Entity 5× (`ga-asset360-kv-chip is-link`), Lineage 5× (`ga-lineage-linked-row`), Governance 4×, Home 3×; Entity routes mentions to a drawer while everyone else routes to the record (161 asset360/openDrawer refs); zero `<a href>` anywhere — no mention is middle-clickable |
+| Entity mentions (asset/term/owner/request as link) | **no shared component.** OwnerAvatar(Stack) shared for owners; UserChip/AssetHoverCard orphans | — | per-surface inline `<button onClick={openAssetRecordSafely…}>` with divergent classes: Discovery 24× (`gh-discovery-row-title`), Taxonomy 31×, Cde 14× (`gh-cde-asset-link`), Audit 8×, Entity 5× (`ax-asset360-kv-chip is-link`), Lineage 5× (`ax-lineage-linked-row`), Governance 4×, Home 3×; Entity routes mentions to a drawer while everyone else routes to the record (161 asset360/openDrawer refs); zero `<a href>` anywhere — no mention is middle-clickable |
 
-Adoption census: DiscoveryWorkspace, GovernanceWorkspace, LineageWorkspace import **zero** northstar components; EntityWorkspace imports zero northstar and nine gh-primitives; only Home/Taxonomy/Cde/Admin/Audit/Insights partially adopted the ga kit (mostly just DegradedBanner/EmptyState/StatusPill).
+Adoption census: DiscoveryWorkspace, GovernanceWorkspace, LineageWorkspace import **zero** northstar components; EntityWorkspace imports zero northstar and nine gh-primitives; only Home/Taxonomy/Cde/Admin/Audit/Insights partially adopted the ax kit (mostly just DegradedBanner/EmptyState/StatusPill).
 
 ---
 
@@ -157,7 +157,7 @@ Design thesis: the product's dispersion has exactly three roots — **(a)** no s
 
 ## 6. Shared primitives layer — `frontend/src/components/system/`
 
-One kit, one directory, one stylesheet per component, all `ga-*` classes, all tokens. The existing `northstar/` kit is the seed (it is already `ga-*`): components below marked *absorb* start from the northstar implementation; marked *new* are built fresh; everything they replace is deleted at the end of its migration wave. The northstar lesson (§5: 9 of 14 components orphaned) is that building a kit without forcing adoption fails — so the kit ships in Wave A but every migration wave has a hard rule: **a surface exits its wave only when it renders zero non-system chrome**, and the legacy component it replaced is deleted in the same PR so there is nothing to drift back to.
+One kit, one directory, one stylesheet per component, all `ax-*` classes, all tokens. The existing `northstar/` kit is the seed (it is already `ax-*`): components below marked *absorb* start from the northstar implementation; marked *new* are built fresh; everything they replace is deleted at the end of its migration wave. The northstar lesson (§5: 9 of 14 components orphaned) is that building a kit without forcing adoption fails — so the kit ships in Wave A but every migration wave has a hard rule: **a surface exits its wave only when it renders zero non-system chrome**, and the legacy component it replaced is deleted in the same PR so there is nothing to drift back to.
 
 Layout of the directory:
 
@@ -173,7 +173,7 @@ components/system/
 
 **`PageShell`** *(new; replaces SurfaceHeader ShellLayoutPrimitives.jsx:56, northstar PageHero, and every inline hero)* —
 `<PageShell title subtitle eyebrow status={queryStatus} actions tabs={<TabStrip/>} rail={<aside/>} onRetry>{children}</PageShell>`.
-Owns: the hero band, the breadcrumb row (from `useAtlasNavigate` context), the page-level status banner (degraded/stale/unavailable — rendered from the `status` envelope, §7, so no surface hand-renders banners), optional right rail slot, sticky tab slot. Every routed surface renders exactly one PageShell. This single component is what makes 13 surfaces feel like one product.
+Owns: the hero band, the breadcrumb row (from `useAxiomNavigate` context), the page-level status banner (degraded/stale/unavailable — rendered from the `status` envelope, §7, so no surface hand-renders banners), optional right rail slot, sticky tab slot. Every routed surface renders exactly one PageShell. This single component is what makes 13 surfaces feel like one product.
 
 **`SectionCard`** *(absorb northstar/SectionCard.jsx)* — keep contract `{title, eyebrow, subtitle, actions, tooltip, children}`; add `status` prop taking the same envelope-status object so a card can show its own hydrating shimmer / degraded footnote without bespoke markup. Replaces `SurfacePanelSection` (ShellLayoutPrimitives.jsx:177) and the ~181 inline card selector families.
 
@@ -203,12 +203,12 @@ Internally: icon by kind (absorb AssetTypeIcon), label formatting (absorb assetP
 
 Ownership rule: `components/system/` has its own tests (`__tests__/`), its own `system.css`, and NO imports from `components/*` outside `system/` — dependencies point inward only.
 
-## 7. One data-loading contract — `useAtlasQuery`
+## 7. One data-loading contract — `useAxiomQuery`
 
-New file `frontend/src/hooks/useAtlasQuery.js` (plus `lib/envelope.js`). It is a thin, opinionated wrapper over `useQuery` against `atlasQueryClient` that codifies everything the 27 hooks each half-implement:
+New file `frontend/src/hooks/useAxiomQuery.js` (plus `lib/envelope.js`). It is a thin, opinionated wrapper over `useQuery` against `axiomQueryClient` that codifies everything the 27 hooks each half-implement:
 
 ```js
-const q = useAtlasQuery({
+const q = useAxiomQuery({
   key: ["asset-detail", fqn, sections],
   fetch: (signal) => fetchAssetDetail(fqn, { sections, signal }),
   enabled,
@@ -225,28 +225,28 @@ Codified semantics (single source of truth in `lib/envelope.js`):
 - **Bounded polling only.** `poll.maxAttempts` is mandatory; on exhaustion status degrades to `degraded` with warning "server still hydrating after N attempts" instead of polling forever. The lineage module-scoped attempt ledger (useLineage.js:139-190) generalizes into the wrapper. This fixes the 12 unbounded polls in §3.4 without changing cadences.
 - Seed/SWR: seed renders instantly as `hydrating` (never a blank "loading" flash — the hydration-zero bug class already noted at App.jsx:417-419); refresh failures never wipe rendered data, they flip status to `degraded` and surface `warnings`.
 - `no-store` awareness: fetchers that must bypass cache declare `fresh: true` → wrapper sets `staleTime: 0, gcTime: 0` instead of components calling `fetch` directly.
-- Mutations: `useAtlasMutation` sibling wrapping optimistic-update + rollback (the App.jsx:658-672 inbox pattern) and query invalidation by key prefix.
+- Mutations: `useAxiomMutation` sibling wrapping optimistic-update + rollback (the App.jsx:658-672 inbox pattern) and query invalidation by key prefix.
 
-**The rule** (enforced, §10 guardrails): *no component imports `fetch`, `apiFetch`, `useQuery`, or `atlasQueryClient`; no component interprets `meta.state`. Components consume `q.status` and render it exclusively through `StateViews`.*
+**The rule** (enforced, §10 guardrails): *no component imports `fetch`, `apiFetch`, `useQuery`, or `axiomQueryClient`; no component interprets `meta.state`. Components consume `q.status` and render it exclusively through `StateViews`.*
 
 ### Hook disposition map
 
 | Existing hook | Verdict | Note |
 |---|---|---|
-| useBootstrap, useRuntimeStatus | **refactor** onto useAtlasQuery | keep semantics; bound the 3s/15s polls (bootstrap maxAttempts ~40 ≈ 2min then degraded) |
+| useBootstrap, useRuntimeStatus | **refactor** onto useAxiomQuery | keep semantics; bound the 3s/15s polls (bootstrap maxAttempts ~40 ≈ 2min then degraded) |
 | useCommandCenter | **refactor** | seed goes through `seed` param; delete bespoke seed/meta merging in App.jsx:707-765 |
-| useInsightsDashboard, useGovernanceSummary, useDiscoveryResults, useAssetDetail, useAsset360, useCapabilityDashboard, useGapAnalysis, useClassificationRecommendations, useAssetSearch, useAccessExplain, useAssetCustomProperties, useAssetProfile, useAssetQuality, useAssetDatabricksEvidence, useColumnLineageTrace, useGovernanceAuditTimeline, useGovernanceGlossaryTerm | **refactor** | mechanical: swap useQuery→useAtlasQuery, delete local hydration predicates and refetchInterval fns |
+| useInsightsDashboard, useGovernanceSummary, useDiscoveryResults, useAssetDetail, useAsset360, useCapabilityDashboard, useGapAnalysis, useClassificationRecommendations, useAssetSearch, useAccessExplain, useAssetCustomProperties, useAssetProfile, useAssetQuality, useAssetDatabricksEvidence, useColumnLineageTrace, useGovernanceAuditTimeline, useGovernanceGlossaryTerm | **refactor** | mechanical: swap useQuery→useAxiomQuery, delete local hydration predicates and refetchInterval fns |
 | useLineage, useLineageRecommendations | **refactor** | their bounded-poll ledger BECOMES the wrapper's poll engine; hook keeps only lineage-shape logic; `useLineageGraphV2` adapter unchanged (it stays the single lineage normalization point per CLAUDE.md) |
-| useAtlasAiConversation | **keep ad-hoc** (streaming/imperative send doesn't fit query semantics) but route status rendering through StateViews |
-| useAssetMetadataEditor | **refactor** to useAtlasQuery + useAtlasMutation |
-| useDiscoveryWorkspace | **split**: results loading → useAtlasQuery; filter/URL state → §8's `useSurfaceParams`; delete its sessionStorage snapshot revival (URL is the snapshot) |
+| useAxiomAiConversation | **keep ad-hoc** (streaming/imperative send doesn't fit query semantics) but route status rendering through StateViews |
+| useAssetMetadataEditor | **refactor** to useAxiomQuery + useAxiomMutation |
+| useDiscoveryWorkspace | **split**: results loading → useAxiomQuery; filter/URL state → §8's `useSurfaceParams`; delete its sessionStorage snapshot revival (URL is the snapshot) |
 | useSeededAssetContext | **keep** (pure derivation) |
 | useAppRouteState | **delete** — replaced by §8 |
-| 10 inline component useQuery sites + GovernanceWorkspace/CommandPalette imperative fetches (§3.2) | **delete** — extract to surface hooks on useAtlasQuery (`useAuditEvents`, `useCdeDashboard`, `useAdminControlCenter`, `useTaxonomyOverview`, `useInboxWork`, `useGovernanceWorkbench`, `usePaletteSearch`) |
+| 10 inline component useQuery sites + GovernanceWorkspace/CommandPalette imperative fetches (§3.2) | **delete** — extract to surface hooks on useAxiomQuery (`useAuditEvents`, `useCdeDashboard`, `useAdminControlCenter`, `useTaxonomyOverview`, `useInboxWork`, `useGovernanceWorkbench`, `usePaletteSearch`) |
 
 ## 8. One navigation system
 
-New files: `frontend/src/nav/routes.js` (route table), `nav/refs.js` (entity/surface ref model), `nav/useAtlasNavigate.js`, `nav/useSurfaceParams.js`.
+New files: `frontend/src/nav/routes.js` (route table), `nav/refs.js` (entity/surface ref model), `nav/useAxiomNavigate.js`, `nav/useSurfaceParams.js`.
 
 ### The ref model
 
@@ -276,8 +276,8 @@ New files: `frontend/src/nav/routes.js` (route table), `nav/refs.js` (entity/sur
 
 | Mechanism | Replacement |
 |---|---|
-| `ga-pending-glossary-term` sessionStorage + `ga:select-glossary-term` event (App.jsx:1016-1026, AppFrame.jsx:1146-1150, TaxonomyWorkspace.jsx:683, 1203) | `navigate({kind:"term", id})` → `/glossary/<id>` — works mounted or not |
-| `ga-insights-focus` sessionStorage + dormant `ga:insights-focus` listener (HomePage.jsx:1369, InsightsWorkspace.jsx:633, 654) | `/insights?focus=risk` param + scroll-on-mount |
+| `ax-pending-glossary-term` sessionStorage + `ax:select-glossary-term` event (App.jsx:1016-1026, AppFrame.jsx:1146-1150, TaxonomyWorkspace.jsx:683, 1203) | `navigate({kind:"term", id})` → `/glossary/<id>` — works mounted or not |
+| `ax-insights-focus` sessionStorage + dormant `ax:insights-focus` listener (HomePage.jsx:1369, InsightsWorkspace.jsx:633, 654) | `/insights?focus=risk` param + scroll-on-mount |
 | `gh:open-command-palette` event (DiscoveryWorkspace.jsx:5963 → AppFrame.jsx:469) | palette opener exposed from AppShell context |
 | `workspaceIntent` singleton (lib/workspaceIntent.js; entity tab, lineage context) | `?tab=` and `?context=` params |
 | `window.history.replaceState` bypasses (TaxonomyWorkspace.jsx:697, 877) | `useSurfaceParams` |
@@ -295,9 +295,9 @@ New files: `frontend/src/nav/routes.js` (route table), `nav/refs.js` (entity/sur
 
 ```
 src/design/tokens/            (keep; 133 tokens; delete --gh-* aliases at the end)
-src/components/system/system.css   (~2,500 lines: all primitives, all ga-*)
+src/components/system/system.css   (~2,500 lines: all primitives, all ax-*)
 src/app-shell/shell.css            (~800 lines: rail, header, palette, toasts)
-src/surfaces/<surface>/<surface>.css  (≤300 lines each: layout-only, ga-* prefixed,
+src/surfaces/<surface>/<surface>.css  (≤300 lines each: layout-only, ax-* prefixed,
                                        no buttons/chips/tables/cards — those are system)
 ```
 
@@ -308,18 +308,18 @@ Target ≈ 8-9k lines total, down from 32,972 (-73%). All imports in main.jsx in
 | File | Fate |
 |---|---|
 | lineage-v2.css | keep — rename into surfaces/lineage/, already clean |
-| northstar.css | split: ga-* system rules → system.css; gh-* remainder dies with each surface migration |
+| northstar.css | split: ax-* system rules → system.css; gh-* remainder dies with each surface migration |
 | operations-pages.css, discovery.css, entity.css, shell-rail.css, governance.css, capability-dashboard.css, insights.css, lineage.css | deleted at the end of their surface's wave (§10) |
 | app.css | shrinks per wave; the 36 `data-theme=dark` blocks + 756 `!important` die with the shell rewrite; deleted last |
 | tokens colors.css `--gh-*` aliases | deleted in the final wave; build fails on any survivor |
 
 ### Migration without a flag day
 
-Per-surface, in wave order (§10): a surface migrates by (1) rebuilding on system components — which carry their own CSS, (2) moving surface-specific layout rules into `surfaces/<s>/<s>.css` under `ga-` names, (3) deleting that surface's legacy sheet + its slice of app.css. Old and new surfaces coexist because legacy sheets remain loaded until their owning surface's wave completes — the system kit's `ga-*` classes never collide with `gh-*`.
+Per-surface, in wave order (§10): a surface migrates by (1) rebuilding on system components — which carry their own CSS, (2) moving surface-specific layout rules into `surfaces/<s>/<s>.css` under `ga-` names, (3) deleting that surface's legacy sheet + its slice of app.css. Old and new surfaces coexist because legacy sheets remain loaded until their owning surface's wave completes — the system kit's `ax-*` classes never collide with `gh-*`.
 
 ### Enforcement (CI, from Wave A day 1)
 
-- `scripts/check-css.mjs` in the vitest/CI pipeline: fail on (a) new `gh-` class in any changed JSX/CSS, (b) raw hex color outside `design/tokens/`, (c) `!important` outside a whitelisted third-party-override block, (d) `import "*.css"` outside main.jsx, (e) local re-definition of `--ga-*` outside tokens (kills the 38 shadow definitions).
+- `scripts/check-css.mjs` in the vitest/CI pipeline: fail on (a) new `gh-` class in any changed JSX/CSS, (b) raw hex color outside `design/tokens/`, (c) `!important` outside a whitelisted third-party-override block, (d) `import "*.css"` outside main.jsx, (e) local re-definition of `--ax-*` outside tokens (kills the 38 shadow definitions).
 - Ratchet file with current gh-count per file; the count may only go down.
 
 ## 10. Migration plan — ordered waves, disjoint file ownership
@@ -329,19 +329,19 @@ Sizing assumes parallel subagents per CLAUDE.md rules (checkpoint commits, no st
 ### Wave A — the system, no visual change (3 parallel tracks, disjoint)
 
 - **A1 · System kit** — owns `components/system/**`, `system.css`. Builds §6 components + their vitest suites (render contracts, a11y roles, status-prop rendering). Northstar absorbed by copy, not edit — `northstar/` untouched until Wave C consumers move.
-- **A2 · Data contract** — owns `hooks/useAtlasQuery.js`, `lib/envelope.js`, plus mechanical refactors of the 19 "refactor" hooks (§7 table). Behavior-preserving: same keys, same cadences, now bounded. Existing hook tests keep passing — that is the acceptance gate.
-- **A3 · Nav system** — owns `nav/**` only. Builds routes.js/refs.js/useAtlasNavigate/useSurfaceParams + alias redirects + tests (every legacy URL in §2.1 must resolve). Nothing consumes it yet.
+- **A2 · Data contract** — owns `hooks/useAxiomQuery.js`, `lib/envelope.js`, plus mechanical refactors of the 19 "refactor" hooks (§7 table). Behavior-preserving: same keys, same cadences, now bounded. Existing hook tests keep passing — that is the acceptance gate.
+- **A3 · Nav system** — owns `nav/**` only. Builds routes.js/refs.js/useAxiomNavigate/useSurfaceParams + alias redirects + tests (every legacy URL in §2.1 must resolve). Nothing consumes it yet.
 - Conflict-free by construction: A1/A2/A3 touch zero shared files. `frontend/src/components/lineage-v2/**`, `LineageWorkspace.jsx`, `lineage-v2.css` stay off-limits (CLAUDE.md parallel-work rule).
 
 ### Wave B — shell + Asset 360 flagship (2 tracks)
 
-- **B1 · AppShell rewrite** — owns new `app-shell/**` (AppShell.jsx, Rail.jsx, Header.jsx, shell.css) + `App.jsx` + `main.jsx`. `<Routes>` from ROUTES table; App.jsx shrinks to ~150 lines (providers + shell + routes); the lifted discovery/governance state buses die (surfaces own their queries; the inbox badge becomes a `useInboxWork` hook consumed by Rail); Atlas AI chat extracted from AppFrame into `app-shell/AtlasAiDock.jsx`. AppFrame.jsx deleted.
-- **B2 · Asset 360 rebuild** — owns new `surfaces/asset/**`. EntityWorkspace.jsx (3,227 lines) is **rewritten, not migrated**: PageShell + TabStrip(`?tab=`) + SectionCards + EntityChips; the 4-stage waterfall collapses to two parallel `useAtlasQuery` calls (`asset-detail?sections=…` + `asset-360`) with seed from route-loader context — 360 no longer waits on detail; the 25-boolean capability calculus moves to one `lib/capabilities.js` helper `surfaceGates(bootstrap, runtimeFlags, workspaceAccess)` honoring the trust-live-API-over-bootstrap rule; Asset 360 gains a real rail entry + `/assets/:fqn` address, and the drawer binds `?peek=`. This page is the flagship: it exercises every system component and both contracts, and every other surface links into it.
+- **B1 · AppShell rewrite** — owns new `app-shell/**` (AppShell.jsx, Rail.jsx, Header.jsx, shell.css) + `App.jsx` + `main.jsx`. `<Routes>` from ROUTES table; App.jsx shrinks to ~150 lines (providers + shell + routes); the lifted discovery/governance state buses die (surfaces own their queries; the inbox badge becomes a `useInboxWork` hook consumed by Rail); Axiom AI chat extracted from AppFrame into `app-shell/AxiomAiDock.jsx`. AppFrame.jsx deleted.
+- **B2 · Asset 360 rebuild** — owns new `surfaces/asset/**`. EntityWorkspace.jsx (3,227 lines) is **rewritten, not migrated**: PageShell + TabStrip(`?tab=`) + SectionCards + EntityChips; the 4-stage waterfall collapses to two parallel `useAxiomQuery` calls (`asset-detail?sections=…` + `asset-360`) with seed from route-loader context — 360 no longer waits on detail; the 25-boolean capability calculus moves to one `lib/capabilities.js` helper `surfaceGates(bootstrap, runtimeFlags, workspaceAccess)` honoring the trust-live-API-over-bootstrap rule; Asset 360 gains a real rail entry + `/assets/:fqn` address, and the drawer binds `?peek=`. This page is the flagship: it exercises every system component and both contracts, and every other surface links into it.
 - B1/B2 disjoint (shell vs surface files); both land behind the alias-redirect net so no deep link breaks.
 
 ### Wave C+ — surface-by-surface (order + rationale; one owner each, parallel in pairs)
 
-1. **C1 Discovery** (biggest file 6,797 lines, most handoffs; FilterBar+DataTable flagship; deletes discovery.css's cream fallbacks + sessionStorage snapshot) ∥ **C2 Home** (already ga-leaning; StatTile/SectionCard conversion; deletes the App.jsx command-center seed synthesis remnants).
+1. **C1 Discovery** (biggest file 6,797 lines, most handoffs; FilterBar+DataTable flagship; deletes discovery.css's cream fallbacks + sessionStorage snapshot) ∥ **C2 Home** (already ax-leaning; StatTile/SectionCard conversion; deletes the App.jsx command-center seed synthesis remnants).
 2. **C3 Governance/Stewardship** (imperative fetches → hooks; request `?request=` addressable) ∥ **C4 Taxonomy+CDE** (deletes history.replaceState bypasses, `?term=` becomes persistent; absorbs CdeWorkspace as `/glossary?tab=cdes` per today's canonicalization).
 3. **C5 Audit + Inbox** (inline useQuery → hooks; `?event=` addressable) ∥ **C6 Insights + Capabilities + Admin** (rail entries from route table; deletes insights.css/capability-dashboard.css).
 4. **C7 Lineage** last (v2 kit already clean; only PageShell/status/nav adoption — minimal churn honoring the don't-touch list until the end).
@@ -358,8 +358,8 @@ Rationale for the order: highest-traffic + highest-debt first (Discovery), cheap
 ### Guardrails against re-dispersion (permanent)
 
 1. CI check-css (§9) — no gh-, no raw hex, no CSS imports outside main.jsx, no `!important`.
-2. ESLint `no-restricted-imports`/`no-restricted-syntax`: `fetch`/`apiFetch`/`useQuery`/`atlasQueryClient` banned outside `hooks/` + `lib/`; `sessionStorage`/`localStorage` banned outside `lib/prefs.js`; `dispatchEvent(new CustomEvent` banned outside `app-shell/`; `window.history` banned everywhere.
-3. `refetchInterval` may only appear inside useAtlasQuery — polling is always bounded.
+2. ESLint `no-restricted-imports`/`no-restricted-syntax`: `fetch`/`apiFetch`/`useQuery`/`axiomQueryClient` banned outside `hooks/` + `lib/`; `sessionStorage`/`localStorage` banned outside `lib/prefs.js`; `dispatchEvent(new CustomEvent` banned outside `app-shell/`; `window.history` banned everywhere.
+3. `refetchInterval` may only appear inside useAxiomQuery — polling is always bounded.
 4. New surface = ROUTES entry + `surfaces/<name>/` dir; PR template requires naming which system components it composes; any new one-off button/chip/tab/table/empty-state in a surface file is a review blocker.
 5. The dependency direction is law: `surfaces → system → tokens`, `surfaces → hooks → lib`; nothing imports from a surface.
 

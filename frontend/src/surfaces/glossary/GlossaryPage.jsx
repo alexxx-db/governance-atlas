@@ -17,11 +17,11 @@ import {
 } from "../../components/system";
 import { useCdeDashboard } from "../../hooks/useCdeDashboard";
 import { useWorkspaceRoster } from "../../hooks/useWorkspaceRoster";
-import { useAtlasMutation } from "../../hooks/useAtlasQuery";
+import { useAxiomMutation } from "../../hooks/useAxiomQuery";
 import { useTaxonomyOverview } from "../../hooks/useTaxonomyOverview";
 import { fetchAiAutofill, updateAssetMetadata, upsertGovernanceGlossaryTerm } from "../../lib/api";
 import { isNonAuthoritativeMockEvidence } from "../../lib/nonAuthoritativeEvidence";
-import { useAtlasNavigate } from "../../nav/useAtlasNavigate";
+import { useAxiomNavigate } from "../../nav/useAxiomNavigate";
 import { useSurfaceParams } from "../../nav/useSurfaceParams";
 import { CdeRegistry } from "./CdeRegistry";
 import {
@@ -47,12 +47,12 @@ import { TermDetail } from "./TermDetail";
  *     (read via useParams — back/forward and shared links restore it); the
  *     CDE registry is ?tab=cdes with ?cde=<id> selecting a row; search and
  *     status filters ride in ?q= / ?status=. The legacy sessionStorage +
- *     window-event term handoff (ga-pending-glossary-term /
- *     ga:select-glossary-term) and the raw history.replaceState bypasses are
+ *     window-event term handoff (ax-pending-glossary-term /
+ *     ax:select-glossary-term) and the raw history.replaceState bypasses are
  *     dead — nav/routes.js promotes legacy ?term= links to the durable path
  *     before this page mounts.
- *   - Data loads only through hooks on useAtlasQuery (bounded polls); writes
- *     go through useAtlasMutation against the existing governance APIs.
+ *   - Data loads only through hooks on useAxiomQuery (bounded polls); writes
+ *     go through useAxiomMutation against the existing governance APIs.
  *   - Every entity mention is an EntityChip anchor (cross-linking LAW).
  */
 
@@ -85,7 +85,7 @@ export default function GlossaryPage({ shell = null }) {
   // Terminal greedy path param: /glossary/:termId mounts as a RR splat.
   const termId = safeDecode(String(routeParams["*"] || ""));
   const [params, setParams] = useSurfaceParams(GLOSSARY_PARAMS_SCHEMA);
-  const navigate = useAtlasNavigate();
+  const navigate = useAxiomNavigate();
 
   const overviewQuery = useTaxonomyOverview();
   const cdeQuery = useCdeDashboard();
@@ -275,13 +275,13 @@ export default function GlossaryPage({ shell = null }) {
   const roster = useWorkspaceRoster({ enabled: Boolean(termForm) });
   const [cdeFormError, setCdeFormError] = useState("");
 
-  const termUpsert = useAtlasMutation({
+  const termUpsert = useAxiomMutation({
     mutate: (payload) => upsertGovernanceGlossaryTerm(payload),
-    invalidates: [["atlas", "taxonomy-overview"], ["governance", "glossary"]],
+    invalidates: [["axiom", "taxonomy-overview"], ["governance", "glossary"]],
   });
-  const flagCde = useAtlasMutation({
+  const flagCde = useAxiomMutation({
     mutate: ({ assetFqn, rationale }) => updateAssetMetadata(assetFqn, { isCde: true, cdeRationale: rationale }),
-    invalidates: [["atlas", "cde-dashboard"], ["atlas", "taxonomy-cde-dashboard"], ["atlas", "taxonomy-overview"]],
+    invalidates: [["axiom", "cde-dashboard"], ["axiom", "taxonomy-cde-dashboard"], ["axiom", "taxonomy-overview"]],
   });
 
   const handleSubmitTermForm = async (event) => {
@@ -382,7 +382,7 @@ export default function GlossaryPage({ shell = null }) {
 
   return (
     <PageShell
-      className="ga-glos-page"
+      className="ax-glos-page"
       eyebrow="Glossary & CDE Registry"
       title="Shared business meaning, anchored to data"
       subtitle="Glossary terms link to source-of-record assets. Critical Data Elements carry stricter ownership, certification, and lineage requirements."
@@ -413,7 +413,7 @@ export default function GlossaryPage({ shell = null }) {
       }
     >
       {activeTab === "glossary" ? (
-        <div className="ga-glos-section">
+        <div className="ax-glos-section">
           {termNotFound ? (
             <StatusBanner
               action={
@@ -426,7 +426,7 @@ export default function GlossaryPage({ shell = null }) {
               tone="warning"
             />
           ) : null}
-          <div className="ga-glos-toolbar">
+          <div className="ax-glos-toolbar">
             <FilterBar
               facets={[
                 {
@@ -452,7 +452,7 @@ export default function GlossaryPage({ shell = null }) {
           </div>
           <p
             aria-busy={glossaryLoading ? true : undefined}
-            className="ga-glos-caption"
+            className="ax-glos-caption"
             role="status"
           >
             {/* "Showing … of …" only once data exists — a definitive "0 of 0"
@@ -473,10 +473,10 @@ export default function GlossaryPage({ shell = null }) {
               title={glossaryCount ? "No terms match this view" : "No glossary terms yet"}
             />
           ) : (
-            <div aria-label="Glossary cards" className="ga-glos-card-grid">
+            <div aria-label="Glossary cards" className="ax-glos-card-grid">
               {visibleTerms.map((term) => (
                 <article
-                  className={`ga-glos-card ${selectedTerm?.termId === term.termId ? "is-selected" : ""}`.trim()}
+                  className={`ax-glos-card ${selectedTerm?.termId === term.termId ? "is-selected" : ""}`.trim()}
                   key={term.termId}
                   onClick={(event) => {
                     // Whole-card click is a convenience zone; the term chip
@@ -485,7 +485,7 @@ export default function GlossaryPage({ shell = null }) {
                     openTerm(term);
                   }}
                 >
-                  <div className="ga-glos-card-head">
+                  <div className="ax-glos-card-head">
                     <div>
                       <h2>
                         <EntityChip
@@ -493,16 +493,16 @@ export default function GlossaryPage({ shell = null }) {
                           entity={{ kind: "term", id: term.termId, label: term.term }}
                         />
                       </h2>
-                      <span className="ga-glos-card-sub">
+                      <span className="ax-glos-card-sub">
                         {term.domain} · {term.stewardEmail || term.ownerEmail || "Unassigned steward"}
                       </span>
                     </div>
                     <Badge tone={statusToneFor(term.status)}>{statusLabelFor(term.status, "Draft")}</Badge>
                   </div>
-                  <p className="ga-glos-card-definition">
+                  <p className="ax-glos-card-definition">
                     {term.definition || "No definition recorded for this term."}
                   </p>
-                  <dl aria-label={`${term.term} provenance`} className="ga-glos-card-proof">
+                  <dl aria-label={`${term.term} provenance`} className="ax-glos-card-proof">
                     <div>
                       <dt>Associations</dt>
                       <dd>{termAssociationSummary(term)}</dd>
@@ -517,7 +517,7 @@ export default function GlossaryPage({ shell = null }) {
             </div>
           )}
           {selectedTerm ? (
-            <div ref={termDetailRef} className="ga-glos-detail-anchor">
+            <div ref={termDetailRef} className="ax-glos-detail-anchor">
               <TermDetail
                 canDecide={canDecideReview}
                 childTerms={childTerms}
@@ -531,7 +531,7 @@ export default function GlossaryPage({ shell = null }) {
           ) : null}
         </div>
       ) : (
-        <div className="ga-glos-section">
+        <div className="ax-glos-section">
           <CdeRegistry
             filters={{ q: params.q || "", domain: params.domain || "" }}
             loading={cdeLoading}
@@ -553,13 +553,13 @@ export default function GlossaryPage({ shell = null }) {
         title={termForm?.mode === "edit" ? "Edit glossary term" : "New glossary term"}
       >
         {termForm ? (
-          <form className="ga-glos-form" onSubmit={handleSubmitTermForm}>
-            <p className="ga-glos-form-help">
+          <form className="ax-glos-form" onSubmit={handleSubmitTermForm}>
+            <p className="ax-glos-form-help">
               {termForm.mode === "edit"
                 ? "Edits replay through the governed glossary upsert and are recorded in the term history."
                 : "Drafts are saved with status Draft. Stewards can promote them to Proposed or Approved later."}
             </p>
-            <label className="ga-glos-field">
+            <label className="ax-glos-field">
               <span>Term name *</span>
               <input
                 autoFocus
@@ -576,8 +576,8 @@ export default function GlossaryPage({ shell = null }) {
                 value={termForm.draft.name}
               />
             </label>
-            <div className="ga-glos-field">
-              <div className="ga-glos-field-label-row">
+            <div className="ax-glos-field">
+              <div className="ax-glos-field-label-row">
                 <span>Definition</span>
                 <Button
                   disabled={termUpsert.submitting}
@@ -587,7 +587,7 @@ export default function GlossaryPage({ shell = null }) {
                     handleAiAutofillTerm();
                   }}
                   size="sm"
-                  title="Draft the definition and domain from the term name using Atlas AI"
+                  title="Draft the definition and domain from the term name using Axiom AI"
                   type="button"
                   variant="tertiary"
                 >
@@ -608,8 +608,8 @@ export default function GlossaryPage({ shell = null }) {
                 value={termForm.draft.definition}
               />
             </div>
-            <div className="ga-glos-field-row">
-              <label className="ga-glos-field">
+            <div className="ax-glos-field-row">
+              <label className="ax-glos-field">
                 <span>Domain</span>
                 <SuggestInput
                   disabled={termUpsert.submitting}
@@ -625,7 +625,7 @@ export default function GlossaryPage({ shell = null }) {
                   value={termForm.draft.domain}
                 />
               </label>
-              <label className="ga-glos-field">
+              <label className="ax-glos-field">
                 <span>Owner email</span>
                 <SuggestInput
                   disabled={termUpsert.submitting}
@@ -643,7 +643,7 @@ export default function GlossaryPage({ shell = null }) {
                 {/* Honest hint: only real account principals validate on save;
                     say so when the roster is actually available. */}
                 {roster.available ? (
-                  <small className="ga-glos-field-hint">
+                  <small className="ax-glos-field-hint">
                     Autofills from {roster.emails.length} account member
                     {roster.emails.length === 1 ? "" : "s"}
                   </small>
@@ -651,7 +651,7 @@ export default function GlossaryPage({ shell = null }) {
               </label>
             </div>
             {termForm.mode === "edit" ? (
-              <label className="ga-glos-field">
+              <label className="ax-glos-field">
                 <span>Status</span>
                 <select
                   disabled={termUpsert.submitting}
@@ -672,11 +672,11 @@ export default function GlossaryPage({ shell = null }) {
               </label>
             ) : null}
             {termFormError ? (
-              <p className="ga-glos-form-error" role="alert">
+              <p className="ax-glos-form-error" role="alert">
                 {termFormError}
               </p>
             ) : null}
-            <div className="ga-glos-form-actions">
+            <div className="ax-glos-form-actions">
               <Button
                 disabled={termUpsert.submitting}
                 onClick={() => setTermForm(null)}
@@ -706,12 +706,12 @@ export default function GlossaryPage({ shell = null }) {
         title="Flag asset as CDE"
       >
         {cdeForm ? (
-          <form className="ga-glos-form" onSubmit={handleSubmitCdeForm}>
-            <p className="ga-glos-form-help">
+          <form className="ax-glos-form" onSubmit={handleSubmitCdeForm}>
+            <p className="ax-glos-form-help">
               Flags the asset as a Critical Data Element via the governed asset-metadata write path.
               The registry refreshes once the write lands.
             </p>
-            <label className="ga-glos-field">
+            <label className="ax-glos-field">
               <span>Asset FQN *</span>
               <input
                 autoFocus
@@ -725,7 +725,7 @@ export default function GlossaryPage({ shell = null }) {
                 value={cdeForm.assetFqn}
               />
             </label>
-            <label className="ga-glos-field">
+            <label className="ax-glos-field">
               <span>Rationale</span>
               <textarea
                 disabled={flagCde.submitting}
@@ -738,11 +738,11 @@ export default function GlossaryPage({ shell = null }) {
               />
             </label>
             {cdeFormError ? (
-              <p className="ga-glos-form-error" role="alert">
+              <p className="ax-glos-form-error" role="alert">
                 {cdeFormError}
               </p>
             ) : null}
-            <div className="ga-glos-form-actions">
+            <div className="ax-glos-form-actions">
               <Button disabled={flagCde.submitting} onClick={() => setCdeForm(null)} variant="tertiary">
                 Cancel
               </Button>

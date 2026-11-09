@@ -31,7 +31,7 @@ function TabList({
   onChange,
   ariaLabel = "Tabs",
   className = "",
-  idPrefix = "ga-sys",
+  idPrefix = "ax-sys",
 }) {
   const listRef = useRef(null);
 
@@ -65,7 +65,7 @@ function TabList({
 
   return (
     <div
-      className={`ga-sys-tabstrip ${className}`.trim()}
+      className={`ax-sys-tabstrip ${className}`.trim()}
       role="tablist"
       aria-label={ariaLabel}
       ref={listRef}
@@ -82,7 +82,7 @@ function TabList({
             role="tab"
             aria-selected={selected}
             aria-controls={tab.controls || undefined}
-            className={`ga-sys-tab ${selected ? "is-active" : ""}`.trim()}
+            className={`ax-sys-tab ${selected ? "is-active" : ""}`.trim()}
             tabIndex={selected ? 0 : -1}
             disabled={Boolean(tab.disabled)}
             // Honest disabled state: surface WHY, not just a dead control.
@@ -90,13 +90,13 @@ function TabList({
             onClick={() => select(tab.key)}
           >
             {tab.icon ? (
-              <span className="ga-sys-tab-icon" aria-hidden="true">
+              <span className="ax-sys-tab-icon" aria-hidden="true">
                 {tab.icon}
               </span>
             ) : null}
-            <span className="ga-sys-tab-label">{tab.label}</span>
+            <span className="ax-sys-tab-label">{tab.label}</span>
             {tab.badge != null && tab.badge !== "" ? (
-              <Badge size="sm" tone="accent" className="ga-sys-tab-badge">
+              <Badge size="sm" tone="accent" className="ax-sys-tab-badge">
                 {tab.badge}
               </Badge>
             ) : null}

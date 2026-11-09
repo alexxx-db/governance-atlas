@@ -1,5 +1,5 @@
 import { fetchInsightsDashboard } from "../lib/api";
-import { useAtlasQuery } from "./useAtlasQuery";
+import { useAxiomQuery } from "./useAxiomQuery";
 
 const EMPTY_INSIGHTS_DASHBOARD = {
   kpis: [],
@@ -75,8 +75,8 @@ export function useInsightsDashboard(options = {}) {
   const enabled = resolvedOptions.enabled !== false;
   const seedData = resolvedOptions.seedData || null;
 
-  const { query } = useAtlasQuery({
-    key: ["atlas", "insights-dashboard"],
+  const { query } = useAxiomQuery({
+    key: ["axiom", "insights-dashboard"],
     fetch: (signal) => fetchInsightsDashboard({ signal }),
     enabled,
     staleTime: resolvedOptions.staleTime ?? 60_000,

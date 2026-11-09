@@ -1,13 +1,13 @@
 {
-  "assetFqn": "datapact.governance_atlas_demo.customer_stewardship_queue",
+  "assetFqn": "emet.axiom_demo.customer_stewardship_queue",
   "lakebaseRows": [
     [
-      "datapact.governance_atlas_demo.customer_stewardship_queue",
-      "atlas-lakebase-proof-20260425043503@entrada.ai",
+      "emet.axiom_demo.customer_stewardship_queue",
+      "axiom-lakebase-proof-20260425043503@shorecp.com",
       "steward",
-      "skyler@entrada.ai"
+      "abarreto@shorecp.com"
     ]
   ],
-  "ownerEmail": "atlas-lakebase-proof-20260425043503@entrada.ai",
+  "ownerEmail": "axiom-lakebase-proof-20260425043503@shorecp.com",
   "rowCount": 1
 }

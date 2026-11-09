@@ -118,7 +118,7 @@ export function SuggestInput({
   };
 
   return (
-    <span className="ga-sys-suggest" ref={wrapRef}>
+    <span className="ax-sys-suggest" ref={wrapRef}>
       <input
         autoComplete="off"
         {...rest}
@@ -145,14 +145,14 @@ export function SuggestInput({
         onKeyDown={handleKeyDown}
       />
       {showList ? (
-        <ul className="ga-sys-suggest-list" id={listId} role="listbox">
+        <ul className="ax-sys-suggest-list" id={listId} role="listbox">
           {matches.map((label, index) => (
             <li
               key={label}
               id={`${listId}-opt-${index}`}
               role="option"
               aria-selected={index === active}
-              className={`ga-sys-suggest-option${index === active ? " is-active" : ""}`}
+              className={`ax-sys-suggest-option${index === active ? " is-active" : ""}`}
               // mousedown (not click) so selection fires before the input blur.
               onMouseDown={(event) => {
                 event.preventDefault();

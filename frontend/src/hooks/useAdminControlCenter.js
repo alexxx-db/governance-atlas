@@ -3,7 +3,7 @@
 // center dashboard + metastore truth check). Query keys mirror the inline
 // ones so Wave C adoption is a drop-in with cache continuity.
 import { fetchAdminControlCenter, fetchAdminTruthCheck } from "../lib/api";
-import { useAtlasQuery } from "./useAtlasQuery";
+import { useAxiomQuery } from "./useAxiomQuery";
 
 /**
  * The admin control-center dashboard. `enabled` carries the admin role gate
@@ -12,8 +12,8 @@ import { useAtlasQuery } from "./useAtlasQuery";
  */
 export function useAdminControlCenter(options = {}) {
   const enabled = options.enabled !== false;
-  return useAtlasQuery({
-    key: ["atlas", "admin-control-center"],
+  return useAxiomQuery({
+    key: ["axiom", "admin-control-center"],
     enabled,
     fetch: (signal) => fetchAdminControlCenter({ signal }),
     retry: false,
@@ -31,8 +31,8 @@ export function useAdminControlCenter(options = {}) {
  */
 export function useAdminTruthCheck(options = {}) {
   const enabled = options.enabled !== false;
-  return useAtlasQuery({
-    key: ["atlas", "admin-truth-check"],
+  return useAxiomQuery({
+    key: ["axiom", "admin-truth-check"],
     enabled,
     fetch: (signal) => fetchAdminTruthCheck({ signal }),
     retry: false,

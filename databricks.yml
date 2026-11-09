@@ -1,5 +1,5 @@
 bundle:
-  name: atlas
+  name: axiom
 
 # No workspace profile/host here: pick it with `--profile` (or
 # DATABRICKS_CONFIG_PROFILE) so any operator can deploy to their own workspace.
@@ -25,7 +25,6 @@ sync:
     - .venv/**
     - frontend/node_modules/**
     - node_modules/**
-    - docs/northstar_visual_qa/**
     - tests/**
 
 # ── Variables ──────────────────────────────────────────────
@@ -34,7 +33,7 @@ sync:
 variables:
   app_name:
     description: "Databricks App name; must be unique per workspace, so give staging/prod distinct names if they share one"
-    default: "atlas"
+    default: "axiom"
   warehouse_id:
     description: "SQL Warehouse ID the app uses for UC queries"
   gov_catalog:
@@ -55,17 +54,17 @@ variables:
   deploy_target:
     description: "User-facing bundle target for runtime environment metadata"
     default: ""
-  atlas_ai_provider:
-    description: "Atlas AI provider: local or genie"
+  axiom_ai_provider:
+    description: "Axiom AI provider: local or genie"
     default: "local"
   genie_space_id:
-    description: "Optional Databricks Genie space ID used by Atlas AI"
+    description: "Optional Databricks Genie space ID used by Axiom AI"
     default: "not-configured"
   genie_space_title:
-    description: "User-facing title for the Atlas AI Genie space"
-    default: "Governance Atlas Metadata Room"
-  atlas_ai_require_benchmark:
-    description: "Whether Atlas AI should report the Genie benchmark as a required readiness gate"
+    description: "User-facing title for the Axiom AI Genie space"
+    default: "Axiom Metadata Room"
+  axiom_ai_require_benchmark:
+    description: "Whether Axiom AI should report the Genie benchmark as a required readiness gate"
     default: "false"
   lakebase_enabled:
     description: "Whether the app should enable Lakebase-backed operational state"
@@ -81,16 +80,19 @@ variables:
     default: "not-configured"
   lakebase_schema:
     description: "Lakebase Postgres schema for app operational tables"
-    default: "atlas_app"
+    default: "axiom_app"
   lakebase_uc_catalog:
     description: "Optional UC catalog registered for Lakebase synced/foreign tables"
     default: "not-configured"
+  schema_bootstrap:
+    description: "Governance-schema DDL at app startup: auto (only when stale), verify (never; axiom_schema_migrate owns it), off"
+    default: "auto"
   lineage_lookback_days:
     description: "event_date window (days) for system.access lineage reads; lower = cheaper scans but hides older edges"
-    default: "365"
+    default: "90"
   ai_generation_endpoint:
     description: "Foundation-model serving endpoint for AI autofill; empty disables it"
-    default: "databricks-claude-opus-4-8"
+    default: "databricks-claude-sonnet-4-6"
   # AI governance extension (docs/ai_extension/DESIGN.md section 12).
   ai_features_enabled:
     description: "Show the AI governance surface and /api/ai routes (true | false)"
@@ -116,8 +118,8 @@ variables:
   ai_job_schedule_pause_status:
     description: "PAUSED or UNPAUSED for the AI collect-and-reconcile schedule (development mode pauses it regardless)"
     default: "PAUSED"
-  datapact_catalog:
-    description: "UC catalog hosting the DataPact control plane (<catalog>.datapact). Empty/not-configured = auto-discover from DataPact's /Shared/DataPact pointer file."
+  emet_catalog:
+    description: "UC catalog hosting the emet control plane (<catalog>.emet). Empty/not-configured = auto-discover from emet's /Shared/emet pointer file."
     default: "not-configured"
 
 # ── App resource ────────────────────────────────────────────
@@ -127,8 +129,8 @@ resources:
   # run id derived from {{job.run_id}}; config arrives as --env pairs because
   # serverless tasks don't get app-style environment variables.
   jobs:
-    atlas_ai_collect_and_reconcile:
-      name: atlas-ai-collect-and-reconcile
+    axiom_ai_collect_and_reconcile:
+      name: axiom-ai-collect-and-reconcile
       max_concurrent_runs: 1
       # A hung SDK or warehouse call must not hold the single run slot forever.
       timeout_seconds: 3600
@@ -138,8 +140,9 @@ resources:
             environment_version: "2"
             dependencies:
               - databricks-sdk==0.95.0
-              - pandas>=2.0
-              - psycopg[binary,pool]>=3.2
+              - pandas==3.0.6
+              - psycopg[binary,pool]==3.3.6
+              - psycopg-pool==3.3.3
       tasks:
         - task_key: collect_databricks
           environment_key: ai_jobs
@@ -147,7 +150,7 @@ resources:
           # collector is idempotent, but a real failure should fail once, loudly.
           max_retries: 0
           spark_python_task:
-            python_file: ./atlas/ai/jobs/collect_databricks.py
+            python_file: ./axiom/ai/jobs/collect_databricks.py
             parameters: &ai_job_params
               - "--repo-root"
               - "${workspace.file_path}"
@@ -156,45 +159,77 @@ resources:
               - "--env"
               - "DATABRICKS_WAREHOUSE_ID=${var.warehouse_id}"
               - "--env"
-              - "GOVAT_CATALOG=${var.gov_catalog}"
+              - "AXIOM_CATALOG=${var.gov_catalog}"
               - "--env"
-              - "GOVAT_SCHEMA=${var.gov_schema}"
+              - "AXIOM_SCHEMA=${var.gov_schema}"
               - "--env"
-              - "GOVAT_DISCOVERY_CATALOGS=${var.discovery_catalogs}"
+              - "AXIOM_DISCOVERY_CATALOGS=${var.discovery_catalogs}"
               - "--env"
-              - "GOVAT_AI_INTAKE_TAG_KEY=${var.ai_intake_tag_key}"
+              - "AXIOM_AI_INTAKE_TAG_KEY=${var.ai_intake_tag_key}"
               - "--env"
-              - "GOVAT_AI_TIER_TAG_KEY=${var.ai_tier_tag_key}"
+              - "AXIOM_AI_TIER_TAG_KEY=${var.ai_tier_tag_key}"
               - "--env"
-              - "GOVAT_AI_CATALOG_ALLOWLIST=${var.ai_catalog_allowlist}"
+              - "AXIOM_AI_CATALOG_ALLOWLIST=${var.ai_catalog_allowlist}"
               - "--env"
-              - "GOVAT_AI_TOOL_SCHEMA_ALLOWLIST=${var.ai_tool_schema_allowlist}"
+              - "AXIOM_AI_TOOL_SCHEMA_ALLOWLIST=${var.ai_tool_schema_allowlist}"
               - "--env"
-              - "GOVAT_AI_INTAKE_GRACE_DAYS=${var.ai_intake_grace_days}"
+              - "AXIOM_AI_INTAKE_GRACE_DAYS=${var.ai_intake_grace_days}"
               - "--env"
-              - "GOVAT_LAKEBASE_ENABLED=${var.lakebase_enabled}"
+              - "AXIOM_LAKEBASE_ENABLED=${var.lakebase_enabled}"
               - "--env"
-              - "GOVAT_LAKEBASE_ENDPOINT_NAME=${var.lakebase_endpoint_name}"
+              - "AXIOM_LAKEBASE_ENDPOINT_NAME=${var.lakebase_endpoint_name}"
               - "--env"
-              - "GOVAT_LAKEBASE_SCHEMA=${var.lakebase_schema}"
+              - "AXIOM_LAKEBASE_SCHEMA=${var.lakebase_schema}"
         - task_key: reconcile
           max_retries: 0
           depends_on:
             - task_key: collect_databricks
           environment_key: ai_jobs
           spark_python_task:
-            python_file: ./atlas/ai/jobs/reconcile.py
+            python_file: ./axiom/ai/jobs/reconcile.py
             parameters: *ai_job_params
       schedule:
         quartz_cron_expression: "0 0 6 * * ?"
         timezone_id: UTC
         pause_status: ${var.ai_job_schedule_pause_status}
 
+    # Deploy-time DDL for the governance schema, so the app only checks the
+    # schema fingerprint at startup. Run after `bundle deploy`, before the app
+    # starts; it also grants the app's service principal access to the schema.
+    axiom_schema_migrate:
+      name: axiom-schema-migrate
+      max_concurrent_runs: 1
+      timeout_seconds: 1800
+      environments:
+        - environment_key: migrate
+          spec:
+            environment_version: "2"
+            dependencies:
+              - databricks-sdk==0.95.0
+              - pandas==3.0.6
+      tasks:
+        - task_key: migrate_schema
+          environment_key: migrate
+          max_retries: 0
+          spark_python_task:
+            python_file: ./axiom/jobs/migrate_schema.py
+            parameters:
+              - "--repo-root"
+              - "${workspace.file_path}"
+              - "--app-name"
+              - "${resources.apps.axiom.name}"
+              - "--env"
+              - "DATABRICKS_WAREHOUSE_ID=${var.warehouse_id}"
+              - "--env"
+              - "AXIOM_CATALOG=${var.gov_catalog}"
+              - "--env"
+              - "AXIOM_SCHEMA=${var.gov_schema}"
+
   apps:
-    atlas:
+    axiom:
       name: ${var.app_name}
       description: >
-        Governance Atlas - a Databricks-native enterprise metadata workspace
+        Axiom - a Databricks-native enterprise metadata workspace
         extending Unity Catalog, deployable to any Databricks workspace.
       source_code_path: ${workspace.root_path}/files
       config:
@@ -204,51 +239,53 @@ resources:
         env:
           - name: DATABRICKS_WAREHOUSE_ID
             value_from: sql-warehouse
-          - name: GOVAT_CATALOG
+          - name: AXIOM_CATALOG
             value: ${var.gov_catalog}
-          - name: GOVAT_SCHEMA
+          - name: AXIOM_SCHEMA
             value: ${var.gov_schema}
-          - name: GOVAT_DISCOVERY_CATALOGS
+          - name: AXIOM_DISCOVERY_CATALOGS
             value: ${var.discovery_catalogs}
-          - name: GOVAT_ADMIN_EMAILS
+          - name: AXIOM_ADMIN_EMAILS
             value: ${var.admin_emails}
-          - name: GOVAT_ENVIRONMENT_LABEL
+          - name: AXIOM_ENVIRONMENT_LABEL
             value: ${var.environment_label}
-          - name: GOVAT_DEPLOY_TARGET
+          - name: AXIOM_DEPLOY_TARGET
             value: ${var.deploy_target}
-          - name: GOVAT_ATLAS_AI_PROVIDER
-            value: ${var.atlas_ai_provider}
-          - name: GOVAT_GENIE_SPACE_ID
+          - name: AXIOM_AI_PROVIDER
+            value: ${var.axiom_ai_provider}
+          - name: AXIOM_GENIE_SPACE_ID
             value: ${var.genie_space_id}
-          - name: GOVAT_GENIE_SPACE_TITLE
+          - name: AXIOM_GENIE_SPACE_TITLE
             value: ${var.genie_space_title}
-          - name: GOVAT_ATLAS_AI_REQUIRE_BENCHMARK
-            value: ${var.atlas_ai_require_benchmark}
-          - name: GOVAT_LAKEBASE_ENABLED
+          - name: AXIOM_AI_REQUIRE_BENCHMARK
+            value: ${var.axiom_ai_require_benchmark}
+          - name: AXIOM_LAKEBASE_ENABLED
             value: ${var.lakebase_enabled}
-          - name: GOVAT_LAKEBASE_ENDPOINT_NAME
+          - name: AXIOM_LAKEBASE_ENDPOINT_NAME
             value: ${var.lakebase_endpoint_name}
-          - name: GOVAT_LAKEBASE_SCHEMA
+          - name: AXIOM_LAKEBASE_SCHEMA
             value: ${var.lakebase_schema}
-          - name: GOVAT_LAKEBASE_UC_CATALOG
+          - name: AXIOM_LAKEBASE_UC_CATALOG
             value: ${var.lakebase_uc_catalog}
-          - name: GOVAT_DATAPACT_CATALOG
-            value: ${var.datapact_catalog}
-          - name: GOVAT_AI_GENERATION_ENDPOINT
+          - name: AXIOM_EMET_CATALOG
+            value: ${var.emet_catalog}
+          - name: AXIOM_AI_GENERATION_ENDPOINT
             value: ${var.ai_generation_endpoint}
-          - name: GOVAT_LINEAGE_LOOKBACK_DAYS
+          - name: AXIOM_LINEAGE_LOOKBACK_DAYS
             value: ${var.lineage_lookback_days}
-          - name: GOVAT_AI_FEATURES_ENABLED
+          - name: AXIOM_SCHEMA_BOOTSTRAP
+            value: ${var.schema_bootstrap}
+          - name: AXIOM_AI_FEATURES_ENABLED
             value: ${var.ai_features_enabled}
-          - name: GOVAT_AI_INTAKE_TAG_KEY
+          - name: AXIOM_AI_INTAKE_TAG_KEY
             value: ${var.ai_intake_tag_key}
-          - name: GOVAT_AI_TIER_TAG_KEY
+          - name: AXIOM_AI_TIER_TAG_KEY
             value: ${var.ai_tier_tag_key}
-          - name: GOVAT_AI_CATALOG_ALLOWLIST
+          - name: AXIOM_AI_CATALOG_ALLOWLIST
             value: ${var.ai_catalog_allowlist}
-          - name: GOVAT_AI_TOOL_SCHEMA_ALLOWLIST
+          - name: AXIOM_AI_TOOL_SCHEMA_ALLOWLIST
             value: ${var.ai_tool_schema_allowlist}
-          - name: GOVAT_AI_INTAKE_GRACE_DAYS
+          - name: AXIOM_AI_INTAKE_GRACE_DAYS
             value: ${var.ai_intake_grace_days}
       # OBO (on-behalf-of-user) scopes. Without these declared here, every
       # `bundle deploy` wipes scopes the operator set in the Databricks UI,
@@ -288,28 +325,30 @@ targets:
     # Binds Genie + model serving + Lakebase, so BUNDLE_VAR_genie_space_id,
     # BUNDLE_VAR_lakebase_branch and BUNDLE_VAR_lakebase_database_resource must
     # be set (see .env.example); all other values also come from BUNDLE_VAR_*.
+    # staging/prod reuse this list; scripts/prepare_bundle.py --target drops
+    # bindings whose variables are still not-configured.
     variables:
       deploy_target: "Dev"
     resources:
       apps:
-        atlas:
-          resources:
+        axiom:
+          resources: &axiom_app_resources
             - name: sql-warehouse
               sql_warehouse:
                 id: ${var.warehouse_id}
                 permission: CAN_USE
-            - name: atlas-genie-space
+            - name: axiom-genie-space
               genie_space:
-                name: Governance Atlas Metadata Room
+                name: Axiom Metadata Room
                 space_id: ${var.genie_space_id}
                 permission: CAN_RUN
             # Grants the app service principal CAN_QUERY on the reasoning model
             # used by AI autofill (drafts glossary definitions, etc.).
-            - name: atlas-ai-generation
+            - name: axiom-ai-generation
               serving_endpoint:
                 name: ${var.ai_generation_endpoint}
                 permission: CAN_QUERY
-            - name: atlas-lakebase
+            - name: axiom-lakebase
               postgres:
                 branch: ${var.lakebase_branch}
                 database: ${var.lakebase_database_resource}
@@ -326,13 +365,17 @@ targets:
     # owner. Empty ai_collector_sp falls back to the deploying SP (see var).
     resources:
       jobs:
-        atlas_ai_collect_and_reconcile:
+        axiom_ai_collect_and_reconcile:
           run_as:
             service_principal_name: ${var.ai_collector_sp}
+      apps:
+        axiom:
+          resources: *axiom_app_resources
     workspace:
       root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
     variables:
       deploy_target: "Stage"
+      schema_bootstrap: "verify"
 
   prod:
     mode: production
@@ -341,10 +384,14 @@ targets:
     # owner. Empty ai_collector_sp falls back to the deploying SP (see var).
     resources:
       jobs:
-        atlas_ai_collect_and_reconcile:
+        axiom_ai_collect_and_reconcile:
           run_as:
             service_principal_name: ${var.ai_collector_sp}
+      apps:
+        axiom:
+          resources: *axiom_app_resources
     workspace:
       root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
     variables:
       deploy_target: "Prod"
+      schema_bootstrap: "verify"

@@ -1,4 +1,4 @@
-// The ONE envelope-status implementation for the Governance Atlas frontend.
+// The ONE envelope-status implementation for the Axiom frontend.
 //
 // Before this module existed, "is this envelope still hydrating?" was
 // copy-pasted 11+ times (CdeWorkspace, AdminWorkspace, AuditBrowserWorkspace,

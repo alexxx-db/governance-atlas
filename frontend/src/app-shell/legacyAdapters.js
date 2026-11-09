@@ -13,7 +13,7 @@ import { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { refHref } from "../nav/refs.js";
-import { useAtlasNavigate } from "../nav/useAtlasNavigate.js";
+import { useAxiomNavigate } from "../nav/useAxiomNavigate.js";
 
 // Legacy module keys (SideIconRail/HomePage/AdminWorkspace vocabulary) → nav
 // fabric surface refs, honoring the COHESION_BLUEPRINT absorptions: inbox →
@@ -38,10 +38,10 @@ export const LEGACY_MODULE_TARGETS = Object.freeze({
 });
 
 export function useLegacyNavAdapters() {
-  const navigate = useAtlasNavigate();
+  const navigate = useAxiomNavigate();
   const routerNavigate = useNavigate();
 
-  // Discovery opens ride the router directly (not useAtlasNavigate) because
+  // Discovery opens ride the router directly (not useAxiomNavigate) because
   // the legacy `location.state.fresh` flag must travel with the entry.
   const openDiscovery = useCallback(
     (params = {}, { fresh = true, replace = false } = {}) => {

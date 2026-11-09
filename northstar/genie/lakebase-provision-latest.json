@@ -52,7 +52,7 @@
       "schema_migrations"
     ],
     "enabled": true,
-    "endpointName": "projects/governance-atlas-state/branches/production/endpoints/primary",
+    "endpointName": "projects/axiom-state/branches/production/endpoints/primary",
     "host": "ep-noisy-mud-d1oju35v.database.us-west-2.cloud.databricks.com",
     "message": "Lakebase connection environment is configured.",
     "operationalTables": [
@@ -85,7 +85,7 @@
       "background_work_runs",
       "background_dead_letters"
     ],
-    "schema": "atlas_app",
+    "schema": "axiom_app",
     "state": "available",
     "ucCatalog": ""
   },
@@ -112,7 +112,7 @@
       "schema_migrations"
     ],
     "enabled": true,
-    "endpointName": "projects/governance-atlas-state/branches/production/endpoints/primary",
+    "endpointName": "projects/axiom-state/branches/production/endpoints/primary",
     "host": "ep-noisy-mud-d1oju35v.database.us-west-2.cloud.databricks.com",
     "message": "Lakebase probe succeeded.",
     "operationalTables": [
@@ -148,7 +148,7 @@
     "probe": {
       "ok": 1
     },
-    "schema": "atlas_app",
+    "schema": "axiom_app",
     "state": "available",
     "ucCatalog": ""
   },
@@ -175,7 +175,7 @@
       "schema_migrations"
     ],
     "enabled": true,
-    "endpointName": "projects/governance-atlas-state/branches/production/endpoints/primary",
+    "endpointName": "projects/axiom-state/branches/production/endpoints/primary",
     "host": "ep-noisy-mud-d1oju35v.database.us-west-2.cloud.databricks.com",
     "message": "Lakebase connection environment is configured.",
     "operationalTables": [
@@ -208,7 +208,7 @@
       "background_work_runs",
       "background_dead_letters"
     ],
-    "schema": "atlas_app",
+    "schema": "axiom_app",
     "state": "available",
     "ucCatalog": ""
   }

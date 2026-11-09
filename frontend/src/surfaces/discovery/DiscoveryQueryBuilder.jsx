@@ -80,17 +80,17 @@ export function DiscoveryQueryBuilder({
       : "Unavailable";
 
   return (
-    <div className="ga-disc-query-builder">
+    <div className="ax-disc-query-builder">
       <section aria-label="Structured search helper">
-        <div className="ga-disc-query-builder-head">
-          <span className="ga-disc-query-builder-title">Structured Search Helper</span>
-          <span className="ga-disc-query-builder-context">
+        <div className="ax-disc-query-builder-head">
+          <span className="ax-disc-query-builder-title">Structured Search Helper</span>
+          <span className="ax-disc-query-builder-context">
             {normalizedActiveQuery
               ? "Adds a clause to the current search box."
               : "Adds the first structured clause to the current search box."}
           </span>
         </div>
-        <div className="ga-disc-query-builder-grid">
+        <div className="ax-disc-query-builder-grid">
           <label>
             <span>Field</span>
             <select
@@ -139,7 +139,7 @@ export function DiscoveryQueryBuilder({
             </select>
           </label>
         </div>
-        <label className="ga-disc-query-builder-value">
+        <label className="ax-disc-query-builder-value">
           <span>Value</span>
           <input
             aria-label="Query builder value"
@@ -150,22 +150,22 @@ export function DiscoveryQueryBuilder({
             value={builderValue}
           />
         </label>
-        <p className="ga-disc-query-builder-note">
+        <p className="ax-disc-query-builder-note">
           {builderMatchMode === "single"
             ? "Single values become one field:value clause. Phrases are quoted automatically."
             : "Separate multiple values with commas to create a grouped clause joined by AND or OR."}
         </p>
-        <p className="ga-disc-query-builder-note">
+        <p className="ax-disc-query-builder-note">
           {syntaxHint ||
             "Structured discovery supports field:value, AND/OR, parentheses, and quoted phrases."}
         </p>
         {queryIsInvalid ? (
-          <p className="ga-disc-query-builder-note">
+          <p className="ax-disc-query-builder-note">
             Clear or correct the invalid search in the main query box before inserting another
             helper clause.
           </p>
         ) : null}
-        <div className="ga-disc-query-builder-actions">
+        <div className="ax-disc-query-builder-actions">
           <Button
             disabled={!canApplyClause}
             onClick={applyQueryClause}
@@ -186,21 +186,21 @@ export function DiscoveryQueryBuilder({
         </div>
       </section>
       <section aria-label="Deleted and inaccessible handling">
-        <div className="ga-disc-query-builder-head">
-          <span className="ga-disc-query-builder-title">Deleted and inaccessible assets</span>
-          <span className="ga-disc-query-builder-context">
+        <div className="ax-disc-query-builder-head">
+          <span className="ax-disc-query-builder-title">Deleted and inaccessible assets</span>
+          <span className="ax-disc-query-builder-context">
             {visibleCountLabel} visible result{visibleCountLabel === "1" ? "" : "s"}
           </span>
         </div>
-        <p className="ga-disc-query-builder-note">
+        <p className="ax-disc-query-builder-note">
           Discovery counts include only assets returned by the current permission-aware discovery
           payload. Deleted or inaccessible assets are not inferred into the result count.
         </p>
-        <p className="ga-disc-query-builder-note">
+        <p className="ax-disc-query-builder-note">
           Deleted-asset search stays off because no authoritative deletion-state source is
           connected.
         </p>
-        <p className="ga-disc-query-builder-note">
+        <p className="ax-disc-query-builder-note">
           Inaccessible assets stay hidden until Databricks returns metadata you can access for them.
         </p>
       </section>

@@ -1,11 +1,11 @@
 {
-  "aiSchema": "atlas_ai",
-  "catalog": "datapact",
+  "aiSchema": "axiom_ai",
+  "catalog": "emet",
   "operation": "updated",
   "serializedSpaceBytes": 24463,
   "spaceId": "01f1406a11221afa985d3fe64c9fbea1",
-  "storeSchema": "atlas",
-  "title": "Governance Atlas Metadata Room",
+  "storeSchema": "axiom",
+  "title": "Axiom Metadata Room",
   "views": [
     {
       "name": "create_schema",
@@ -13,32 +13,32 @@
       "statementId": "01f14071-af00-1b42-8ddc-a9420393beee"
     },
     {
-      "name": "atlas_ai_assets_current",
+      "name": "axiom_ai_assets_current",
       "state": "SUCCEEDED",
       "statementId": "01f14071-af54-1cde-8cfc-89b527e4153f"
     },
     {
-      "name": "atlas_ai_governance_work_current",
+      "name": "axiom_ai_governance_work_current",
       "state": "SUCCEEDED",
       "statementId": "01f14071-aff2-1c01-816f-e49afdcddaab"
     },
     {
-      "name": "atlas_ai_glossary_current",
+      "name": "axiom_ai_glossary_current",
       "state": "SUCCEEDED",
       "statementId": "01f14071-b09e-1cfe-88c7-afa6137109ff"
     },
     {
-      "name": "atlas_ai_quality_latest",
+      "name": "axiom_ai_quality_latest",
       "state": "SUCCEEDED",
       "statementId": "01f14071-b157-1c56-bd5d-6a7d60165c33"
     },
     {
-      "name": "atlas_ai_audit_events",
+      "name": "axiom_ai_audit_events",
       "state": "SUCCEEDED",
       "statementId": "01f14071-b215-1cc8-921a-f9a92e0bcf61"
     },
     {
-      "name": "atlas_ai_lineage_edges",
+      "name": "axiom_ai_lineage_edges",
       "state": "SUCCEEDED",
       "statementId": "01f14071-b2c2-1638-b111-8b9e97d7b2df"
     }

@@ -9,7 +9,7 @@
 
 /* --- app shell grid: rail + content column --- */
 .gh-app.gh-app-with-rail,
-.ga-shell-app {
+.ax-shell-app {
   grid-template-columns: var(--gh-side-rail-w) minmax(0, 1fr);
   grid-template-areas:
     "rail header"
@@ -23,12 +23,12 @@
 }
 
 .gh-app.gh-app-with-rail > .gh-side-rail,
-.ga-shell-app > .ga-shell-rail {
+.ax-shell-app > .ax-shell-rail {
   grid-area: rail;
 }
 
 .gh-app.gh-app-with-rail > .gh-shell-header,
-.ga-shell-app > .ga-shell-header {
+.ax-shell-app > .ax-shell-header {
   grid-area: header;
   /* Round 14: header sits closer to the viewport top so the top-left
      corner of the side rail reads as a ~64×64 square. */
@@ -57,13 +57,13 @@
 }
 
 .gh-app.gh-app-with-rail > .gh-main,
-.ga-shell-app > .ga-shell-main {
+.ax-shell-app > .ax-shell-main {
   grid-area: main;
 }
 
 /* --- left icon rail --- */
 .gh-side-rail,
-.ga-shell-rail {
+.ax-shell-rail {
   position: sticky;
   top: 0;
   align-self: stretch;
@@ -87,7 +87,7 @@
   overflow-y: auto;
 }
 .gh-side-rail::after,
-.ga-shell-rail::after {
+.ax-shell-rail::after {
   content: "";
   position: absolute;
   right: 0;
@@ -105,7 +105,7 @@
 }
 
 /* --- user chip: avatar + name + role (avatar BEFORE name) --- */
-.ga-user-chip {
+.ax-user-chip {
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -118,7 +118,7 @@
   white-space: nowrap;
 }
 
-.ga-user-chip-trigger {
+.ax-user-chip-trigger {
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -131,19 +131,19 @@
   transition: background 120ms ease, border-color 120ms ease;
 }
 
-.ga-user-chip-trigger:hover {
-  background: rgba(102, 197, 255, 0.1);
-  border-color: var(--ga-border-strong);
+.ax-user-chip-trigger:hover {
+  background: rgba(116, 151, 220, 0.1);
+  border-color: var(--ax-border-strong);
 }
 
-.ga-user-chip-trigger:focus-visible {
+.ax-user-chip-trigger:focus-visible {
   /* canonical focus ring (was outline:none + a faint purple halo) */
-  outline: 2px solid var(--ga-focus, rgba(102, 197, 255, 0.42));
+  outline: 2px solid var(--ax-focus, rgba(116, 151, 220, 0.42));
   outline-offset: 2px;
   box-shadow: none;
 }
 
-.ga-user-chip-caret {
+.ax-user-chip-caret {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -151,18 +151,18 @@
   margin-left: 4px;
   transition: transform 140ms ease, color 120ms ease;
 }
-.ga-user-chip-trigger:hover .ga-user-chip-caret {
+.ax-user-chip-trigger:hover .ax-user-chip-caret {
   color: var(--gh-ink, #14213d);
 }
-.ga-user-chip-caret.is-open {
+.ax-user-chip-caret.is-open {
   transform: rotate(180deg);
 }
 
-.ga-user-chip-avatar {
-  box-shadow: 0 0 0 2px var(--ga-shell), 0 0 0 3px var(--ga-border-strong);
+.ax-user-chip-avatar {
+  box-shadow: 0 0 0 2px var(--ax-shell), 0 0 0 3px var(--ax-border-strong);
 }
 
-.ga-user-chip-bell {
+.ax-user-chip-bell {
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -170,25 +170,25 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  border: 1px solid var(--ga-border);
-  background: var(--ga-surface-muted);
-  color: var(--ga-text-soft);
+  border: 1px solid var(--ax-border);
+  background: var(--ax-surface-muted);
+  color: var(--ax-text-soft);
   cursor: pointer;
   transition: background 120ms ease, border-color 120ms ease;
 }
 
-.ga-user-chip-bell:hover {
+.ax-user-chip-bell:hover {
   background: rgba(12, 33, 56, 0.96);
   border-color: rgba(91, 67, 238, 0.35);
-  color: var(--ga-text-soft);
+  color: var(--ax-text-soft);
 }
 
-.ga-user-chip-bell:focus-visible {
+.ax-user-chip-bell:focus-visible {
   outline: none;
   box-shadow: var(--gh-focus-ring);
 }
 
-.ga-user-chip-bell-dot {
+.ax-user-chip-bell-dot {
   position: absolute;
   top: 4px;
   right: 4px;
@@ -196,31 +196,31 @@
   height: 8px;
   padding: 0 3px;
   border-radius: 999px;
-  background: var(--ga-danger); /* notification accent (dark-theme token) */
-  color: var(--ga-navy-980); /* on-accent text against the bright dot */
+  background: var(--ax-danger); /* notification accent (dark-theme token) */
+  color: var(--ax-navy-980); /* on-accent text against the bright dot */
   font-size: 10px;
   font-weight: 800;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 0 2px var(--ga-shell);
+  box-shadow: 0 0 0 2px var(--ax-shell);
 }
 
 /* When there's an unread count, swell the dot to a pill */
-.ga-user-chip-bell-dot:not(:empty) {
+.ax-user-chip-bell-dot:not(:empty) {
   top: -2px;
   right: -2px;
   min-width: 18px;
   height: 18px;
 }
 
-.ga-user-chip-menu {
+.ax-user-chip-menu {
   position: absolute;
   top: calc(100% + 6px);
   right: 0;
   min-width: 220px;
   background: rgba(12, 33, 56, 0.96);
-  border: 1px solid var(--ga-border);
+  border: 1px solid var(--ax-border);
   border-radius: 10px;
   box-shadow: 0 12px 32px rgba(13, 31, 71, 0.14);
   padding: 8px;
@@ -230,25 +230,25 @@
   gap: 2px;
 }
 
-.ga-user-chip-menu-header {
+.ax-user-chip-menu-header {
   padding: 8px 10px 10px;
-  border-bottom: 1px solid var(--ga-border-muted);
+  border-bottom: 1px solid var(--ax-border-muted);
   margin-bottom: 4px;
 }
 
-.ga-user-chip-menu-name {
+.ax-user-chip-menu-name {
   font-size: 0.84rem;
   font-weight: 800;
   color: var(--gh-ink, #14213d);
 }
 
-.ga-user-chip-menu-email {
+.ax-user-chip-menu-email {
   font-size: 0.72rem;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   margin-top: 2px;
 }
 
-.ga-user-chip-menu-item {
+.ax-user-chip-menu-item {
   display: block;
   text-align: left;
   padding: 8px 10px;
@@ -262,11 +262,11 @@
   transition: background 120ms ease;
 }
 
-.ga-user-chip-menu-item:hover {
+.ax-user-chip-menu-item:hover {
   background: rgba(91, 67, 238, 0.08);
 }
 
-.ga-user-chip-menu-item:focus-visible {
+.ax-user-chip-menu-item:focus-visible {
   outline: none;
   background: rgba(91, 67, 238, 0.12);
 }
@@ -298,7 +298,7 @@ input:focus-visible {
 /* --- Responsive rules --- */
 @media (max-width: 1200px) {
   .gh-app.gh-app-with-rail,
-.ga-shell-app {
+.ax-shell-app {
     column-gap: 12px;
   }
 }
@@ -313,7 +313,7 @@ input:focus-visible {
 
 @media (max-width: 820px) {
   .gh-app.gh-app-with-rail,
-.ga-shell-app {
+.ax-shell-app {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
       "header"
@@ -323,7 +323,7 @@ input:focus-visible {
     column-gap: 0;
   }
   .gh-side-rail,
-.ga-shell-rail {
+.ax-shell-rail {
     position: static;
     flex-direction: row;
     max-height: none;
@@ -360,23 +360,23 @@ body {
    through — flagged by the operator on 2026-04-19 as the biggest
    remaining divergence from the mockup. */
 .gh-panel {
-  border: 1px solid var(--ga-border) !important;
+  border: 1px solid var(--ax-border) !important;
   box-shadow: none !important;
-  background: var(--ga-surface) !important;
+  background: var(--ax-surface) !important;
 }
 
 .gh-shell-header,
 .gh-filters-rail,
 .gh-selection-preview,
 .gh-side-rail,
-.ga-shell-header,
-.ga-shell-rail {
+.ax-shell-header,
+.ax-shell-rail {
   border: 0 !important;
   box-shadow: none !important;
   background: transparent !important;
 }
 .gh-side-rail,
-.ga-shell-rail {
+.ax-shell-rail {
   border-right: 1px solid var(--gh-line, #9a8c5d) !important;
 }
 
@@ -393,7 +393,7 @@ body {
 .gh-side-rail.gh-side-rail,
 aside.gh-filters-rail,
 aside.gh-discovery-sidebar.gh-surface-rail,
-.ga-shell-rail.ga-shell-rail {
+.ax-shell-rail.ax-shell-rail {
   background: transparent !important;
   background-image: none !important;
   box-shadow: none !important;
@@ -401,7 +401,7 @@ aside.gh-discovery-sidebar.gh-surface-rail,
   backdrop-filter: none !important;
 }
 .gh-side-rail.gh-side-rail,
-.ga-shell-rail.ga-shell-rail {
+.ax-shell-rail.ax-shell-rail {
   /* Round 10: zero out the border — the ::after pseudo above draws
      a 1px line from the top horizontal down so the rail edge stops
      at the subtab border and doesn't extend up next to the brand. */
@@ -409,7 +409,7 @@ aside.gh-discovery-sidebar.gh-surface-rail,
   position: sticky !important;
 }
 .gh-side-rail.gh-side-rail,
-.ga-shell-rail.ga-shell-rail {
+.ax-shell-rail.ax-shell-rail {
   overflow: visible !important;
 }
 
@@ -418,74 +418,74 @@ body,
 .gh-app,
 .gh-workspace,
 .gh-discovery-shell,
-.ga-shell-app {
+.ax-shell-app {
   background: var(--gh-bg) !important;
   background-image: none !important;
 }
 
 .gh-app.gh-app-with-rail,
-.ga-shell-app {
+.ax-shell-app {
   width: 100%;
   min-height: 100vh;
   margin: 0;
 }
 
 .gh-app.gh-app-with-rail > .gh-shell-header,
-.ga-shell-app > .ga-shell-header {
+.ax-shell-app > .ax-shell-header {
   margin: 0;
-  background: var(--ga-chrome-bg) !important;
+  background: var(--ax-chrome-bg) !important;
   border-bottom: 1px solid var(--gh-line, #dfe3e6) !important;
   box-shadow: none !important;
 }
 
 .gh-shell-topbar,
-.ga-shell-topbar {
+.ax-shell-topbar {
   min-height: 40px !important;
   background: transparent !important;
 }
 
-.ga-user-chip-trigger {
+.ax-user-chip-trigger {
   gap: 7px;
   padding: 0;
   border-radius: 5px;
 }
 
-.ga-user-chip-trigger:hover {
+.ax-user-chip-trigger:hover {
   background: transparent;
   border-color: transparent;
 }
 
-.ga-user-chip-avatar {
+.ax-user-chip-avatar {
   position: relative;
   width: 30px !important;
   height: 30px !important;
   font-size: 0.68rem !important;
-  box-shadow: 0 0 0 1px var(--ga-border-strong) !important;
+  box-shadow: 0 0 0 1px var(--ax-border-strong) !important;
 }
 
-.ga-user-chip-caret {
+.ax-user-chip-caret {
   margin-left: 0;
 }
 
 .gh-side-rail.gh-side-rail,
-.ga-shell-rail.ga-shell-rail {
+.ax-shell-rail.ax-shell-rail {
   width: var(--gh-side-rail-w, 54px);
   padding: calc(var(--gh-shell-header-height, 41px) + 8px) 0 10px;
   gap: 8px;
   align-items: stretch;
-  background: var(--ga-chrome-bg) !important;
-  border-right: 1px solid var(--ga-border) !important;
+  background: var(--ax-chrome-bg) !important;
+  border-right: 1px solid var(--ax-border) !important;
   overflow: hidden !important;
 }
 
 .gh-side-rail::after,
-.ga-shell-rail::after {
+.ax-shell-rail::after {
   display: none;
 }
 
 /* Wave B1 bridge: the new shell measures its header into
-   --ga-shell-header-height; legacy surface CSS still reads the old var name.
+   --ax-shell-header-height; legacy surface CSS still reads the old var name.
    Dies with this file's Wave C cleanup. */
-.ga-shell-app {
-  --gh-shell-header-height: var(--ga-shell-header-height, 0px);
+.ax-shell-app {
+  --gh-shell-header-height: var(--ax-shell-header-height, 0px);
 }

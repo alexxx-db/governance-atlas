@@ -17,9 +17,9 @@ from unittest.mock import patch
 
 import pandas as pd
 
-from atlas.services import assets as asset_service
-from atlas.services import lineage as lineage_service
-from atlas.services import live_metadata as metadata_service
+from axiom.services import assets as asset_service
+from axiom.services import lineage as lineage_service
+from axiom.services import live_metadata as metadata_service
 
 
 class FakeUC:
@@ -69,7 +69,7 @@ class RestrictedFootTests(unittest.TestCase):
             }
         )
         with patch(
-            "atlas.services.lineage.asset_service.inventory_row",
+            "axiom.services.lineage.asset_service.inventory_row",
             return_value=row,
         ):
             node = lineage_service.graph_node_for_asset(
@@ -91,7 +91,7 @@ class RestrictedFootTests(unittest.TestCase):
         empty_inventory = pd.DataFrame(columns=["fqn"])
         row = pd.Series({"fqn": "main.hidden.other", "table_type": ""})
         with patch(
-            "atlas.services.lineage.asset_service.inventory_row",
+            "axiom.services.lineage.asset_service.inventory_row",
             return_value=row,
         ):
             node = lineage_service.graph_node_for_asset(
@@ -118,7 +118,7 @@ class InitialProfileFocusTests(unittest.TestCase):
 
     def test_cold_cache_focus_renders_loading_not_unavailable(self) -> None:
         with patch(
-            "atlas.services.lineage._peek_cached_visible_inventory",
+            "axiom.services.lineage._peek_cached_visible_inventory",
             return_value=None,
         ):
             graph = lineage_service.build_initial_data_graph(
@@ -142,7 +142,7 @@ class InitialProfileFocusTests(unittest.TestCase):
     def test_warm_inventory_focus_resolves_identity_without_scans(self) -> None:
         inventory = _visible_inventory_frame()
         with patch(
-            "atlas.services.lineage._peek_cached_visible_inventory",
+            "axiom.services.lineage._peek_cached_visible_inventory",
             return_value=inventory,
         ):
             graph = lineage_service.build_initial_data_graph(

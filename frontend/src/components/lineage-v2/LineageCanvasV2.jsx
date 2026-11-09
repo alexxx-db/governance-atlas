@@ -8,6 +8,7 @@ import {
   MarkerType,
   Position,
   ReactFlow,
+  ReactFlowProvider,
   useReactFlow,
   useUpdateNodeInternals,
 } from "@xyflow/react";
@@ -34,7 +35,7 @@ import { catalogExplorerUrl } from "../../surfaces/lineage/lineagePresentation";
  *
  * The toolbar is docked top-right inside the canvas (React Flow's <Controls>
  * gives us the +/-/fit set) so it can never end up floating outside the
- * graph viewport like the legacy `.ga-lineage-canvas-tools` did.
+ * graph viewport like the legacy `.ax-lineage-canvas-tools` did.
  */
 
 const NODE_WIDTH = 224;
@@ -105,9 +106,9 @@ function nodeIsTall(node) {
  */
 function LineageFlowNodeComponent({ data }) {
   return (
-    <div className="ga-lineage-v2-flow-node">
+    <div className="ax-lineage-v2-flow-node">
       <Handle
-        className="ga-lineage-v2-flow-handle"
+        className="ax-lineage-v2-flow-handle"
         position={Position.Left}
         type="target"
       />
@@ -127,7 +128,7 @@ function LineageFlowNodeComponent({ data }) {
         variant={nodeIsTall(data.node) ? "tall" : "compact"}
       />
       <Handle
-        className="ga-lineage-v2-flow-handle"
+        className="ax-lineage-v2-flow-handle"
         position={Position.Right}
         type="source"
       />
@@ -149,9 +150,9 @@ function LineageGraphSkeleton({ caption = "Loading lineage from Unity Catalog…
   const upstream = [0, 1, 2];
   const downstream = [0, 1];
   return (
-    <div className="ga-lineage-v2-skeleton" role="status" aria-live="polite">
-      <div className="ga-lineage-v2-skeleton-stage" aria-hidden="true">
-        <svg className="ga-lineage-v2-skeleton-edges" viewBox="0 0 100 100" preserveAspectRatio="none">
+    <div className="ax-lineage-v2-skeleton" role="status" aria-live="polite">
+      <div className="ax-lineage-v2-skeleton-stage" aria-hidden="true">
+        <svg className="ax-lineage-v2-skeleton-edges" viewBox="0 0 100 100" preserveAspectRatio="none">
           {upstream.map((i) => (
             <path key={`u${i}`} d={`M20 ${22 + i * 28} C 38 ${22 + i * 28}, 40 50, 50 50`} />
           ))}
@@ -159,23 +160,23 @@ function LineageGraphSkeleton({ caption = "Loading lineage from Unity Catalog…
             <path key={`d${i}`} d={`M50 50 C 60 50, 62 ${34 + i * 32}, 80 ${34 + i * 32}`} />
           ))}
         </svg>
-        <div className="ga-lineage-v2-skeleton-col is-upstream">
+        <div className="ax-lineage-v2-skeleton-col is-upstream">
           {upstream.map((i) => (
-            <span className="ga-lineage-v2-skeleton-card" key={`uc${i}`} />
+            <span className="ax-lineage-v2-skeleton-card" key={`uc${i}`} />
           ))}
         </div>
-        <div className="ga-lineage-v2-skeleton-col is-focus">
-          <span className="ga-lineage-v2-skeleton-card is-focus" />
+        <div className="ax-lineage-v2-skeleton-col is-focus">
+          <span className="ax-lineage-v2-skeleton-card is-focus" />
         </div>
-        <div className="ga-lineage-v2-skeleton-col is-downstream">
+        <div className="ax-lineage-v2-skeleton-col is-downstream">
           {downstream.map((i) => (
-            <span className="ga-lineage-v2-skeleton-card" key={`dc${i}`} />
+            <span className="ax-lineage-v2-skeleton-card" key={`dc${i}`} />
           ))}
         </div>
       </div>
       {caption ? (
-        <div className="ga-lineage-v2-skeleton-caption">
-          <span aria-hidden="true" className="ga-lineage-v2-canvas-spinner" />
+        <div className="ax-lineage-v2-skeleton-caption">
+          <span aria-hidden="true" className="ax-lineage-v2-canvas-spinner" />
           <span>{caption}</span>
         </div>
       ) : null}
@@ -536,7 +537,7 @@ function CanvasInner({
 
   const focusReactFlowId = graph.focus?.id;
   // Pull edge colors from CSS custom properties so design-token updates
-  // flow through automatically. Falls back to the Entrada bright-blue if
+  // flow through automatically. Falls back to bright-blue if
   // the variable isn't yet applied (SSR / first-paint).
   const cssVar = (name, fallback) =>
     (typeof document !== "undefined"
@@ -546,8 +547,8 @@ function CanvasInner({
   // downstream reads bright-blue, so the eye can follow provenance vs impact
   // at a glance. Restricted edges keep their dashed-amber treatment (the CSS
   // override wins) — a verified honesty contract we must not regress.
-  const focusEdgeColor = cssVar("--ga-bright-blue", "rgba(102,197,255,1)");
-  const upstreamEdgeColor = cssVar("--ga-teal", "rgba(92,225,230,1)");
+  const focusEdgeColor = cssVar("--ax-bright-blue", "rgba(116,151,220,1)");
+  const upstreamEdgeColor = cssVar("--ax-teal", "rgba(200,200,200,1)");
   const edgeSideOf = useCallback(
     (edge) => {
       const upSide = (id) => id === focusNodeId || upstreamIds.has(id);
@@ -567,7 +568,7 @@ function CanvasInner({
         || (tracedNodeIds.has(edge.source) && tracedNodeIds.has(edge.target));
       const side = edgeSideOf(edge);
       const tint = side === "upstream" ? upstreamEdgeColor : focusEdgeColor;
-      const idleStroke = side === "upstream" ? "rgba(92, 225, 230, 0.42)" : "rgba(102, 197, 255, 0.42)";
+      const idleStroke = side === "upstream" ? "rgba(200, 200, 200, 0.42)" : "rgba(116, 151, 220, 0.42)";
       return {
         id: edge.id,
         source: edge.source,
@@ -582,7 +583,7 @@ function CanvasInner({
           transition: "opacity 200ms cubic-bezier(0.22, 1, 0.36, 1)",
         },
         data: { isRestricted: edge.isRestricted },
-        className: edge.isRestricted ? "ga-lineage-v2-edge-restricted" : undefined,
+        className: edge.isRestricted ? "ax-lineage-v2-edge-restricted" : undefined,
       };
     });
   }, [visibleEdges, focusReactFlowId, hoveredNodeId, tracedNodeIds, focusEdgeColor, upstreamEdgeColor, edgeSideOf]);
@@ -631,7 +632,7 @@ function CanvasInner({
 
   if (error) {
     return (
-      <div className="ga-lineage-v2-canvas-state ga-lineage-v2-canvas-state-error">
+      <div className="ax-lineage-v2-canvas-state ax-lineage-v2-canvas-state-error">
         <strong>Lineage unavailable</strong>
         <span>{error}</span>
       </div>
@@ -651,7 +652,7 @@ function CanvasInner({
     // the graph build is still warming server-side — offer a real retry
     // instead of an infinite spinner.
     return (
-      <div className="ga-lineage-v2-canvas-state">
+      <div className="ax-lineage-v2-canvas-state">
         <strong>Lineage is still warming</strong>
         <span>The lineage build has not finished on the server yet. Retry in a moment.</span>
         {onRetry ? (
@@ -665,7 +666,7 @@ function CanvasInner({
 
   if (stubOnlyGraph && hydrating) {
     return (
-      <div className="ga-lineage-v2-canvas-state ga-lineage-v2-canvas-state-hydrating ga-lineage-v2-canvas-state-skeleton">
+      <div className="ax-lineage-v2-canvas-state ax-lineage-v2-canvas-state-hydrating ax-lineage-v2-canvas-state-skeleton">
         <LineageGraphSkeleton caption="" />
         <strong>Loading lineage from Unity Catalog</strong>
         <span>Walking system.access.table_lineage outward from the focus asset…</span>
@@ -677,7 +678,7 @@ function CanvasInner({
     // True-empty copy must not blame the user's visibility scope for an
     // app-side condition (fix_plan lineage-truth rule).
     return (
-      <div className="ga-lineage-v2-canvas-state">
+      <div className="ax-lineage-v2-canvas-state">
         <strong>No lineage recorded</strong>
         <span>Unity Catalog has no table-lineage rows for this asset.</span>
       </div>
@@ -685,10 +686,10 @@ function CanvasInner({
   }
 
   return (
-    <div className="ga-lineage-v2-canvas">
+    <div className="ax-lineage-v2-canvas">
       {kindMeta.kinds.length ? (
-        <div className="ga-lineage-v2-legend" role="group" aria-label="Lineage graph filters and legend">
-          <div className="ga-lineage-v2-legend-directions" role="group" aria-label="Direction filter">
+        <div className="ax-lineage-v2-legend" role="group" aria-label="Lineage graph filters and legend">
+          <div className="ax-lineage-v2-legend-directions" role="group" aria-label="Direction filter">
             {/** @type {[string, string, number][]} */ ([
               ["all", "All", kindMeta.peerTotal],
               ["upstream", "Upstream", kindMeta.upstreamTotal],
@@ -696,39 +697,39 @@ function CanvasInner({
             ]).map(([key, label, count]) => (
               <button
                 aria-pressed={direction === key}
-                className={`ga-lineage-v2-legend-dir ${direction === key ? "is-active" : ""}`.trim()}
+                className={`ax-lineage-v2-legend-dir ${direction === key ? "is-active" : ""}`.trim()}
                 key={key}
                 onClick={() => setDirection(key)}
                 title={`Show ${label.toLowerCase()} assets`}
                 type="button"
               >
                 {label}
-                <span className="ga-lineage-v2-legend-count">{count}</span>
+                <span className="ax-lineage-v2-legend-count">{count}</span>
               </button>
             ))}
           </div>
-          <div className="ga-lineage-v2-legend-kinds">
+          <div className="ax-lineage-v2-legend-kinds">
             {kindMeta.kinds.map((entry) => {
               const off = disabledKinds.has(entry.kind);
               return (
                 <button
                   aria-pressed={!off}
-                  className={`ga-lineage-v2-legend-chip ${off ? "is-off" : ""}`.trim()}
+                  className={`ax-lineage-v2-legend-chip ${off ? "is-off" : ""}`.trim()}
                   data-node-kind={entry.kind}
                   key={entry.kind}
                   onClick={() => toggleKind(entry.kind)}
                   title={`${off ? "Show" : "Hide"} ${kindLabel(entry.kind)} nodes (${entry.upstream} up / ${entry.downstream} down)`}
                   type="button"
                 >
-                  <span aria-hidden="true" className="ga-lineage-v2-legend-swatch" />
+                  <span aria-hidden="true" className="ax-lineage-v2-legend-swatch" />
                   {kindLabel(entry.kind)}
-                  <span className="ga-lineage-v2-legend-count">{entry.count}</span>
+                  <span className="ax-lineage-v2-legend-count">{entry.count}</span>
                 </button>
               );
             })}
             {filtersActive ? (
               <button
-                className="ga-lineage-v2-legend-reset"
+                className="ax-lineage-v2-legend-reset"
                 onClick={resetFilters}
                 type="button"
               >
@@ -739,16 +740,16 @@ function CanvasInner({
         </div>
       ) : null}
       {hydrating || useSticky ? (
-        <div className="ga-lineage-v2-canvas-banner" role="status">
-          <span aria-hidden="true" className="ga-lineage-v2-canvas-spinner" />
+        <div className="ax-lineage-v2-canvas-banner" role="status">
+          <span aria-hidden="true" className="ax-lineage-v2-canvas-spinner" />
           {useSticky ? "Switching focus…" : "Loading from Unity Catalog…"}
         </div>
       ) : null}
       {!flowNodes.length ? (
-        <div className="ga-lineage-v2-filter-empty" role="status">
+        <div className="ax-lineage-v2-filter-empty" role="status">
           <strong>No nodes match the current filters</strong>
           <span>Every connected asset is hidden by the direction or type filters above.</span>
-          <button className="ga-lineage-v2-secondary-btn" onClick={resetFilters} type="button">
+          <button className="ax-lineage-v2-secondary-btn" onClick={resetFilters} type="button">
             Reset filters
           </button>
         </div>
@@ -774,7 +775,7 @@ function CanvasInner({
         zoomOnScroll
         preventScrolling={true}
       >
-        <Background color="rgba(61, 132, 173, 0.18)" gap={24} size={1} />
+        <Background color="rgba(91, 127, 208, 0.18)" gap={24} size={1} />
         <Controls position="top-right" showInteractive={false} />
       </ReactFlow>
       {/*
@@ -782,7 +783,7 @@ function CanvasInner({
         LINEAGE_GRAPH_DEPTH_LIMIT). Caption the limit so the boundary reads
         as a designed behavior — clicking a node merges its neighbors into
         the accumulated graph, which is the sanctioned way to go deeper.
-        Inline style uses ga-* tokens (this file cannot own lineage-v2.css).
+        Inline style uses ax-* tokens (this file cannot own lineage-v2.css).
       */}
       <div
         role="note"
@@ -794,11 +795,11 @@ function CanvasInner({
           pointerEvents: "none",
           fontSize: 11,
           letterSpacing: "0.02em",
-          color: "var(--ga-text-muted)",
+          color: "var(--ax-text-muted)",
           // Solid pill: at narrow widths the auto-layout can push a node
           // card into this corner, and bare text collided with card text.
-          background: "var(--ga-surface-strong)",
-          border: "1px solid var(--ga-border-muted)",
+          background: "var(--ax-surface-strong)",
+          border: "1px solid var(--ax-border-muted)",
           borderRadius: 999,
           padding: "3px 10px",
         }}
@@ -845,27 +846,28 @@ export function LineageCanvasV2({
   workspaceHost = "",
   minZoom = 0.5,
 }) {
-  // ReactFlowProvider is mounted at the application root in main.jsx, so we
-  // don't need to wrap the canvas here. CanvasInner consumes the provider
-  // via useReactFlow().
+  // The provider lives here, not in main.jsx, so React Flow only loads with
+  // the lineage surfaces. CanvasInner consumes it via useReactFlow().
   return (
-    <CanvasInner
-      error={error}
-      focusId={focusId}
-      graph={graph}
-      hydrating={hydrating}
-      minZoom={minZoom}
-      nodeHeaders={nodeHeaders}
-      onFocusChange={onFocusChange}
-      onColumnSelect={onColumnSelect}
-      onOpenAsset={onOpenAsset}
-      onRenderedGraphChange={onRenderedGraphChange}
-      onRetry={onRetry}
-      selectedColumn={selectedColumn}
-      selectedNodeFqn={selectedNodeFqn}
-      warming={warming}
-      workspaceHost={workspaceHost}
-    />
+    <ReactFlowProvider>
+      <CanvasInner
+        error={error}
+        focusId={focusId}
+        graph={graph}
+        hydrating={hydrating}
+        minZoom={minZoom}
+        nodeHeaders={nodeHeaders}
+        onFocusChange={onFocusChange}
+        onColumnSelect={onColumnSelect}
+        onOpenAsset={onOpenAsset}
+        onRenderedGraphChange={onRenderedGraphChange}
+        onRetry={onRetry}
+        selectedColumn={selectedColumn}
+        selectedNodeFqn={selectedNodeFqn}
+        warming={warming}
+        workspaceHost={workspaceHost}
+      />
+    </ReactFlowProvider>
   );
 }
 

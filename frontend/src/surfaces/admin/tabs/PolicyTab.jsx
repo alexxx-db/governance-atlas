@@ -25,7 +25,7 @@ function formatWhen(value) {
 function PolicyRequirementCards({ cards, hydrating }) {
   return (
     <SectionCard
-      className="ga-admin-card"
+      className="ax-admin-card"
       subtitle={
         cards.some((card) => card.state === "available")
           ? "Backed policy signals; unsupported checks stay marked unavailable"
@@ -36,10 +36,10 @@ function PolicyRequirementCards({ cards, hydrating }) {
       {!cards.length && hydrating ? (
         <LoadingState label="Loading policy diagnostics" variant="tile" />
       ) : cards.length ? (
-        <div aria-label="Policy requirement cards" className="ga-admin-policy-grid" role="group">
+        <div aria-label="Policy requirement cards" className="ax-admin-policy-grid" role="group">
           {cards.map((card) => (
             <article
-              className={`ga-admin-policy-card ${card.state === "available" ? "" : "is-unavailable"}`.trim()}
+              className={`ax-admin-policy-card ${card.state === "available" ? "" : "is-unavailable"}`.trim()}
               key={card.id}
             >
               <small>{card.label}</small>
@@ -65,7 +65,7 @@ function CoveragePanel({ policies, hydrating }) {
   const panelTitle = metadataScoped ? "Metadata coverage by domain" : "Policy coverage";
   return (
     <SectionCard
-      className="ga-admin-card"
+      className="ax-admin-card"
       subtitle={
         metadataScoped
           ? "Metadata completeness per domain — not policy-enforcement coverage"
@@ -81,7 +81,7 @@ function CoveragePanel({ policies, hydrating }) {
         // data source in the workspace, so we do NOT fabricate "control X was
         // enforced" evidence — we show metadata completeness and point to the
         // real, immutable control/audit evidence.
-        <p className="ga-admin-coverage-note">
+        <p className="ax-admin-coverage-note">
           Policy-enforcement evidence is not yet wired to a source, so this shows
           metadata completeness per domain — not proof a control was enforced.
           For enforced-control and grant evidence, see the Evidence surface.
@@ -90,13 +90,13 @@ function CoveragePanel({ policies, hydrating }) {
       {!policies.length && hydrating ? (
         <LoadingState label="Loading coverage rows" variant="card" />
       ) : policies.length ? (
-        <ul aria-label={`${panelTitle} rows`} className="ga-admin-coverage-list">
+        <ul aria-label={`${panelTitle} rows`} className="ax-admin-coverage-list">
           {policies.map((policy) => {
             const numeric = numberOrNull(policy.value);
             const available = numeric != null;
             return (
               <li className={available ? "" : "is-unavailable"} key={policy.id}>
-                <span className="ga-admin-coverage-label">
+                <span className="ax-admin-coverage-label">
                   {/* Domain mentions are real anchors into Discover (LAW);
                       non-domain rule rows stay labeled text. */}
                   {policy.domain ? (
@@ -106,8 +106,8 @@ function CoveragePanel({ policies, hydrating }) {
                   )}
                 </span>
                 <strong>{available ? percentValue(numeric) : stateText(policy.status)}</strong>
-                {policy.note ? <em className="ga-admin-coverage-note">{policy.note}</em> : null}
-                <i aria-hidden="true" className="ga-admin-coverage-bar">
+                {policy.note ? <em className="ax-admin-coverage-note">{policy.note}</em> : null}
+                <i aria-hidden="true" className="ax-admin-coverage-bar">
                   <b style={{ width: available ? `${Math.max(0, Math.min(100, numeric))}%` : "0%" }} />
                 </i>
               </li>
@@ -143,14 +143,14 @@ function ControlsInAction() {
 
   return (
     <SectionCard
-      className="ga-admin-card"
+      className="ax-admin-card"
       status={status === "loading" || status === "hydrating" ? "loading" : undefined}
       subtitle={`${total} decision${total === 1 ? "" : "s"} — ${outcomeSummary}`}
       title="Controls in action"
     >
       {decisions.length ? (
-        <div className="ga-admin-decisions-scroll">
-          <table className="ga-admin-decisions-table">
+        <div className="ax-admin-decisions-scroll">
+          <table className="ax-admin-decisions-table">
             <thead>
               <tr>
                 <th>Decision</th>
@@ -173,14 +173,14 @@ function ControlsInAction() {
                         {decision || "—"}
                       </Badge>
                     </td>
-                    <td className="ga-admin-decisions-asset">{asset}</td>
+                    <td className="ax-admin-decisions-asset">{asset}</td>
                     <td>
-                      <span className="ga-admin-decisions-actor">{entry.actor || "—"}</span>
+                      <span className="ax-admin-decisions-actor">{entry.actor || "—"}</span>
                       {entry.actorRole ? (
-                        <span className="ga-admin-decisions-role">{entry.actorRole}</span>
+                        <span className="ax-admin-decisions-role">{entry.actorRole}</span>
                       ) : null}
                     </td>
-                    <td className="ga-admin-decisions-change">
+                    <td className="ax-admin-decisions-change">
                       {hasChange ? (
                         <>
                           {entry.beforeStatus}
@@ -191,8 +191,8 @@ function ControlsInAction() {
                         "—"
                       )}
                     </td>
-                    <td className="ga-admin-decisions-note">{entry.note || "—"}</td>
-                    <td className="ga-admin-decisions-when">{formatWhen(entry.at)}</td>
+                    <td className="ax-admin-decisions-note">{entry.note || "—"}</td>
+                    <td className="ax-admin-decisions-when">{formatWhen(entry.at)}</td>
                   </tr>
                 );
               })}
@@ -208,7 +208,7 @@ function ControlsInAction() {
       {enforcementNote ? (
         // Honesty gate: these are governance REVIEW decisions, not access
         // enforcement. Keep the payload's caveat prominent under the panel.
-        <p className="ga-admin-decisions-caveat">{enforcementNote}</p>
+        <p className="ax-admin-decisions-caveat">{enforcementNote}</p>
       ) : null}
     </SectionCard>
   );
@@ -216,7 +216,7 @@ function ControlsInAction() {
 
 export function PolicyTab({ policyCards, policies, hydrating }) {
   return (
-    <div className="ga-admin-tab-body" id="ga-admin-panel-policy" role="tabpanel">
+    <div className="ax-admin-tab-body" id="ax-admin-panel-policy" role="tabpanel">
       <PolicyRequirementCards cards={policyCards} hydrating={hydrating} />
       <ControlsInAction />
       <CoveragePanel hydrating={hydrating} policies={policies} />

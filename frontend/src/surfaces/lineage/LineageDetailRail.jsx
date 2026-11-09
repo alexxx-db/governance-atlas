@@ -46,7 +46,7 @@ function OwnerLink({ owner, className = "" }) {
 
 function ImpactFact({ label, value, detail, tone = "neutral" }) {
   return (
-    <div className={`ga-lineage-impact-fact tone-${tone}`.trim()}>
+    <div className={`ax-lineage-impact-fact tone-${tone}`.trim()}>
       <span>{label}</span>
       <strong>{value}</strong>
       {detail ? <small>{detail}</small> : null}
@@ -55,7 +55,7 @@ function ImpactFact({ label, value, detail, tone = "neutral" }) {
 }
 
 function LineageRows({ items, empty, onSelectAsset }) {
-  if (!items?.length) return <p className="ga-lineage-v2-rail-empty">{empty}</p>;
+  if (!items?.length) return <p className="ax-lineage-v2-rail-empty">{empty}</p>;
   return (
     <ul>
       {items.map((node) => (
@@ -63,7 +63,7 @@ function LineageRows({ items, empty, onSelectAsset }) {
           {node.isOpenable === false || !node.fqn ? (
             // Restricted / unresolvable nodes stay honest non-controls
             // (matches the legacy disabled-button rendering).
-            <span className="ga-lin-rail-row-static">
+            <span className="ax-lin-rail-row-static">
               <strong>{node.label}</strong>
               <span>{node.subtitle}</span>
             </span>
@@ -73,7 +73,7 @@ function LineageRows({ items, empty, onSelectAsset }) {
             // adds middle-click/copy per the cross-linking law.
             <EntityChip
               appearance="row"
-              className="ga-lin-rail-row"
+              className="ax-lin-rail-row"
               entity={{ kind: "lineage", fqn: node.fqn, label: node.label, meta: node.subtitle || "" }}
               navigate={() => onSelectAsset(node.fqn)}
             />
@@ -96,14 +96,14 @@ function ColumnTracePath({ title, trace, directItems, error }) {
       <span>{fqn}</span>
     );
   return (
-    <div className="ga-lineage-column-trace-card">
+    <div className="ax-lineage-column-trace-card">
       <header>
         <span>{title}</span>
         <strong>{trace ? `${Math.max(0, nodes.length - 1)} traced` : `${directItems.length} direct`}</strong>
       </header>
       {trace ? (
         <>
-          <div className="ga-lineage-column-path-list">
+          <div className="ax-lineage-column-path-list">
             {nodes.slice(1, 6).map((node) => (
               <div key={node.id || `${node.assetFqn}-${node.column}`}>
                 <strong>{node.column}</strong>
@@ -112,12 +112,12 @@ function ColumnTracePath({ title, trace, directItems, error }) {
             ))}
             {nodes.length <= 1 ? <p>No multi-hop column paths returned.</p> : null}
           </div>
-          {truncated ? <p className="ga-lineage-v2-rail-empty">Trace truncated by bounded fan-out limits.</p> : null}
+          {truncated ? <p className="ax-lineage-v2-rail-empty">Trace truncated by bounded fan-out limits.</p> : null}
         </>
       ) : error ? (
-        <p className="ga-lineage-v2-rail-empty">{error}</p>
+        <p className="ax-lineage-v2-rail-empty">{error}</p>
       ) : directItems.length ? (
-        <div className="ga-lineage-column-path-list">
+        <div className="ax-lineage-column-path-list">
           {directItems.slice(0, 6).map((item) => (
             <div key={`${item.assetFqn}-${item.column}`}>
               <strong>{item.column}</strong>
@@ -126,7 +126,7 @@ function ColumnTracePath({ title, trace, directItems, error }) {
           ))}
         </div>
       ) : (
-        <p className="ga-lineage-v2-rail-empty">No column paths returned for this direction.</p>
+        <p className="ax-lineage-v2-rail-empty">No column paths returned for this direction.</p>
       )}
     </div>
   );
@@ -407,14 +407,14 @@ export function LineageDetailRail({
   ].filter(Boolean).join("\n");
 
   return (
-    <aside className="ga-lineage-v2-rail">
-      <div className="ga-lineage-v2-rail-head">
-        <span className="ga-lin-eyebrow">{isFocusSelected ? "Impact Inspector" : "Selected Node"}</span>
+    <aside className="ax-lineage-v2-rail">
+      <div className="ax-lineage-v2-rail-head">
+        <span className="ax-lin-eyebrow">{isFocusSelected ? "Impact Inspector" : "Selected Node"}</span>
         <h2>{subject?.label || "Lineage Details"}</h2>
         {subject?.subtitle ? <small>{subject.subtitle}</small> : null}
         {!isFocusSelected && subject?.fqn ? (
           <button
-            className="ga-lineage-v2-rail-reanchor"
+            className="ax-lineage-v2-rail-reanchor"
             onClick={() => onReAnchor?.(subject.fqn)}
             title="Re-anchor the canvas on this node"
             type="button"
@@ -424,7 +424,7 @@ export function LineageDetailRail({
         ) : null}
       </div>
 
-      <div className="ga-lineage-v2-rail-tabs" role="tablist" aria-label="Lineage inspector tabs">
+      <div className="ax-lineage-v2-rail-tabs" role="tablist" aria-label="Lineage inspector tabs">
         {[
           ["impact", "Impact Brief"],
           ["details", "Details"],
@@ -445,14 +445,14 @@ export function LineageDetailRail({
       </div>
 
       {activeTab === "impact" ? (
-        <div className="ga-lineage-impact-panel">
-          <div className="ga-lineage-impact-grid">
+        <div className="ax-lineage-impact-panel">
+          <div className="ax-lineage-impact-grid">
             <ImpactFact label="Downstream" value={compactCount(consumers.length)} detail={`visible graph consumers${scopeNote}`} tone={consumers.length ? "warn" : "neutral"} />
             <ImpactFact label="Column paths" value={compactCount(columnLineageCount)} detail="direct UC column links" tone={columnLineageCount ? "info" : "neutral"} />
             <ImpactFact
               label="Quality issues"
               value={qualityAvailable ? compactCount(failedQuality) : "Unavailable"}
-              detail={qualityAvailable ? `${qualityRuns} Atlas run(s) · DQM ${dqmSummary.healthStatus || evidenceState(dqm) || "unavailable"}` : "quality evidence unavailable"}
+              detail={qualityAvailable ? `${qualityRuns} Axiom run(s) · DQM ${dqmSummary.healthStatus || evidenceState(dqm) || "unavailable"}` : "quality evidence unavailable"}
               tone={failedQuality ? "crit" : "neutral"}
             />
             <ImpactFact
@@ -466,7 +466,7 @@ export function LineageDetailRail({
             <ImpactFact label="Jobs" value={compactCount(Math.max(downstreamJobs.length, lakeflowJobs.length))} detail={lakeflowJobs.length ? "Lakeflow job runs" : "downstream job nodes"} tone={downstreamJobs.length || lakeflowJobs.length ? "warn" : "neutral"} />
             <ImpactFact label="Pipelines" value={compactCount(lakeflowPipelines.length)} detail={pipelineEventRows.length ? `${pipelineEventRows.length} event-log row(s)` : "Lakeflow updates"} tone={lakeflowPipelines.length ? "info" : "neutral"} />
           </div>
-          <div className="ga-lineage-v2-rail-section">
+          <div className="ax-lineage-v2-rail-section">
             <header><span>Decision packet</span></header>
             {/*
               L5: this packet used to render up to 8 "Unavailable: no …
@@ -478,7 +478,7 @@ export function LineageDetailRail({
               honest copy. The "Approval blockers" row was removed — no
               backend emits approval-blocker records.
             */}
-            <ul className="ga-lineage-impact-list">
+            <ul className="ax-lineage-impact-list">
               <li>Owners: <OwnerLink owner={detailOwner || subjectStats.ownerLabel} /></li>
               <li>Sensitivity: {focusedAsset?.sensitivity || subject?.classification || "No sensitivity label"}</li>
               <li>Access scope: {(() => {
@@ -517,28 +517,28 @@ export function LineageDetailRail({
               <li>Graph state: {Object.values(progressive).some(Boolean) ? "Still loading the full graph" : "Full graph loaded"}</li>
             </ul>
           </div>
-          <div className="ga-lineage-v2-rail-section">
+          <div className="ax-lineage-v2-rail-section">
             <header>
               <span>Downstream consumers</span>
-              <span className="ga-lineage-v2-rail-count">{consumers.length}</span>
+              <span className="ax-lineage-v2-rail-count">{consumers.length}</span>
             </header>
             <LineageRows items={consumers.slice(0, 5)} empty={`No downstream consumers returned for this asset${scopeNote}.`} onSelectAsset={onSelectAsset} />
           </div>
-          <div className="ga-lineage-v2-rail-section">
+          <div className="ax-lineage-v2-rail-section">
             <header>
               <span>Downstream dashboards</span>
-              <span className="ga-lineage-v2-rail-count">{downstreamDashboards.length}</span>
+              <span className="ax-lineage-v2-rail-count">{downstreamDashboards.length}</span>
             </header>
             <LineageRows items={downstreamDashboards.slice(0, 4)} empty="No downstream dashboard nodes returned." onSelectAsset={onSelectAsset} />
           </div>
-          <div className="ga-lineage-v2-rail-section">
+          <div className="ax-lineage-v2-rail-section">
             <header>
               <span>Downstream jobs</span>
-              <span className="ga-lineage-v2-rail-count">{Math.max(downstreamJobs.length, lakeflowJobs.length)}</span>
+              <span className="ax-lineage-v2-rail-count">{Math.max(downstreamJobs.length, lakeflowJobs.length)}</span>
             </header>
             <LineageRows items={downstreamJobs.slice(0, 4)} empty="No downstream job nodes returned." onSelectAsset={onSelectAsset} />
             {lakeflowJobs.length ? (
-              <ul className="ga-lineage-impact-list">
+              <ul className="ax-lineage-impact-list">
                 {lakeflowJobs.slice(0, 3).map((job, index) => (
                   <li key={`${job.job_id || "job"}-${job.run_id || index}`}>
                     <strong>{job.job_name || job.job_id || "Lakeflow job"}</strong>
@@ -558,7 +558,7 @@ export function LineageDetailRail({
               </ul>
             ) : null}
           </div>
-          <div className="ga-lineage-v2-rail-actions">
+          <div className="ax-lineage-v2-rail-actions">
             <Button
               onClick={() => onExportImpactBrief?.(impactPacket)}
               variant="tertiary"
@@ -581,8 +581,8 @@ export function LineageDetailRail({
               {impactRequestState?.loading ? "Creating request..." : "Create request"}
             </Button>
           </div>
-          {impactRequestState?.message ? <p className="ga-lineage-request-status">{impactRequestState.message}</p> : null}
-          {impactRequestState?.error ? <p className="ga-lineage-request-status tone-error">{impactRequestState.error}</p> : null}
+          {impactRequestState?.message ? <p className="ax-lineage-request-status">{impactRequestState.message}</p> : null}
+          {impactRequestState?.error ? <p className="ax-lineage-request-status tone-error">{impactRequestState.error}</p> : null}
         </div>
       ) : null}
 
@@ -591,7 +591,7 @@ export function LineageDetailRail({
           {subject ? (
             // L2: merged rail stats (asset detail for focus; batch node
             // header for non-focus subjects) — see railFreshness et al.
-            <div className="ga-lineage-v2-rail-stats">
+            <div className="ax-lineage-v2-rail-stats">
               {/* "Data updated" (not "Last refresh"): the value derives from
                   updatedAt / Delta write history (fix_plan #6). */}
               <div><span>Data updated</span><strong>{railFreshness || "Unavailable"}</strong></div>
@@ -601,12 +601,12 @@ export function LineageDetailRail({
               {railSize ? <div><span>Size</span><strong>{railSize}{railFiles ? ` · ${railFiles} files` : ""}</strong></div> : null}
             </div>
           ) : null}
-          <div className="ga-lineage-v2-rail-section">
-            <header><span>Sources</span><span className="ga-lineage-v2-rail-count">{sources.length}</span></header>
+          <div className="ax-lineage-v2-rail-section">
+            <header><span>Sources</span><span className="ax-lineage-v2-rail-count">{sources.length}</span></header>
             <LineageRows items={sources} empty={`No upstream sources returned${scopeNote}.`} onSelectAsset={onSelectAsset} />
           </div>
-          <div className="ga-lineage-v2-rail-section">
-            <header><span>Recent activity</span><span className="ga-lineage-v2-rail-count">{recentActivityCount}</span></header>
+          <div className="ax-lineage-v2-rail-section">
+            <header><span>Recent activity</span><span className="ax-lineage-v2-rail-count">{recentActivityCount}</span></header>
             {recentActivity.length ? (
               <ul>
                 {recentActivity.slice(0, 5).map((event, index) => {
@@ -621,11 +621,11 @@ export function LineageDetailRail({
                       {eventId ? (
                         <EntityChip
                           appearance="row"
-                          className="ga-lin-rail-row"
+                          className="ax-lin-rail-row"
                           entity={{ kind: "event", id: eventId, label, meta: when }}
                         />
                       ) : (
-                        <span className="ga-lin-rail-row-static">
+                        <span className="ax-lin-rail-row-static">
                           <strong>{label}</strong>
                           <span>{when}</span>
                         </span>
@@ -637,13 +637,13 @@ export function LineageDetailRail({
             ) : activityFetch?.loading ? (
               // L10: activity is being fetched lazily now that this tab is
               // open — say "loading", never a premature empty.
-              <p className="ga-lineage-v2-rail-empty">Loading recorded activity…</p>
+              <p className="ax-lineage-v2-rail-empty">Loading recorded activity…</p>
             ) : (
-              <p className="ga-lineage-v2-rail-empty">No recorded activity.</p>
+              <p className="ax-lineage-v2-rail-empty">No recorded activity.</p>
             )}
           </div>
           {focus?.fqn ? (
-            <div className="ga-lineage-v2-rail-actions">
+            <div className="ax-lineage-v2-rail-actions">
               <Button onClick={() => onOpenAsset?.(focus.fqn, "overview")} variant="tertiary">
                 Open asset record
               </Button>
@@ -653,13 +653,13 @@ export function LineageDetailRail({
       ) : null}
 
       {activeTab === "columns" ? (
-        <div className="ga-lineage-column-panel">
-          <div className="ga-lineage-v2-rail-section">
+        <div className="ax-lineage-column-panel">
+          <div className="ax-lineage-v2-rail-section">
             <header>
               <span>{selectedColumn?.columnName ? "Selected column" : "Column lineage"}</span>
-              <span className="ga-lineage-v2-rail-count">{columnLineageCount}</span>
+              <span className="ax-lineage-v2-rail-count">{columnLineageCount}</span>
             </header>
-            <p className="ga-lineage-v2-rail-empty">
+            <p className="ax-lineage-v2-rail-empty">
               {selectedColumn?.columnName
                 ? `${selectedColumn.columnName} on ${selectedColumn.assetFqn}`
                 : "Select a column on a table card to trace column-level impact."}
@@ -679,10 +679,10 @@ export function LineageDetailRail({
                 title="Downstream"
                 trace={columnTrace?.downstream}
               />
-              <div className="ga-lineage-sql-placeholder">
+              <div className="ax-lineage-sql-placeholder">
                 <strong>Transformation SQL</strong>
                 {sqlSnippets.length ? (
-                  <div className="ga-lineage-sql-snippets">
+                  <div className="ax-lineage-sql-snippets">
                     {sqlSnippets.map((snippet) => (
                       <pre key={snippet.edgeId}>{snippet.sqlSnippet}</pre>
                     ))}
@@ -697,10 +697,10 @@ export function LineageDetailRail({
       ) : null}
 
       {activeTab === "evidence" ? (
-        <div className="ga-lineage-evidence-panel">
-          <div className="ga-lineage-v2-rail-section">
+        <div className="ax-lineage-evidence-panel">
+          <div className="ax-lineage-v2-rail-section">
             <header><span>Evidence sources</span></header>
-            <ul className="ga-lineage-impact-list">
+            <ul className="ax-lineage-impact-list">
               {evidenceRecords.map((record) => (
                 <li key={record.source}>
                   <strong>{record.source}</strong> · {record.status}
@@ -709,10 +709,10 @@ export function LineageDetailRail({
               ))}
             </ul>
           </div>
-          <div className="ga-lineage-v2-rail-section">
-            <header><span>Atlas AI evidence boundary</span></header>
-            <p className="ga-lineage-v2-rail-empty">
-              The impact packet is generated from the currently loaded lineage, governance, access, and quality evidence. Atlas AI should answer from this packet and returned evidence records; if the AI provider is unavailable, the exported packet remains the backed artifact.
+          <div className="ax-lineage-v2-rail-section">
+            <header><span>Axiom AI evidence boundary</span></header>
+            <p className="ax-lineage-v2-rail-empty">
+              The impact packet is generated from the currently loaded lineage, governance, access, and quality evidence. Axiom AI should answer from this packet and returned evidence records; if the AI provider is unavailable, the exported packet remains the backed artifact.
             </p>
           </div>
         </div>

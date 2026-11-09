@@ -5,7 +5,7 @@
 import { renderHook, waitFor } from "@testing-library/react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { atlasQueryClient } from "../lib/queryClient";
+import { axiomQueryClient } from "../lib/queryClient";
 import { AUDIT_EVIDENCE_DEFAULT_LIMIT, auditRangeSinceIso, useAuditEvents, useAuditEvidence } from "./useAuditEvents";
 import { useCdeDashboard, useCdeDetail } from "./useCdeDashboard";
 import { useAdminControlCenter, useAdminTruthCheck } from "./useAdminControlCenter";
@@ -41,14 +41,14 @@ vi.mock("../lib/api", () => ({
 }));
 
 function Wrapper({ children }) {
-  return <QueryClientProvider client={atlasQueryClient}>{children}</QueryClientProvider>;
+  return <QueryClientProvider client={axiomQueryClient}>{children}</QueryClientProvider>;
 }
 
 const AVAILABLE = { meta: { state: "available", warnings: [] } };
 
 beforeEach(() => {
   Object.values(mocks).forEach((mock) => mock.mockReset());
-  atlasQueryClient.clear();
+  axiomQueryClient.clear();
 });
 
 describe("useAuditEvidence / useAuditEvents", () => {
@@ -61,7 +61,7 @@ describe("useAuditEvidence / useAuditEvents", () => {
     );
     // Cache continuity: the adopting rewrite finds the same cache entry.
     expect(
-      atlasQueryClient.getQueryData(["atlas", "audit-evidence", "7d", AUDIT_EVIDENCE_DEFAULT_LIMIT]),
+      axiomQueryClient.getQueryData(["axiom", "audit-evidence", "7d", AUDIT_EVIDENCE_DEFAULT_LIMIT]),
     ).toBeTruthy();
   });
 
@@ -74,10 +74,10 @@ describe("useAuditEvidence / useAuditEvents", () => {
     expect(result.current.query.fetchStatus).toBe("idle");
     expect(mocks.fetchAuditEvents).not.toHaveBeenCalled();
 
-    rerender({ filters: { actorEmail: "skyler@entrada.ai" } });
+    rerender({ filters: { actorEmail: "abarreto@shorecp.com" } });
     await waitFor(() => expect(mocks.fetchAuditEvents).toHaveBeenCalledTimes(1));
     expect(mocks.fetchAuditEvents.mock.calls[0][0]).toMatchObject({
-      actorEmail: "skyler@entrada.ai",
+      actorEmail: "abarreto@shorecp.com",
     });
   });
 
@@ -93,7 +93,7 @@ describe("useCdeDashboard / useCdeDetail", () => {
     mocks.fetchCdeDashboard.mockResolvedValue({ data: { candidates: [] }, ...AVAILABLE });
     const { result } = renderHook(() => useCdeDashboard(), { wrapper: Wrapper });
     await waitFor(() => expect(result.current.status).toBe("available"));
-    expect(atlasQueryClient.getQueryData(["atlas", "cde-dashboard"])).toBeTruthy();
+    expect(axiomQueryClient.getQueryData(["axiom", "cde-dashboard"])).toBeTruthy();
   });
 
   it("gates detail on a non-empty id", async () => {
@@ -126,8 +126,8 @@ describe("useAdminControlCenter / useAdminTruthCheck", () => {
       expect(control.result.current.status).toBe("available");
       expect(truth.result.current.status).toBe("available");
     });
-    expect(atlasQueryClient.getQueryData(["atlas", "admin-control-center"])).toBeTruthy();
-    expect(atlasQueryClient.getQueryData(["atlas", "admin-truth-check"])).toBeTruthy();
+    expect(axiomQueryClient.getQueryData(["axiom", "admin-control-center"])).toBeTruthy();
+    expect(axiomQueryClient.getQueryData(["axiom", "admin-truth-check"])).toBeTruthy();
   });
 });
 
@@ -138,7 +138,7 @@ describe("useTaxonomyOverview", () => {
     await waitFor(() => {
       expect(overview.result.current.status).toBe("available");
     });
-    expect(atlasQueryClient.getQueryData(["atlas", "taxonomy-overview"])).toBeTruthy();
+    expect(axiomQueryClient.getQueryData(["axiom", "taxonomy-overview"])).toBeTruthy();
   });
 
   it("reports hydrating (and polls bounded) while the overview envelope loads", async () => {
@@ -154,7 +154,7 @@ describe("useGovernanceWorkbench", () => {
     mocks.fetchGovernanceWorkbench.mockResolvedValue({ data: { requests: [] }, ...AVAILABLE });
     const { result } = renderHook(() => useGovernanceWorkbench(), { wrapper: Wrapper });
     await waitFor(() => expect(result.current.status).toBe("available"));
-    expect(atlasQueryClient.getQueryData(GOVERNANCE_WORKBENCH_KEY)).toBeTruthy();
+    expect(axiomQueryClient.getQueryData(GOVERNANCE_WORKBENCH_KEY)).toBeTruthy();
   });
 });
 

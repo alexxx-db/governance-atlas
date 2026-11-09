@@ -7,13 +7,13 @@
 // degraded the list is empty and callers fall back to free text.
 import { useMemo } from "react";
 import { fetchDiscoverySearch } from "../lib/api";
-import { useAtlasQuery } from "./useAtlasQuery";
+import { useAxiomQuery } from "./useAxiomQuery";
 
 export function useAssetSuggestions(options = {}) {
   const enabled = options.enabled !== false;
   const limit = Number.isFinite(options.limit) ? options.limit : 250;
-  const { query } = useAtlasQuery({
-    key: ["atlas", "asset-suggestions", limit],
+  const { query } = useAxiomQuery({
+    key: ["axiom", "asset-suggestions", limit],
     fetch: (signal) => fetchDiscoverySearch({ query: "", limit }, { signal }),
     enabled,
     // The visible inventory changes rarely within a session; cache generously.

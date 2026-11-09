@@ -1,15 +1,15 @@
 /*
- * Governance Atlas radius scale.
+ * Axiom radius scale.
  * Cards stay crisp; pill radius is reserved for compact chips and controls.
  */
 
 :root {
-  --ga-radius-xs: 4px;
-  --ga-radius-sm: 6px;
-  --ga-radius-md: 8px;
-  --ga-radius-lg: 10px;
-  --ga-radius-xl: 12px;
-  --ga-radius-pill: 999px;
+  --ax-radius-xs: 4px;
+  --ax-radius-sm: 6px;
+  --ax-radius-md: 8px;
+  --ax-radius-lg: 10px;
+  --ax-radius-xl: 12px;
+  --ax-radius-pill: 999px;
 
   /* The last --gh-radius-* aliases died with app.css / entity.css in
      cohesion follow-up 3. */

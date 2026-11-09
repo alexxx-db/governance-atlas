@@ -44,14 +44,14 @@ describe("Button", () => {
     const button = screen.getByRole("button");
     expect(button.disabled).toBe(true);
     expect(button.getAttribute("aria-busy")).toBe("true");
-    expect(button.querySelector(".ga-sys-button-spinner")).not.toBeNull();
+    expect(button.querySelector(".ax-sys-button-spinner")).not.toBeNull();
   });
 
   it("icon variant renders no visible label and relies on aria-label", () => {
     render(<Button variant="icon" aria-label="Close panel" icon={<svg />} />);
     const button = screen.getByRole("button", { name: "Close panel" });
-    expect(button.querySelector(".ga-sys-button-label")).toBeNull();
-    expect(button.querySelector(".ga-sys-button-icon")).not.toBeNull();
+    expect(button.querySelector(".ax-sys-button-label")).toBeNull();
+    expect(button.querySelector(".ax-sys-button-icon")).not.toBeNull();
   });
 
   it("unknown variant/tone fall back to safe defaults instead of unstyled output", () => {
@@ -70,7 +70,7 @@ describe("Badge", () => {
   it("renders children with the neutral default tone", () => {
     render(<Badge>PII</Badge>);
     const badge = screen.getByText("PII");
-    expect(badge.className).toContain("ga-sys-badge");
+    expect(badge.className).toContain("ax-sys-badge");
     expect(badge.className).toContain("tone-neutral");
   });
 

@@ -1,17 +1,17 @@
 /*
  * Stacking layer tokens.
  * These tokens name the stacking intent — don't invent new numeric z-index
- * values. --ga-* is canonical (Wave C8); no --gh-* consumers remain.
+ * values. --ax-* is canonical (Wave C8); no --gh-* consumers remain.
  */
 
 :root {
-  --ga-z-base: 0;
-  --ga-z-raised: 10;
-  --ga-z-sticky: 40;
-  --ga-z-shell-header: 80;
-  --ga-z-dropdown: 140;
-  --ga-z-overlay: 220;
-  --ga-z-modal: 260;
-  --ga-z-toast: 320;
-  --ga-z-max: 999;
+  --ax-z-base: 0;
+  --ax-z-raised: 10;
+  --ax-z-sticky: 40;
+  --ax-z-shell-header: 80;
+  --ax-z-dropdown: 140;
+  --ax-z-overlay: 220;
+  --ax-z-modal: 260;
+  --ax-z-toast: 320;
+  --ax-z-max: 999;
 }

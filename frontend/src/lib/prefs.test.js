@@ -44,7 +44,7 @@ describe("lib/prefs — namespaced preferences", () => {
   it("round-trips a registered pref under the ga.prefs namespace", () => {
     writePref("favoriteAssets", ["a.b.c"]);
     expect(readFavoriteAssets()).toEqual(["a.b.c"]);
-    expect(JSON.parse(window.localStorage.getItem("ga.prefs.favoriteAssets"))).toEqual(["a.b.c"]);
+    expect(JSON.parse(window.localStorage.getItem("ax.prefs.favoriteAssets"))).toEqual(["a.b.c"]);
   });
 
   it("reads legacy gh-* keys backward-compatibly and migrates them forward", () => {
@@ -59,7 +59,7 @@ describe("lib/prefs — namespaced preferences", () => {
     expect(readSavedSearches()).toEqual([{ id: "s1", name: "Finance", query: "revenue" }]);
     expect(readDiscoveryDensity()).toBe("compact");
     // Migrated forward: the new key now exists.
-    expect(window.localStorage.getItem("ga.prefs.favoriteAssets")).not.toBeNull();
+    expect(window.localStorage.getItem("ax.prefs.favoriteAssets")).not.toBeNull();
   });
 
   it("maps the legacy density vocabulary (normal/spacious) to comfortable", () => {

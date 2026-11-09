@@ -3,7 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { fetchDiscoverySearch } from "../lib/api";
 import { envelopeHydrating } from "../lib/envelope";
 import { isNonAuthoritativeMockEvidence } from "../lib/nonAuthoritativeEvidence";
-import { useAtlasQuery } from "./useAtlasQuery";
+import { useAxiomQuery } from "./useAxiomQuery";
 
 const DISCOVERY_DEFAULT_FETCH_LIMIT = 80;
 const DISCOVERY_MAX_FETCH_LIMIT = 200;
@@ -44,7 +44,7 @@ function payloadPrototypeMock(payload) {
 // The local discoveryRefetchInterval predicate was deleted: lib/envelope.js
 // `envelopeHydrating` covers every signal it checked (meta.state,
 // meta.discoveryState, queryState.state, inventoryHydrating) and the poll now
-// runs through useAtlasQuery's bounded engine — same 3s cadence, now bounded.
+// runs through useAxiomQuery's bounded engine — same 3s cadence, now bounded.
 const DISCOVERY_POLL = { interval: 3_000, maxAttempts: 20 };
 
 export function useDiscoveryResults(filters, options = {}) {
@@ -142,7 +142,7 @@ export function useDiscoveryResults(filters, options = {}) {
   // after the fetch resolves so normal caching resumes.
   const [pendingRefresh, setPendingRefresh] = useState(false);
   const queryClient = useQueryClient();
-  const { query } = useAtlasQuery({
+  const { query } = useAxiomQuery({
     key: ["discoveryResults", currentScopeKey, safeLimit, safeOffset, pendingRefresh ? "force" : "cache"],
     fetch: (signal) =>
       fetchDiscoverySearch(

@@ -65,7 +65,7 @@ export default class AppErrorBoundary extends Component {
   }
 
   componentDidCatch(error, info) {
-    console.error("Governance Atlas render failure", error, info);
+    console.error("Axiom render failure", error, info);
   }
 
   componentDidMount() {
@@ -79,7 +79,7 @@ export default class AppErrorBoundary extends Component {
         event?.preventDefault?.();
         return;
       }
-      console.error("Governance Atlas unhandled window error", error);
+      console.error("Axiom unhandled window error", error);
     };
     this.handleUnhandledRejection = (event) => {
       const reason = event?.reason;
@@ -90,7 +90,7 @@ export default class AppErrorBoundary extends Component {
         return;
       }
       if (!isBenignGlobalError(error)) {
-        console.error("Governance Atlas unhandled promise rejection", error);
+        console.error("Axiom unhandled promise rejection", error);
       }
     };
     window.addEventListener("error", this.handleWindowError);
@@ -113,7 +113,7 @@ export default class AppErrorBoundary extends Component {
     // app itself broke.
     if (isStaleChunkError(activeError)) {
       return (
-        <section className="ga-shell-route-state">
+        <section className="ax-shell-route-state">
           <ShellStateCard
             actions={
               <Button
@@ -130,11 +130,11 @@ export default class AppErrorBoundary extends Component {
               </Button>
             }
             eyebrow="New version available"
-            message="Governance Atlas has been redeployed since you opened this tab. Reload to load the newest workspace bundle."
+            message="Axiom has been redeployed since you opened this tab. Reload to load the newest workspace bundle."
             title="Reload to pick up the latest build"
             tone="neutral"
           >
-            <p className="ga-shell-state-card-message">
+            <p className="ax-shell-state-card-message">
               Your session will be preserved — the reload only refreshes the
               client-side bundle.
             </p>
@@ -144,7 +144,7 @@ export default class AppErrorBoundary extends Component {
     }
 
     return (
-      <section className="ga-shell-route-state">
+      <section className="ax-shell-route-state">
         <ShellStateCard
           actions={
             <Button
@@ -165,7 +165,7 @@ export default class AppErrorBoundary extends Component {
           title="The workspace hit an unexpected rendering failure."
           tone="bad"
         >
-          <p className="ga-shell-state-card-message">
+          <p className="ax-shell-state-card-message">
             The page stayed reachable, but a client-side error interrupted rendering. Reloading usually recovers the workspace.
           </p>
         </ShellStateCard>

@@ -12,17 +12,17 @@ ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from atlas.runtime_contract import load_runtime_manifest
+from axiom.runtime_contract import load_runtime_manifest
 
 
 
 REMOVED_PATHS = (
     "app.py",
     "modern_app.py",
-    "atlas/openmetadata.py",
-    "atlas/legacy_auth.py",
-    "atlas/legacy_auth 2.py",
-    "atlas/services/live_metadata 2.py",
+    "axiom/openmetadata.py",
+    "axiom/legacy_auth.py",
+    "axiom/legacy_auth 2.py",
+    "axiom/services/live_metadata 2.py",
     "frontend/src/components/AppErrorBoundary 2.jsx",
 )
 
@@ -42,7 +42,7 @@ RUNTIME_HYGIENE_TARGETS = (
     "requirements.txt",
     "run_app.py",
     "runtime_app.py",
-    "atlas",
+    "axiom",
     "sql/bootstrap.sql",
 )
 
@@ -73,7 +73,7 @@ REQUIRED_BRANCH_STATE_PATHS = (
     "frontend/src/hooks/useAssetDetail.js",
     "frontend/src/lib/api.js",
     "frontend/src/main.jsx",
-    "atlas/runtime_contract.py",
+    "axiom/runtime_contract.py",
     "scripts/prepare_bundle.py",
 )
 
@@ -84,14 +84,14 @@ REQUIRED_RUNTIME_MANIFEST = {
     "app_object": "app",
     "frontend_dist": "frontend/dist/index.html",
     "frontend_assets": "frontend/dist/assets",
-    "frontend_build_manifest": "frontend/dist/atlas-build-manifest.json",
+    "frontend_build_manifest": "frontend/dist/axiom-build-manifest.json",
 }
 
 REQUIRED_RUNTIME_REMOVED_PATHS = (
     "app.py",
     "modern_app.py",
     "modern_ui",
-    "atlas/openmetadata.py",
+    "axiom/openmetadata.py",
 )
 
 REQUIRED_FRONTEND_SCRIPTS = {
@@ -149,7 +149,7 @@ REQUIRED_RUN_APP_TOKENS = (
 REQUIRED_PREPARE_BUNDLE_TOKENS = (
     "REQUIRED_FRONTEND_FILES",
     "validate_frontend_bundle",
-    "atlas-build-manifest.json",
+    "axiom-build-manifest.json",
     ".git",
     ".github",
     "node_modules",
@@ -193,7 +193,7 @@ def _target_files(root: Path = ROOT) -> list[Path]:
 def _looks_like_removed_legacy_shell(path: Path) -> bool:
     if not path.is_dir():
         return False
-    if path.name.startswith(".") or path.name in {"frontend", "atlas", "tests", "scripts", "docs", "sql"}:
+    if path.name.startswith(".") or path.name in {"frontend", "axiom", "tests", "scripts", "docs", "sql"}:
         return False
     return (path / "index.html").exists() and (
         (path / "assets").exists() or (path / "data.js").exists()

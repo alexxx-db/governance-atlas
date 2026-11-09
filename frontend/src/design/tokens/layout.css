@@ -5,25 +5,25 @@
  * rendered pixel dimensions — tokenization is a refactor, not a redesign.
  * Changing any value here will move the shell.
  *
- * --ga-* is canonical (Wave C8). The two --gh-* aliases survive only because
+ * --ax-* is canonical (Wave C8). The two --gh-* aliases survive only because
  * the surviving legacy sheets (northstar/shell-rail) still reference them;
  * they die with those sheets (cohesion follow-up 3 deleted app.css).
  *
- *   --ga-side-rail-w          expanded left navigation width (210px)
- *   --ga-left-panel-w         filter-rail column width (240px)
- *   --ga-right-panel-w        preview/sidecar column width (360px)
- *   --ga-content-gutter       page-edge horizontal gutter (20px)
- *   --ga-shell-header-height  sticky header height fallback (the shell
+ *   --ax-side-rail-w          expanded left navigation width (210px)
+ *   --ax-left-panel-w         filter-rail column width (240px)
+ *   --ax-right-panel-w        preview/sidecar column width (360px)
+ *   --ax-content-gutter       page-edge horizontal gutter (20px)
+ *   --ax-shell-header-height  sticky header height fallback (the shell
  *                             measures the real value at runtime where needed)
  */
 
 :root {
-  --ga-side-rail-w: 210px;
-  --ga-left-panel-w: 240px;
-  --ga-right-panel-w: 360px;
-  --ga-content-gutter: 20px;
-  --ga-shell-header-height: 80px;
+  --ax-side-rail-w: 210px;
+  --ax-left-panel-w: 240px;
+  --ax-right-panel-w: 360px;
+  --ax-content-gutter: 20px;
+  --ax-shell-header-height: 80px;
 
-  --gh-side-rail-w: var(--ga-side-rail-w);
-  --gh-shell-header-height: var(--ga-shell-header-height);
+  --gh-side-rail-w: var(--ax-side-rail-w);
+  --gh-shell-header-height: var(--ax-shell-header-height);
 }

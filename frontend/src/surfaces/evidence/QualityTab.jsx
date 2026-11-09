@@ -11,7 +11,7 @@ import {
   UnavailableState,
 } from "../../components/system";
 import { auditRangeSinceIso } from "../../hooks/useAuditEvents";
-import { DataPactQualityBand } from "./DataPactQualityBand.jsx";
+import { EmetQualityBand } from "./emetQualityBand.jsx";
 import { useAssetSuggestions } from "../../hooks/useAssetSuggestions";
 import { useQualityFindings } from "../../hooks/useQualityFindings";
 import {
@@ -152,7 +152,7 @@ export function QualityTab({ params, setParams }) {
         // Stable QF-<hex8> derived from the result UUID — never positional
         // (same identity contract as AUD ids). The id text is the row anchor.
         <span
-          className={`ga-evid-id${selected && text(selected.findingId) === text(row.findingId) ? " is-selected" : ""}`}
+          className={`ax-evid-id${selected && text(selected.findingId) === text(row.findingId) ? " is-selected" : ""}`}
           title={text(row.resultId) || undefined}
         >
           {text(row.findingId) || "Unavailable"}
@@ -163,7 +163,7 @@ export function QualityTab({ params, setParams }) {
       key: "checkName",
       header: "Check",
       render: (row) => (
-        <span className="ga-evid-check-cell">
+        <span className="ax-evid-check-cell">
           <span>{text(row.checkName) || "Unnamed check"}</span>
           {/* Honesty marker from the payload: "case-id" names are derived
               from the id slug, not a curated definition. */}
@@ -202,19 +202,19 @@ export function QualityTab({ params, setParams }) {
     {
       key: "executedAt",
       header: "Executed (UTC)",
-      render: (row) => <span className="ga-evid-time">{tableTimestamp(row.executedAt)}</span>,
+      render: (row) => <span className="ax-evid-time">{tableTimestamp(row.executedAt)}</span>,
     },
     {
       key: "message",
       header: "Message",
       render: (row) =>
         text(row.message) ? (
-          <small className="ga-evid-ref" title={row.message}>
+          <small className="ax-evid-ref" title={row.message}>
             {row.message}
           </small>
         ) : (
           // Empty stays empty server-side; the honest fallback is ours.
-          <small className="ga-evid-ref is-muted">No evaluator message recorded</small>
+          <small className="ax-evid-ref is-muted">No evaluator message recorded</small>
         ),
     },
   ];
@@ -244,7 +244,7 @@ export function QualityTab({ params, setParams }) {
   if (findings.status === "error") {
     return (
       <UnavailableState
-        className="ga-evid-gate"
+        className="ax-evid-gate"
         title="Quality findings unavailable"
         reason={findings.errorMessage || "The quality findings feed could not be loaded."}
         onRetry={findings.refresh}
@@ -254,8 +254,8 @@ export function QualityTab({ params, setParams }) {
 
   /* ------------------------------------------------------------ render */
   return (
-    <div className="ga-evid-quality">
-      <DataPactQualityBand />
+    <div className="ax-evid-quality">
+      <EmetQualityBand />
       {findings.status === "degraded" ? (
         <StatusBanner
           tone="warning"
@@ -265,21 +265,21 @@ export function QualityTab({ params, setParams }) {
         />
       ) : null}
 
-      <div className="ga-evid-toolbar">
+      <div className="ax-evid-toolbar">
         <TabStrip
           ariaLabel="Evidence window"
-          className="ga-evid-range"
+          className="ax-evid-range"
           param={{ value: range, set: (key) => setParams({ range: key === "30d" ? "" : key }) }}
           tabs={RANGES.map((key) => ({ key, label: key === "all" ? "All time" : `Last ${key}` }))}
         />
-        <div className="ga-evid-outcome-tally" role="status">
+        <div className="ax-evid-outcome-tally" role="status">
           {loading
             ? "Reading quality run results…"
             : `Window outcomes · ${metricText(outcomes.failed)} failed · ${metricText(outcomes.passed)} passed · ${metricText(outcomes.errored)} errored · ${metricText(outcomes.skipped)} skipped`}
         </div>
       </div>
 
-      <div className="ga-evid-filter-row">
+      <div className="ax-evid-filter-row">
         <FilterBar
           facets={[
             { key: "severity", label: "Severity", type: "select", options: SEVERITY_OPTIONS },
@@ -316,7 +316,7 @@ export function QualityTab({ params, setParams }) {
         </Button>
       </div>
       {runFilter ? (
-        <p className="ga-evid-filter-note" role="status">
+        <p className="ax-evid-filter-note" role="status">
           {`Run filter active · showing findings recorded by quality run ${runFilter}.`}
           <Button onClick={() => setParams({ run: "", finding: "" })} size="sm" variant="tertiary">
             Clear run filter
@@ -324,8 +324,8 @@ export function QualityTab({ params, setParams }) {
         </p>
       ) : null}
 
-      <div className="ga-evid-layout">
-        <div className="ga-evid-main">
+      <div className="ax-evid-layout">
+        <div className="ax-evid-main">
           {noFindingsMatch || runFilterEmpty ? (
             <EmptyState
               title="No quality findings in range"
@@ -375,40 +375,40 @@ export function QualityTab({ params, setParams }) {
                 }
               />
               {windowTruncated ? (
-                <p className="ga-evid-caption is-truncation" role="status">
+                <p className="ax-evid-caption is-truncation" role="status">
                   The quality run ledger returned its maximum window — older in-range findings may exist. Narrow the
                   filters for complete evidence.
                 </p>
               ) : null}
               {captionParts.length ? (
-                <div className="ga-evid-caption-row">
-                  <p className="ga-evid-caption">{captionParts.join(" · ")}</p>
+                <div className="ax-evid-caption-row">
+                  <p className="ax-evid-caption">{captionParts.join(" · ")}</p>
                 </div>
               ) : null}
             </>
           )}
-          <p className="ga-evid-provenance">
+          <p className="ax-evid-provenance">
             Quality findings are read from the same quality_run_results ledger scoring the Command Center risk tiles —
             visibility-scoped to your estate, one number per concept.
           </p>
         </div>
 
-        <aside aria-label="Quality run detail" className="ga-evid-rail" ref={railRef}>
+        <aside aria-label="Quality run detail" className="ax-evid-rail" ref={railRef}>
           {findingParamUnresolved ? (
             <UnavailableState
               title="Finding not found"
               reason={`${findingParam} is not in the current filtered view. It may be outside the ${rangeNoun(range)} window or your visibility scope.`}
             />
           ) : selected ? (
-            <div className="ga-evid-detail">
-              <header className="ga-evid-detail-head">
+            <div className="ax-evid-detail">
+              <header className="ax-evid-detail-head">
                 <div>
-                  <span className="ga-sys-eyebrow">Selected finding</span>
+                  <span className="ax-sys-eyebrow">Selected finding</span>
                   <h3>{text(selected.checkName) || "Unnamed check"}</h3>
                 </div>
                 <Badge tone={outcomeTone(selected.outcome)}>{displayLabel(selected.outcome, "Unknown")}</Badge>
               </header>
-              <dl className="ga-evid-detail-list">
+              <dl className="ax-evid-detail-list">
                 <div>
                   <dt>Finding ID</dt>
                   {/* Stable QF-<hex8>; full result UUID on the title attribute. */}
@@ -442,7 +442,7 @@ export function QualityTab({ params, setParams }) {
                       {displayLabel(selected.severityLevel, "Unrated")}
                     </Badge>
                     {text(selected.severity) && text(selected.severity) !== text(selected.severityLevel) ? (
-                      <small className="ga-evid-detail-sub">{`recorded as "${selected.severity}"`}</small>
+                      <small className="ax-evid-detail-sub">{`recorded as "${selected.severity}"`}</small>
                     ) : null}
                   </dd>
                 </div>
@@ -460,13 +460,13 @@ export function QualityTab({ params, setParams }) {
                   <dd>{text(selected.message) || "No evaluator message recorded"}</dd>
                 </div>
               </dl>
-              <div className="ga-evid-run-block">
+              <div className="ax-evid-run-block">
                 <h4>Quality run</h4>
                 {selectedRun ? (
-                  <dl className="ga-evid-detail-list">
+                  <dl className="ax-evid-detail-list">
                     <div>
                       <dt>Run</dt>
-                      <dd className="ga-evid-run-actions">
+                      <dd className="ax-evid-run-actions">
                         <span title={text(selectedRun.runId) || undefined}>{text(selectedRun.runId) || "Unavailable"}</span>
                         {text(selectedRun.runId) && runFilter !== text(selectedRun.runId) ? (
                           <Button
@@ -501,7 +501,7 @@ export function QualityTab({ params, setParams }) {
                     </div>
                   </dl>
                 ) : (
-                  <p className="ga-evid-diff-empty">
+                  <p className="ax-evid-diff-empty">
                     Run metadata was not reported for this finding{text(selected.runId) ? ` (run ${selected.runId})` : ""}.
                   </p>
                 )}

@@ -11,10 +11,10 @@ function tokenValue(name) {
   return match?.[1]?.trim() || "";
 }
 
-describe("Governance Atlas design tokens", () => {
-  it("uses Entrada dark shell tokens", () => {
-    expect(tokenValue("--ga-bright-blue")).toBe("#66c5ff");
-    expect(tokenValue("--ga-bg")).toBe("#08172a");
+describe("Axiom design tokens", () => {
+  it("uses dark shell tokens", () => {
+    expect(tokenValue("--ax-bright-blue")).toBe("#7497dc");
+    expect(tokenValue("--ax-bg")).toBe("#08172a");
   });
 
   it("defines only the compatibility aliases the surviving legacy sheets consume", () => {

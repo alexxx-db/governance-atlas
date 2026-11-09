@@ -22,7 +22,7 @@ import {
   workspaceAccessAvailable,
   workspaceAccessReason,
 } from "../../lib/capabilities";
-import { useAtlasNavigate } from "../../nav/useAtlasNavigate";
+import { useAxiomNavigate } from "../../nav/useAxiomNavigate";
 import { useSurfaceParams } from "../../nav/useSurfaceParams";
 import { LineageDetailRail } from "./LineageDetailRail.jsx";
 import { LineagePicker } from "./LineagePicker.jsx";
@@ -71,7 +71,7 @@ function safeDecode(segment = "") {
 
 function FocusChip({ tone, children, title = "" }) {
   return (
-    <span className={`ga-lineage-v2-chip tone-${tone || "neutral"}`} title={title || undefined}>
+    <span className={`ax-lineage-v2-chip tone-${tone || "neutral"}`} title={title || undefined}>
       {children}
     </span>
   );
@@ -108,7 +108,7 @@ function LineageHeroChips({ asset, focus, hydrating, edgeCount, loading = false,
     "";
   const freshness = relativeFreshness(updatedAtIso) || asset?.freshness || focus?.freshness || "";
   return (
-    <div className="ga-lin-chips" aria-busy={loading || undefined}>
+    <div className="ax-lin-chips" aria-busy={loading || undefined}>
       {/*
         L6: while the asset header is still loading, four grey
         "… unavailable" chips used to flash on EVERY load — a false
@@ -161,7 +161,7 @@ function LineageFocusPage({
   runtimeFeatureFlags = [],
   workspaceAccess = null,
 }) {
-  const navigate = useAtlasNavigate();
+  const navigate = useAxiomNavigate();
   const [params, setParams] = useSurfaceParams(FOCUS_PARAMS_SCHEMA);
   const workspaceHost = workspaceHostFromBootstrap(bootstrap);
   const [selectedColumn, setSelectedColumn] = useState(null);
@@ -463,7 +463,7 @@ function LineageFocusPage({
           ← Clear lineage focus
         </Button>
       }
-      className="ga-lin-page"
+      className="ax-lin-page"
       eyebrow="Lineage Atlas"
       subtitle="Permission-aware lineage from the upstream assets you can see through to permitted downstream consumers."
       title={fqn}
@@ -481,17 +481,17 @@ function LineageFocusPage({
       />
       {gatedOff ? (
         <UnavailableState
-          className="ga-lin-unavailable"
+          className="ax-lin-unavailable"
           reason={lineageSurfaceUnavailableReason}
           title="Lineage unavailable"
         />
       ) : (
-        <div className="ga-lineage-v2-workbench">
-          <div className="ga-lineage-v2-workbench-canvas">
+        <div className="ax-lineage-v2-workbench">
+          <div className="ax-lineage-v2-workbench-canvas">
             {degradedNoGraph ? (
-              <div className="ga-lineage-zero-state" role="status">
+              <div className="ax-lineage-zero-state" role="status">
                 <div>
-                  <span className="ga-lin-eyebrow">Lineage Build Degraded</span>
+                  <span className="ax-lin-eyebrow">Lineage Build Degraded</span>
                   <strong>The lineage build failed or returned degraded evidence for this asset.</strong>
                   <p>
                     {graphWarnings[0] ||
@@ -504,11 +504,11 @@ function LineageFocusPage({
               </div>
             ) : null}
             {zeroEdgeLoaded ? (
-              <div className="ga-lineage-zero-state" role="status">
+              <div className="ax-lineage-zero-state" role="status">
                 <div>
                   {/* True empty: state the fact without blaming the caller's
                       visibility scope (persona audit P1). */}
-                  <span className="ga-lin-eyebrow">No Lineage Recorded</span>
+                  <span className="ax-lin-eyebrow">No Lineage Recorded</span>
                   <strong>Unity Catalog has no table-lineage rows for this asset.</strong>
                   <p>
                     No upstream or downstream table-lineage edges are recorded for the
@@ -585,7 +585,7 @@ export function LineagePage({
   useEffect(() => {
     if (typeof document === "undefined") return undefined;
     const previous = document.title;
-    document.title = fqn ? `${fqn} · Lineage - Governance Atlas` : "Lineage Atlas - Governance Atlas";
+    document.title = fqn ? `${fqn} · Lineage - Axiom` : "Lineage Atlas - Axiom";
     return () => {
       document.title = previous;
     };

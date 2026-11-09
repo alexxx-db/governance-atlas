@@ -17,25 +17,25 @@ export function LineageRecommendations({
   degraded = false,
 }) {
   if (loading) {
-    return <p className="ga-lineage-v2-rail-empty">Loading ranked lineage assets from system.access.table_lineage...</p>;
+    return <p className="ax-lineage-v2-rail-empty">Loading ranked lineage assets from system.access.table_lineage...</p>;
   }
   if (error) {
-    return <p className="ga-lineage-v2-rail-empty">{error}</p>;
+    return <p className="ax-lineage-v2-rail-empty">{error}</p>;
   }
   if (!recommendations?.length) {
     return (
-      <p className="ga-lineage-v2-rail-empty">
+      <p className="ax-lineage-v2-rail-empty">
         No ranked high-lineage assets were returned for the current visibility scope.
       </p>
     );
   }
   return (
-    <div className={`ga-lin-recommendations ${compact ? "is-compact" : ""}`.trim()}>
+    <div className={`ax-lin-recommendations ${compact ? "is-compact" : ""}`.trim()}>
       {degraded ? (
         // Persona audit P1 (preserved from the legacy workspace): internal
         // scope tokens ("actor-openable-candidate-aggregate" etc.) must not
         // leak into this caption. Human copy only.
-        <p className="ga-lineage-v2-rail-empty">
+        <p className="ax-lineage-v2-rail-empty">
           Ranked from degraded Databricks lineage evidence. Each candidate asset is
           verified openable for you, but edge counts include assets outside your
           visible catalogs.
@@ -44,7 +44,7 @@ export function LineageRecommendations({
       {recommendations.slice(0, compact ? 4 : 6).map((item) => (
         <EntityChip
           appearance="row"
-          className="ga-lin-rec-row"
+          className="ax-lin-rec-row"
           entity={{
             kind: "lineage",
             fqn: item.fqn,

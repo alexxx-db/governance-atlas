@@ -5,7 +5,7 @@ import { coveragePercent } from "./discoveryPresentation";
 /*
  * Discover accelerator band (Wave C1 port of the legacy bottom panels):
  * Governance Views (live saved-view drills with real client-side counts),
- * High Coverage Assets, and the Atlas AI recommendations card (evidence-
+ * High Coverage Assets, and the Axiom AI recommendations card (evidence-
  * backed only — non-authoritative responses are rejected upstream in
  * useDiscoveryAi and never rendered).
  */
@@ -20,7 +20,7 @@ const GOVERNANCE_VIEWS = [
 // Degraded-only fallback: DiscoveryPage renders the SERVER `facets.views`
 // counts (authoritative `view_matches` over the full estate). This client
 // recompute runs ONLY when the server omits the views facet, so its predicates
-// MUST mirror atlas/services/assets.py `view_matches` exactly — otherwise the
+// MUST mirror axiom/services/assets.py `view_matches` exactly — otherwise the
 // count drifts from what clicking the view actually returns. (Audit B2/B4: the
 // old code counted Certified leniently — certified+trusted+draft = 47 vs the
 // strict 44 — and used a High-coverage threshold of 80 vs the server's 75.)
@@ -56,9 +56,9 @@ export function DiscoveryInsightPanels({
   onApplyView,
   onPreview,
   ai,
-  onAskAtlas,
-  atlasAiAvailable = true,
-  atlasAiUnavailableReason = "",
+  onAskAxiom,
+  axiomAiAvailable = true,
+  axiomAiUnavailableReason = "",
 }) {
   const highCoverageAssets = [...assets]
     .filter((asset) => coveragePercent(asset) !== null)
@@ -66,7 +66,7 @@ export function DiscoveryInsightPanels({
     .slice(0, 3);
 
   return (
-    <div className="ga-disc-insights">
+    <div className="ax-disc-insights">
       <SectionCard
         actions={
           <Button onClick={() => onApplyView?.([])} title="Clear live governance filters" variant="tertiary">
@@ -75,7 +75,7 @@ export function DiscoveryInsightPanels({
         }
         title="Governance Views"
       >
-        <div className="ga-disc-insight-list">
+        <div className="ax-disc-insight-list">
           {GOVERNANCE_VIEWS.map((view) => (
             <button
               key={view.label}
@@ -103,10 +103,10 @@ export function DiscoveryInsightPanels({
         title="High Coverage Assets"
       >
         {highCoverageAssets.length ? (
-          <div className="ga-disc-insight-list">
+          <div className="ax-disc-insight-list">
             {highCoverageAssets.map((asset) => (
               <button key={asset.fqn} onClick={() => onPreview?.(asset.fqn)} type="button">
-                <span className="ga-disc-insight-asset">
+                <span className="ax-disc-insight-asset">
                   <strong>{asset.name}</strong>
                   <small>{asset.domain && asset.domain !== "Unassigned" ? asset.domain : asset.fqn}</small>
                 </span>
@@ -115,7 +115,7 @@ export function DiscoveryInsightPanels({
             ))}
           </div>
         ) : (
-          <p className="ga-disc-support-copy">
+          <p className="ax-disc-support-copy">
             High-coverage assets appear after live coverage evidence is available.
           </p>
         )}
@@ -124,21 +124,21 @@ export function DiscoveryInsightPanels({
       <SectionCard
         actions={
           <Button
-            aria-label="Run Atlas AI recommendations"
-            disabled={ai.loading || !atlasAiAvailable}
-            onClick={() => onAskAtlas?.()}
-            title={!atlasAiAvailable ? atlasAiUnavailableReason : undefined}
+            aria-label="Run Axiom AI recommendations"
+            disabled={ai.loading || !axiomAiAvailable}
+            onClick={() => onAskAxiom?.()}
+            title={!axiomAiAvailable ? axiomAiUnavailableReason : undefined}
             variant="tertiary"
           >
             {ai.loading ? "Running" : "View all"}
           </Button>
         }
         eyebrow="Beta"
-        title="Atlas AI Recommendations"
+        title="Axiom AI Recommendations"
       >
-        {ai.error ? <p className="ga-disc-support-copy">{ai.error}</p> : null}
+        {ai.error ? <p className="ax-disc-support-copy">{ai.error}</p> : null}
         {ai.recommendations.length ? (
-          <div className="ga-disc-insight-list ga-disc-ai-list">
+          <div className="ax-disc-insight-list ax-disc-ai-list">
             {ai.recommendations.slice(0, 3).map((recommendation, index) => {
               const evidence = Array.isArray(recommendation.evidence)
                 ? recommendation.evidence[0]
@@ -155,14 +155,14 @@ export function DiscoveryInsightPanels({
               const authorityLabel =
                 ai.response?.authoritative === false || /local-evidence|prototype/i.test(String(provider))
                   ? "Recommendation unavailable without live Genie proof"
-                  : "Evidence-backed recommendation from Atlas AI";
+                  : "Evidence-backed recommendation from Axiom AI";
               return (
-                <div className="ga-disc-ai-recommendation" key={`${recommendation.title || "recommendation"}-${index}`}>
+                <div className="ax-disc-ai-recommendation" key={`${recommendation.title || "recommendation"}-${index}`}>
                   <strong>{recommendation.title || "Governance recommendation"}</strong>
                   <small>
                     {recommendation.detail ? `${authorityLabel}: ${recommendation.detail}` : authorityLabel}
                   </small>
-                  <span className="ga-disc-ai-recommendation-foot">
+                  <span className="ax-disc-ai-recommendation-foot">
                     {asset ? (
                       <EntityChip
                         appearance="inline"
@@ -176,17 +176,17 @@ export function DiscoveryInsightPanels({
             })}
           </div>
         ) : (
-          <p className="ga-disc-support-copy">
-            {!atlasAiAvailable
-              ? atlasAiUnavailableReason ||
-                "Atlas AI recommendations require a configured evidence-backed endpoint."
+          <p className="ax-disc-support-copy">
+            {!axiomAiAvailable
+              ? axiomAiUnavailableReason ||
+                "Axiom AI recommendations require a configured evidence-backed endpoint."
               : ai.nonAuthoritative
-                ? "Atlas AI recommendations unavailable until live evidence-backed provider returns results."
+                ? "Axiom AI recommendations unavailable until live evidence-backed provider returns results."
                 : ai.unavailableMessage
                   ? ai.unavailableMessage
                   : ai.loading
-                    ? "Atlas AI is gathering governed metadata evidence."
-                    : "Run Atlas AI to generate evidence-backed recommendations for this result set."}
+                    ? "Axiom AI is gathering governed metadata evidence."
+                    : "Run Axiom AI to generate evidence-backed recommendations for this result set."}
           </p>
         )}
       </SectionCard>

@@ -157,13 +157,13 @@ function AdminPage() {
     <div className="page">
       <PageHead
         eyebrow="Control Center"
-        title="Atlas runtime, integrations, and policy"
+        title="Axiom runtime, integrations, and policy"
         sub="Configure scan jobs, policy engine, integrations, and tenant-level branding. Designed to run as a Databricks App against the host workspace."
       />
 
       <div className="grid grid-12">
         <div className="col-7">
-          <Card title="Scheduled jobs" sub="Lakeflow Jobs powering Atlas" padded={false}>
+          <Card title="Scheduled jobs" sub="Lakeflow Jobs powering Axiom" padded={false}>
             <table className="tbl">
               <thead><tr><th>Job</th><th>Schedule</th><th>Last run</th><th>Status</th></tr></thead>
               <tbody>
@@ -191,7 +191,7 @@ function AdminPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {[
                 ['Unity Catalog', 'database', 'Connected · live'],
-                ['Databricks SQL Warehouse', 'server', '`gov_atlas_wh` · M'],
+                ['Databricks SQL Warehouse', 'server', '`gov_axiom_wh` · M'],
                 ['Lakeflow Jobs', 'workflow', '6 jobs scheduled'],
                 ['Model Serving · classifier-v2', 'brain', 'Endpoint healthy'],
                 ['Slack · #governance-alerts', 'message-circle', 'Connected'],
@@ -234,7 +234,7 @@ function AdminPage() {
   );
 }
 
-// ----------- Atlas AI panel -----------
+// ----------- Axiom AI panel -----------
 function AIPanel({ open, onClose, onAsset, onRoute }) {
   useLucide();
   const [stage, setStage] = uS6('idle'); // idle | thinking | done
@@ -260,13 +260,13 @@ function AIPanel({ open, onClose, onAsset, onRoute }) {
 
   return (
     <div className={`ai-pop ${open ? 'open' : ''}`}>
-      <div style={{ padding: '16px 18px', borderBottom: '1px solid var(--srf-line-soft)', display: 'flex', alignItems: 'center', gap: 12, background: 'linear-gradient(180deg, rgba(61,132,173,0.08), transparent)' }}>
-        <div style={{ position: 'relative', width: 34, height: 34, borderRadius: 9, background: 'linear-gradient(135deg, var(--hi), var(--blue))', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#051522', boxShadow: '0 8px 24px rgba(102,197,255,0.35)' }}>
+      <div style={{ padding: '16px 18px', borderBottom: '1px solid var(--srf-line-soft)', display: 'flex', alignItems: 'center', gap: 12, background: 'linear-gradient(180deg, rgba(91,127,208,0.08), transparent)' }}>
+        <div style={{ position: 'relative', width: 34, height: 34, borderRadius: 9, background: 'linear-gradient(135deg, var(--hi), var(--blue))', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#051522', boxShadow: '0 8px 24px rgba(116,151,220,0.35)' }}>
           <Icon name="sparkles" size={17}/>
           <span style={{ position: 'absolute', bottom: -2, right: -2, width: 10, height: 10, borderRadius: 999, background: 'var(--good)', border: '2px solid var(--srf-1)' }}></span>
         </div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--txt-strong)', letterSpacing: '-0.005em' }}>Atlas AI</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--txt-strong)', letterSpacing: '-0.005em' }}>Axiom AI</div>
           <div style={{ fontSize: 11, color: 'var(--txt-subtle)', display: 'flex', alignItems: 'center', gap: 5 }}>
             <Icon name="shield-check" size={10} style={{ color: 'var(--good)' }}/>
             Grounded in UC metadata · No raw rows read
@@ -284,7 +284,7 @@ function AIPanel({ open, onClose, onAsset, onRoute }) {
             <div className="eyebrow" style={{ marginTop: 6 }}>Try asking</div>
             {suggestions.map((s, i) => (
               <div key={s} onClick={() => ask(s)} style={{ padding: '11px 13px', background: 'var(--srf-2)', border: '1px solid var(--srf-line-soft)', borderRadius: 8, fontSize: 12.5, color: 'var(--txt)', cursor: 'pointer', lineHeight: 1.5, display: 'flex', alignItems: 'center', gap: 10, transition: 'all 180ms' }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(61,132,173,0.5)'; e.currentTarget.style.background = 'rgba(61,132,173,0.07)'; }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(91,127,208,0.5)'; e.currentTarget.style.background = 'rgba(91,127,208,0.07)'; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = ''; e.currentTarget.style.background = ''; }}>
                 <Icon name="message-circle-question" size={14} style={{ color: 'var(--accent)', flexShrink: 0 }}/>
                 <span style={{ flex: 1 }}>{s}</span>
@@ -299,7 +299,7 @@ function AIPanel({ open, onClose, onAsset, onRoute }) {
         ) : (
           <div key={i} className="pop-in" style={{ maxWidth: '95%' }}>
             <div style={{ padding: '14px 16px', background: 'var(--srf-2)', border: '1px solid var(--srf-line-soft)', borderRadius: '4px 14px 14px 14px', fontSize: 13, color: 'var(--txt)', lineHeight: 1.6 }}
-              dangerouslySetInnerHTML={{ __html: m.answer.replace(/\*\*(.+?)\*\*/g, '<strong style="color:var(--txt-strong)">$1</strong>').replace(/`([^`]+)`/g, '<span style="font-family:var(--font-mono); font-size:0.9em; color: var(--accent); background: rgba(102,197,255,0.08); padding: 1px 5px; border-radius: 3px;">$1</span>') }}
+              dangerouslySetInnerHTML={{ __html: m.answer.replace(/\*\*(.+?)\*\*/g, '<strong style="color:var(--txt-strong)">$1</strong>').replace(/`([^`]+)`/g, '<span style="font-family:var(--font-mono); font-size:0.9em; color: var(--accent); background: rgba(116,151,220,0.08); padding: 1px 5px; border-radius: 3px;">$1</span>') }}
             />
             {m.plan && (
               <details style={{ marginTop: 10, padding: '8px 12px', background: 'var(--srf-2)', border: '1px solid var(--srf-line-soft)', borderRadius: 8 }}>
@@ -336,7 +336,7 @@ function AIPanel({ open, onClose, onAsset, onRoute }) {
         ))}
 
         {stage === 'thinking' && (
-          <div style={{ padding: '12px 14px', color: 'var(--txt)', fontSize: 12.5, display: 'flex', flexDirection: 'column', gap: 8, background: 'rgba(61,132,173,0.05)', border: '1px solid rgba(61,132,173,0.18)', borderRadius: 8 }}>
+          <div style={{ padding: '12px 14px', color: 'var(--txt)', fontSize: 12.5, display: 'flex', flexDirection: 'column', gap: 8, background: 'rgba(91,127,208,0.05)', border: '1px solid rgba(91,127,208,0.18)', borderRadius: 8 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--txt-muted)' }}>
               <span style={{ width: 8, height: 8, borderRadius: 999, background: 'var(--accent)', animation: 'caret 0.9s steps(2) infinite' }}></span>
               <span>Querying Unity Catalog<span className="stream-caret"></span></span>

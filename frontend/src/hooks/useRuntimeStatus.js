@@ -1,5 +1,5 @@
 import { fetchRuntimeStatus } from "../lib/api";
-import { useAtlasQuery } from "./useAtlasQuery";
+import { useAxiomQuery } from "./useAxiomQuery";
 
 /**
  * Runtime status probe.
@@ -20,7 +20,7 @@ export function useRuntimeStatus(options = {}) {
         ? options
         : {};
   const enabled = resolvedOptions.enabled !== false;
-  const { query } = useAtlasQuery({
+  const { query } = useAxiomQuery({
     key: ["runtime-status"],
     fetch: (signal) => fetchRuntimeStatus({ signal }),
     enabled,

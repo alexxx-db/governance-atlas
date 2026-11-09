@@ -23,7 +23,7 @@ export function DomainPostureCard({ domains, postureAvailable }) {
   const title = postureAvailable ? "Posture by domain" : "Coverage by domain";
   return (
     <SectionCard
-      className="ga-home-domain-card"
+      className="ax-home-domain-card"
       title={title}
       subtitle="Complete list, worst first"
       tooltip={
@@ -32,9 +32,9 @@ export function DomainPostureCard({ domains, postureAvailable }) {
           : "Domain coverage scores use backed metadata coverage signals; the list is never truncated."
       }
     >
-      <div className="ga-home-domain-bars">
+      <div className="ax-home-domain-bars">
         {domains.map((domain) => (
-          <div className={`ga-home-domain-row tone-${domainTone(domain.score)}`} key={domain.label}>
+          <div className={`ax-home-domain-row tone-${domainTone(domain.score)}`} key={domain.label}>
             <EntityChip
               appearance="inline"
               entity={{ kind: "domain", name: domain.label, label: domain.label }}
@@ -47,7 +47,7 @@ export function DomainPostureCard({ domains, postureAvailable }) {
           </div>
         ))}
         {!domains.length ? (
-          <p className="ga-home-inline-unavailable">Domain signals are unavailable for the current scope.</p>
+          <p className="ax-home-inline-unavailable">Domain signals are unavailable for the current scope.</p>
         ) : null}
       </div>
     </SectionCard>
@@ -62,17 +62,17 @@ export function CatalogHealthCard({ catalogs }) {
   const capCaption = catalogs.length > CAP ? `Showing worst ${CAP} of ${catalogs.length} catalogs` : "";
   return (
     <SectionCard
-      className="ga-home-catalog-card"
+      className="ax-home-catalog-card"
       title="Catalog health · worst coverage first"
       subtitle="Visible catalog inventory joined with backed metadata coverage"
       tooltip="Catalog rows come from visible asset inventory and backed coverage fields; nothing is inferred."
     >
       <div
-        className="ga-home-catalog-table"
+        className="ax-home-catalog-table"
         role="table"
         aria-label="Catalog health snapshot, worst coverage first"
       >
-        <div role="row" className="ga-home-catalog-head">
+        <div role="row" className="ax-home-catalog-head">
           <span role="columnheader">Catalog</span>
           <span role="columnheader">Tables</span>
           <span role="columnheader">Coverage</span>
@@ -80,7 +80,7 @@ export function CatalogHealthCard({ catalogs }) {
           <span role="columnheader">Risk</span>
         </div>
         {visible.map((catalog) => (
-          <div role="row" className="ga-home-catalog-row" key={catalog.name}>
+          <div role="row" className="ax-home-catalog-row" key={catalog.name}>
             <span role="cell">
               <EntityChip
                 appearance="inline"
@@ -88,24 +88,24 @@ export function CatalogHealthCard({ catalogs }) {
               />
             </span>
             <span role="cell">{formatCount(catalog.tables)}</span>
-            <span role="cell" className="ga-home-catalog-coverage">
+            <span role="cell" className="ax-home-catalog-coverage">
               <b>{percentLabel(catalog.coverage)}</b>
               <i aria-hidden="true">
                 <em style={{ width: `${catalog.coverage ?? 0}%` }} />
               </i>
             </span>
-            <span role="cell" className="ga-home-catalog-chip">{catalog.classification}</span>
-            <span role="cell" className="ga-home-catalog-chip">{catalog.risk}</span>
+            <span role="cell" className="ax-home-catalog-chip">{catalog.classification}</span>
+            <span role="cell" className="ax-home-catalog-chip">{catalog.risk}</span>
           </div>
         ))}
         {!catalogs.length ? (
-          <p className="ga-home-inline-unavailable">
+          <p className="ax-home-inline-unavailable">
             Catalog health rows are unavailable until visible asset inventory is returned.
           </p>
         ) : null}
       </div>
       {capCaption ? (
-        <p className="ga-home-cap-caption" role="note">
+        <p className="ax-home-cap-caption" role="note">
           {capCaption}
         </p>
       ) : null}
@@ -124,12 +124,12 @@ export function RiskFindingsCard({ risk, policyKpi }) {
   if (!risk.available) {
     return (
       <SectionCard
-        className="ga-home-risk-card"
+        className="ax-home-risk-card"
         title="Policy exception signals"
         subtitle="Policy exception signal availability"
         tooltip="Policy exception signals render without inferring an unavailable severity split."
       >
-        <div className="ga-home-risk-empty">
+        <div className="ax-home-risk-empty">
           {policyKpi && policyKpi.value !== null && policyKpi.value !== undefined ? (
             <>
               <strong>{formatCount(policyKpi.value)}</strong>
@@ -138,7 +138,7 @@ export function RiskFindingsCard({ risk, policyKpi }) {
                 Backed by governance workflow evidence. A severity split appears once quality checks record
                 findings.
               </p>
-              <Link className="ga-home-link" to={hrefForRef({ surface: "stewardship" })}>
+              <Link className="ax-home-link" to={hrefForRef({ surface: "stewardship" })}>
                 Open the stewardship queue
               </Link>
             </>
@@ -155,20 +155,20 @@ export function RiskFindingsCard({ risk, policyKpi }) {
   }
   return (
     <SectionCard
-      className="ga-home-risk-card"
+      className="ax-home-risk-card"
       // Panel title comes from the payload label so the panel names its
       // actual source ("Quality risk findings"), never a generic "Risk".
       title={risk.label}
       subtitle={`Quality-run findings by severity${riskStamp ? ` · ${riskStamp}` : ""}`}
       tooltip="Findings come from recorded quality-run results split by severity; nothing is inferred."
     >
-      <ul className="ga-home-risk-list">
+      <ul className="ax-home-risk-list">
         {SEVERITIES.map((severity) => {
           const count = risk[severity.key];
           return (
             <li key={severity.key}>
               <Link
-                className={`ga-home-risk-row tone-${severity.tone}`}
+                className={`ax-home-risk-row tone-${severity.tone}`}
                 to={hrefForRef({
                   // The severity counts are lifetime failed/errored totals, so
                   // the drill must land on the all-time window filtered to the
@@ -192,7 +192,7 @@ export function RiskFindingsCard({ risk, policyKpi }) {
           );
         })}
       </ul>
-      <p className="ga-home-risk-foot">
+      <p className="ax-home-risk-foot">
         Findings drill into the Evidence quality ledger for run-level proof.
       </p>
     </SectionCard>

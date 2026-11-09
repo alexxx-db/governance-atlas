@@ -28,7 +28,7 @@ describe("Drawer", () => {
     const labelId = dialog.getAttribute("aria-labelledby");
     expect(document.getElementById(labelId).textContent).toBe("Asset preview");
     // portal: mounted under document.body, not the test container
-    expect(dialog.closest(".ga-sys-drawer-root").parentElement).toBe(document.body);
+    expect(dialog.closest(".ax-sys-drawer-root").parentElement).toBe(document.body);
   });
 
   it("ESC closes", () => {
@@ -41,7 +41,7 @@ describe("Drawer", () => {
   it("scrim click closes", () => {
     const onClose = vi.fn();
     renderDrawer({ onClose });
-    fireEvent.click(document.querySelector(".ga-sys-drawer-scrim"));
+    fireEvent.click(document.querySelector(".ax-sys-drawer-scrim"));
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
@@ -78,9 +78,9 @@ describe("Drawer", () => {
 
   it("renders the footer slot and honors the width prop", () => {
     renderDrawer({ footer: <button>Apply</button>, width: 560 });
-    expect(screen.getByText("Apply").closest(".ga-sys-drawer-footer")).not.toBeNull();
+    expect(screen.getByText("Apply").closest(".ax-sys-drawer-footer")).not.toBeNull();
     const dialog = screen.getByRole("dialog");
-    expect(dialog.style.getPropertyValue("--ga-sys-drawer-width")).toBe("560px");
+    expect(dialog.style.getPropertyValue("--ax-sys-drawer-width")).toBe("560px");
   });
 
   it("locks body scroll while open and releases it on close", () => {

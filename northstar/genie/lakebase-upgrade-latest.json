@@ -2,10 +2,10 @@
   "ensureSchema": {
     "state": "available",
     "message": "Lakebase connection environment is configured.",
-    "endpointName": "projects/governance-atlas-state/branches/production/endpoints/primary",
+    "endpointName": "projects/axiom-state/branches/production/endpoints/primary",
     "database": "databricks_postgres",
     "host": "ep-noisy-mud-d1oju35v.database.us-west-2.cloud.databricks.com",
-    "schema": "atlas_app",
+    "schema": "axiom_app",
     "ucCatalog": "",
     "enabled": true,
     "operationalTables": [

@@ -71,7 +71,7 @@ const TAB_KEYS = ["inventory", "findings", "intake"];
 // The API pages at 200 rows; say so rather than implying the page is complete.
 function TruncationNotice({ shown, total }) {
   return typeof total === "number" && total > shown ? (
-    <p className="ga-ai-muted" role="status">
+    <p className="ax-ai-muted" role="status">
       Showing {shown.toLocaleString()} of {total.toLocaleString()}. Narrow the filters to see the rest.
     </p>
   ) : null;
@@ -86,12 +86,12 @@ function SampleBadge({ provenanceClass }) {
 }
 
 function Provenance({ provenance, showSample = true }) {
-  if (!provenance) return <span className="ga-ai-muted">{DASH}</span>;
+  if (!provenance) return <span className="ax-ai-muted">{DASH}</span>;
   return (
-    <span className="ga-ai-provenance" title={`Collector ${provenance.collector || DASH} ${provenance.collectorVersion || ""}`}>
+    <span className="ax-ai-provenance" title={`Collector ${provenance.collector || DASH} ${provenance.collectorVersion || ""}`}>
       <span>{valueOrDash(provenance.sourceSystem)}</span>
-      <span className="ga-ai-muted">run {valueOrDash(provenance.runId)}</span>
-      <span className="ga-ai-muted">{formatTimestamp(provenance.observedAt)}</span>
+      <span className="ax-ai-muted">run {valueOrDash(provenance.runId)}</span>
+      <span className="ax-ai-muted">{formatTimestamp(provenance.observedAt)}</span>
       {showSample ? <SampleBadge provenanceClass={provenance.provenanceClass} /> : null}
     </span>
   );
@@ -134,7 +134,7 @@ function InventoryTab({ params, setParams, pageFailed }) {
       key: "name",
       header: "Asset",
       render: (row) => (
-        <span className="ga-ai-name-cell">
+        <span className="ax-ai-name-cell">
           <Link to={aiAssetHref(row.entityId)} title={row.sourceEntityId}>
             {row.name}
           </Link>
@@ -233,9 +233,9 @@ function FindingEvidence({ finding }) {
   const differences = Array.isArray(evidence.differences) ? evidence.differences : [];
   const candidates = Array.isArray(evidence.candidates) ? evidence.candidates : [];
   return (
-    <div className="ga-ai-evidence">
+    <div className="ax-ai-evidence">
       <p>{evidence.reason || DASH}</p>
-      <dl className="ga-ai-facts">
+      <dl className="ax-ai-facts">
         <dt>Severity</dt>
         <dd>
           <Badge size="sm" tone={severityTone(finding.severity)}>
@@ -266,7 +266,7 @@ function FindingEvidence({ finding }) {
         </dd>
       </dl>
       {differences.length ? (
-        <table className="ga-ai-diff">
+        <table className="ax-ai-diff">
           <caption>Declared versus observed</caption>
           <thead>
             <tr>
@@ -288,8 +288,8 @@ function FindingEvidence({ finding }) {
       ) : null}
       {candidates.length ? (
         <div>
-          <h4 className="ga-ai-subhead">Candidate intake records</h4>
-          <ul className="ga-ai-candidates">
+          <h4 className="ax-ai-subhead">Candidate intake records</h4>
+          <ul className="ax-ai-candidates">
             {candidates.map((candidate) => (
               <li key={candidate.intakeId}>
                 {candidate.intakeId}: score {Number(candidate.score).toFixed(2)}
@@ -333,19 +333,19 @@ function FindingActions({ finding, onDone }) {
   if (prompt) {
     const blocked = (prompt.required && !text.trim()) || (mode === "confirm" && !intakeId.trim());
     return (
-      <div className="ga-ai-action-form">
+      <div className="ax-ai-action-form">
         {mode === "confirm" ? (
-          <label className="ga-ai-field">
+          <label className="ax-ai-field">
             <span>Intake record</span>
-            <input list="ga-ai-candidate-list" onChange={(event) => setIntakeId(event.target.value)} value={intakeId} />
-            <datalist id="ga-ai-candidate-list">
+            <input list="ax-ai-candidate-list" onChange={(event) => setIntakeId(event.target.value)} value={intakeId} />
+            <datalist id="ax-ai-candidate-list">
               {candidates.map((candidate) => (
                 <option key={candidate.intakeId} value={candidate.intakeId} />
               ))}
             </datalist>
           </label>
         ) : null}
-        <label className="ga-ai-field">
+        <label className="ax-ai-field">
           <span>{prompt.label}</span>
           {mode === "assign" ? (
             <input autoComplete="email" onChange={(event) => setText(event.target.value)} type="email" value={text} />
@@ -353,7 +353,7 @@ function FindingActions({ finding, onDone }) {
             <textarea onChange={(event) => setText(event.target.value)} rows={3} value={text} />
           )}
         </label>
-        <div className="ga-ai-action-row">
+        <div className="ax-ai-action-row">
           <Button disabled={blocked} loading={action.submitting} onClick={prompt.submit} variant="primary">
             {prompt.button}
           </Button>
@@ -366,7 +366,7 @@ function FindingActions({ finding, onDone }) {
   }
   if (finding.state === "suppressed" || finding.state === "resolved") {
     return (
-      <div className="ga-ai-action-row">
+      <div className="ax-ai-action-row">
         <Button loading={action.submitting} onClick={() => run({ action: "reopen" }, "Finding reopened.")} variant="secondary">
           Reopen
         </Button>
@@ -374,7 +374,7 @@ function FindingActions({ finding, onDone }) {
     );
   }
   return (
-    <div className="ga-ai-action-row">
+    <div className="ax-ai-action-row">
       {finding.state === "open" ? (
         <Button loading={action.submitting} onClick={() => run({ action: "acknowledge" }, "Finding acknowledged.")} variant="secondary">
           Acknowledge
@@ -421,7 +421,7 @@ function FindingsTab({ params, setParams, pageFailed }) {
       key: "asset",
       header: "Asset or intake",
       render: (row) => (
-        <button className="ga-ai-linkish" onClick={() => setParams({ finding: row.findingId })} type="button">
+        <button className="ax-ai-linkish" onClick={() => setParams({ finding: row.findingId })} type="button">
           {row.evidence?.assetName || row.intakeId || row.entityId || findingTypeLabel(row.findingType)}
         </button>
       ),
@@ -465,9 +465,9 @@ function FindingsTab({ params, setParams, pageFailed }) {
       />
       <TruncationNotice shown={rows.length} total={total} />
       {missingDeepLink ? (
-        <p className="ga-ai-muted" role="status">
+        <p className="ax-ai-muted" role="status">
           The linked finding is not in this view. Change the state or severity filter to find it.{" "}
-          <button className="ga-ai-linkish" onClick={() => setParams({ finding: "" })} type="button">
+          <button className="ax-ai-linkish" onClick={() => setParams({ finding: "" })} type="button">
             Dismiss
           </button>
         </p>
@@ -565,7 +565,7 @@ function ImportDrawer({ open, onClose }) {
   return (
     <Drawer
       footer={
-        <div className="ga-ai-action-row">
+        <div className="ax-ai-action-row">
           <Button disabled={!text.trim()} loading={importer.submitting && !confirming} onClick={() => submit("dry_run")} variant="secondary">
             Validate (dry run)
           </Button>
@@ -584,15 +584,15 @@ function ImportDrawer({ open, onClose }) {
       open={open}
       title="Import intake records"
     >
-      <div className="ga-ai-import">
-        <p className="ga-ai-muted">
+      <div className="ax-ai-import">
+        <p className="ax-ai-muted">
           Upload or paste a CSV. Required columns: intake ID, title, state, owner. Validate first; commit writes only when every row is valid, and each row is audited.
         </p>
-        <label className="ga-ai-field">
+        <label className="ax-ai-field">
           <span>CSV file</span>
           <input accept=".csv,text/csv" onChange={readFile} type="file" />
         </label>
-        <label className="ga-ai-field">
+        <label className="ax-ai-field">
           <span>CSV text</span>
           <textarea
             onChange={(event) => {
@@ -604,21 +604,21 @@ function ImportDrawer({ open, onClose }) {
           />
         </label>
         {report ? (
-          <div className="ga-ai-import-report" role="status">
+          <div className="ax-ai-import-report" role="status">
             <strong>
               {report.summary?.valid || 0} valid, {report.summary?.invalid || 0} invalid of {report.summary?.total || 0} rows
             </strong>
             {(report.parseErrors || []).map((error) => (
-              <p className="ga-ai-error" key={`${error.row}-${error.message}`}>
+              <p className="ax-ai-error" key={`${error.row}-${error.message}`}>
                 Row {error.row}: {error.message}
               </p>
             ))}
             {invalidRows.slice(0, 50).map((row) => (
-              <p className="ga-ai-error" key={row.rowNumber}>
+              <p className="ax-ai-error" key={row.rowNumber}>
                 Row {row.rowNumber} {row.intakeId ? `(${row.intakeId})` : ""}: {row.errors.map((error) => `${error.field}: ${error.message}`).join("; ")}
               </p>
             ))}
-            {validatedText !== null && validatedText !== text ? <p className="ga-ai-muted">The CSV changed since validation. Validate again before committing.</p> : null}
+            {validatedText !== null && validatedText !== text ? <p className="ax-ai-muted">The CSV changed since validation. Validate again before committing.</p> : null}
           </div>
         ) : null}
       </div>
@@ -650,9 +650,9 @@ function IntakeTab({ steward }) {
       key: "provenance",
       header: "Source",
       render: (row) => (
-        <span className="ga-ai-provenance">
+        <span className="ax-ai-provenance">
           <span>{valueOrDash(row.provenance?.ingestSource)}</span>
-          <span className="ga-ai-muted">{valueOrDash(row.provenance?.ingestRunId)}</span>
+          <span className="ax-ai-muted">{valueOrDash(row.provenance?.ingestRunId)}</span>
           <SampleBadge provenanceClass={row.provenance?.provenanceClass} />
         </span>
       ),
@@ -712,7 +712,7 @@ export function AiGovernancePage({ shell = null }) {
 
   return (
     <PageShell
-      className="ga-ai-page"
+      className="ax-ai-page"
       eyebrow="Govern"
       status={summary}
       subtitle={
@@ -725,7 +725,7 @@ export function AiGovernancePage({ shell = null }) {
       tabs={<TabStrip ariaLabel="AI governance views" param={{ value: tab, set: (key) => setParams({ tab: key, finding: "" }) }} tabs={tabs} />}
       title="AI Governance"
     >
-      <div className="ga-ai-tiles">
+      <div className="ax-ai-tiles">
         <StatTile hint="Observed in the last completed run" label="AI assets" value={countOrDash(data.assetCount)} />
         <StatTile
           hint="Open found-not-registered and rejected-but-running findings"
@@ -741,7 +741,7 @@ export function AiGovernancePage({ shell = null }) {
         />
       </div>
       {notes.length ? (
-        <p className="ga-ai-muted ga-ai-notes">Not collected: {notes.join(" · ")}</p>
+        <p className="ax-ai-muted ax-ai-notes">Not collected: {notes.join(" · ")}</p>
       ) : null}
       {tab === "inventory" ? (
         <InventoryTab pageFailed={summary.status === "unavailable" || summary.status === "error"} params={params} setParams={setParams} />

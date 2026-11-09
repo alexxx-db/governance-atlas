@@ -2,8 +2,8 @@ import { useMemo } from "react";
 import { fetchAssetAvailability, fetchAssetDetail, fetchAssetHeaders } from "../lib/api";
 import { envelopeHydrating } from "../lib/envelope";
 import { isNonAuthoritativeEvidenceEnvelope } from "../lib/nonAuthoritativeEvidence";
-import { atlasQueryClient } from "../lib/queryClient";
-import { useAtlasQuery } from "./useAtlasQuery";
+import { axiomQueryClient } from "../lib/queryClient";
+import { useAxiomQuery } from "./useAxiomQuery";
 
 const PLACEHOLDER_DESCRIPTION = "No description has been captured for this asset yet.";
 const DETAIL_CACHE_TTL_MS = 20_000;
@@ -91,7 +91,7 @@ function assetAvailabilityRequestKey(targets = [], strict = false, requireRender
 }
 
 function queryUpdatedAt(queryKey) {
-  return atlasQueryClient.getQueryState(queryKey)?.dataUpdatedAt || 0;
+  return axiomQueryClient.getQueryState(queryKey)?.dataUpdatedAt || 0;
 }
 
 function isFresh(queryKey, maxAgeMs = null) {
@@ -115,7 +115,7 @@ function resolveMaxAgeMs(options, fallback) {
 function readCanonicalDetail(assetFqn, options = {}) {
   if (!assetFqn) return null;
   const queryKey = assetDetailCanonicalKey(assetFqn);
-  const detail = atlasQueryClient.getQueryData(queryKey) || null;
+  const detail = axiomQueryClient.getQueryData(queryKey) || null;
   if (!detail) return null;
   if (!isFresh(queryKey, resolveMaxAgeMs(options, DETAIL_CACHE_TTL_MS))) return null;
   return detail;
@@ -124,7 +124,7 @@ function readCanonicalDetail(assetFqn, options = {}) {
 function readCanonicalAvailability(assetFqn, options = {}) {
   if (!assetFqn) return null;
   const queryKey = assetAvailabilityCanonicalKey(assetFqn);
-  const detail = atlasQueryClient.getQueryData(queryKey) || null;
+  const detail = axiomQueryClient.getQueryData(queryKey) || null;
   if (!detail) return null;
   if (!isFresh(queryKey, resolveMaxAgeMs(options, AVAILABILITY_CACHE_TTL_MS))) return null;
   return detail;
@@ -140,7 +140,7 @@ function cachedDetailHasSections(detail, sections = []) {
 // Local `detailHydrating` + `assetDetailRefetchInterval` were deleted: the
 // hydration predicate is now the shared lib/envelope.js `envelopeHydrating`
 // (a superset of the old local check) and polling runs through
-// useAtlasQuery's bounded engine — same 3s cadence, now attempt-bounded.
+// useAxiomQuery's bounded engine — same 3s cadence, now attempt-bounded.
 
 function mergeLoadedSections(currentDetail, incomingDetail) {
   const merged = new Set([...(currentDetail?.loadedSections || []), ...(incomingDetail?.loadedSections || [])]);
@@ -197,15 +197,15 @@ function setCanonicalDetail(assetFqn, detail) {
       syncAvailabilityRequestsForAsset(assetFqn);
       return existing;
     }
-    atlasQueryClient.removeQueries({ queryKey: assetDetailCanonicalKey(assetFqn), exact: true });
-    atlasQueryClient.removeQueries({ queryKey: [ASSET_DETAIL_REQUEST_PREFIX, assetFqn] });
+    axiomQueryClient.removeQueries({ queryKey: assetDetailCanonicalKey(assetFqn), exact: true });
+    axiomQueryClient.removeQueries({ queryKey: [ASSET_DETAIL_REQUEST_PREFIX, assetFqn] });
     syncAvailabilityRequestsForAsset(assetFqn);
     return null;
   }
   const current = readCanonicalDetail(assetFqn, { maxAgeMs: null });
   const mergedDetail = mergeAssetDetail(current, detail);
-  atlasQueryClient.setQueryData(assetDetailCanonicalKey(assetFqn), mergedDetail);
-  atlasQueryClient.setQueriesData(
+  axiomQueryClient.setQueryData(assetDetailCanonicalKey(assetFqn), mergedDetail);
+  axiomQueryClient.setQueriesData(
     { queryKey: [ASSET_DETAIL_REQUEST_PREFIX, assetFqn] },
     mergedDetail,
   );
@@ -214,7 +214,7 @@ function setCanonicalDetail(assetFqn, detail) {
 }
 
 function setCanonicalAvailability(assetFqn, availability) {
-  atlasQueryClient.setQueryData(assetAvailabilityCanonicalKey(assetFqn), availability);
+  axiomQueryClient.setQueryData(assetAvailabilityCanonicalKey(assetFqn), availability);
   syncAvailabilityRequestsForAsset(assetFqn);
   return availability;
 }
@@ -245,13 +245,13 @@ function parseAvailabilityRequestKey(queryKey = /** @type {readonly unknown[]} *
 }
 
 function syncAvailabilityRequestsForAsset(assetFqn) {
-  atlasQueryClient
+  axiomQueryClient
     .getQueryCache()
     .findAll({ queryKey: [ASSET_AVAILABILITY_REQUEST_PREFIX] })
     .forEach((query) => {
       const { targets, strict, requireRenderableDetail, visibilitySignature } = parseAvailabilityRequestKey(query.queryKey);
       if (!targets.includes(assetFqn)) return;
-      atlasQueryClient.setQueryData(
+      axiomQueryClient.setQueryData(
         query.queryKey,
         buildAvailabilityStateMap(
           targets,
@@ -434,16 +434,16 @@ export function primeAssetAvailability(assetFqn, availability) {
 
 export function invalidateAssetDetail(assetFqn) {
   if (!assetFqn) return Promise.resolve();
-  atlasQueryClient.removeQueries({ queryKey: assetDetailCanonicalKey(assetFqn), exact: true });
-  return atlasQueryClient.invalidateQueries({ queryKey: [ASSET_DETAIL_REQUEST_PREFIX, assetFqn] });
+  axiomQueryClient.removeQueries({ queryKey: assetDetailCanonicalKey(assetFqn), exact: true });
+  return axiomQueryClient.invalidateQueries({ queryKey: [ASSET_DETAIL_REQUEST_PREFIX, assetFqn] });
 }
 
 export function invalidateAssetAvailability(assetFqns = []) {
   const targets = [...new Set((assetFqns || []).filter(Boolean))];
   targets.forEach((assetFqn) => {
-    atlasQueryClient.removeQueries({ queryKey: assetAvailabilityCanonicalKey(assetFqn), exact: true });
+    axiomQueryClient.removeQueries({ queryKey: assetAvailabilityCanonicalKey(assetFqn), exact: true });
   });
-  return atlasQueryClient.invalidateQueries({ queryKey: [ASSET_AVAILABILITY_REQUEST_PREFIX] });
+  return axiomQueryClient.invalidateQueries({ queryKey: [ASSET_AVAILABILITY_REQUEST_PREFIX] });
 }
 
 export function prefetchAssetDetail(assetFqn, options = {}) {
@@ -457,7 +457,7 @@ export function prefetchAssetDetail(assetFqn, options = {}) {
       });
   if (cachedDetail) return Promise.resolve(cachedDetail);
 
-  return atlasQueryClient.fetchQuery({
+  return axiomQueryClient.fetchQuery({
     queryKey: assetDetailRequestKey(assetFqn, options.sections),
     staleTime: force ? 0 : DETAIL_CACHE_TTL_MS,
     queryFn: ({ signal }) =>
@@ -491,7 +491,7 @@ export function prefetchAssetAvailability(assetFqns = [], options = {}) {
     return Promise.resolve(cachedAvailability);
   }
 
-  return atlasQueryClient.fetchQuery({
+  return axiomQueryClient.fetchQuery({
     queryKey: assetAvailabilityRequestKey(
       targets,
       strict,
@@ -603,7 +603,7 @@ export function useAssetAvailability(assetFqns = [], knownVisibleAssetSet = null
     [knownVisibleAssetSet, requireRenderableDetail, strict, targets],
   );
 
-  const availability = useAtlasQuery({
+  const availability = useAxiomQuery({
     key: assetAvailabilityRequestKey(
       targets,
       strict,
@@ -633,7 +633,7 @@ export function useAssetDetail(assetFqn, options = {}) {
   );
   const cachedAnyDetail = assetFqn ? readCanonicalDetail(assetFqn, { maxAgeMs: null }) : null;
   const placeholder = cachedAnyDetail || null;
-  const atlasQuery = useAtlasQuery({
+  const axiomQuery = useAxiomQuery({
     key: assetDetailRequestKey(assetFqn || "", sections),
     enabled: Boolean(enabled && assetFqn),
     fetch: (signal) =>
@@ -645,7 +645,7 @@ export function useAssetDetail(assetFqn, options = {}) {
     staleTime: DETAIL_CACHE_TTL_MS,
     // Same 3s hydration-poll cadence as before, now bounded: 20 attempts
     // (~60s) comfortably covers the observed 5-7s cold consolidated build;
-    // on exhaustion useAtlasQuery degrades with an honest warning instead of
+    // on exhaustion useAxiomQuery degrades with an honest warning instead of
     // polling a stuck backend forever.
     poll: { interval: 3_000, maxAttempts: 20 },
     // Reliability fix (persona audit P0 "Asset unavailable" wall): the detail
@@ -655,7 +655,7 @@ export function useAssetDetail(assetFqn, options = {}) {
     retry: 1,
     retryDelay: 800,
   });
-  const query = atlasQuery.query;
+  const query = axiomQuery.query;
 
   if (!assetFqn) {
     return {

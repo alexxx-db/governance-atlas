@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { normalizeInsightsDashboard } from "./useInsightsDashboard";
 
 describe("normalizeInsightsDashboard", () => {
-  it("unwraps Atlas API envelopes before normalizing insight rows", () => {
+  it("unwraps Axiom API envelopes before normalizing insight rows", () => {
     const normalized = normalizeInsightsDashboard({
       data: {
         kpis: [{ key: "maturity", value: 82, format: "score" }],
@@ -20,7 +20,7 @@ describe("normalizeInsightsDashboard", () => {
     expect(normalized.meta.requestId).toBe("req-1");
   });
 
-  it("preserves degraded envelope metadata from the Atlas API wrapper", () => {
+  it("preserves degraded envelope metadata from the Axiom API wrapper", () => {
     const normalized = normalizeInsightsDashboard({
       data: {
         kpis: [{ key: "policyCompliance", value: null, state: "unavailable" }],

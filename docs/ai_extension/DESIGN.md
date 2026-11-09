@@ -5,8 +5,8 @@ Status: **Draft v0.2, 2026-09-24. Verified against SDK 0.95 (2026-09-24); not ye
 Phase 0 evidence and the rationale for each correction: `PHASE0_FINDINGS.md`.
 
 This document was built from the Phase 0/1 implementation brief. It was
-grounded in the current repo (migrations 1 to 18, `atlas/store.py`,
-`atlas/services/metadata_audit.py`, the frontend provenance filter) and in the
+grounded in the current repo (migrations 1 to 18, `axiom/store.py`,
+`axiom/services/metadata_audit.py`, the frontend provenance filter) and in the
 SDK class definitions of the locally installed `databricks-sdk` **0.102.0**.
 The app pins **0.95.0**, so Phase 0 re-verifies every SDK field named here
 (checks V1 to V9 in section 15). Where this document and the pinned SDK
@@ -20,8 +20,8 @@ Items marked **[Proposed]** are the author's proposal, not an agreed spec.
 
 ## 1. Purpose and scope
 
-Governance Atlas inventories Unity Catalog data assets. This extension makes
-Atlas inventory **AI assets** and reconcile them against **declared intake
+Axiom inventories Unity Catalog data assets. This extension makes
+Axiom inventory **AI assets** and reconcile them against **declared intake
 records**, so a steward can see:
 
 - which AI assets exist on the platform (observed);
@@ -57,7 +57,7 @@ not aspirations.
    `change_events` row (via `record_audit_log(..., fail_closed=True)`, which
    already emits the change event). If the audit write fails, the mutation
    fails.
-4. **No enforcement.** Atlas reads posture. It never creates, modifies, or
+4. **No enforcement.** Axiom reads posture. It never creates, modifies, or
    deletes endpoints, gateway config, permissions, policies, connections, or
    models. Phase 1 adds no platform writes at all.
 5. **No payloads.** Never read inference table contents, prompts, or
@@ -92,24 +92,24 @@ intake CSV import (app, steward) ─▶ intake_records ─┤
 ### 3.2 Package layout
 
 ```
-atlas/ai/models.py            dataclasses (Observation, IntakeRecord, Finding, ControlResult, ProbeResult, RunContext)
-atlas/ai/redaction.py         allowlist serializers + credential scrubber
-atlas/ai/probes.py            probe(fn) -> ProbeResult; never raises
-atlas/ai/collectors/databricks.py
-atlas/ai/intake.py            CSV parsing + YAML field map (shared with Phase 2 ServiceNow)
-atlas/ai/reconcile.py         matching, finding rule registry, idempotent keys
-atlas/ai/controls.py          control registry keyed by control ID
-atlas/ai/store.py             AiStore: wraps the governance store (Delta or Lakebase dual-write)
-atlas/ai/jobs/collect_databricks.py
-atlas/ai/jobs/reconcile.py
-atlas/ai/field_maps/intake_csv.yaml
-atlas/api/ai.py               build_ai_router()
+axiom/ai/models.py            dataclasses (Observation, IntakeRecord, Finding, ControlResult, ProbeResult, RunContext)
+axiom/ai/redaction.py         allowlist serializers + credential scrubber
+axiom/ai/probes.py            probe(fn) -> ProbeResult; never raises
+axiom/ai/collectors/databricks.py
+axiom/ai/intake.py            CSV parsing + YAML field map (shared with Phase 2 ServiceNow)
+axiom/ai/reconcile.py         matching, finding rule registry, idempotent keys
+axiom/ai/controls.py          control registry keyed by control ID
+axiom/ai/store.py             AiStore: wraps the governance store (Delta or Lakebase dual-write)
+axiom/ai/jobs/collect_databricks.py
+axiom/ai/jobs/reconcile.py
+axiom/ai/field_maps/intake_csv.yaml
+axiom/api/ai.py               build_ai_router()
 frontend/src/surfaces/ai/     (follows the existing surfaces/<area>/ convention)
 scripts/seed_ai_sample_data.py
 tests/test_ai_*.py            (flat, matching the existing tests/ convention)
 ```
 
-`atlas/ai/store.py` holds `AiStore`, which wraps whichever governance store
+`axiom/ai/store.py` holds `AiStore`, which wraps whichever governance store
 the caller holds rather than being a mixin on `GovernanceStore`. Registry and
 alias writes reach the Lakebase mirror only through `DualWriteGovernanceStore`,
 so a mixin calling `self.upsert_entity_registry` on the Delta store would skip
@@ -198,7 +198,7 @@ CREATE TABLE IF NOT EXISTS {ai_asset_observations_table} (
     model_family            STRING,
     owner                   STRING,
     tags_json               STRING,
-    config_json             STRING COMMENT 'redacted via atlas/ai/redaction.py allowlists only',
+    config_json             STRING COMMENT 'redacted via axiom/ai/redaction.py allowlists only',
     relationships_json      STRING COMMENT 'observed edges, e.g. serves',
     content_hash            STRING NOT NULL,
     probe_state             STRING COMMENT 'available | degraded',
@@ -486,13 +486,13 @@ Verified against SDK 0.95 (2026-09-24), see `PHASE0_FINDINGS.md`:
 `probe(fn) -> ProbeResult(ok, state, reason, sampled_at)` never raises. Each
 adapter runs behind a probe; the probe result is recorded per source in
 `reconciliation_runs.sources_json`. A failed probe means the source is
-`unavailable` with a sanitized reason (`atlas.util.error_text`), and the UI
+`unavailable` with a sanitized reason (`axiom.util.error_text`), and the UI
 shows a banner. Findings that depend on an unavailable source are not
 auto-resolved during that run.
 
 ### 7.3 Intake CSV import
 
-- Parse the CSV and map columns through `atlas/ai/field_maps/intake_csv.yaml`,
+- Parse the CSV and map columns through `axiom/ai/field_maps/intake_csv.yaml`,
   the same schema the Phase 2 ServiceNow collector uses.
 - Normalize state to `draft | submitted | approved | rejected | retired`.
 - Required: `intake_id`, `title`, `state`, `owner`.
@@ -516,7 +516,7 @@ auto-resolved during that run.
   names. **[Proposed]**
 - Redacted `config_json` is returned only to steward and above.
 
-## 9. API (`atlas/api/ai.py`)
+## 9. API (`axiom/api/ai.py`)
 
 Registered only when `ai_features_enabled` is true. Uses the existing response
 envelope (provenance, availability, `authoritative`).
@@ -554,7 +554,7 @@ so it does not list `/api/ai`.
 Rail entry "AI Governance", hidden when the flag is off. Built from the
 existing system components (`PageShell`, `DataTable`, `FilterBar`, `Drawer`,
 `StatTile`, `TabStrip`, `SectionCard`, `EntityChip`, `Badge`) and
-`useAtlasQuery` with the `statusContract.js` states.
+`useAxiomQuery` with the `statusContract.js` states.
 
 - **Inventory:** tiles (AI assets; shadow AI = open `found_not_registered` +
   `rejected_but_running`; ambiguous matches; posture coverage) and a table.
@@ -628,20 +628,20 @@ registries, and event types are reserved now (section 14).
 ## 12. Configuration
 
 Bundle variables → packaged `app.yaml` env (via `prepare_bundle.py --target`)
-→ `atlas/config.py`. Values come from `BUNDLE_VAR_*`, never committed
+→ `axiom/config.py`. Values come from `BUNDLE_VAR_*`, never committed
 workspace-specific values (see `AGENTS.md`).
 
 | Bundle variable | Env var | Default |
 |---|---|---|
-| `ai_features_enabled` | `GOVAT_AI_FEATURES_ENABLED` | `false` |
-| `ai_intake_tag_key` | `GOVAT_AI_INTAKE_TAG_KEY` | `edw_intake_id` (code name: `intake_tag_key`) |
-| `ai_tier_tag_key` | `GOVAT_AI_TIER_TAG_KEY` | `ai_risk_tier` |
-| `ai_catalog_allowlist` | `GOVAT_AI_CATALOG_ALLOWLIST` | empty (use `discovery_catalogs`) |
-| `ai_tool_schema_allowlist` | `GOVAT_AI_TOOL_SCHEMA_ALLOWLIST` | empty |
+| `ai_features_enabled` | `AXIOM_AI_FEATURES_ENABLED` | `false` |
+| `ai_intake_tag_key` | `AXIOM_AI_INTAKE_TAG_KEY` | `edw_intake_id` (code name: `intake_tag_key`) |
+| `ai_tier_tag_key` | `AXIOM_AI_TIER_TAG_KEY` | `ai_risk_tier` |
+| `ai_catalog_allowlist` | `AXIOM_AI_CATALOG_ALLOWLIST` | empty (use `discovery_catalogs`) |
+| `ai_tool_schema_allowlist` | `AXIOM_AI_TOOL_SCHEMA_ALLOWLIST` | empty |
 | `ai_collector_sp` | (job `run_as` only) | empty |
-| `ai_intake_grace_days` | `GOVAT_AI_INTAKE_GRACE_DAYS` | `30` **[Proposed]** |
+| `ai_intake_grace_days` | `AXIOM_AI_INTAKE_GRACE_DAYS` | `30` **[Proposed]** |
 
-Job resource `atlas_ai_collect_and_reconcile`: task `collect_databricks`, then
+Job resource `axiom_ai_collect_and_reconcile`: task `collect_databricks`, then
 `reconcile`; `run_as` the collector service principal when set; schedule
 paused in dev; serverless compute with an environment pinning
 `databricks-sdk==0.95.0` (confirm in V9). Tasks run the entry scripts from the
@@ -706,7 +706,7 @@ System actors use the collector service principal identity with
 | ID | Question | Recommendation |
 |---|---|---|
 | D1 | Synthetic observations for objects that can't be created in dev (10.1) | **Decided 2026-09-24:** real labeled sample objects only |
-| D2 | `atlas/ai/store.py` mixin vs extending `atlas/store.py` | **Revised (Phase 1):** composition wrapper, so the Lakebase mirror runs |
+| D2 | `axiom/ai/store.py` mixin vs extending `axiom/store.py` | **Revised (Phase 1):** composition wrapper, so the Lakebase mirror runs |
 | D3 | M3 scoring function and severity table (5.1, 5.3) | As proposed, then review with stewards |
 | D4 | AIC definitions beyond the Phase 1 subset (6) | Treat as placeholders until Phase 2 scoping |
 | D5 | Collector writes through the SQL warehouse (shared store) vs Spark | Warehouse, for shared escaping and audit code |

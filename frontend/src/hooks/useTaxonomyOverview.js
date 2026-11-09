@@ -1,9 +1,9 @@
 // The classification taxonomy overview hook consumed by the Glossary & CDEs
 // surface. (Its former sibling useTaxonomyCdeDashboard died in Wave C8: the
-// C4 merge kept useCdeDashboard's ["atlas", "cde-dashboard"] key, so the
+// C4 merge kept useCdeDashboard's ["axiom", "cde-dashboard"] key, so the
 // taxonomy-scoped duplicate never gained a consumer.)
 import { fetchTaxonomyOverview } from "../lib/api";
-import { useAtlasQuery } from "./useAtlasQuery";
+import { useAxiomQuery } from "./useAxiomQuery";
 
 /**
  * The classification taxonomy overview (namespaces, nodes, terms).
@@ -11,8 +11,8 @@ import { useAtlasQuery } from "./useAtlasQuery";
  */
 export function useTaxonomyOverview(options = {}) {
   const enabled = options.enabled !== false;
-  return useAtlasQuery({
-    key: ["atlas", "taxonomy-overview"],
+  return useAxiomQuery({
+    key: ["axiom", "taxonomy-overview"],
     enabled,
     fetch: (signal) => fetchTaxonomyOverview({ signal }),
     staleTime: 60_000,

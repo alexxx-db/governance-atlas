@@ -19,7 +19,7 @@ describe("HelpPage (surfaces/help)", () => {
   it("renders the hero and every help section on the system kit", () => {
     const { container } = renderHelp();
 
-    expect(screen.getByRole("heading", { level: 1, name: "How Governance Atlas works" })).not.toBeNull();
+    expect(screen.getByRole("heading", { level: 1, name: "How Axiom works" })).not.toBeNull();
     for (const title of [
       "Getting started",
       "Who sees what",
@@ -31,8 +31,8 @@ describe("HelpPage (surfaces/help)", () => {
       expect(screen.getByRole("heading", { level: 2, name: title })).not.toBeNull();
     }
     // System-kit frame, zero legacy gh- classes.
-    expect(container.querySelector(".ga-sys-page")).not.toBeNull();
-    expect(container.querySelectorAll(".ga-sys-section-card").length).toBe(6);
+    expect(container.querySelector(".ax-sys-page")).not.toBeNull();
+    expect(container.querySelectorAll(".ax-sys-section-card").length).toBe(6);
     expect(container.querySelector('[class*="gh-"]')).toBeNull();
   });
 
@@ -55,11 +55,11 @@ describe("HelpPage (surfaces/help)", () => {
   });
 
   it("sets the document title while mounted and restores it on unmount", () => {
-    document.title = "Governance Atlas";
+    document.title = "Axiom";
     const view = renderHelp();
-    expect(document.title).toBe("Help — Governance Atlas");
+    expect(document.title).toBe("Help — Axiom");
     view.unmount();
-    expect(document.title).toBe("Governance Atlas");
+    expect(document.title).toBe("Axiom");
   });
 
   it("renders the back action only when onBack is provided, and wires the click", () => {

@@ -1,5 +1,5 @@
 import { fetchAccessExplain } from "../lib/api";
-import { useAtlasQuery } from "./useAtlasQuery";
+import { useAxiomQuery } from "./useAxiomQuery";
 
 /**
  * Phase 14 — "Why can't I access this?" explainer.
@@ -9,7 +9,7 @@ import { useAtlasQuery } from "./useAtlasQuery";
 export function useAccessExplain(assetFqn = "", options = {}) {
   const trimmed = String(assetFqn || "").trim();
   const enabled = options.enabled !== false;
-  const { query } = useAtlasQuery({
+  const { query } = useAxiomQuery({
     key: ["accessExplain", trimmed || "__global__"],
     enabled,
     fetch: (signal) => fetchAccessExplain(trimmed, { signal }),

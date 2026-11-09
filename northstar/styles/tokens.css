@@ -1,42 +1,41 @@
 /* ==========================================================================
-   Entrada Design System — Core tokens
+   Design System — Core tokens
    Colors + typography + spacing + radii + shadows
    ========================================================================== */
 
-/* Fonts — Manrope (substitute for Entrada's display type, see README) */
+/* Fonts — Manrope (substitute for display type, see README) */
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
   /* ---------- BRAND COLOR — raw palette ---------- */
-  --entrada-navy:        #025080;  /* Primary */
-  --entrada-bright-blue: #66C5FF;  /* Secondary */
-  --entrada-light-blue:  #CFEFFF;  /* Secondary */
-  --entrada-white:       #FFFFFF;  /* Secondary */
-  --entrada-grey:        #B2BDC2;  /* Secondary */
-  --entrada-teal:        #5CE1E6;  /* Bright accent */
+  --shorecp-blue:        #325396;  /* Primary */
+  --shorecp-grey:        #C8C8C8;  /* Primary */
+  --shorecp-white:       #FFFFFF;
+  --shorecp-bright-blue: #7497DC;  /* Tint of Shore Capital blue for dark surfaces */
+  --shorecp-light-blue:  #CDDAF4;  /* Tint of Shore Capital blue */
 
-  /* Navy tonal scale — tints & shades of #025080 */
-  --navy-50:  #E6F0F7;
-  --navy-100: #CCE1EE;
-  --navy-200: #99C3DD;
-  --navy-300: #66A5CC;
-  --navy-400: #3387BB;
-  --navy-500: #025080;   /* brand primary */
-  --navy-600: #02436B;
-  --navy-700: #033656;
-  --navy-800: #022A42;
-  --navy-900: #011B2D;
-  --navy-950: #010F1A;
+  /* Navy tonal scale — tints & shades of #325396 */
+  --navy-50:  #EBEEF4;
+  --navy-100: #D6DDEA;
+  --navy-200: #ADBAD5;
+  --navy-300: #8498C0;
+  --navy-400: #5B75AB;
+  --navy-500: #325396;   /* brand primary */
+  --navy-600: #2A467E;
+  --navy-700: #213864;
+  --navy-800: #1A2B4E;
+  --navy-900: #111D34;
+  --navy-950: #0A111E;
 
-  /* Blue tonal scale — tints & shades of #66C5FF */
-  --blue-50:  #F2FAFF;
-  --blue-100: #E0F4FF;
-  --blue-200: #CFEFFF;   /* matches light-blue secondary */
-  --blue-300: #A8DDFF;
-  --blue-400: #66C5FF;   /* brand bright blue */
-  --blue-500: #3BAFF5;
-  --blue-600: #1E94DC;
-  --blue-700: #1577B3;
+  /* Blue tonal scale — lighter, brighter steps of #325396 */
+  --blue-50:  #F2F6FD;
+  --blue-100: #E1E9FA;
+  --blue-200: #CDDAF4;   /* matches light-blue */
+  --blue-300: #A4BBEA;
+  --blue-400: #7497DC;   /* brand bright blue */
+  --blue-500: #557DCE;
+  --blue-600: #3D66B8;
+  --blue-700: #335599;
 
   /* Neutral / grey scale — warm-cool balanced greys */
   --grey-0:   #FFFFFF;
@@ -44,18 +43,18 @@
   --grey-100: #EEF1F3;
   --grey-200: #DEE3E6;
   --grey-300: #CED5D9;
-  --grey-400: #B2BDC2;   /* brand grey */
+  --grey-400: #C8C8C8;   /* brand grey */
   --grey-500: #8D989E;
   --grey-600: #6B757A;
   --grey-700: #4C5458;
   --grey-800: #2F3538;
   --grey-900: #171A1C;
 
-  /* Accent — teal */
-  --teal-300: #9EEEF1;
-  --teal-400: #5CE1E6;   /* brand teal */
-  --teal-500: #2DC9D0;
-  --teal-600: #1DA7AE;
+  /* Accent — Shore Capital grey (legacy --teal-* names kept) */
+  --teal-300: #E0E0E0;
+  --teal-400: #C8C8C8;   /* brand grey */
+  --teal-500: #A8A8A8;
+  --teal-600: #6E6E6E;
 
   /* Semantic — status */
   --success: #1F9D55;
@@ -152,13 +151,13 @@
   --radius-pill: 999px;
 
   /* ---------- SHADOWS / ELEVATION ---------- */
-  --shadow-xs:  0 1px 2px rgba(2, 26, 45, 0.06);
-  --shadow-sm:  0 2px 6px rgba(2, 26, 45, 0.08);
-  --shadow-md:  0 8px 24px rgba(2, 26, 45, 0.10);
-  --shadow-lg:  0 16px 40px rgba(2, 26, 45, 0.12);
-  --shadow-xl:  0 32px 64px rgba(2, 26, 45, 0.16);
-  --shadow-brand: 0 12px 32px rgba(2, 80, 128, 0.28);
-  --shadow-focus: 0 0 0 4px rgba(102, 197, 255, 0.35);
+  --shadow-xs:  0 1px 2px rgba(17, 29, 52, 0.06);
+  --shadow-sm:  0 2px 6px rgba(17, 29, 52, 0.08);
+  --shadow-md:  0 8px 24px rgba(17, 29, 52, 0.10);
+  --shadow-lg:  0 16px 40px rgba(17, 29, 52, 0.12);
+  --shadow-xl:  0 32px 64px rgba(17, 29, 52, 0.16);
+  --shadow-brand: 0 12px 32px rgba(50, 83, 150, 0.28);
+  --shadow-focus: 0 0 0 4px rgba(116, 151, 220, 0.35);
 
   /* ---------- MOTION ---------- */
   --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
@@ -217,7 +216,7 @@ code {
   color: var(--navy-700);
 }
 
-/* Eyebrow label — ubiquitous on Entrada (e.g. "GUIDING DATA MODERNIZATION") */
+/* Eyebrow label — ubiquitous (e.g. "GUIDING DATA MODERNIZATION") */
 .eyebrow,
 [data-kind="eyebrow"] {
   font-size: var(--text-sm);

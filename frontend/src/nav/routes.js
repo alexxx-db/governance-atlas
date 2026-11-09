@@ -1,5 +1,5 @@
 /**
- * nav/routes.js — THE route table for Governance Atlas (Wave A3, COHESION_BLUEPRINT).
+ * nav/routes.js — THE route table for Axiom (Wave A3, COHESION_BLUEPRINT).
  *
  * Single source of truth for the surface map: canonical routes, redirect aliases,
  * nav-rail metadata, and per-surface URL param schemas. Consumed (Wave B+) by:
@@ -14,7 +14,7 @@
  * running app until then.
  *
  * Framework-free on purpose: no React, no react-router imports. The hooks in
- * useAtlasNavigate.js / useSurfaceParams.js bind this table to react-router.
+ * useAxiomNavigate.js / useSurfaceParams.js bind this table to react-router.
  */
 
 /* ------------------------------------------------------------------ */
@@ -165,12 +165,12 @@ export const ROUTES = [
     },
   },
   {
-    surface: "datapact",
-    path: "/datapact",
+    surface: "emet",
+    path: "/emet",
     // WHY: /data-pact and /data-quality are the natural spellings; the Control
-    // Center is where DataPact validation results live inside Atlas.
+    // Center is where emet validation results live inside Axiom.
     aliases: ["/data-pact", "/data-quality", "/quality-gate"],
-    nav: { section: "govern", label: "DataPact", icon: "datapact" },
+    nav: { section: "govern", label: "emet", icon: "emet" },
     paramsSchema: {
       // overview | jobs | ask | dashboard
       tab: str(),
@@ -431,7 +431,7 @@ function normalizeAlias(alias) {
  * "my work"), but an explicit param in the shared link is user intent and wins.
  */
 export function resolveUrl(input, _depth = 0) {
-  const url = new URL(String(input || "/"), "https://atlas.invalid");
+  const url = new URL(String(input || "/"), "https://axiom.invalid");
   const pathname = url.pathname;
   const incoming = url.searchParams;
 

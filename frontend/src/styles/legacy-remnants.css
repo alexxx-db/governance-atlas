@@ -6,7 +6,7 @@
  * button in components/lineage-v2/LineageCanvasV2.jsx, which still emits
  * `gh-secondary-button`. The values below are the EFFECTIVE dark-theme
  * resolution of the old app.css cascade (base group + secondary + the
- * always-on data-theme="dark" override), re-expressed on --ga-* tokens.
+ * always-on data-theme="dark" override), re-expressed on --ax-* tokens.
  *
  * Owner note: lineage-v2 owns the rename to the system kit Button; when
  * LineageCanvasV2 drops this class, DELETE this file and its main.jsx
@@ -16,10 +16,10 @@
 .gh-secondary-button {
   min-height: 42px;
   padding: 0 1rem;
-  border: 1px solid var(--ga-border);
-  border-radius: var(--ga-radius-pill);
-  background: var(--ga-surface);
-  color: var(--ga-text);
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-radius-pill);
+  background: var(--ax-surface);
+  color: var(--ax-text);
   font: inherit;
   font-weight: 800;
   cursor: pointer;
@@ -32,9 +32,9 @@
 
 .gh-secondary-button:hover {
   transform: translateY(-1px);
-  border-color: rgba(102, 197, 255, 0.4);
-  background: rgba(102, 197, 255, 0.14);
-  color: var(--ga-text);
+  border-color: rgba(116, 151, 220, 0.4);
+  background: rgba(116, 151, 220, 0.14);
+  color: var(--ax-text);
 }
 
 .gh-secondary-button:active {

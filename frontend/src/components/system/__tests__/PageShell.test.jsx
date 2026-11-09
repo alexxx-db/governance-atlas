@@ -33,7 +33,7 @@ describe("PageShell", () => {
       </PageShell>,
     );
     expect(screen.getByRole("navigation", { name: "Breadcrumb" }).textContent).toContain("Discover / orders");
-    expect(screen.getByTestId("tabs").closest(".ga-sys-page-tabs")).not.toBeNull();
+    expect(screen.getByTestId("tabs").closest(".ax-sys-page-tabs")).not.toBeNull();
     expect(screen.getByTestId("rail").closest("aside")).not.toBeNull();
   });
 
@@ -84,6 +84,6 @@ describe("PageShell", () => {
         <p>x</p>
       </PageShell>,
     );
-    expect(document.querySelector(".ga-sys-page").getAttribute("data-status")).toBe("degraded");
+    expect(document.querySelector(".ax-sys-page").getAttribute("data-status")).toBe("degraded");
   });
 });

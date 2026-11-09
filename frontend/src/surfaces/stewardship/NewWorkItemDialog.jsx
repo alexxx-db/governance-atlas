@@ -42,12 +42,12 @@ export function NewWorkItemDialog({
 
   return (
     <Drawer
-      className="ga-stew-new-item"
+      className="ax-stew-new-item"
       onClose={onClose}
       open={open}
       title="File a governance work item"
       footer={
-        <div className="ga-stew-new-item-controls">
+        <div className="ax-stew-new-item-controls">
           <Button
             disabled={Boolean(disabledReason) || submitting}
             loading={submitting}
@@ -63,11 +63,11 @@ export function NewWorkItemDialog({
         </div>
       }
     >
-      <p className="ga-stew-new-item-lede">
+      <p className="ax-stew-new-item-lede">
         Creates a real governance request for the asset you name. It lands in this queue and in the
         governance audit trail.
       </p>
-      <div className="ga-stew-new-item-form">
+      <div className="ax-stew-new-item-form">
         <label>
           <span>Asset FQN</span>
           <SuggestInput

@@ -44,9 +44,9 @@ describe("hrefForRef — Cross-linking contract (COHESION_BLUEPRINT LAW)", () =>
   });
 
   it('owner → /discovery?q=owner:"<email>"', () => {
-    const href = hrefForRef({ kind: "owner", id: "jane@entrada.ai" });
+    const href = hrefForRef({ kind: "owner", id: "jane@shorecp.com" });
     expect(href.startsWith("/discovery?")).toBe(true);
-    expect(searchOf(href).get("q")).toBe('owner:"jane@entrada.ai"');
+    expect(searchOf(href).get("q")).toBe('owner:"jane@shorecp.com"');
   });
 
   it("owner → null for non-principal values (system actors, team/domain labels)", () => {
@@ -111,7 +111,7 @@ describe("defaultRefLabel", () => {
   it("prefers explicit label, then kind-appropriate identity", () => {
     expect(defaultRefLabel({ kind: "asset", fqn: "a.b.c", label: "Orders" })).toBe("Orders");
     expect(defaultRefLabel({ kind: "asset", fqn: "a.b.c" })).toBe("a.b.c");
-    expect(defaultRefLabel({ kind: "owner", email: "jane@entrada.ai" })).toBe("jane@entrada.ai");
+    expect(defaultRefLabel({ kind: "owner", email: "jane@shorecp.com" })).toBe("jane@shorecp.com");
     expect(defaultRefLabel({ kind: "column", fqn: "a.b.c", id: "order_id" })).toBe("order_id");
     expect(defaultRefLabel({ kind: "request", id: "GOV-1" })).toBe("GOV-1");
   });

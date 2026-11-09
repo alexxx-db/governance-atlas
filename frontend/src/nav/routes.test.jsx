@@ -23,7 +23,7 @@ import {
   writeParams,
 } from "./routes.js";
 import { refHref, resolveRef } from "./refs.js";
-import { useAtlasNavigate, usePeek } from "./useAtlasNavigate.js";
+import { useAxiomNavigate, usePeek } from "./useAxiomNavigate.js";
 import { useSurfaceParams } from "./useSurfaceParams.js";
 
 /* ------------------------------------------------------------------ */
@@ -59,7 +59,7 @@ describe("route table: legacy alias resolution", () => {
     expectResolves("/command-center", "/home", "", { redirected: true });
     expectResolves("/exec", "/home", "", { redirected: true });
     expectResolves("/insights", "/home", "", { redirected: true });
-    // The old sessionStorage ga-insights-focus handoff becomes a plain param
+    // The old sessionStorage ax-insights-focus handoff becomes a plain param
     // and must survive the redirect.
     expectResolves("/insights?focus=risk", "/home", "?focus=risk", { redirected: true });
   });
@@ -218,7 +218,7 @@ describe("route table: shape", () => {
         "/ai/assets/:entityId",
         "/assets",
         "/assets/:fqn",
-        "/datapact",
+        "/emet",
         "/discovery",
         "/evidence",
         "/glossary",
@@ -239,7 +239,7 @@ describe("route table: shape", () => {
       "Command Center",
       "Discover",
       "Stewardship",
-      "DataPact",
+      "emet",
       "AI Governance",
     ]);
     expect(sections[1].items.map((item) => item.label)).toEqual([
@@ -490,10 +490,10 @@ function LocationProbe() {
   );
 }
 
-describe("useAtlasNavigate", () => {
+describe("useAxiomNavigate", () => {
   function NavigateHarness() {
-    const navigate = useAtlasNavigate();
-    globalThis.__atlasNavigate = navigate;
+    const navigate = useAxiomNavigate();
+    globalThis.__axiomNavigate = navigate;
     return <LocationProbe />;
   }
 
@@ -507,7 +507,7 @@ describe("useAtlasNavigate", () => {
 
   it("navigates to an entityRef's canonical route with serialized params", () => {
     renderAt("/home");
-    act(() => globalThis.__atlasNavigate({ kind: "cde", id: "cde-7" }));
+    act(() => globalThis.__axiomNavigate({ kind: "cde", id: "cde-7" }));
     expect(screen.getByTestId("path").textContent).toBe("/glossary");
     expect(sortedSearch(screen.getByTestId("search").textContent)).toBe(
       sortedSearch("?tab=cdes&cde=cde-7"),
@@ -517,7 +517,7 @@ describe("useAtlasNavigate", () => {
   it("merges extra params over the ref's own", () => {
     renderAt("/home");
     act(() =>
-      globalThis.__atlasNavigate(
+      globalThis.__axiomNavigate(
         { kind: "asset", fqn: "main.sales.orders" },
         { params: { tab: "quality" } },
       ),
@@ -529,7 +529,7 @@ describe("useAtlasNavigate", () => {
   it("peek stays on the current surface and binds ?peek=", () => {
     renderAt("/discovery?q=revenue");
     act(() =>
-      globalThis.__atlasNavigate({ kind: "asset", fqn: "main.sales.orders" }, { peek: true }),
+      globalThis.__axiomNavigate({ kind: "asset", fqn: "main.sales.orders" }, { peek: true }),
     );
     expect(screen.getByTestId("path").textContent).toBe("/discovery");
     expect(sortedSearch(screen.getByTestId("search").textContent)).toBe(
@@ -541,7 +541,7 @@ describe("useAtlasNavigate", () => {
 describe("usePeek", () => {
   function PeekHarness() {
     const peek = usePeek();
-    globalThis.__atlasPeek = peek;
+    globalThis.__axiomPeek = peek;
     return (
       <>
         <div data-testid="peekFqn">{peek.peekFqn}</div>
@@ -558,11 +558,11 @@ describe("usePeek", () => {
     );
     expect(screen.getByTestId("peekFqn").textContent).toBe("");
 
-    act(() => globalThis.__atlasPeek.openPeek("main.sales.orders"));
+    act(() => globalThis.__axiomPeek.openPeek("main.sales.orders"));
     expect(screen.getByTestId("peekFqn").textContent).toBe("main.sales.orders");
     expect(screen.getByTestId("path").textContent).toBe("/discovery");
 
-    act(() => globalThis.__atlasPeek.closePeek());
+    act(() => globalThis.__axiomPeek.closePeek());
     expect(screen.getByTestId("peekFqn").textContent).toBe("");
     // The surface's own params survive the drawer lifecycle.
     expect(screen.getByTestId("search").textContent).toBe("?q=revenue");
@@ -574,9 +574,9 @@ describe("useSurfaceParams", () => {
 
   function ParamsHarness() {
     const [params, setParams] = useSurfaceParams(schema);
-    globalThis.__atlasSetParams = setParams;
+    globalThis.__axiomSetParams = setParams;
     const navigate = useNavigate();
-    globalThis.__atlasBack = () => navigate(-1);
+    globalThis.__axiomBack = () => navigate(-1);
     return (
       <>
         <div data-testid="q">{params.q}</div>
@@ -615,22 +615,22 @@ describe("useSurfaceParams", () => {
         <ParamsHarness />
       </MemoryRouter>,
     );
-    act(() => globalThis.__atlasSetParams({ q: "churn", domain: ["Finance"] }));
+    act(() => globalThis.__axiomSetParams({ q: "churn", domain: ["Finance"] }));
     const sp = new URLSearchParams(screen.getByTestId("search").textContent);
     expect(sp.get("q")).toBe("churn");
     expect(sp.getAll("domain")).toEqual(["Finance"]);
     expect(sp.get("peek")).toBe("main.sales.orders");
 
     // Default write is replace: no intermediate entry — Back lands on /home.
-    act(() => globalThis.__atlasBack());
+    act(() => globalThis.__axiomBack());
     expect(screen.getByTestId("path").textContent).toBe("/home");
   });
 
   it("push:true creates a history entry so Back restores the previous state", () => {
     renderAt("/discovery?q=revenue");
-    act(() => globalThis.__atlasSetParams({ q: "churn" }, { push: true }));
+    act(() => globalThis.__axiomSetParams({ q: "churn" }, { push: true }));
     expect(screen.getByTestId("q").textContent).toBe("churn");
-    act(() => globalThis.__atlasBack());
+    act(() => globalThis.__axiomBack());
     expect(screen.getByTestId("q").textContent).toBe("revenue");
   });
 });

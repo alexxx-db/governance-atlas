@@ -3,7 +3,7 @@ import { fireEvent, render, screen, waitFor, within } from "@testing-library/rea
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { toast, ToastHost } from "../../../components/system";
-import { atlasQueryClient } from "../../../lib/queryClient";
+import { axiomQueryClient } from "../../../lib/queryClient";
 import StewardshipPage from "../StewardshipPage.jsx";
 
 /*
@@ -82,7 +82,7 @@ function glossaryFixture() {
   return {
     glossary: [
       { termId: "t-1", term: "Average Revenue", status: "Proposed", definition: "Avg revenue measure." },
-      { termId: "t-2", term: "Atlas Test Term", status: "Draft", definition: "" },
+      { termId: "t-2", term: "Axiom Test Term", status: "Draft", definition: "" },
       { termId: "t-3", term: "Net Revenue", status: "Approved", definition: "Approved term." },
     ],
   };
@@ -96,11 +96,11 @@ function LocationProbe() {
   return null;
 }
 
-const STEWARD = { email: "skyler.myers@entrada.ai", name: "Skyler Myers", role: "Steward" };
+const STEWARD = { email: "skyler.myers@shorecp.com", name: "Skyler Myers", role: "Steward" };
 
 function renderPage({ initialEntry = "/stewardship", currentUser = STEWARD } = {}) {
   return render(
-    <QueryClientProvider client={atlasQueryClient}>
+    <QueryClientProvider client={axiomQueryClient}>
       <MemoryRouter initialEntries={[initialEntry]}>
         <StewardshipPage currentUser={currentUser} />
         <ToastHost />
@@ -134,7 +134,7 @@ function panel() {
 
 beforeEach(() => {
   Object.values(api).forEach((fn) => fn.mockReset());
-  atlasQueryClient.clear();
+  axiomQueryClient.clear();
   toast.clear();
   lastLocation = null;
 });
@@ -253,11 +253,11 @@ describe("StewardshipPage (surfaces/stewardship)", () => {
     await waitFor(() => {
       expect(api.updateGovernanceRequest).toHaveBeenCalledWith(
         "SI-2491",
-        { status: "pending", assignee: "skyler.myers@entrada.ai", priority: "" },
+        { status: "pending", assignee: "skyler.myers@shorecp.com", priority: "" },
         { fast: true },
       );
     });
-    expect(await screen.findByText("Assigned to you (skyler.myers@entrada.ai).")).toBeTruthy();
+    expect(await screen.findByText("Assigned to you (skyler.myers@shorecp.com).")).toBeTruthy();
   });
 
   it("sets priority from the triage picker through the PATCH API", async () => {
@@ -323,7 +323,7 @@ describe("StewardshipPage (surfaces/stewardship)", () => {
     const banner = await screen.findByText(
       "Couldn't update the assignment — the server rejected the change. (Request ID: req-err-42)",
     );
-    expect(banner.closest(".ga-sys-status-banner")?.className).toContain("tone-danger");
+    expect(banner.closest(".ax-sys-status-banner")?.className).toContain("tone-danger");
     // The raw exception text never reaches the DOM.
     expect(screen.queryByText(/DualWriteGovernanceStore/)).toBeNull();
     // Rollback: the optimistic assignee never survives the failed write.
@@ -382,12 +382,12 @@ describe("StewardshipPage (surfaces/stewardship)", () => {
 
   it("keeps scoped empty states truthful instead of inventing requests", async () => {
     primeHappyPath();
-    renderPage({ initialEntry: "/stewardship?asset=datapact.demo.unrelated_asset" });
+    renderPage({ initialEntry: "/stewardship?asset=emet.demo.unrelated_asset" });
     await waitFor(() => {
       expect(screen.getByText("No work items for this asset")).toBeTruthy();
     });
     expect(
-      screen.getByText("No open work items target datapact.demo.unrelated_asset."),
+      screen.getByText("No open work items target emet.demo.unrelated_asset."),
     ).toBeTruthy();
     expect(screen.getByText(/SLA evidence unavailable/)).toBeTruthy();
     expect(screen.getByText("No work item selected")).toBeTruthy();
@@ -481,8 +481,8 @@ describe("StewardshipPage (surfaces/stewardship)", () => {
         requests: [
           {
             ...requestOne,
-            requestId: "ga-home-seed-request-9",
-            id: "ga-home-seed-request-9",
+            requestId: "ax-home-seed-request-9",
+            id: "ax-home-seed-request-9",
             title: "Validation sample owner check",
             rawTitle: "Validation sample owner check",
             kind: "Validation sample owner check",

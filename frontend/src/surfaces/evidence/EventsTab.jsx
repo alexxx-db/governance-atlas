@@ -464,7 +464,7 @@ export function EventsTab({ shell = null, params, setParams }) {
         // asset timelines, and exports; full UUID on the title attribute.
         // The id text is the row anchor (?event= address) per the chip law.
         <span
-          className={`ga-evid-id${selected?.id === event.id ? " is-selected" : ""}`}
+          className={`ax-evid-id${selected?.id === event.id ? " is-selected" : ""}`}
           title={event.auditEventId || undefined}
         >
           {event.displayAuditId || "Unavailable"}
@@ -474,7 +474,7 @@ export function EventsTab({ shell = null, params, setParams }) {
     {
       key: "time",
       header: "Time (UTC)",
-      render: (event) => <span className="ga-evid-time">{tableTimestamp(event.createdAt)}</span>,
+      render: (event) => <span className="ax-evid-time">{tableTimestamp(event.createdAt)}</span>,
     },
     {
       key: "actor",
@@ -493,7 +493,7 @@ export function EventsTab({ shell = null, params, setParams }) {
       key: "event",
       header: "Event",
       render: (event) => (
-        <span className="ga-evid-event-cell">
+        <span className="ax-evid-event-cell">
           <Badge size="sm" tone={actionTone(event.action)}>
             {eventDisplayLabel(event.action)}
           </Badge>
@@ -510,14 +510,14 @@ export function EventsTab({ shell = null, params, setParams }) {
         event.entityFqn ? (
           <EntityChip appearance="inline" entity={{ kind: "asset", fqn: event.entityFqn }} />
         ) : (
-          <span className="ga-evid-target-plain">{event.objectLabel}</span>
+          <span className="ax-evid-target-plain">{event.objectLabel}</span>
         ),
     },
     {
       key: "evidence",
       header: "Evidence",
       render: (event) => (
-        <small className="ga-evid-ref" title={evidenceReference(event)}>
+        <small className="ax-evid-ref" title={evidenceReference(event)}>
           {evidenceReference(event)}
         </small>
       ),
@@ -542,7 +542,7 @@ export function EventsTab({ shell = null, params, setParams }) {
   if (forbidden) {
     return (
       <UnavailableState
-        className="ga-evid-gate"
+        className="ax-evid-gate"
         title="Audit trail is steward/admin only"
         reason="Ask a workspace steward or admin to grant audit visibility. The quality findings tab remains available for your visibility scope."
       />
@@ -551,7 +551,7 @@ export function EventsTab({ shell = null, params, setParams }) {
   if (queryError && !events.length) {
     return (
       <UnavailableState
-        className="ga-evid-gate"
+        className="ax-evid-gate"
         title="Audit trail unavailable"
         reason={queryError}
         onRetry={evidence.refresh}
@@ -561,7 +561,7 @@ export function EventsTab({ shell = null, params, setParams }) {
   if (nonAuthoritative) {
     return (
       <UnavailableState
-        className="ga-evid-gate"
+        className="ax-evid-gate"
         title="Audit evidence source unavailable"
         reason={`Non-authoritative audit evidence was withheld rather than rendered as governed truth. ${range} scope.`}
         onRetry={evidence.refresh}
@@ -570,7 +570,7 @@ export function EventsTab({ shell = null, params, setParams }) {
   }
 
   return (
-    <div className="ga-evid-events">
+    <div className="ax-evid-events">
       {evidence.status === "degraded" ? (
         <StatusBanner
           tone="warning"
@@ -580,7 +580,7 @@ export function EventsTab({ shell = null, params, setParams }) {
         />
       ) : null}
 
-      <div className="ga-evid-kpis" aria-label="Audit metrics">
+      <div className="ax-evid-kpis" aria-label="Audit metrics">
         {/* Hydration honesty: "…" placeholders while the payload loads —
             never a definitive zero (COHESION law #3). */}
         <StatTile
@@ -603,14 +603,14 @@ export function EventsTab({ shell = null, params, setParams }) {
         />
       </div>
 
-      <div className="ga-evid-toolbar">
+      <div className="ax-evid-toolbar">
         <TabStrip
           ariaLabel="Date range"
-          className="ga-evid-range"
+          className="ax-evid-range"
           param={{ value: range, set: (key) => setParams({ range: key === "24h" ? "" : key }) }}
           tabs={RANGES.map((key) => ({ key, label: key === "24h" ? "Last 24h" : `Last ${key}` }))}
         />
-        <div className="ga-evid-export-actions">
+        <div className="ax-evid-export-actions">
           <Button
             disabled={exportDisabled}
             onClick={generateReport}
@@ -630,7 +630,7 @@ export function EventsTab({ shell = null, params, setParams }) {
         </div>
       </div>
 
-      <div className="ga-evid-filter-row">
+      <div className="ax-evid-filter-row">
         <FilterBar
           facets={[
             { key: "actor", label: "Actor email", type: "search", placeholder: "e.g. steward@company.com", suggestions: roster.emails },
@@ -672,20 +672,20 @@ export function EventsTab({ shell = null, params, setParams }) {
       ) : filtersError ? (
         <StatusBanner tone="warning" message={`Filtered audit query failed: ${filtersError}`} />
       ) : serverFiltersActive && !filtersLoading ? (
-        <p className="ga-evid-filter-note" role="status">
+        <p className="ax-evid-filter-note" role="status">
           {`Server-side filter active · ${serverFilteredEvents.length} matching event${serverFilteredEvents.length === 1 ? "" : "s"} in the last ${rangeNoun(range)} (visibility-scoped).`}
         </p>
       ) : null}
 
       <TabStrip
         ariaLabel="Actor kind"
-        className="ga-evid-kinds"
+        className="ax-evid-kinds"
         param={{ value: kind, set: (key) => setParams({ kind: key === "all" ? "" : key }) }}
         tabs={kindTabs}
       />
 
-      <div className="ga-evid-layout">
-        <div className="ga-evid-main">
+      <div className="ax-evid-layout">
+        <div className="ax-evid-main">
           {!loading && !kindEvents.length && !events.length && !serverFiltersActive ? (
             <EmptyState
               title={`No governance events in the last ${rangeNoun(range)}`}
@@ -721,13 +721,13 @@ export function EventsTab({ shell = null, params, setParams }) {
               {truncationWarning ? (
                 // Explicit completeness warning: counts and exports over a
                 // truncated window are lower bounds, never the full ledger.
-                <p className="ga-evid-caption is-truncation" role="status">
+                <p className="ax-evid-caption is-truncation" role="status">
                   {truncationWarning}
                 </p>
               ) : null}
               {captionParts.length ? (
-                <div className="ga-evid-caption-row">
-                  <p className="ga-evid-caption">{captionParts.join(" · ")}</p>
+                <div className="ax-evid-caption-row">
+                  <p className="ax-evid-caption">{captionParts.join(" · ")}</p>
                   {kindEvents.length > pageRows.length ? (
                     <Button
                       onClick={() => setVisibleCount((count) => Math.min(kindEvents.length, count + PAGE_SIZE))}
@@ -741,25 +741,25 @@ export function EventsTab({ shell = null, params, setParams }) {
               ) : null}
             </>
           )}
-          <p className="ga-evid-provenance">{auditEvidenceNote}</p>
+          <p className="ax-evid-provenance">{auditEvidenceNote}</p>
         </div>
 
-        <aside aria-label="Selected audit event detail" className="ga-evid-rail" ref={railRef}>
+        <aside aria-label="Selected audit event detail" className="ax-evid-rail" ref={railRef}>
           {eventParamUnresolved && !loading ? (
             <UnavailableState
               title="Audit event not found"
               reason={`${eventParam} is not in the current filtered view. It may be outside the ${rangeNoun(range)} window or your visibility scope.`}
             />
           ) : selected ? (
-            <div className="ga-evid-detail">
-              <header className="ga-evid-detail-head">
+            <div className="ax-evid-detail">
+              <header className="ax-evid-detail-head">
                 <div>
-                  <span className="ga-sys-eyebrow">Selected evidence</span>
+                  <span className="ax-sys-eyebrow">Selected evidence</span>
                   <h3>{displayLabel(selected.action)}</h3>
                 </div>
                 <Badge tone={statusTone(selected.status)}>{displayLabel(selected.status)}</Badge>
               </header>
-              <dl className="ga-evid-detail-list">
+              <dl className="ax-evid-detail-list">
                 <div>
                   <dt>Actor</dt>
                   <dd>
@@ -802,7 +802,7 @@ export function EventsTab({ shell = null, params, setParams }) {
                 </div>
               </dl>
               {selectedDiffRows.length ? (
-                <div className="ga-evid-diff">
+                <div className="ax-evid-diff">
                   {selectedDiffRows.map((row) => (
                     <p key={row.key}>
                       <strong>{row.key}</strong>
@@ -812,13 +812,13 @@ export function EventsTab({ shell = null, params, setParams }) {
                   ))}
                 </div>
               ) : (
-                <p className="ga-evid-diff-empty">
+                <p className="ax-evid-diff-empty">
                   {normalizeEnum(selected.diffState) === "redacted"
                     ? selected.diffReason || "Before/after metadata was redacted for this event."
                     : "No before/after metadata diff was reported for this event."}
                 </p>
               )}
-              <div className="ga-evid-detail-actions">
+              <div className="ax-evid-detail-actions">
                 <Button
                   disabled={!selected.displayRequestId && !selected.displayAuditId}
                   onClick={copySelectedEvidenceId}

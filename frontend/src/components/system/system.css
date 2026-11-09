@@ -1,14 +1,14 @@
 /*
- * Governance Atlas system kit stylesheet (Wave A1).
+ * Axiom system kit stylesheet (Wave A1).
  *
  * Rules of this file (FRONTEND_BLUEPRINT §6/§9, CI guardrails):
- *  - every class is `ga-sys-*` — never collides with legacy `gh-*`/`ga-*`;
+ *  - every class is `ax-sys-*` — never collides with legacy `gh-*`/`ax-*`;
  *  - every color/space/type value comes from design/tokens custom
  *    properties. Alpha tints derive from tokens via color-mix() so zero raw
  *    hex/rgb literals exist here. NOTE: spacing/motion/z tokens are only
- *    published under `--gh-*` names in design/tokens (the `--ga-*` rename is
+ *    published under `--gh-*` names in design/tokens (the `--ax-*` rename is
  *    a later tokens-wave); using them here is sanctioned token usage, and
- *    the guardrail against DEFINING `--ga-*` outside tokens forbids the
+ *    the guardrail against DEFINING `--ax-*` outside tokens forbids the
  *    alternative of shadow-aliasing them locally;
  *  - zero !important — this file is self-contained and order-independent;
  *  - dark-theme-first: values match the current northstar visual language
@@ -21,7 +21,7 @@
 
 /* ---------------------------------------------------------------- utils */
 
-.ga-sys-visually-hidden {
+.ax-sys-visually-hidden {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -33,24 +33,24 @@
   border: 0;
 }
 
-.ga-sys-eyebrow {
-  color: var(--ga-bright-blue);
+.ax-sys-eyebrow {
+  color: var(--ax-bright-blue);
   font-size: 0.75rem;
-  font-weight: var(--ga-font-weight-heavy);
+  font-weight: var(--ax-font-weight-heavy);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-.ga-sys-info-tip {
+.ax-sys-info-tip {
   width: 15px;
   height: 15px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid color-mix(in srgb, var(--ga-light-blue) 28%, transparent);
-  border-radius: var(--ga-radius-pill);
-  background: color-mix(in srgb, var(--ga-light-blue) 6%, transparent);
-  color: var(--ga-text-muted);
+  border: 1px solid color-mix(in srgb, var(--ax-light-blue) 28%, transparent);
+  border-radius: var(--ax-radius-pill);
+  background: color-mix(in srgb, var(--ax-light-blue) 6%, transparent);
+  color: var(--ax-text-muted);
   cursor: help;
   font: inherit;
   font-size: 0.62rem;
@@ -58,46 +58,46 @@
   padding: 0;
 }
 
-.ga-sys-info-tip:hover,
-.ga-sys-info-tip:focus-visible {
-  border-color: var(--ga-border-strong);
-  color: var(--ga-text-soft);
+.ax-sys-info-tip:hover,
+.ax-sys-info-tip:focus-visible {
+  border-color: var(--ax-border-strong);
+  color: var(--ax-text-soft);
   outline: none;
 }
 
 /* Shared focus ring: one visible keyboard affordance for the whole kit. */
-.ga-sys-button:focus-visible,
-.ga-sys-tab:focus-visible,
-.ga-sys-entity-chip:focus-visible,
-.ga-sys-stat-tile:focus-visible,
-.ga-sys-table-sort:focus-visible,
-.ga-sys-table-rowlink:focus-visible,
-.ga-sys-filter-trigger:focus-visible,
-.ga-sys-filter-search:focus-visible,
-.ga-sys-filter-select:focus-visible,
-.ga-sys-drawer:focus-visible {
-  outline: 2px solid var(--ga-bright-blue);
+.ax-sys-button:focus-visible,
+.ax-sys-tab:focus-visible,
+.ax-sys-entity-chip:focus-visible,
+.ax-sys-stat-tile:focus-visible,
+.ax-sys-table-sort:focus-visible,
+.ax-sys-table-rowlink:focus-visible,
+.ax-sys-filter-trigger:focus-visible,
+.ax-sys-filter-search:focus-visible,
+.ax-sys-filter-select:focus-visible,
+.ax-sys-drawer:focus-visible {
+  outline: 2px solid var(--ax-bright-blue);
   outline-offset: 2px;
-  box-shadow: var(--ga-shadow-focus);
+  box-shadow: var(--ax-shadow-focus);
 }
 
 /* ------------------------------------------------------------- skeleton */
 
-.ga-sys-skeleton {
+.ax-sys-skeleton {
   display: block;
   height: 12px;
-  border-radius: var(--ga-radius-sm);
+  border-radius: var(--ax-radius-sm);
   background: linear-gradient(
     90deg,
-    color-mix(in srgb, var(--ga-light-blue) 8%, transparent),
-    color-mix(in srgb, var(--ga-light-blue) 16%, transparent),
-    color-mix(in srgb, var(--ga-light-blue) 8%, transparent)
+    color-mix(in srgb, var(--ax-light-blue) 8%, transparent),
+    color-mix(in srgb, var(--ax-light-blue) 16%, transparent),
+    color-mix(in srgb, var(--ax-light-blue) 8%, transparent)
   );
   background-size: 200% 100%;
-  animation: ga-sys-shimmer 1.4s linear infinite;
+  animation: ax-sys-shimmer 1.4s linear infinite;
 }
 
-@keyframes ga-sys-shimmer {
+@keyframes ax-sys-shimmer {
   from {
     background-position: 200% 0;
   }
@@ -107,346 +107,346 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ga-sys-skeleton {
+  .ax-sys-skeleton {
     animation: none;
   }
 }
 
-.ga-sys-loading {
+.ax-sys-loading {
   display: grid;
-  gap: var(--ga-space-3);
-  padding: var(--ga-space-4);
+  gap: var(--ax-space-3);
+  padding: var(--ax-space-4);
 }
 
-.ga-sys-loading.is-tile .ga-sys-skeleton:first-child,
-.ga-sys-loading.is-card .ga-sys-skeleton:first-child {
+.ax-sys-loading.is-tile .ax-sys-skeleton:first-child,
+.ax-sys-loading.is-card .ax-sys-skeleton:first-child {
   width: 40%;
   height: 10px;
 }
 
-.ga-sys-loading.is-tile .ga-sys-skeleton:nth-child(2) {
+.ax-sys-loading.is-tile .ax-sys-skeleton:nth-child(2) {
   width: 60%;
   height: 26px;
 }
 
-.ga-sys-loading.is-table .ga-sys-skeleton:first-child {
+.ax-sys-loading.is-table .ax-sys-skeleton:first-child {
   height: 16px;
-  background: color-mix(in srgb, var(--ga-light-blue) 12%, transparent);
+  background: color-mix(in srgb, var(--ax-light-blue) 12%, transparent);
 }
 
-.ga-sys-loading.is-page {
-  padding: var(--ga-space-6) var(--ga-space-4);
+.ax-sys-loading.is-page {
+  padding: var(--ax-space-6) var(--ax-space-4);
 }
 
-.ga-sys-loading.is-page .ga-sys-skeleton:first-child {
+.ax-sys-loading.is-page .ax-sys-skeleton:first-child {
   width: 30%;
   height: 24px;
 }
 
-.ga-sys-hydrating {
+.ax-sys-hydrating {
   /* Seed data on screen while refresh is in flight — content stays fully
      interactive; the slight dim signals motion without hiding truth. */
   opacity: 0.86;
-  transition: opacity var(--ga-duration-standard) var(--ga-ease-standard);
+  transition: opacity var(--ax-duration-standard) var(--ax-ease-standard);
 }
 
 /* ----------------------------------------------------------- empty state */
 
-.ga-sys-empty-state {
+.ax-sys-empty-state {
   display: grid;
   justify-items: start;
-  gap: var(--ga-space-2);
-  padding: var(--ga-space-6);
-  border: 1px dashed var(--ga-border);
-  border-radius: var(--ga-radius-lg);
-  background: color-mix(in srgb, var(--ga-bright-blue) 5%, transparent);
-  color: var(--ga-text-muted);
+  gap: var(--ax-space-2);
+  padding: var(--ax-space-6);
+  border: 1px dashed var(--ax-border);
+  border-radius: var(--ax-radius-lg);
+  background: color-mix(in srgb, var(--ax-bright-blue) 5%, transparent);
+  color: var(--ax-text-muted);
 }
 
-.ga-sys-empty-state h3 {
+.ax-sys-empty-state h3 {
   margin: 0;
-  color: var(--ga-text);
+  color: var(--ax-text);
   font-size: 0.95rem;
-  font-weight: var(--ga-heading-weight);
+  font-weight: var(--ax-heading-weight);
 }
 
-.ga-sys-empty-state p {
+.ax-sys-empty-state p {
   margin: 0;
   font-size: 0.84rem;
-  line-height: var(--ga-line-height-snug);
+  line-height: var(--ax-line-height-snug);
 }
 
-.ga-sys-empty-state-icon {
-  color: var(--ga-bright-blue);
+.ax-sys-empty-state-icon {
+  color: var(--ax-bright-blue);
 }
 
 /* ------------------------------------------------------ unavailable state */
 
-.ga-sys-unavailable {
+.ax-sys-unavailable {
   display: flex;
   align-items: center;
-  gap: var(--ga-space-4);
-  padding: var(--ga-space-5);
-  border: 1px solid var(--ga-border);
-  border-radius: var(--ga-radius-lg);
-  background: var(--ga-surface-muted);
-  color: var(--ga-text-muted);
+  gap: var(--ax-space-4);
+  padding: var(--ax-space-5);
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-radius-lg);
+  background: var(--ax-surface-muted);
+  color: var(--ax-text-muted);
 }
 
-.ga-sys-unavailable-glyph {
+.ax-sys-unavailable-glyph {
   font-size: 1.4rem;
-  color: var(--ga-text-faint);
+  color: var(--ax-text-faint);
 }
 
-.ga-sys-unavailable-copy {
+.ax-sys-unavailable-copy {
   flex: 1;
   min-width: 0;
 }
 
-.ga-sys-unavailable h3 {
+.ax-sys-unavailable h3 {
   margin: 0 0 2px;
-  color: var(--ga-text);
+  color: var(--ax-text);
   font-size: 0.92rem;
-  font-weight: var(--ga-heading-weight);
+  font-weight: var(--ax-heading-weight);
 }
 
-.ga-sys-unavailable p {
+.ax-sys-unavailable p {
   margin: 0;
   font-size: 0.82rem;
-  line-height: var(--ga-line-height-snug);
+  line-height: var(--ax-line-height-snug);
 }
 
 /* ---------------------------------------------------------- status banner */
 
-.ga-sys-status-banner {
+.ax-sys-status-banner {
   display: flex;
   align-items: center;
-  gap: var(--ga-space-3);
-  padding: var(--ga-space-3) var(--ga-space-4);
-  border-radius: var(--ga-radius-md);
-  border: 1px solid color-mix(in srgb, var(--ga-warning) 28%, transparent);
-  background: color-mix(in srgb, var(--ga-warning) 8%, transparent);
-  color: var(--ga-text-soft);
+  gap: var(--ax-space-3);
+  padding: var(--ax-space-3) var(--ax-space-4);
+  border-radius: var(--ax-radius-md);
+  border: 1px solid color-mix(in srgb, var(--ax-warning) 28%, transparent);
+  background: color-mix(in srgb, var(--ax-warning) 8%, transparent);
+  color: var(--ax-text-soft);
   font-size: 0.84rem;
 }
 
-.ga-sys-status-banner-copy {
+.ax-sys-status-banner-copy {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-wrap: wrap;
-  gap: var(--ga-space-2);
+  gap: var(--ax-space-2);
   align-items: baseline;
 }
 
-.ga-sys-status-banner strong {
-  color: var(--ga-text);
-  font-weight: var(--ga-font-weight-bold);
+.ax-sys-status-banner strong {
+  color: var(--ax-text);
+  font-weight: var(--ax-font-weight-bold);
 }
 
-.ga-sys-status-banner.tone-danger {
-  border-color: color-mix(in srgb, var(--ga-danger) 36%, transparent);
-  background: color-mix(in srgb, var(--ga-danger) 9%, transparent);
+.ax-sys-status-banner.tone-danger {
+  border-color: color-mix(in srgb, var(--ax-danger) 36%, transparent);
+  background: color-mix(in srgb, var(--ax-danger) 9%, transparent);
 }
 
-.ga-sys-status-banner.tone-info {
-  border-color: color-mix(in srgb, var(--ga-bright-blue) 32%, transparent);
-  background: color-mix(in srgb, var(--ga-bright-blue) 8%, transparent);
+.ax-sys-status-banner.tone-info {
+  border-color: color-mix(in srgb, var(--ax-bright-blue) 32%, transparent);
+  background: color-mix(in srgb, var(--ax-bright-blue) 8%, transparent);
 }
 
-.ga-sys-status-banner.tone-success {
-  border-color: color-mix(in srgb, var(--ga-success) 30%, transparent);
-  background: color-mix(in srgb, var(--ga-success) 8%, transparent);
+.ax-sys-status-banner.tone-success {
+  border-color: color-mix(in srgb, var(--ax-success) 30%, transparent);
+  background: color-mix(in srgb, var(--ax-success) 8%, transparent);
 }
 
 /* ----------------------------------------------------------------- badge */
 
-.ga-sys-badge {
+.ax-sys-badge {
   display: inline-flex;
   align-items: center;
-  gap: var(--ga-space-1);
+  gap: var(--ax-space-1);
   width: fit-content;
   min-height: 22px;
-  padding: 0 var(--ga-space-2);
-  border: 1px solid var(--ga-border);
-  border-radius: var(--ga-radius-pill);
-  color: var(--ga-text-soft);
+  padding: 0 var(--ax-space-2);
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-radius-pill);
+  color: var(--ax-text-soft);
   font-size: 0.75rem;
   line-height: 1;
   white-space: nowrap;
 }
 
-.ga-sys-badge.size-sm {
+.ax-sys-badge.size-sm {
   min-height: 18px;
   font-size: 0.68rem;
   padding: 0 6px;
 }
 
-.ga-sys-badge.tone-good {
-  border-color: color-mix(in srgb, var(--ga-success) 32%, transparent);
-  color: var(--ga-success);
+.ax-sys-badge.tone-good {
+  border-color: color-mix(in srgb, var(--ax-success) 32%, transparent);
+  color: var(--ax-success);
 }
 
-.ga-sys-badge.tone-warn {
-  border-color: color-mix(in srgb, var(--ga-warning) 32%, transparent);
-  color: var(--ga-warning);
+.ax-sys-badge.tone-warn {
+  border-color: color-mix(in srgb, var(--ax-warning) 32%, transparent);
+  color: var(--ax-warning);
 }
 
-.ga-sys-badge.tone-bad {
-  border-color: color-mix(in srgb, var(--ga-danger) 36%, transparent);
-  color: var(--ga-danger);
+.ax-sys-badge.tone-bad {
+  border-color: color-mix(in srgb, var(--ax-danger) 36%, transparent);
+  color: var(--ax-danger);
 }
 
-.ga-sys-badge.tone-info {
-  border-color: color-mix(in srgb, var(--ga-bright-blue) 32%, transparent);
-  color: var(--ga-bright-blue);
+.ax-sys-badge.tone-info {
+  border-color: color-mix(in srgb, var(--ax-bright-blue) 32%, transparent);
+  color: var(--ax-bright-blue);
 }
 
-.ga-sys-badge.tone-accent {
-  border-color: color-mix(in srgb, var(--ga-bright-blue) 40%, transparent);
-  background: color-mix(in srgb, var(--ga-bright-blue) 12%, transparent);
-  color: var(--ga-bright-blue);
+.ax-sys-badge.tone-accent {
+  border-color: color-mix(in srgb, var(--ax-bright-blue) 40%, transparent);
+  background: color-mix(in srgb, var(--ax-bright-blue) 12%, transparent);
+  color: var(--ax-bright-blue);
 }
 
-.ga-sys-badge.tone-muted {
-  color: var(--ga-text-muted);
+.ax-sys-badge.tone-muted {
+  color: var(--ax-text-muted);
 }
 
 /* ---------------------------------------------------------------- button */
 
-.ga-sys-button {
+.ax-sys-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--ga-space-2);
+  gap: var(--ax-space-2);
   min-height: 34px;
-  padding: 0 var(--ga-space-4);
-  border-radius: var(--ga-radius-md);
+  padding: 0 var(--ax-space-4);
+  border-radius: var(--ax-radius-md);
   border: 1px solid transparent;
   font: inherit;
   font-size: 0.84rem;
-  font-weight: var(--ga-font-weight-bold);
+  font-weight: var(--ax-font-weight-bold);
   line-height: 1;
   cursor: pointer;
   white-space: nowrap;
   transition:
-    background-color var(--ga-duration-quick) var(--ga-ease-standard),
-    border-color var(--ga-duration-quick) var(--ga-ease-standard),
-    color var(--ga-duration-quick) var(--ga-ease-standard);
+    background-color var(--ax-duration-quick) var(--ax-ease-standard),
+    border-color var(--ax-duration-quick) var(--ax-ease-standard),
+    color var(--ax-duration-quick) var(--ax-ease-standard);
 }
 
-.ga-sys-button.size-sm {
+.ax-sys-button.size-sm {
   min-height: 28px;
-  padding: 0 var(--ga-space-3);
+  padding: 0 var(--ax-space-3);
   font-size: 0.78rem;
 }
 
-.ga-sys-button:disabled {
+.ax-sys-button:disabled {
   cursor: not-allowed;
   opacity: 0.55;
 }
 
-.ga-sys-button.is-primary {
-  background: var(--ga-bright-blue);
-  color: var(--ga-navy-950);
+.ax-sys-button.is-primary {
+  background: var(--ax-bright-blue);
+  color: var(--ax-navy-950);
 }
 
-.ga-sys-button.is-primary:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--ga-bright-blue) 86%, var(--ga-white));
+.ax-sys-button.is-primary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--ax-bright-blue) 86%, var(--ax-white));
 }
 
-.ga-sys-button.is-primary.tone-danger {
-  background: var(--ga-danger);
-  color: var(--ga-navy-950);
+.ax-sys-button.is-primary.tone-danger {
+  background: var(--ax-danger);
+  color: var(--ax-navy-950);
 }
 
-.ga-sys-button.is-primary.tone-success {
-  background: var(--ga-success);
-  color: var(--ga-navy-950);
+.ax-sys-button.is-primary.tone-success {
+  background: var(--ax-success);
+  color: var(--ax-navy-950);
 }
 
-.ga-sys-button.is-secondary {
-  background: color-mix(in srgb, var(--ga-bright-blue) 8%, transparent);
-  border-color: var(--ga-border-strong);
-  color: var(--ga-text);
+.ax-sys-button.is-secondary {
+  background: color-mix(in srgb, var(--ax-bright-blue) 8%, transparent);
+  border-color: var(--ax-border-strong);
+  color: var(--ax-text);
 }
 
-.ga-sys-button.is-secondary:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--ga-bright-blue) 16%, transparent);
-  border-color: color-mix(in srgb, var(--ga-bright-blue) 45%, var(--ga-border-strong));
+.ax-sys-button.is-secondary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--ax-bright-blue) 16%, transparent);
+  border-color: color-mix(in srgb, var(--ax-bright-blue) 45%, var(--ax-border-strong));
 }
 
-.ga-sys-button.is-secondary.tone-danger {
-  border-color: color-mix(in srgb, var(--ga-danger) 40%, transparent);
-  color: var(--ga-danger);
-  background: color-mix(in srgb, var(--ga-danger) 8%, transparent);
+.ax-sys-button.is-secondary.tone-danger {
+  border-color: color-mix(in srgb, var(--ax-danger) 40%, transparent);
+  color: var(--ax-danger);
+  background: color-mix(in srgb, var(--ax-danger) 8%, transparent);
 }
 
-.ga-sys-button.is-tertiary {
+.ax-sys-button.is-tertiary {
   background: transparent;
-  color: var(--ga-bright-blue);
-  padding: 0 var(--ga-space-2);
+  color: var(--ax-bright-blue);
+  padding: 0 var(--ax-space-2);
 }
 
-.ga-sys-button.is-tertiary:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--ga-bright-blue) 10%, transparent);
+.ax-sys-button.is-tertiary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--ax-bright-blue) 10%, transparent);
 }
 
-.ga-sys-button.is-tertiary.tone-danger {
-  color: var(--ga-danger);
+.ax-sys-button.is-tertiary.tone-danger {
+  color: var(--ax-danger);
 }
 
-.ga-sys-button.is-icon {
+.ax-sys-button.is-icon {
   min-width: 34px;
   padding: 0;
   background: transparent;
   border-color: transparent;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
 }
 
-.ga-sys-button.is-icon.size-sm {
+.ax-sys-button.is-icon.size-sm {
   min-width: 28px;
 }
 
-.ga-sys-button.is-icon:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--ga-bright-blue) 10%, transparent);
-  color: var(--ga-text);
+.ax-sys-button.is-icon:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--ax-bright-blue) 10%, transparent);
+  color: var(--ax-text);
 }
 
-.ga-sys-button-icon {
+.ax-sys-button-icon {
   display: inline-flex;
   align-items: center;
 }
 
-.ga-sys-button-spinner {
+.ax-sys-button-spinner {
   width: 12px;
   height: 12px;
-  border-radius: var(--ga-radius-pill);
+  border-radius: var(--ax-radius-pill);
   border: 2px solid color-mix(in srgb, currentColor 30%, transparent);
   border-top-color: currentColor;
-  animation: ga-sys-spin 0.8s linear infinite;
+  animation: ax-sys-spin 0.8s linear infinite;
 }
 
-@keyframes ga-sys-spin {
+@keyframes ax-sys-spin {
   to {
     transform: rotate(360deg);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ga-sys-button-spinner {
+  .ax-sys-button-spinner {
     animation: none;
   }
 }
 
 /* ----------------------------------------------------------- section card */
 
-.ga-sys-section-card {
-  border: 1px solid var(--ga-border);
-  border-radius: var(--ga-radius-lg);
-  background: var(--ga-surface);
-  box-shadow: var(--ga-glass-highlight), var(--ga-shadow-sm);
-  padding: var(--ga-space-4);
+.ax-sys-section-card {
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-radius-lg);
+  background: var(--ax-surface);
+  box-shadow: var(--ax-glass-highlight), var(--ax-shadow-sm);
+  padding: var(--ax-space-4);
   /* Cards must never let their content spill past their border. */
   min-width: 0;
 }
@@ -455,256 +455,256 @@
    email, an id — printed directly in a card body (not via EntityChip, which
    clips) breaks inside the card instead of overflowing into a neighbour.
    overflow-wrap:anywhere only breaks when a token would otherwise overflow. */
-.ga-sys-section-card p,
-.ga-sys-section-card small,
-.ga-sys-section-card dd,
-.ga-sys-section-card li {
+.ax-sys-section-card p,
+.ax-sys-section-card small,
+.ax-sys-section-card dd,
+.ax-sys-section-card li {
   overflow-wrap: anywhere;
 }
 
-.ga-sys-section-card.is-hydrating {
+.ax-sys-section-card.is-hydrating {
   opacity: 0.9;
 }
 
-.ga-sys-section-card-header {
+.ax-sys-section-card-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: var(--ga-space-3);
-  margin-bottom: var(--ga-space-4);
+  gap: var(--ax-space-3);
+  margin-bottom: var(--ax-space-4);
 }
 
-.ga-sys-section-card-header h2 {
+.ax-sys-section-card-header h2 {
   display: inline-flex;
   align-items: center;
-  gap: var(--ga-space-2);
+  gap: var(--ax-space-2);
   margin: 0;
-  color: var(--ga-text);
-  font-family: var(--ga-font-heading);
+  color: var(--ax-text);
+  font-family: var(--ax-font-heading);
   font-size: 1rem;
-  font-weight: var(--ga-heading-weight);
+  font-weight: var(--ax-heading-weight);
 }
 
-.ga-sys-section-card-subtitle {
-  margin: var(--ga-space-1) 0 0;
-  color: var(--ga-text-muted);
+.ax-sys-section-card-subtitle {
+  margin: var(--ax-space-1) 0 0;
+  color: var(--ax-text-muted);
   font-size: 0.76rem;
-  line-height: var(--ga-line-height-snug);
+  line-height: var(--ax-line-height-snug);
 }
 
-.ga-sys-section-card-actions {
+.ax-sys-section-card-actions {
   flex: 0 0 auto;
   white-space: nowrap;
 }
 
-.ga-sys-section-card-footnote {
-  margin: var(--ga-space-3) 0 0;
-  padding-top: var(--ga-space-3);
-  border-top: 1px solid var(--ga-border-muted);
+.ax-sys-section-card-footnote {
+  margin: var(--ax-space-3) 0 0;
+  padding-top: var(--ax-space-3);
+  border-top: 1px solid var(--ax-border-muted);
   font-size: 0.76rem;
-  line-height: var(--ga-line-height-snug);
+  line-height: var(--ax-line-height-snug);
 }
 
-.ga-sys-section-card-footnote.tone-warn {
-  color: var(--ga-warning);
+.ax-sys-section-card-footnote.tone-warn {
+  color: var(--ax-warning);
 }
 
-.ga-sys-section-card-footnote.tone-bad {
-  color: var(--ga-danger);
+.ax-sys-section-card-footnote.tone-bad {
+  color: var(--ax-danger);
 }
 
 /* -------------------------------------------------------------- stat tile */
 
-.ga-sys-stat-tile {
+.ax-sys-stat-tile {
   display: grid;
-  gap: var(--ga-space-3);
+  gap: var(--ax-space-3);
   min-height: 126px;
-  padding: var(--ga-space-4);
-  border: 1px solid var(--ga-border);
-  border-radius: var(--ga-radius-lg);
-  background: var(--ga-surface);
-  box-shadow: var(--ga-glass-highlight), var(--ga-shadow-sm);
-  color: var(--ga-text);
+  padding: var(--ax-space-4);
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-radius-lg);
+  background: var(--ax-surface);
+  box-shadow: var(--ax-glass-highlight), var(--ax-shadow-sm);
+  color: var(--ax-text);
   text-align: left;
   text-decoration: none;
   font: inherit;
 }
 
-.ga-sys-stat-tile.is-link,
-.ga-sys-stat-tile.is-action {
+.ax-sys-stat-tile.is-link,
+.ax-sys-stat-tile.is-action {
   cursor: pointer;
   transition:
-    border-color var(--ga-duration-quick) var(--ga-ease-standard),
-    background-color var(--ga-duration-quick) var(--ga-ease-standard);
+    border-color var(--ax-duration-quick) var(--ax-ease-standard),
+    background-color var(--ax-duration-quick) var(--ax-ease-standard);
 }
 
-.ga-sys-stat-tile.is-link:hover,
-.ga-sys-stat-tile.is-action:hover {
-  border-color: color-mix(in srgb, var(--ga-bright-blue) 45%, var(--ga-border));
-  background: color-mix(in srgb, var(--ga-bright-blue) 6%, var(--ga-surface));
+.ax-sys-stat-tile.is-link:hover,
+.ax-sys-stat-tile.is-action:hover {
+  border-color: color-mix(in srgb, var(--ax-bright-blue) 45%, var(--ax-border));
+  background: color-mix(in srgb, var(--ax-bright-blue) 6%, var(--ax-surface));
 }
 
-.ga-sys-stat-tile-head {
+.ax-sys-stat-tile-head {
   display: flex;
   align-items: center;
-  gap: var(--ga-space-2);
+  gap: var(--ax-space-2);
 }
 
-.ga-sys-stat-tile-icon {
-  color: var(--ga-bright-blue);
+.ax-sys-stat-tile-icon {
+  color: var(--ax-bright-blue);
   display: inline-flex;
 }
 
-.ga-sys-stat-tile-label {
-  color: var(--ga-text-soft);
+.ax-sys-stat-tile-label {
+  color: var(--ax-text-soft);
   font-size: 0.82rem;
 }
 
-.ga-sys-stat-tile-main {
+.ax-sys-stat-tile-main {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--ga-space-3);
+  gap: var(--ax-space-3);
 }
 
-.ga-sys-stat-tile-value {
-  color: var(--ga-text);
+.ax-sys-stat-tile-value {
+  color: var(--ax-text);
   font-size: 1.85rem;
-  font-weight: var(--ga-heading-weight);
+  font-weight: var(--ax-heading-weight);
 }
 
-.ga-sys-stat-tile-delta {
+.ax-sys-stat-tile-delta {
   font-size: 0.78rem;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
 }
 
-.ga-sys-stat-tile-delta.tone-good {
-  color: var(--ga-success);
+.ax-sys-stat-tile-delta.tone-good {
+  color: var(--ax-success);
 }
 
-.ga-sys-stat-tile-delta.tone-warn {
-  color: var(--ga-warning);
+.ax-sys-stat-tile-delta.tone-warn {
+  color: var(--ax-warning);
 }
 
-.ga-sys-stat-tile-delta.tone-bad {
-  color: var(--ga-danger);
+.ax-sys-stat-tile-delta.tone-bad {
+  color: var(--ax-danger);
 }
 
-.ga-sys-stat-tile-meta {
-  color: var(--ga-text-muted);
+.ax-sys-stat-tile-meta {
+  color: var(--ax-text-muted);
   font-size: 0.78rem;
 }
 
-.ga-sys-stat-tile.tone-warning {
-  border-color: color-mix(in srgb, var(--ga-warning) 30%, var(--ga-border));
+.ax-sys-stat-tile.tone-warning {
+  border-color: color-mix(in srgb, var(--ax-warning) 30%, var(--ax-border));
 }
 
-.ga-sys-stat-tile.tone-danger {
-  border-color: color-mix(in srgb, var(--ga-danger) 32%, var(--ga-border));
+.ax-sys-stat-tile.tone-danger {
+  border-color: color-mix(in srgb, var(--ax-danger) 32%, var(--ax-border));
 }
 
-.ga-sys-sparkline {
+.ax-sys-sparkline {
   width: 96px;
   height: 32px;
-  color: var(--ga-teal);
+  color: var(--ax-teal);
   flex: 0 0 auto;
 }
 
-.ga-sys-progress {
+.ax-sys-progress {
   overflow: hidden;
   display: block;
   height: 5px;
-  border-radius: var(--ga-radius-pill);
-  background: color-mix(in srgb, var(--ga-light-blue) 12%, transparent);
+  border-radius: var(--ax-radius-pill);
+  background: color-mix(in srgb, var(--ax-light-blue) 12%, transparent);
 }
 
-.ga-sys-progress span {
+.ax-sys-progress span {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--ga-teal), var(--ga-bright-blue));
+  background: linear-gradient(90deg, var(--ax-teal), var(--ax-bright-blue));
 }
 
-.ga-sys-donut {
+.ax-sys-donut {
   display: inline-flex;
   flex: 0 0 auto;
 }
 
-.ga-sys-donut svg {
+.ax-sys-donut svg {
   width: 100%;
   height: 100%;
   transform: rotate(-90deg);
 }
 
-.ga-sys-donut-track {
+.ax-sys-donut-track {
   fill: none;
-  stroke: color-mix(in srgb, var(--ga-light-blue) 14%, transparent);
+  stroke: color-mix(in srgb, var(--ax-light-blue) 14%, transparent);
   stroke-width: 10;
 }
 
-.ga-sys-donut-value {
+.ax-sys-donut-value {
   fill: none;
-  stroke: var(--ga-bright-blue);
+  stroke: var(--ax-bright-blue);
   stroke-width: 10;
   stroke-linecap: round;
 }
 
 /* ------------------------------------------------------------ entity chip */
 
-.ga-sys-entity-chip {
+.ax-sys-entity-chip {
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: var(--ga-space-2);
+  gap: var(--ax-space-2);
   max-width: 100%;
-  color: var(--ga-text-soft);
+  color: var(--ax-text-soft);
   text-decoration: none;
   font-size: 0.82rem;
   line-height: 1.2;
 }
 
-.ga-sys-entity-chip.is-chip {
-  padding: 3px var(--ga-space-3);
-  border: 1px solid var(--ga-border);
-  border-radius: var(--ga-radius-pill);
-  background: color-mix(in srgb, var(--ga-bright-blue) 6%, transparent);
+.ax-sys-entity-chip.is-chip {
+  padding: 3px var(--ax-space-3);
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-radius-pill);
+  background: color-mix(in srgb, var(--ax-bright-blue) 6%, transparent);
 }
 
-.ga-sys-entity-chip.is-chip:hover {
-  border-color: color-mix(in srgb, var(--ga-bright-blue) 45%, var(--ga-border));
-  color: var(--ga-text);
+.ax-sys-entity-chip.is-chip:hover {
+  border-color: color-mix(in srgb, var(--ax-bright-blue) 45%, var(--ax-border));
+  color: var(--ax-text);
 }
 
-.ga-sys-entity-chip.is-inline {
-  color: var(--ga-bright-blue);
+.ax-sys-entity-chip.is-inline {
+  color: var(--ax-bright-blue);
   text-decoration: underline;
-  text-decoration-color: color-mix(in srgb, var(--ga-bright-blue) 40%, transparent);
+  text-decoration-color: color-mix(in srgb, var(--ax-bright-blue) 40%, transparent);
   text-underline-offset: 2px;
 }
 
-.ga-sys-entity-chip.is-inline:hover {
-  text-decoration-color: var(--ga-bright-blue);
+.ax-sys-entity-chip.is-inline:hover {
+  text-decoration-color: var(--ax-bright-blue);
 }
 
-.ga-sys-entity-chip.is-row {
+.ax-sys-entity-chip.is-row {
   display: flex;
   width: 100%;
-  padding: var(--ga-space-2) var(--ga-space-3);
-  border-radius: var(--ga-radius-md);
+  padding: var(--ax-space-2) var(--ax-space-3);
+  border-radius: var(--ax-radius-md);
 }
 
-.ga-sys-entity-chip.is-row:hover {
-  background: color-mix(in srgb, var(--ga-bright-blue) 8%, transparent);
-  color: var(--ga-text);
+.ax-sys-entity-chip.is-row:hover {
+  background: color-mix(in srgb, var(--ax-bright-blue) 8%, transparent);
+  color: var(--ax-text);
 }
 
-.ga-sys-entity-chip-icon {
+.ax-sys-entity-chip-icon {
   display: inline-flex;
   flex: 0 0 auto;
-  color: var(--ga-bright-blue);
+  color: var(--ax-bright-blue);
 }
 
-.ga-sys-entity-chip-label {
+.ax-sys-entity-chip-label {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -712,23 +712,23 @@
 
 /* Non-principal owner (system actor / team label): shown as plain text, never
    a link to a user who doesn't exist. Reads as muted body text inline. */
-.ga-sys-owner-plain {
-  color: var(--ga-text-muted);
+.ax-sys-owner-plain {
+  color: var(--ax-text-muted);
   white-space: nowrap;
 }
 
 /* SuggestInput — visible autocomplete combobox. The wrapper is a block so the
    input fills its label the way a bare <input> did, and anchors the popup. */
-.ga-sys-suggest {
+.ax-sys-suggest {
   position: relative;
   display: block;
 }
 
-.ga-sys-suggest > input {
+.ax-sys-suggest > input {
   width: 100%;
 }
 
-.ga-sys-suggest-list {
+.ax-sys-suggest-list {
   position: absolute;
   z-index: 40;
   top: calc(100% + 4px);
@@ -739,170 +739,170 @@
   list-style: none;
   max-height: 240px;
   overflow-y: auto;
-  /* Opaque (see .ga-sys-filter-pop) so input content never shows through. */
-  background: var(--ga-navy-900);
-  border: 1px solid var(--ga-border);
-  border-radius: var(--ga-radius-md);
-  box-shadow: var(--ga-shadow-md);
+  /* Opaque (see .ax-sys-filter-pop) so input content never shows through. */
+  background: var(--ax-navy-900);
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-radius-md);
+  box-shadow: var(--ax-shadow-md);
 }
 
-.ga-sys-suggest-option {
+.ax-sys-suggest-option {
   padding: 7px 10px;
   border-radius: 6px;
   font-size: 0.84rem;
-  color: var(--ga-text);
+  color: var(--ax-text);
   cursor: pointer;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.ga-sys-suggest-option.is-active,
-.ga-sys-suggest-option:hover {
-  background: var(--ga-bright-blue);
-  color: var(--ga-navy-950);
+.ax-sys-suggest-option.is-active,
+.ax-sys-suggest-option:hover {
+  background: var(--ax-bright-blue);
+  color: var(--ax-navy-950);
 }
 
-.ga-sys-entity-chip-meta {
+.ax-sys-entity-chip-meta {
   margin-left: auto;
-  color: var(--ga-text-faint);
+  color: var(--ax-text-faint);
   font-size: 0.74rem;
   white-space: nowrap;
 }
 
 /* CSS-only hover card: appears on hover/keyboard focus, purely
    supplementary (aria-hidden), so no JS state or portals needed. */
-.ga-sys-entity-hover {
+.ax-sys-entity-hover {
   position: absolute;
-  top: calc(100% + var(--ga-space-1));
+  top: calc(100% + var(--ax-space-1));
   left: 0;
-  z-index: var(--ga-z-dropdown);
+  z-index: var(--ax-z-dropdown);
   display: none;
   min-width: 200px;
   max-width: 320px;
-  padding: var(--ga-space-3);
-  border: 1px solid var(--ga-border-strong);
-  border-radius: var(--ga-radius-md);
-  background: var(--ga-surface-strong);
-  box-shadow: var(--ga-shadow-md);
+  padding: var(--ax-space-3);
+  border: 1px solid var(--ax-border-strong);
+  border-radius: var(--ax-radius-md);
+  background: var(--ax-surface-strong);
+  box-shadow: var(--ax-shadow-md);
   flex-direction: column;
-  gap: var(--ga-space-1);
+  gap: var(--ax-space-1);
   font-size: 0.74rem;
-  color: var(--ga-text-soft);
+  color: var(--ax-text-soft);
   white-space: normal;
 }
 
-.ga-sys-entity-chip:hover .ga-sys-entity-hover,
-.ga-sys-entity-chip:focus-visible .ga-sys-entity-hover {
+.ax-sys-entity-chip:hover .ax-sys-entity-hover,
+.ax-sys-entity-chip:focus-visible .ax-sys-entity-hover {
   display: flex;
 }
 
-.ga-sys-entity-hover-kind {
-  color: var(--ga-bright-blue);
+.ax-sys-entity-hover-kind {
+  color: var(--ax-bright-blue);
   font-size: 0.66rem;
-  font-weight: var(--ga-font-weight-heavy);
+  font-weight: var(--ax-font-weight-heavy);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
-.ga-sys-entity-hover-id {
-  color: var(--ga-text);
+.ax-sys-entity-hover-id {
+  color: var(--ax-text);
   word-break: break-all;
 }
 
-.ga-sys-entity-hover-row {
+.ax-sys-entity-hover-row {
   display: flex;
   justify-content: space-between;
-  gap: var(--ga-space-2);
-  color: var(--ga-text-muted);
+  gap: var(--ax-space-2);
+  color: var(--ax-text-muted);
 }
 
 /* ------------------------------------------------------------------ table */
 
-.ga-sys-table-wrap {
+.ax-sys-table-wrap {
   overflow-x: auto;
-  border: 1px solid var(--ga-border);
-  border-radius: var(--ga-radius-lg);
-  background: var(--ga-surface);
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-radius-lg);
+  background: var(--ax-surface);
 }
 
-.ga-sys-table {
+.ax-sys-table {
   width: 100%;
   border-collapse: collapse;
-  color: var(--ga-text-soft);
+  color: var(--ax-text-soft);
   font-size: 0.84rem;
 }
 
-.ga-sys-table th,
-.ga-sys-table td {
-  padding: var(--ga-space-3) var(--ga-space-3);
-  border-bottom: 1px solid var(--ga-border-muted);
+.ax-sys-table th,
+.ax-sys-table td {
+  padding: var(--ax-space-3) var(--ax-space-3);
+  border-bottom: 1px solid var(--ax-border-muted);
   text-align: left;
   vertical-align: middle;
 }
 
-.ga-sys-table-wrap.density-compact .ga-sys-table th,
-.ga-sys-table-wrap.density-compact .ga-sys-table td {
-  padding: var(--ga-space-2) var(--ga-space-3);
+.ax-sys-table-wrap.density-compact .ax-sys-table th,
+.ax-sys-table-wrap.density-compact .ax-sys-table td {
+  padding: var(--ax-space-2) var(--ax-space-3);
   font-size: 0.8rem;
 }
 
-.ga-sys-table th {
-  color: var(--ga-text-muted);
+.ax-sys-table th {
+  color: var(--ax-text-muted);
   font-size: 0.72rem;
-  font-weight: var(--ga-font-weight-bold);
+  font-weight: var(--ax-font-weight-bold);
   letter-spacing: 0.05em;
   text-transform: uppercase;
   white-space: nowrap;
 }
 
-.ga-sys-table-wrap.is-sticky {
+.ax-sys-table-wrap.is-sticky {
   overflow-y: auto;
 }
 
-.ga-sys-table-wrap.is-sticky thead th {
+.ax-sys-table-wrap.is-sticky thead th {
   position: sticky;
   top: 0;
-  z-index: var(--ga-z-raised);
-  background: var(--ga-surface-strong);
+  z-index: var(--ax-z-raised);
+  background: var(--ax-surface-strong);
 }
 
-.ga-sys-table th.align-right,
-.ga-sys-table td.align-right {
+.ax-sys-table th.align-right,
+.ax-sys-table td.align-right {
   text-align: right;
 }
 
-.ga-sys-table tbody tr:last-child td {
+.ax-sys-table tbody tr:last-child td {
   border-bottom: 0;
 }
 
-.ga-sys-table tbody tr.is-rowlink {
+.ax-sys-table tbody tr.is-rowlink {
   cursor: pointer;
 }
 
-.ga-sys-table tbody tr.is-rowlink:hover {
+.ax-sys-table tbody tr.is-rowlink:hover {
   /* 6% read as "no highlight" on the dark surface (owner: "does it poorly").
      12% is a clearly visible row wash while staying subtle enough for dense
      result tables; cell text tokens keep AA on the tinted row. */
-  background: color-mix(in srgb, var(--ga-bright-blue) 12%, transparent);
+  background: color-mix(in srgb, var(--ax-bright-blue) 12%, transparent);
 }
 
-.ga-sys-table-rowlink {
-  color: var(--ga-text);
+.ax-sys-table-rowlink {
+  color: var(--ax-text);
   text-decoration: none;
-  font-weight: var(--ga-font-weight-bold);
+  font-weight: var(--ax-font-weight-bold);
 }
 
-.ga-sys-table-rowlink:hover {
-  color: var(--ga-bright-blue);
+.ax-sys-table-rowlink:hover {
+  color: var(--ax-bright-blue);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
-.ga-sys-table-sort {
+.ax-sys-table-sort {
   display: inline-flex;
   align-items: center;
-  gap: var(--ga-space-1);
+  gap: var(--ax-space-1);
   padding: 0;
   border: 0;
   background: none;
@@ -913,168 +913,168 @@
   cursor: pointer;
 }
 
-.ga-sys-table-sort:hover {
-  color: var(--ga-text);
+.ax-sys-table-sort:hover {
+  color: var(--ax-text);
 }
 
-.ga-sys-table-sort-arrow {
+.ax-sys-table-sort-arrow {
   width: 0;
   height: 0;
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;
   border-bottom: 5px solid currentColor;
   opacity: 0.35;
-  transition: transform var(--ga-duration-quick) var(--ga-ease-standard);
+  transition: transform var(--ax-duration-quick) var(--ax-ease-standard);
 }
 
-.ga-sys-table-sort.is-asc .ga-sys-table-sort-arrow {
+.ax-sys-table-sort.is-asc .ax-sys-table-sort-arrow {
   opacity: 1;
 }
 
-.ga-sys-table-sort.is-desc .ga-sys-table-sort-arrow {
+.ax-sys-table-sort.is-desc .ax-sys-table-sort-arrow {
   opacity: 1;
   transform: rotate(180deg);
 }
 
-.ga-sys-table-empty-row td {
-  padding: var(--ga-space-5);
+.ax-sys-table-empty-row td {
+  padding: var(--ax-space-5);
 }
 
-.ga-sys-table-skeleton-row .ga-sys-skeleton {
+.ax-sys-table-skeleton-row .ax-sys-skeleton {
   height: 10px;
   width: 70%;
 }
 
 /* -------------------------------------------------------------- tab strip */
 
-.ga-sys-tabstrip {
+.ax-sys-tabstrip {
   display: flex;
   align-items: center;
-  gap: var(--ga-space-1);
-  border-bottom: 1px solid var(--ga-border);
+  gap: var(--ax-space-1);
+  border-bottom: 1px solid var(--ax-border);
 }
 
-.ga-sys-tab {
+.ax-sys-tab {
   display: inline-flex;
   align-items: center;
-  gap: var(--ga-space-2);
-  padding: var(--ga-space-2) var(--ga-space-3) var(--ga-space-3);
+  gap: var(--ax-space-2);
+  padding: var(--ax-space-2) var(--ax-space-3) var(--ax-space-3);
   margin-bottom: -1px;
   border: 0;
   border-bottom: 2px solid transparent;
   background: none;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   font: inherit;
   font-size: 0.84rem;
-  font-weight: var(--ga-font-weight-bold);
+  font-weight: var(--ax-font-weight-bold);
   cursor: pointer;
   transition:
-    color var(--ga-duration-quick) var(--ga-ease-standard),
-    border-color var(--ga-duration-quick) var(--ga-ease-standard);
+    color var(--ax-duration-quick) var(--ax-ease-standard),
+    border-color var(--ax-duration-quick) var(--ax-ease-standard);
 }
 
-.ga-sys-tab:hover:not(:disabled) {
-  color: var(--ga-text);
+.ax-sys-tab:hover:not(:disabled) {
+  color: var(--ax-text);
 }
 
-.ga-sys-tab.is-active {
-  color: var(--ga-text);
-  border-bottom-color: var(--ga-bright-blue);
+.ax-sys-tab.is-active {
+  color: var(--ax-text);
+  border-bottom-color: var(--ax-bright-blue);
 }
 
-.ga-sys-tab:disabled {
+.ax-sys-tab:disabled {
   cursor: not-allowed;
   opacity: 0.45;
 }
 
-.ga-sys-tab-icon {
+.ax-sys-tab-icon {
   display: inline-flex;
-  color: var(--ga-bright-blue);
+  color: var(--ax-bright-blue);
 }
 
 /* -------------------------------------------------------------- page shell */
 
-.ga-sys-page {
+.ax-sys-page {
   display: flex;
   flex-direction: column;
-  gap: var(--ga-space-5);
-  padding: var(--ga-space-6) var(--ga-content-gutter);
-  color: var(--ga-text);
+  gap: var(--ax-space-5);
+  padding: var(--ax-space-6) var(--ax-content-gutter);
+  color: var(--ax-text);
 }
 
-.ga-sys-page-breadcrumbs {
-  margin-bottom: var(--ga-space-2);
-  color: var(--ga-text-muted);
+.ax-sys-page-breadcrumbs {
+  margin-bottom: var(--ax-space-2);
+  color: var(--ax-text-muted);
   font-size: 0.78rem;
 }
 
 /* Without this, breadcrumb links fall back to the browser's dark-scheme
    lavender (unvisited) and purple (visited). */
-.ga-sys-page-breadcrumbs a,
-.ga-sys-page-breadcrumbs a:visited {
-  color: var(--ga-bright-blue);
+.ax-sys-page-breadcrumbs a,
+.ax-sys-page-breadcrumbs a:visited {
+  color: var(--ax-bright-blue);
   text-decoration: none;
 }
 
-.ga-sys-page-breadcrumbs a:hover,
-.ga-sys-page-breadcrumbs a:focus-visible {
+.ax-sys-page-breadcrumbs a:hover,
+.ax-sys-page-breadcrumbs a:focus-visible {
   text-decoration: underline;
 }
 
-.ga-sys-page-hero-row {
+.ax-sys-page-hero-row {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: var(--ga-space-5);
+  gap: var(--ax-space-5);
 }
 
-.ga-sys-page-hero-copy h1 {
+.ax-sys-page-hero-copy h1 {
   margin: 0;
-  font-family: var(--ga-font-heading);
+  font-family: var(--ax-font-heading);
   font-size: clamp(1.6rem, 2.4vw, 2.2rem);
-  font-weight: var(--ga-heading-weight);
-  line-height: var(--ga-line-height-tight);
-  color: var(--ga-text);
+  font-weight: var(--ax-heading-weight);
+  line-height: var(--ax-line-height-tight);
+  color: var(--ax-text);
 }
 
-.ga-sys-page-hero-copy p {
-  margin: var(--ga-space-2) 0 0;
+.ax-sys-page-hero-copy p {
+  margin: var(--ax-space-2) 0 0;
   max-width: 760px;
-  color: var(--ga-text-soft);
-  line-height: var(--ga-line-height-normal);
+  color: var(--ax-text-soft);
+  line-height: var(--ax-line-height-normal);
 }
 
-.ga-sys-page-hero-side {
+.ax-sys-page-hero-side {
   display: flex;
   align-items: center;
-  gap: var(--ga-space-3);
+  gap: var(--ax-space-3);
   flex: 0 0 auto;
 }
 
-.ga-sys-page-actions {
+.ax-sys-page-actions {
   display: flex;
   align-items: center;
-  gap: var(--ga-space-2);
+  gap: var(--ax-space-2);
 }
 
-.ga-sys-page-refreshing {
+.ax-sys-page-refreshing {
   display: inline-flex;
   align-items: center;
-  gap: var(--ga-space-2);
-  color: var(--ga-text-muted);
+  gap: var(--ax-space-2);
+  color: var(--ax-text-muted);
   font-size: 0.76rem;
 }
 
-.ga-sys-page-refreshing::before {
+.ax-sys-page-refreshing::before {
   content: "";
   width: 8px;
   height: 8px;
-  border-radius: var(--ga-radius-pill);
-  background: var(--ga-bright-blue);
-  animation: ga-sys-pulse 1.2s ease-in-out infinite;
+  border-radius: var(--ax-radius-pill);
+  background: var(--ax-bright-blue);
+  animation: ax-sys-pulse 1.2s ease-in-out infinite;
 }
 
-@keyframes ga-sys-pulse {
+@keyframes ax-sys-pulse {
   0%,
   100% {
     opacity: 0.35;
@@ -1085,77 +1085,77 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ga-sys-page-refreshing::before {
+  .ax-sys-page-refreshing::before {
     animation: none;
   }
 }
 
-.ga-sys-page-tabs {
+.ax-sys-page-tabs {
   position: sticky;
-  top: var(--ga-shell-header-height);
-  z-index: var(--ga-z-sticky);
-  background: var(--ga-bg);
+  top: var(--ax-shell-header-height);
+  z-index: var(--ax-z-sticky);
+  background: var(--ax-bg);
 }
 
-/* Inside the shell, .ga-shell-main is the scroll container and already starts
+/* Inside the shell, .ax-shell-main is the scroll container and already starts
    below the header; offsetting again left a header-height band where rows
    scrolled visibly above the tabs. */
-.ga-shell-main .ga-sys-page-tabs {
+.ax-shell-main .ax-sys-page-tabs {
   top: 0;
 }
 
-.ga-sys-page-body {
+.ax-sys-page-body {
   display: block;
 }
 
-.ga-sys-page-body.has-rail {
+.ax-sys-page-body.has-rail {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) var(--ga-right-panel-w);
-  gap: var(--ga-space-5);
+  grid-template-columns: minmax(0, 1fr) var(--ax-right-panel-w);
+  gap: var(--ax-space-5);
   align-items: start;
 }
 
-.ga-sys-page-rail {
+.ax-sys-page-rail {
   display: flex;
   flex-direction: column;
-  gap: var(--ga-space-4);
+  gap: var(--ax-space-4);
   min-width: 0;
 }
 
 @media (max-width: 1100px) {
-  .ga-sys-page-body.has-rail {
+  .ax-sys-page-body.has-rail {
     grid-template-columns: minmax(0, 1fr);
   }
 }
 
 /* ------------------------------------------------------------------ toast */
 
-.ga-sys-toast-host {
+.ax-sys-toast-host {
   position: fixed;
-  bottom: var(--ga-space-5);
-  right: var(--ga-space-5);
-  z-index: var(--ga-z-toast);
+  bottom: var(--ax-space-5);
+  right: var(--ax-space-5);
+  z-index: var(--ax-z-toast);
   display: flex;
   flex-direction: column;
-  gap: var(--ga-space-2);
-  max-width: min(420px, calc(100vw - 2 * var(--ga-space-5)));
+  gap: var(--ax-space-2);
+  max-width: min(420px, calc(100vw - 2 * var(--ax-space-5)));
 }
 
-.ga-sys-toast {
+.ax-sys-toast {
   display: flex;
   align-items: center;
-  gap: var(--ga-space-3);
-  padding: var(--ga-space-3) var(--ga-space-4);
-  border: 1px solid var(--ga-border-strong);
-  border-radius: var(--ga-radius-md);
-  background: var(--ga-surface-strong);
-  box-shadow: var(--ga-shadow-md);
-  color: var(--ga-text);
+  gap: var(--ax-space-3);
+  padding: var(--ax-space-3) var(--ax-space-4);
+  border: 1px solid var(--ax-border-strong);
+  border-radius: var(--ax-radius-md);
+  background: var(--ax-surface-strong);
+  box-shadow: var(--ax-shadow-md);
+  color: var(--ax-text);
   font-size: 0.84rem;
-  animation: ga-sys-toast-in var(--ga-duration-standard) var(--ga-ease-out);
+  animation: ax-sys-toast-in var(--ax-duration-standard) var(--ax-ease-out);
 }
 
-@keyframes ga-sys-toast-in {
+@keyframes ax-sys-toast-in {
   from {
     opacity: 0;
     transform: translateY(6px);
@@ -1166,57 +1166,57 @@
   }
 }
 
-.ga-sys-toast-message {
+.ax-sys-toast-message {
   flex: 1;
   min-width: 0;
 }
 
-.ga-sys-toast.tone-success {
-  border-color: color-mix(in srgb, var(--ga-success) 36%, transparent);
+.ax-sys-toast.tone-success {
+  border-color: color-mix(in srgb, var(--ax-success) 36%, transparent);
 }
 
-.ga-sys-toast.tone-warning {
-  border-color: color-mix(in srgb, var(--ga-warning) 36%, transparent);
+.ax-sys-toast.tone-warning {
+  border-color: color-mix(in srgb, var(--ax-warning) 36%, transparent);
 }
 
-.ga-sys-toast.tone-danger {
-  border-color: color-mix(in srgb, var(--ga-danger) 42%, transparent);
+.ax-sys-toast.tone-danger {
+  border-color: color-mix(in srgb, var(--ax-danger) 42%, transparent);
 }
 
-.ga-sys-toast.tone-accent {
-  border-color: color-mix(in srgb, var(--ga-bright-blue) 42%, transparent);
+.ax-sys-toast.tone-accent {
+  border-color: color-mix(in srgb, var(--ax-bright-blue) 42%, transparent);
 }
 
 /* ----------------------------------------------------------------- drawer */
 
-.ga-sys-drawer-root {
+.ax-sys-drawer-root {
   position: fixed;
   inset: 0;
-  z-index: var(--ga-z-modal);
+  z-index: var(--ax-z-modal);
   display: flex;
   justify-content: flex-end;
 }
 
-.ga-sys-drawer-scrim {
+.ax-sys-drawer-scrim {
   position: absolute;
   inset: 0;
-  background: color-mix(in srgb, var(--ga-navy-980) 62%, transparent);
+  background: color-mix(in srgb, var(--ax-navy-980) 62%, transparent);
 }
 
-.ga-sys-drawer {
+.ax-sys-drawer {
   position: relative;
   display: flex;
   flex-direction: column;
-  width: var(--ga-sys-drawer-width, 480px);
-  max-width: calc(100vw - var(--ga-space-6));
+  width: var(--ax-sys-drawer-width, 480px);
+  max-width: calc(100vw - var(--ax-space-6));
   height: 100%;
-  border-left: 1px solid var(--ga-border-strong);
-  background: var(--ga-surface-strong);
-  box-shadow: var(--ga-shadow-lg);
-  animation: ga-sys-drawer-in var(--ga-duration-standard) var(--ga-ease-out);
+  border-left: 1px solid var(--ax-border-strong);
+  background: var(--ax-surface-strong);
+  box-shadow: var(--ax-shadow-lg);
+  animation: ax-sys-drawer-in var(--ax-duration-standard) var(--ax-ease-out);
 }
 
-@keyframes ga-sys-drawer-in {
+@keyframes ax-sys-drawer-in {
   from {
     transform: translateX(24px);
     opacity: 0;
@@ -1227,189 +1227,189 @@
   }
 }
 
-.ga-sys-drawer-header {
+.ax-sys-drawer-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--ga-space-3);
-  padding: var(--ga-space-4) var(--ga-space-5);
-  border-bottom: 1px solid var(--ga-border);
+  gap: var(--ax-space-3);
+  padding: var(--ax-space-4) var(--ax-space-5);
+  border-bottom: 1px solid var(--ax-border);
 }
 
-.ga-sys-drawer-header h2 {
+.ax-sys-drawer-header h2 {
   margin: 0;
-  font-family: var(--ga-font-heading);
+  font-family: var(--ax-font-heading);
   font-size: 1.05rem;
-  font-weight: var(--ga-heading-weight);
-  color: var(--ga-text);
+  font-weight: var(--ax-heading-weight);
+  color: var(--ax-text);
 }
 
-.ga-sys-drawer-body {
+.ax-sys-drawer-body {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: var(--ga-space-5);
-  color: var(--ga-text-soft);
+  padding: var(--ax-space-5);
+  color: var(--ax-text-soft);
 }
 
-.ga-sys-drawer-footer {
+.ax-sys-drawer-footer {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: var(--ga-space-2);
-  padding: var(--ga-space-4) var(--ga-space-5);
-  border-top: 1px solid var(--ga-border);
+  gap: var(--ax-space-2);
+  padding: var(--ax-space-4) var(--ax-space-5);
+  border-top: 1px solid var(--ax-border);
 }
 
 /* -------------------------------------------------------------- filter bar */
 
-.ga-sys-filter-bar {
+.ax-sys-filter-bar {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--ga-space-2);
+  gap: var(--ax-space-2);
 }
 
-.ga-sys-filter-search {
+.ax-sys-filter-search {
   min-width: 220px;
   min-height: 32px;
-  padding: 0 var(--ga-space-3);
-  border: 1px solid var(--ga-border);
-  border-radius: var(--ga-radius-md);
-  background: var(--ga-surface-muted);
-  color: var(--ga-text);
+  padding: 0 var(--ax-space-3);
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-radius-md);
+  background: var(--ax-surface-muted);
+  color: var(--ax-text);
   font: inherit;
   font-size: 0.84rem;
 }
 
-.ga-sys-filter-search::placeholder {
-  color: var(--ga-text-faint);
+.ax-sys-filter-search::placeholder {
+  color: var(--ax-text-faint);
 }
 
-/* Hover feedback: --ga-surface-raised is alpha-identical to --ga-surface, so
-   a hover using it reads as "no highlight". --ga-surface-soft (blue tint) is
+/* Hover feedback: --ax-surface-raised is alpha-identical to --ax-surface, so
+   a hover using it reads as "no highlight". --ax-surface-soft (blue tint) is
    the visible hover surface; border lifts to the strong border token. */
-.ga-sys-filter-search:hover {
-  border-color: var(--ga-border-strong);
-  background: var(--ga-surface);
+.ax-sys-filter-search:hover {
+  border-color: var(--ax-border-strong);
+  background: var(--ax-surface);
 }
 
-.ga-sys-filter-facet {
+.ax-sys-filter-facet {
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: var(--ga-space-2);
+  gap: var(--ax-space-2);
 }
 
-.ga-sys-filter-facet-label {
-  color: var(--ga-text-muted);
+.ax-sys-filter-facet-label {
+  color: var(--ax-text-muted);
   font-size: 0.78rem;
 }
 
-.ga-sys-filter-select {
+.ax-sys-filter-select {
   min-height: 32px;
-  padding: 0 var(--ga-space-2);
-  border: 1px solid var(--ga-border);
-  border-radius: var(--ga-radius-md);
-  background: var(--ga-surface-muted);
-  color: var(--ga-text);
+  padding: 0 var(--ax-space-2);
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-radius-md);
+  background: var(--ax-surface-muted);
+  color: var(--ax-text);
   font: inherit;
   font-size: 0.82rem;
   cursor: pointer;
 }
 
-.ga-sys-filter-select:hover {
-  border-color: var(--ga-border-strong);
-  background: var(--ga-surface-soft);
-  color: var(--ga-text);
+.ax-sys-filter-select:hover {
+  border-color: var(--ax-border-strong);
+  background: var(--ax-surface-soft);
+  color: var(--ax-text);
 }
 
-.ga-sys-filter-trigger {
+.ax-sys-filter-trigger {
   display: inline-flex;
   align-items: center;
-  gap: var(--ga-space-2);
+  gap: var(--ax-space-2);
   min-height: 32px;
-  padding: 0 var(--ga-space-3);
-  border: 1px solid var(--ga-border);
-  border-radius: var(--ga-radius-md);
-  background: var(--ga-surface-muted);
-  color: var(--ga-text-soft);
+  padding: 0 var(--ax-space-3);
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-radius-md);
+  background: var(--ax-surface-muted);
+  color: var(--ax-text-soft);
   font: inherit;
   font-size: 0.82rem;
   cursor: pointer;
 }
 
-.ga-sys-filter-trigger.has-value {
-  border-color: color-mix(in srgb, var(--ga-bright-blue) 45%, var(--ga-border));
-  color: var(--ga-text);
+.ax-sys-filter-trigger.has-value {
+  border-color: color-mix(in srgb, var(--ax-bright-blue) 45%, var(--ax-border));
+  color: var(--ax-text);
 }
 
 /* The owner flagged filter triggers as the worst hover offender: the old
    sheet gave the trigger no :hover at all. Soft blue tint + a blue-lifted
-   border make hover unmistakable while keeping AA text (--ga-text on the
+   border make hover unmistakable while keeping AA text (--ax-text on the
    tinted surface stays >7:1). Applies to plain AND has-value triggers. */
-.ga-sys-filter-trigger:hover {
-  border-color: color-mix(in srgb, var(--ga-bright-blue) 45%, var(--ga-border));
-  background: var(--ga-surface-soft);
-  color: var(--ga-text);
+.ax-sys-filter-trigger:hover {
+  border-color: color-mix(in srgb, var(--ax-bright-blue) 45%, var(--ax-border));
+  background: var(--ax-surface-soft);
+  color: var(--ax-text);
 }
 
-.ga-sys-filter-count {
+.ax-sys-filter-count {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-width: 18px;
   height: 18px;
   padding: 0 5px;
-  border-radius: var(--ga-radius-pill);
-  background: color-mix(in srgb, var(--ga-bright-blue) 18%, transparent);
-  color: var(--ga-bright-blue);
+  border-radius: var(--ax-radius-pill);
+  background: color-mix(in srgb, var(--ax-bright-blue) 18%, transparent);
+  color: var(--ax-bright-blue);
   font-size: 0.7rem;
-  font-weight: var(--ga-font-weight-bold);
+  font-weight: var(--ax-font-weight-bold);
 }
 
-.ga-sys-filter-pop {
+.ax-sys-filter-pop {
   position: absolute;
-  top: calc(100% + var(--ga-space-1));
+  top: calc(100% + var(--ax-space-1));
   left: 0;
-  z-index: var(--ga-z-dropdown);
+  z-index: var(--ax-z-dropdown);
   display: flex;
   flex-direction: column;
-  gap: var(--ga-space-1);
+  gap: var(--ax-space-1);
   min-width: 220px;
   max-height: 320px;
   overflow-y: auto;
-  padding: var(--ga-space-2);
-  border: 1px solid var(--ga-border-strong);
-  border-radius: var(--ga-radius-md);
-  /* Fully OPAQUE: --ga-surface-strong is rgba(...,.98), so bright results text
+  padding: var(--ax-space-2);
+  border: 1px solid var(--ax-border-strong);
+  border-radius: var(--ax-radius-md);
+  /* Fully OPAQUE: --ax-surface-strong is rgba(...,.98), so bright results text
      behind the floating dropdown bled through (looked transposed). A floating
      popover over content must be solid. */
-  background: var(--ga-navy-900);
-  box-shadow: var(--ga-shadow-md);
+  background: var(--ax-navy-900);
+  box-shadow: var(--ax-shadow-md);
 }
 
-.ga-sys-filter-option {
+.ax-sys-filter-option {
   display: flex;
   align-items: center;
-  gap: var(--ga-space-2);
-  padding: var(--ga-space-2);
-  border-radius: var(--ga-radius-sm);
-  color: var(--ga-text-soft);
+  gap: var(--ax-space-2);
+  padding: var(--ax-space-2);
+  border-radius: var(--ax-radius-sm);
+  color: var(--ax-text-soft);
   font-size: 0.82rem;
   cursor: pointer;
 }
 
-.ga-sys-filter-option:hover {
-  background: color-mix(in srgb, var(--ga-bright-blue) 12%, transparent);
-  color: var(--ga-text);
+.ax-sys-filter-option:hover {
+  background: color-mix(in srgb, var(--ax-bright-blue) 12%, transparent);
+  color: var(--ax-text);
 }
 
-.ga-sys-filter-option input {
-  accent-color: var(--ga-bright-blue);
+.ax-sys-filter-option input {
+  accent-color: var(--ax-bright-blue);
 }
 
-.ga-sys-filter-option-label {
+.ax-sys-filter-option-label {
   flex: 1;
   min-width: 0;
   overflow: hidden;
@@ -1417,7 +1417,7 @@
   white-space: nowrap;
 }
 
-.ga-sys-filter-option-count {
-  color: var(--ga-text-faint);
+.ax-sys-filter-option-count {
+  color: var(--ax-text-faint);
   font-size: 0.74rem;
 }

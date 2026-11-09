@@ -19,8 +19,8 @@ from types import SimpleNamespace
 
 import pandas as pd
 
-from atlas.services import assets as asset_service
-from atlas.services import atlas_metrics
+from axiom.services import assets as asset_service
+from axiom.services import axiom_metrics
 
 
 class QualityLedgerStore:
@@ -81,12 +81,12 @@ def _detail(**overrides) -> dict:
         "name": "customer_dim",
         "owners": [
             {
-                "name": "skyler@entrada.ai",
-                "displayName": "skyler@entrada.ai",
+                "name": "abarreto@shorecp.com",
+                "displayName": "abarreto@shorecp.com",
                 "title": "Unity Catalog owner",
             },
-            {"name": "product-steward@entrada.ai", "title": "Business Owner"},
-            {"name": "finance-steward@entrada.ai", "title": "Steward"},
+            {"name": "product-steward@shorecp.com", "title": "Business Owner"},
+            {"name": "finance-steward@shorecp.com", "title": "Steward"},
         ],
         "columns": [{"name": "customer_id"}],
         "activity": [
@@ -96,8 +96,8 @@ def _detail(**overrides) -> dict:
                 "detail": "open",
                 "status": "Pending",
                 "createdAt": "2026-07-21T15:04:19.000Z",
-                "createdBy": "skyler@entrada.ai",
-                "actorEmail": "skyler@entrada.ai",
+                "createdBy": "abarreto@shorecp.com",
+                "actorEmail": "abarreto@shorecp.com",
                 "taskId": "task-9",
                 "threadId": "thread-4",
                 "priority": "p1",
@@ -110,8 +110,8 @@ def _detail(**overrides) -> dict:
                 "detail": "priority changed",
                 "status": "Success",
                 "createdAt": "2026-07-21T15:00:00.000Z",
-                "createdBy": "skyler@entrada.ai",
-                "actorEmail": "skyler@entrada.ai",
+                "createdBy": "abarreto@shorecp.com",
+                "actorEmail": "abarreto@shorecp.com",
                 "entityId": "main.customer.customer_dim",
             }
         ],
@@ -130,7 +130,7 @@ def _detail(**overrides) -> dict:
 
 class Asset360CompositeTests(unittest.TestCase):
     def test_freshness_block_carries_split_labeled_signals(self) -> None:
-        payload = atlas_metrics.asset_360_payload(detail=_detail())
+        payload = axiom_metrics.asset_360_payload(detail=_detail())
         freshness = payload["freshness"]
         self.assertEqual(freshness["state"], "available")
         self.assertEqual(freshness["dataUpdatedAt"], "2026-05-03T19:51:25Z")
@@ -140,7 +140,7 @@ class Asset360CompositeTests(unittest.TestCase):
         self.assertEqual(freshness["labels"]["lastAltered"], "Metadata changed")
 
     def test_freshness_unavailable_only_when_source_has_nothing(self) -> None:
-        payload = atlas_metrics.asset_360_payload(
+        payload = axiom_metrics.asset_360_payload(
             detail=_detail(dataUpdatedAt="", lastAltered="", updatedAt="")
         )
         freshness = payload["freshness"]
@@ -148,13 +148,13 @@ class Asset360CompositeTests(unittest.TestCase):
         self.assertIn("no freshness timestamps", freshness["message"].lower())
 
     def test_legacy_conflated_timestamp_presents_as_degraded(self) -> None:
-        payload = atlas_metrics.asset_360_payload(
+        payload = axiom_metrics.asset_360_payload(
             detail=_detail(dataUpdatedAt="", lastAltered="")
         )
         self.assertEqual(payload["freshness"]["state"], "degraded")
 
     def test_quality_block_joins_latest_run_from_ledger(self) -> None:
-        payload = atlas_metrics.asset_360_payload(
+        payload = axiom_metrics.asset_360_payload(
             detail=_detail(), store=QualityLedgerStore()
         )
         quality = payload["quality"]
@@ -167,7 +167,7 @@ class Asset360CompositeTests(unittest.TestCase):
         self.assertEqual(quality["checksEvaluated"], 3)
 
     def test_quality_block_honest_unavailable_for_empty_ledger(self) -> None:
-        payload = atlas_metrics.asset_360_payload(
+        payload = axiom_metrics.asset_360_payload(
             detail=_detail(), store=EmptyLedgerStore()
         )
         self.assertEqual(payload["quality"]["state"], "unavailable")
@@ -176,10 +176,10 @@ class Asset360CompositeTests(unittest.TestCase):
         self.assertNotIn("not included in this composite payload", json.dumps(payload))
 
     def test_access_block_uses_access_explain_core(self) -> None:
-        payload = atlas_metrics.asset_360_payload(
+        payload = axiom_metrics.asset_360_payload(
             detail=_detail(),
             auth_mode="app-principal-only",
-            actor_email="skyler@entrada.ai",
+            actor_email="abarreto@shorecp.com",
         )
         access = payload["access"]
         self.assertEqual(access["state"], "available")
@@ -196,21 +196,21 @@ class Asset360CompositeTests(unittest.TestCase):
         self.assertEqual(access["grants"]["state"], "unavailable")
 
     def test_activity_rows_carry_actor_priority_and_stable_aud_ids(self) -> None:
-        payload = atlas_metrics.asset_360_payload(detail=_detail())
+        payload = axiom_metrics.asset_360_payload(detail=_detail())
         activity = payload["activity"]
         task_row = next(row for row in activity if row.get("taskId") == "task-9")
-        self.assertEqual(task_row["actorEmail"], "skyler@entrada.ai")
-        self.assertEqual(task_row["createdBy"], "skyler@entrada.ai")
+        self.assertEqual(task_row["actorEmail"], "abarreto@shorecp.com")
+        self.assertEqual(task_row["createdBy"], "abarreto@shorecp.com")
         self.assertEqual(task_row["priority"], "p1")
         self.assertEqual(task_row["threadId"], "thread-4")
         audit_row = next(row for row in activity if row.get("displayAuditId"))
         # Humanized title — never the raw slug.
         self.assertEqual(audit_row["title"], "Task Triage Updated")
         self.assertEqual(audit_row["displayAuditId"], "AUD-0F0E0D0C")
-        self.assertEqual(audit_row["actorEmail"], "skyler@entrada.ai")
+        self.assertEqual(audit_row["actorEmail"], "abarreto@shorecp.com")
 
     def test_usage_sources_state_never_fetched_operational_as_unavailable(self) -> None:
-        payload = atlas_metrics.asset_360_payload(
+        payload = axiom_metrics.asset_360_payload(
             detail=_detail(), operational_included=False
         )
         sources = payload["usage"]["sources"]
@@ -230,7 +230,7 @@ class Asset360CompositeTests(unittest.TestCase):
             loadedSections=["header", "activity", "schema", "operational"],
             operationalContext={"producers": [], "consumers": [{"entityLabel": "Dashboard"}]},
         )
-        payload = atlas_metrics.asset_360_payload(detail=detail, operational_included=True)
+        payload = axiom_metrics.asset_360_payload(detail=detail, operational_included=True)
         sources = payload["usage"]["sources"]
         self.assertEqual(sources["consumers"]["state"], "available")
         self.assertEqual(sources["consumers"]["count"], 1)
@@ -238,17 +238,17 @@ class Asset360CompositeTests(unittest.TestCase):
         self.assertEqual(sources["queries"]["count"], 0)
 
     def test_ownership_roles_are_distinct_and_uc_owner_never_shadows(self) -> None:
-        payload = atlas_metrics.asset_360_payload(detail=_detail())
+        payload = axiom_metrics.asset_360_payload(detail=_detail())
         ownership = payload["ownership"]
-        self.assertEqual(ownership["ucOwner"]["name"], "skyler@entrada.ai")
-        self.assertEqual(ownership["businessOwner"]["name"], "product-steward@entrada.ai")
-        self.assertEqual(ownership["steward"]["name"], "finance-steward@entrada.ai")
+        self.assertEqual(ownership["ucOwner"]["name"], "abarreto@shorecp.com")
+        self.assertEqual(ownership["businessOwner"]["name"], "product-steward@shorecp.com")
+        self.assertEqual(ownership["steward"]["name"], "finance-steward@shorecp.com")
         # Compatibility: legacy lists unchanged.
         self.assertEqual(len(payload["owners"]), 3)
 
     def test_hydrating_blocks_present_as_loading_not_unavailable(self) -> None:
         loading_detail = asset_service.asset_loading_payload("main.customer.customer_dim")
-        payload = atlas_metrics.asset_360_payload(detail=loading_detail, hydrating=True)
+        payload = axiom_metrics.asset_360_payload(detail=loading_detail, hydrating=True)
         self.assertEqual(payload["freshness"]["state"], "loading")
         self.assertEqual(payload["quality"]["state"], "loading")
         self.assertEqual(payload["access"]["state"], "loading")
@@ -263,9 +263,9 @@ class FreshnessFieldSplitTests(unittest.TestCase):
                 "table_schema": "customer",
                 "table_name": "customer_dim",
                 "last_altered": "2026-06-01 00:00:00",
-                "business_owner": "product-steward@entrada.ai",
-                "technical_owner": "platform@entrada.ai",
-                "steward": "finance-steward@entrada.ai",
+                "business_owner": "product-steward@shorecp.com",
+                "technical_owner": "platform@shorecp.com",
+                "steward": "finance-steward@shorecp.com",
             }
         )
         payload = asset_service.base_asset_payload(row)
@@ -284,17 +284,17 @@ class FreshnessFieldSplitTests(unittest.TestCase):
                 "table_catalog": "main",
                 "table_schema": "customer",
                 "table_name": "customer_dim",
-                "business_owner": "product-steward@entrada.ai",
-                "technical_owner": "platform@entrada.ai",
-                "steward": "finance-steward@entrada.ai",
-                "uc_owner": "skyler@entrada.ai",
+                "business_owner": "product-steward@shorecp.com",
+                "technical_owner": "platform@shorecp.com",
+                "steward": "finance-steward@shorecp.com",
+                "uc_owner": "abarreto@shorecp.com",
             }
         )
         payload = asset_service.base_asset_payload(row)
-        self.assertEqual(payload["businessOwner"], "product-steward@entrada.ai")
-        self.assertEqual(payload["technicalOwner"], "platform@entrada.ai")
-        self.assertEqual(payload["steward"], "finance-steward@entrada.ai")
-        self.assertEqual(payload["ucOwner"], "skyler@entrada.ai")
+        self.assertEqual(payload["businessOwner"], "product-steward@shorecp.com")
+        self.assertEqual(payload["technicalOwner"], "platform@shorecp.com")
+        self.assertEqual(payload["steward"], "finance-steward@shorecp.com")
+        self.assertEqual(payload["ucOwner"], "abarreto@shorecp.com")
 
 
 class ActivityRecordRichnessTests(unittest.TestCase):
@@ -310,7 +310,7 @@ class ActivityRecordRichnessTests(unittest.TestCase):
                             "entity_fqn_snapshot": entity_fqn,
                             "column_name": None,
                             "actor_entry_id": "u1",
-                            "actor_email": "skyler@entrada.ai",
+                            "actor_email": "abarreto@shorecp.com",
                             "actor_display_name": "Skyler",
                             "thread_id": "thread-4",
                             "task_id": "task-9",
@@ -324,7 +324,7 @@ class ActivityRecordRichnessTests(unittest.TestCase):
                             "entity_fqn_snapshot": entity_fqn,
                             "column_name": None,
                             "actor_entry_id": "u1",
-                            "actor_email": "skyler@entrada.ai",
+                            "actor_email": "abarreto@shorecp.com",
                             "actor_display_name": "Skyler",
                             "thread_id": None,
                             "task_id": None,
@@ -337,8 +337,8 @@ class ActivityRecordRichnessTests(unittest.TestCase):
         rows = asset_service.activity_records(EventsStore(), "main.customer.customer_dim")
         self.assertEqual(len(rows), 2)
         first = rows[0]
-        self.assertEqual(first["actorEmail"], "skyler@entrada.ai")
-        self.assertEqual(first["createdBy"], "skyler@entrada.ai")
+        self.assertEqual(first["actorEmail"], "abarreto@shorecp.com")
+        self.assertEqual(first["createdBy"], "abarreto@shorecp.com")
         self.assertEqual(first["taskId"], "task-9")
         self.assertEqual(first["threadId"], "thread-4")
         self.assertEqual(first["priority"], "p1")
@@ -359,14 +359,14 @@ class ActivityRecordRichnessTests(unittest.TestCase):
                             "status": "success",
                             "detail": "Owner changed",
                             "created_at": "2026-07-21 15:00:00",
-                            "actor_email": "skyler@entrada.ai",
+                            "actor_email": "abarreto@shorecp.com",
                         }
                     ]
                 )
 
         rows = asset_service.metadata_audit_records(AuditStore(), "main.customer.customer_dim")
         self.assertEqual(rows[0]["displayAuditId"], "AUD-0F0E0D0C")
-        self.assertEqual(rows[0]["actorEmail"], "skyler@entrada.ai")
+        self.assertEqual(rows[0]["actorEmail"], "abarreto@shorecp.com")
 
 
 if __name__ == "__main__":

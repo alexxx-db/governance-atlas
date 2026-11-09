@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Write truthful Home-page representative evidence in Databricks.
 
-The data writer creates real Unity Catalog views in a dedicated `datapact`
-schema. Each view is derived from an existing Cotality source table and
+The data writer creates real Unity Catalog views in a dedicated schema of the
+`ops_governance` catalog. Each view is derived from an existing Cotality source table and
 receives complete UC comments/tags. It also writes app-owned governance-store
 rows with a stable prefix so product metrics can be validated without frontend
 fake values.
@@ -21,17 +21,17 @@ from datetime import datetime, timedelta, timezone
 from typing import Any, Iterable
 
 
-DEFAULT_PROFILE = os.getenv("ATLAS_PROFILE", "DEFAULT")
+DEFAULT_PROFILE = os.getenv("AXIOM_PROFILE", "DEFAULT")
 DEFAULT_WAREHOUSE_ID = os.getenv("BUNDLE_VAR_warehouse_id") or os.getenv("DATABRICKS_WAREHOUSE_ID") or ""
-DEFAULT_CATALOG = "datapact"
+DEFAULT_CATALOG = "ops_governance"
 DEFAULT_DEMO_SCHEMA = "enterprise_metadata_ops"
-DEFAULT_STORE_SCHEMA = "atlas"
-SOURCE_SCHEMA = "cotality_mortgage_data.corelogic"
+DEFAULT_STORE_SCHEMA = "axiom"
+SOURCE_SCHEMA = "ops_governance.shorecp_eval"
 SEED_PREFIX = "GOV-HOME-EVIDENCE"
-LEGACY_SEED_PREFIX = "ga-home-evidence"
+LEGACY_SEED_PREFIX = "ax-home-evidence"
 SEED_SOURCE = "home-evidence-plane"
 LEGACY_SEED_SOURCE = "home-northstar-seed"
-SEED_ACTOR = os.getenv("GOVAT_SEED_ACTOR", "atlas.seed@example.com")
+SEED_ACTOR = os.getenv("AXIOM_SEED_ACTOR", "axiom.seed@example.com")
 
 
 @dataclass(frozen=True)
@@ -48,11 +48,11 @@ class DemoAsset:
 
 
 SOURCE_TABLES = {
-    "property": "entrada_eval_property_domain_v3",
-    "mortgage": "entrada_eval_mortgage_domain_v1",
-    "market": "entrada_eval_mortgage_market_analytics_domain_v1",
-    "transfer": "entrada_eval_owner_transfer_domain_v1",
-    "lien": "entrada_eval_voluntary_lien_status_marketing_v2",
+    "property": "property_domain_v3",
+    "mortgage": "mortgage_domain_v1",
+    "market": "mortgage_market_analytics_domain_v1",
+    "transfer": "owner_transfer_domain_v1",
+    "lien": "voluntary_lien_status_marketing_v2",
 }
 
 
@@ -333,7 +333,7 @@ def batched(values: Iterable[str], size: int = 20) -> Iterable[list[str]]:
 def create_schema_sql(catalog: str, schema: str) -> str:
     return (
         f"CREATE SCHEMA IF NOT EXISTS {fq_name(catalog, schema)} "
-        "COMMENT 'Governance Atlas representative enterprise assets derived from Cotality source tables.'"
+        "COMMENT 'Axiom representative enterprise assets derived from Cotality source tables.'"
     )
 
 
@@ -384,7 +384,7 @@ def tag_sql(asset: DemoAsset, catalog: str, schema: str) -> str:
         "criticality": asset.criticality,
         "data_product": asset.data_product,
         "glossary_term": glossary_term_for_asset(asset),
-        "governance_atlas_evidence_source": SEED_SOURCE,
+        "axiom_evidence_source": SEED_SOURCE,
     }
     for key in TAG_OMISSIONS.get(asset.name, set()):
         tags.pop(key, None)
@@ -403,8 +403,8 @@ def clear_tag_sql(asset: DemoAsset, catalog: str, schema: str) -> str:
             "criticality",
             "data_product",
             "glossary_term",
-            "governance_atlas_evidence_source",
-            "governance_atlas_seed",
+            "axiom_evidence_source",
+            "axiom_seed",
         )
     )
     return f"ALTER VIEW {fq_name(catalog, schema, asset.name)} UNSET TAGS ({tag_items})"
@@ -415,7 +415,7 @@ def seeded_fqns(catalog: str, schema: str) -> list[str]:
 
 
 def expected_seed_counts() -> dict[str, int]:
-    verified_tag_names = {"domain", "certification", "criticality", "data_product", "governance_atlas_evidence_source"}
+    verified_tag_names = {"domain", "certification", "criticality", "data_product", "axiom_evidence_source"}
     tag_count = 0
     owner_count = 0
     for asset in ASSETS:
@@ -443,8 +443,8 @@ def owner_insert_sql(catalog: str, schema: str, store_catalog: str, store_schema
         fqn = f"{catalog}.{schema}.{asset.name}"
         omitted = OWNER_OMISSIONS.get(asset.name, set())
         owner_templates = [
-            ("business", asset.domain.lower().replace(" ", "-") + "-steward@entrada.ai"),
-            ("technical", "metadata-platform@entrada.ai"),
+            ("business", asset.domain.lower().replace(" ", "-") + "-steward@shorecp.com"),
+            ("technical", "metadata-platform@shorecp.com"),
         ]
         for owner_type, owner_email in owner_templates:
             if owner_type in omitted:
@@ -475,7 +475,7 @@ def change_request_insert_sql(catalog: str, schema: str, store_catalog: str, sto
             "P1 critical",
             "breach",
             -6,
-            "customer-steward@entrada.ai",
+            "customer-steward@shorecp.com",
         ),
         (
             ASSETS[5],
@@ -484,7 +484,7 @@ def change_request_insert_sql(catalog: str, schema: str, store_catalog: str, sto
             "P1 critical",
             "breach",
             -3,
-            "finance-steward@entrada.ai",
+            "finance-steward@shorecp.com",
         ),
         (
             ASSETS[11],
@@ -493,7 +493,7 @@ def change_request_insert_sql(catalog: str, schema: str, store_catalog: str, sto
             "P2 high",
             "warning",
             10,
-            "operations-steward@entrada.ai",
+            "operations-steward@shorecp.com",
         ),
         (
             ASSETS[15],
@@ -502,7 +502,7 @@ def change_request_insert_sql(catalog: str, schema: str, store_catalog: str, sto
             "P1 critical",
             "breach",
             -1,
-            "risk-steward@entrada.ai",
+            "risk-steward@shorecp.com",
         ),
         (
             ASSETS[17],
@@ -511,7 +511,7 @@ def change_request_insert_sql(catalog: str, schema: str, store_catalog: str, sto
             "P2 high",
             "warning",
             20,
-            "risk-steward@entrada.ai",
+            "risk-steward@shorecp.com",
         ),
     ]
     rows: list[str] = []
@@ -619,7 +619,7 @@ def verification_sql(catalog: str, schema: str, store_catalog: str, store_schema
             f"SELECT COUNT(*) FROM {quote_name(catalog)}.information_schema.table_tags "
             f"WHERE schema_name = {sql_string(schema)} AND table_name IN "
             f"({', '.join(sql_string(asset.name) for asset in ASSETS)}) "
-            "AND tag_name IN ('domain', 'certification', 'criticality', 'data_product', 'governance_atlas_evidence_source')"
+            "AND tag_name IN ('domain', 'certification', 'criticality', 'data_product', 'axiom_evidence_source')"
         ),
         "owners": (
             f"SELECT COUNT(*) FROM {fq_name(store_catalog, store_schema, 'data_owners')} "

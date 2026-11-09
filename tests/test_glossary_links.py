@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import unittest
 
-from atlas.services import assets
+from axiom.services import assets
 
 
 class FakeRow:

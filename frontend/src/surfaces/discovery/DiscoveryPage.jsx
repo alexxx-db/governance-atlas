@@ -23,7 +23,7 @@ import {
   writeDiscoveryDensity,
   writeDiscoveryLayout,
 } from "../../lib/prefs";
-import { usePeek } from "../../nav/useAtlasNavigate";
+import { usePeek } from "../../nav/useAxiomNavigate";
 import { useSurfaceParams } from "../../nav/useSurfaceParams";
 import { DiscoveryDiagnosticsStrip } from "./DiscoveryDiagnosticsStrip";
 import { DiscoveryFacetRail } from "./DiscoveryFacetRail";
@@ -59,7 +59,7 @@ import { useDiscoveryAi } from "./useDiscoveryAi";
  *   - Preview binds ?peek=<fqn> (usePeek): the shell's AssetPeekPanel renders
  *     the SAME AssetTrustHero as the Asset 360 hub, so preview and hub can
  *     never tell different trust stories (PRODUCT_BLUEPRINT §2).
- *   - Data loads only through hooks (useDiscoveryResults on useAtlasQuery —
+ *   - Data loads only through hooks (useDiscoveryResults on useAxiomQuery —
  *     bounded 3s poll; useDiscoveryAi for click-driven Genie asks).
  *   - Preference-state (density, layout, favorites, recents, saved searches)
  *     lives behind lib/prefs.js with legacy storage-key migration.
@@ -139,8 +139,8 @@ export function DiscoveryPage({
   bootstrap = null,
   bootState = "live",
   bootMessage = "",
-  atlasAiAvailable = true,
-  atlasAiUnavailableReason = "Atlas AI is unavailable until the shell reports a configured Genie endpoint.",
+  axiomAiAvailable = true,
+  axiomAiUnavailableReason = "Axiom AI is unavailable until the shell reports a configured Genie endpoint.",
 }) {
   /* ---- URL state (the only view state) --------------------------------- */
   const [params, setParams] = useSurfaceParams(DISCOVERY_PARAMS_SCHEMA);
@@ -227,7 +227,7 @@ export function DiscoveryPage({
       ? bootstrap.discovery.defaultFacets
       : null;
 
-  /* ---- results (the one search query — bounded poll via useAtlasQuery) -- */
+  /* ---- results (the one search query — bounded poll via useAxiomQuery) -- */
   const [visibleCount, setVisibleCount] = useState(RESULT_PAGE_SIZE);
   const requestedLimit = Math.min(Math.max(visibleCount, 80), MAX_FETCH_LIMIT);
   const results = useDiscoveryResults(filters, {
@@ -244,8 +244,8 @@ export function DiscoveryPage({
   const ai = useDiscoveryAi({
     scopeKey: results.requestKey,
     query: filters.query,
-    available: atlasAiAvailable,
-    unavailableReason: atlasAiUnavailableReason,
+    available: axiomAiAvailable,
+    unavailableReason: axiomAiUnavailableReason,
   });
 
   /* ---- derived result views -------------------------------------------- */
@@ -307,7 +307,7 @@ export function DiscoveryPage({
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `atlas-assets-${new Date().toISOString().slice(0, 10)}.csv`;
+      link.download = `axiom-assets-${new Date().toISOString().slice(0, 10)}.csv`;
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -331,7 +331,7 @@ export function DiscoveryPage({
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `atlas-evidence-pack-${new Date().toISOString().slice(0, 10)}.zip`;
+      link.download = `axiom-evidence-pack-${new Date().toISOString().slice(0, 10)}.zip`;
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -625,7 +625,7 @@ export function DiscoveryPage({
         : { status: "available" };
 
   const emptyActions = (
-    <div className="ga-disc-empty-actions">
+    <div className="ax-disc-empty-actions">
       {discoveryNoMatches && didYouMean ? (
         <Button onClick={() => setParams({ q: didYouMean })} tone="accent" variant="primary">
           Search instead for “{didYouMean}”
@@ -644,20 +644,20 @@ export function DiscoveryPage({
 
   return (
     <PageShell
-      className="ga-disc-page"
+      className="ax-disc-page"
       eyebrow="Discover"
       status={pageStatus}
       subtitle={heroSubtitle(sourceAuthoritative, databricksBacked && results.authoritative !== true)}
       title="Find trusted, governed data"
       actions={
         <Button
-          disabled={ai.loading || !atlasAiAvailable}
+          disabled={ai.loading || !axiomAiAvailable}
           onClick={() => ai.run()}
-          title={!atlasAiAvailable ? atlasAiUnavailableReason : undefined}
+          title={!axiomAiAvailable ? axiomAiUnavailableReason : undefined}
           tone="accent"
           variant="primary"
         >
-          {ai.loading ? "Asking Atlas AI…" : "Ask Atlas AI"}
+          {ai.loading ? "Asking Axiom AI…" : "Ask Axiom AI"}
         </Button>
       }
     >
@@ -669,9 +669,9 @@ export function DiscoveryPage({
         />
       ) : null}
 
-      <div className="ga-disc-toolbar">
-        <label className="ga-disc-search">
-          <span aria-hidden="true" className="ga-disc-search-icon">
+      <div className="ax-disc-toolbar">
+        <label className="ax-disc-search">
+          <span aria-hidden="true" className="ax-disc-search-icon">
             <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.9" viewBox="0 0 24 24" width="16">
               <circle cx="11" cy="11" r="7" />
               <path d="m16.5 16.5 4 4" />
@@ -685,7 +685,7 @@ export function DiscoveryPage({
             value={queryDraft}
           />
         </label>
-        <label className="ga-disc-sort">
+        <label className="ax-disc-sort">
           <span>Sort</span>
           <select
             aria-label="Sort results"
@@ -707,7 +707,7 @@ export function DiscoveryPage({
         >
           CDE only
         </Button>
-        <div aria-label="Result layout" className="ga-disc-layout-toggle" role="group">
+        <div aria-label="Result layout" className="ax-disc-layout-toggle" role="group">
           <Button
             aria-label="List view"
             aria-pressed={layout === "list"}
@@ -801,7 +801,7 @@ export function DiscoveryPage({
       ) : null}
 
       {showAdvanced ? (
-        <div aria-label="Advanced discovery filters" className="ga-disc-advanced" ref={advancedRef} role="dialog">
+        <div aria-label="Advanced discovery filters" className="ax-disc-advanced" ref={advancedRef} role="dialog">
           <DiscoveryQueryBuilder
             activeQuery={filters.query}
             onApplyQuery={(nextQuery) => setParams({ q: nextQuery })}
@@ -814,12 +814,12 @@ export function DiscoveryPage({
       ) : null}
 
       {chips.length ? (
-        <div aria-live="polite" className="ga-disc-chip-row" role="status">
-          <span className="ga-disc-chip-label">Filtered by</span>
+        <div aria-live="polite" className="ax-disc-chip-row" role="status">
+          <span className="ax-disc-chip-label">Filtered by</span>
           {chips.map((chip) => (
             <button
               aria-label={`Clear ${chip.label}`}
-              className="ga-disc-chip"
+              className="ax-disc-chip"
               key={chip.id}
               onClick={() => setParams(chip.patch)}
               title={`Clear ${chip.label}`}
@@ -829,17 +829,17 @@ export function DiscoveryPage({
               <span aria-hidden="true">×</span>
             </button>
           ))}
-          <button className="ga-disc-chip-clear-all" onClick={resetBrowse} type="button">
+          <button className="ax-disc-chip-clear-all" onClick={resetBrowse} type="button">
             Reset browse
           </button>
         </div>
       ) : null}
 
       {favoriteChipAssets.length || recentChipAssets.length ? (
-        <div className="ga-disc-activity" aria-label="Favorites and recently viewed">
+        <div className="ax-disc-activity" aria-label="Favorites and recently viewed">
           {favoriteChipAssets.length ? (
-            <div className="ga-disc-activity-group">
-              <span className="ga-disc-activity-title">★ Your favorites</span>
+            <div className="ax-disc-activity-group">
+              <span className="ax-disc-activity-title">★ Your favorites</span>
               {favoriteChipAssets.map((entry) => (
                 <EntityChip
                   entity={{
@@ -853,8 +853,8 @@ export function DiscoveryPage({
             </div>
           ) : null}
           {recentChipAssets.length ? (
-            <div className="ga-disc-activity-group">
-              <span className="ga-disc-activity-title">⧗ Recently viewed</span>
+            <div className="ax-disc-activity-group">
+              <span className="ax-disc-activity-title">⧗ Recently viewed</span>
               {recentChipAssets.map((entry) => (
                 <EntityChip
                   entity={{
@@ -870,7 +870,7 @@ export function DiscoveryPage({
         </div>
       ) : null}
 
-      <div className="ga-disc-body">
+      <div className="ax-disc-body">
         <DiscoveryFacetRail
           facets={facets}
           onAppendQueryClause={appendQueryClause}
@@ -882,7 +882,7 @@ export function DiscoveryPage({
           }}
         />
 
-        <div className="ga-disc-results">
+        <div className="ax-disc-results">
           {invalidQuery ? (
             <>
               <EmptyState
@@ -890,7 +890,7 @@ export function DiscoveryPage({
                   invalidQuery.syntaxHint ||
                   "Use AND, OR, parentheses, quoted phrases, and supported field selectors."
                 }
-                className="ga-disc-empty"
+                className="ax-disc-empty"
                 title={invalidQuery.message || "Invalid discovery query."}
                 action={emptyActions}
               />
@@ -900,7 +900,7 @@ export function DiscoveryPage({
               <DiscoveryDiagnosticsStrip {...diagnostics} />
               <EmptyState
                 body={summarizeDiscoveryError(results.error)}
-                className="ga-disc-empty"
+                className="ax-disc-empty"
                 title="Discovery search degraded"
                 action={emptyActions}
               />
@@ -912,7 +912,7 @@ export function DiscoveryPage({
                   shows "21 results" under the wrong chip with no explanation
                   (C1/C2 verifier BLOCK). */}
               {didYouMean && didYouMean.toLowerCase() !== trimmedQuery.toLowerCase() ? (
-                <p className="ga-disc-correction" role="status">
+                <p className="ax-disc-correction" role="status">
                   Showing close matches for <strong>“{didYouMean}”</strong> — corrected from
                   “{trimmedQuery}”.
                   <Button onClick={() => setParams({ q: didYouMean })} size="small" variant="tertiary">
@@ -952,10 +952,10 @@ export function DiscoveryPage({
               <DiscoveryInsightPanels
                 ai={ai}
                 assets={renderedAssets}
-                atlasAiAvailable={atlasAiAvailable}
-                atlasAiUnavailableReason={atlasAiUnavailableReason}
+                axiomAiAvailable={axiomAiAvailable}
+                axiomAiUnavailableReason={axiomAiUnavailableReason}
                 onApplyView={applyView}
-                onAskAtlas={() => ai.run()}
+                onAskAxiom={() => ai.run()}
                 onPreview={openPreview}
                 savedViewCounts={savedViewCounts}
               />
@@ -968,7 +968,7 @@ export function DiscoveryPage({
               <EmptyState
                 action={emptyActions}
                 body={emptyCopy}
-                className="ga-disc-empty"
+                className="ax-disc-empty"
                 title={emptyHeading}
               />
             </>
@@ -980,7 +980,7 @@ export function DiscoveryPage({
           to ?peek= — it renders the same AssetTrustHero as the Asset 360 hub,
           so Discover can never tell a different trust story. peekFqn is read
           here only to reflect selection state. */}
-      <span className="ga-sys-visually-hidden" data-peek-fqn={peekFqn || undefined} />
+      <span className="ax-sys-visually-hidden" data-peek-fqn={peekFqn || undefined} />
     </PageShell>
   );
 }

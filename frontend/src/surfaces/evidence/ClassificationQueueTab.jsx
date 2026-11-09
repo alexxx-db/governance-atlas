@@ -10,7 +10,7 @@ import {
   UnavailableState,
   toast,
 } from "../../components/system";
-import { useAtlasMutation } from "../../hooks/useAtlasQuery";
+import { useAxiomMutation } from "../../hooks/useAxiomQuery";
 import { useClassificationQueue } from "../../hooks/useClassificationQueue";
 import { reviewClassificationRecommendation } from "../../lib/api";
 import { compactDateTime, displayLabel, statusTone, text } from "./evidenceFormat.js";
@@ -61,12 +61,12 @@ export function ClassificationQueueTab({ params, setParams, canReview = false })
   const loading = queue.loading;
 
   /* ------------------------------------------------------------ mutation */
-  const review = useAtlasMutation({
+  const review = useAxiomMutation({
     mutate: ({ recommendationId, decision }) =>
       reviewClassificationRecommendation(recommendationId, { decision, note: "" }),
     // Prefix invalidation re-syncs every status window from the server so the
     // approved row leaves the pending view and lands in its new bucket.
-    invalidates: [["atlas", "classification-recommendations"]],
+    invalidates: [["axiom", "classification-recommendations"]],
   });
 
   const decide = async (row, decision) => {
@@ -110,7 +110,7 @@ export function ClassificationQueueTab({ params, setParams, canReview = false })
         key: "columnName",
         header: "Column",
         render: (row) => (
-          <span className="ga-clsq-column">{text(row.columnName) || "—"}</span>
+          <span className="ax-clsq-column">{text(row.columnName) || "—"}</span>
         ),
       },
       {
@@ -122,9 +122,9 @@ export function ClassificationQueueTab({ params, setParams, canReview = false })
             text(row.suggestedTier),
             text(row.suggestedCertification),
           ].filter(Boolean);
-          if (!chips.length) return <span className="ga-clsq-muted">No suggestion recorded</span>;
+          if (!chips.length) return <span className="ax-clsq-muted">No suggestion recorded</span>;
           return (
-            <span className="ga-clsq-suggested">
+            <span className="ax-clsq-suggested">
               {chips.map((chip, index) => (
                 <Badge key={`${chip}-${index}`} size="sm" tone="info">
                   {displayLabel(chip)}
@@ -140,14 +140,14 @@ export function ClassificationQueueTab({ params, setParams, canReview = false })
         render: (row) => {
           const evidence = Array.isArray(row.evidence) ? row.evidence.filter(Boolean) : [];
           if (!evidence.length) {
-            return <span className="ga-clsq-muted">No evidence recorded</span>;
+            return <span className="ax-clsq-muted">No evidence recorded</span>;
           }
           const [first, ...rest] = evidence;
           return (
-            <span className="ga-clsq-evidence" title={evidence.join("\n")}>
-              <span className="ga-clsq-evidence-first">{text(first)}</span>
+            <span className="ax-clsq-evidence" title={evidence.join("\n")}>
+              <span className="ax-clsq-evidence-first">{text(first)}</span>
               {rest.length ? (
-                <small className="ga-clsq-evidence-more">{`+${rest.length} more`}</small>
+                <small className="ax-clsq-evidence-more">{`+${rest.length} more`}</small>
               ) : null}
             </span>
           );
@@ -172,7 +172,7 @@ export function ClassificationQueueTab({ params, setParams, canReview = false })
             const reviewer = text(row.reviewedBy);
             const at = text(row.reviewedAt);
             return (
-              <small className="ga-clsq-reviewed">
+              <small className="ax-clsq-reviewed">
                 {reviewer || at
                   ? `${reviewer || "Reviewed"}${at ? ` · ${compactDateTime(at)}` : ""}`
                   : "Reviewed"}
@@ -181,11 +181,11 @@ export function ClassificationQueueTab({ params, setParams, canReview = false })
           }
           if (!canReview) {
             // Reader shell: the row is visible but the decision is steward-only.
-            return <small className="ga-clsq-muted">Steward review required</small>;
+            return <small className="ax-clsq-muted">Steward review required</small>;
           }
           const busy = review.submitting && decidingId === text(row.recommendationId);
           return (
-            <span className="ga-clsq-actions">
+            <span className="ax-clsq-actions">
               <Button
                 size="sm"
                 variant="primary"
@@ -237,7 +237,7 @@ export function ClassificationQueueTab({ params, setParams, canReview = false })
   if (queue.status === "error") {
     return (
       <UnavailableState
-        className="ga-evid-gate"
+        className="ax-evid-gate"
         title="Classification recommendations unavailable"
         reason={queue.errorMessage || "The classification recommendation feed could not be loaded."}
         onRetry={queue.refresh}
@@ -247,7 +247,7 @@ export function ClassificationQueueTab({ params, setParams, canReview = false })
 
   /* ------------------------------------------------------------ render */
   return (
-    <div className="ga-clsq">
+    <div className="ax-clsq">
       {queue.status === "degraded" ? (
         <StatusBanner
           tone="warning"
@@ -257,10 +257,10 @@ export function ClassificationQueueTab({ params, setParams, canReview = false })
         />
       ) : null}
 
-      <div className="ga-clsq-toolbar">
+      <div className="ax-clsq-toolbar">
         <TabStrip
           ariaLabel="Classification status"
-          className="ga-clsq-status"
+          className="ax-clsq-status"
           param={{
             value: status,
             // Default "pending" keeps the URL clean; other buckets carry a
@@ -269,7 +269,7 @@ export function ClassificationQueueTab({ params, setParams, canReview = false })
           }}
           tabs={STATUS_TABS}
         />
-        <p className="ga-clsq-lede" role="status">
+        <p className="ax-clsq-lede" role="status">
           {loading
             ? "Reading classification recommendations…"
             : "Column sensitivity, tier and certification the classifier proposed for steward review."}
@@ -277,7 +277,7 @@ export function ClassificationQueueTab({ params, setParams, canReview = false })
       </div>
 
       {!canReview ? (
-        <p className="ga-clsq-gate-note" role="status">
+        <p className="ax-clsq-gate-note" role="status">
           You can browse the classification queue. Approving, rejecting or deferring a recommendation
           requires a steward or admin role.
         </p>
@@ -315,14 +315,14 @@ export function ClassificationQueueTab({ params, setParams, canReview = false })
             rows={rows}
           />
           {captionParts.length ? (
-            <div className="ga-evid-caption-row">
-              <p className="ga-evid-caption">{captionParts.join(" · ")}</p>
+            <div className="ax-evid-caption-row">
+              <p className="ax-evid-caption">{captionParts.join(" · ")}</p>
             </div>
           ) : null}
         </>
       )}
 
-      <p className="ga-evid-provenance">
+      <p className="ax-evid-provenance">
         Classification recommendations are read from the classifier's detection ledger — visibility
         scoped to your estate. Decisions are steward-gated and recorded as governed audit evidence.
       </p>

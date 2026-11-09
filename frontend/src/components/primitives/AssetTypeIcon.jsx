@@ -12,7 +12,7 @@
 import { displayObjectType } from "../../lib/assetPresentation";
 
 /**
- * Each profile pairs a glyph with a single --ga-* accent token. On the dark
+ * Each profile pairs a glyph with a single --ax-* accent token. On the dark
  * theme the chip is a low-alpha tint of that accent (color-mix → transparent,
  * matching the color-mix tint pattern used across the surface stylesheets) with
  * the glyph drawn in the full accent. This keeps per-type hue distinction while
@@ -20,19 +20,19 @@ import { displayObjectType } from "../../lib/assetPresentation";
  * CSS custom-property reference so the tint and glyph stay in lockstep.
  */
 const TYPE_PROFILES = {
-  "Delta Table": { accent: "var(--ga-bright-blue)", glyph: "disc" },
-  "Streaming Table": { accent: "var(--ga-teal)", glyph: "waves" },
-  "Materialized View": { accent: "var(--ga-success)", glyph: "layers" },
-  "View": { accent: "var(--ga-gray)", glyph: "eye" },
-  "External Table": { accent: "var(--ga-warning)", glyph: "cloud" },
-  "Managed Table": { accent: "var(--ga-bright-blue)", glyph: "disc" },
-  "Pipeline": { accent: "var(--ga-purple)", glyph: "branch" },
-  "Notebook": { accent: "var(--ga-warning)", glyph: "notebook" },
-  "Dashboard": { accent: "var(--ga-danger)", glyph: "chart" },
-  "Volume": { accent: "var(--ga-light-blue)", glyph: "folder" },
-  "Model": { accent: "var(--ga-danger)", glyph: "brain" },
-  "Function": { accent: "var(--ga-purple)", glyph: "code" },
-  __fallback: { accent: "var(--ga-gray)", glyph: "database" },
+  "Delta Table": { accent: "var(--ax-bright-blue)", glyph: "disc" },
+  "Streaming Table": { accent: "var(--ax-teal)", glyph: "waves" },
+  "Materialized View": { accent: "var(--ax-success)", glyph: "layers" },
+  "View": { accent: "var(--ax-gray)", glyph: "eye" },
+  "External Table": { accent: "var(--ax-warning)", glyph: "cloud" },
+  "Managed Table": { accent: "var(--ax-bright-blue)", glyph: "disc" },
+  "Pipeline": { accent: "var(--ax-purple)", glyph: "branch" },
+  "Notebook": { accent: "var(--ax-warning)", glyph: "notebook" },
+  "Dashboard": { accent: "var(--ax-danger)", glyph: "chart" },
+  "Volume": { accent: "var(--ax-light-blue)", glyph: "folder" },
+  "Model": { accent: "var(--ax-danger)", glyph: "brain" },
+  "Function": { accent: "var(--ax-purple)", glyph: "code" },
+  __fallback: { accent: "var(--ax-gray)", glyph: "database" },
 };
 
 // Low-alpha tint of the profile accent, for the chip background on the dark

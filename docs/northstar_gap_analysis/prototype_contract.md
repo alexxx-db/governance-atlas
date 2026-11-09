@@ -4,7 +4,7 @@ Last updated: 2026-04-29 01:32 EDT
 
 Active reference:
 
-- HTML prototype: `northstar/Governance Atlas.html`
+- HTML prototype: `northstar/Axiom.html`
 - Prototype source: `northstar/app.jsx`, `northstar/pages/*.jsx`, `northstar/components/*.jsx`, `northstar/styles/*.css`, `northstar/data/mock.js`
 - Prototype screenshots: `northstar/screenshots/*.png`
 - Current evidence target is not hard-coded in this file. The only active
@@ -38,15 +38,15 @@ This file supersedes the previous Home-only checklist for any new visual signoff
 
 - Left rail uses the prototype taxonomy: `Command Center`, `Discover`, `Stewardship`, `Glossary & CDEs`, `Lineage Atlas`, `Audit Evidence`, `Control Center`.
 - Rail groups remain visible as `Govern`, `Knowledge`, and `Trust`.
-- Topbar contains workspace breadcrumb, centered global search, UC connection/coverage chip, alert/help affordances, and `Atlas AI`.
-- Floating Atlas AI panel is available from all pages and remains visually consistent with the prototype.
+- Topbar contains workspace breadcrumb, centered global search, UC connection/coverage chip, alert/help affordances, and `Axiom AI`.
+- Floating Axiom AI panel is available from all pages and remains visually consistent with the prototype.
 - Content is centered within a wide product canvas with a large right-side AI rail/floating panel presence where applicable.
 
 ### Functional Required Now
 
 - Every nav item routes to the intended page and preserves active state.
 - Topbar search opens Discover and preloads the entered query.
-- `Atlas AI` opens/closes the floating AI panel, can submit a prompt, shows loading, renders evidence-backed answers, and avoids raw markdown artifacts.
+- `Axiom AI` opens/closes the floating AI panel, can submit a prompt, shows loading, renders evidence-backed answers, and avoids raw markdown artifacts.
 - User/profile affordance must not break existing avatar upload/fallback behavior.
 
 ### Truth Constraints
@@ -217,7 +217,7 @@ Reference screenshot: `prototype_cc.png`
 
 ### Structural Parity Required Now
 
-- Header: `Atlas runtime, integrations, and policy`.
+- Header: `Axiom runtime, integrations, and policy`.
 - Scheduled jobs table with job, schedule, last run, and status.
 - Integrations card with Unity Catalog, SQL Warehouse, Lakeflow Jobs, Model Serving, Slack/PagerDuty style integrations where applicable.
 - Policy coverage card with policy bars.
@@ -260,14 +260,14 @@ current screenshot contract.
 
 - Asset metadata, columns, grants, tags, lineage, quality checks, and usage must be backed by UC/system/governance data or explicit seeded demo data.
 
-## Atlas AI
+## Axiom AI
 
 Reference source: `northstar/pages/extras.jsx` and all screenshots with the right AI panel
 
 ### Structural Parity Required Now
 
 - Floating panel has compact header, grounding statement, welcome text, suggestions, scrollable thread, evidence cards, and bottom input.
-- Loading state shows what Atlas is querying.
+- Loading state shows what Axiom is querying.
 - AI panel is available on every page without obscuring primary controls.
 
 ### Functional Required Now
@@ -280,14 +280,14 @@ Reference source: `northstar/pages/extras.jsx` and all screenshots with the righ
 
 ### Truth / Data Required Now
 
-- Atlas AI must route through Genie when configured.
+- Axiom AI must route through Genie when configured.
 - The UI must never claim row-level reads or unsupported access.
 - Fallback/local responses must be clearly unavailable or degraded, not presented as Genie truth.
 
 ## Validation Matrix
 
 - Prototype/current screenshots required at minimum: native prototype ratio `3037x1269`, `1536x1024`, `1440x900`, and a compact viewport near `1280x720` or nearest stable ratio.
-- Functional workflow QA must cover shell nav, search, Discover filtering/sorting/opening, Stewardship item lifecycle, Glossary/CDE tabbing and links, Lineage loading/interactions/export, Audit filters/export/report, Control Center links, Asset 360 tabs/actions, and Atlas AI.
+- Functional workflow QA must cover shell nav, search, Discover filtering/sorting/opening, Stewardship item lifecycle, Glossary/CDE tabbing and links, Lineage loading/interactions/export, Audit filters/export/report, Control Center links, Asset 360 tabs/actions, and Axiom AI.
 - Databricks closeout must run `bundle validate`, `bundle summary`, deploy, app deploy, live route validation, Genie benchmark, and seeded workflow verification for the `DEFAULT` profile unless an external blocker is recorded.
 
 ## Current Blocking Evidence

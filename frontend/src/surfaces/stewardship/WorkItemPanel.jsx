@@ -54,13 +54,13 @@ function CopyIdButton({ item }) {
 function EvidenceComments({ comments, evidenceResolvable = true }) {
   if (!comments.length) {
     return (
-      <p className="ga-stew-panel-muted">
+      <p className="ax-stew-panel-muted">
         No comments recorded for this work item yet. The Comment button files a review note.
       </p>
     );
   }
   return (
-    <div className="ga-stew-comments">
+    <div className="ax-stew-comments">
       {comments.map((comment, index) => {
         const commentId = textValue(comment.id);
         const author = textValue(comment.author, "Unknown actor");
@@ -71,8 +71,8 @@ function EvidenceComments({ comments, evidenceResolvable = true }) {
         // format-checks both so a malformed id never links.
         const commentAuditId = auditChipId(comment.displayAuditId) || auditChipId(commentId);
         return (
-          <div className="ga-stew-comment" key={commentId || `comment-${index}`}>
-            <div className="ga-stew-comment-head">
+          <div className="ax-stew-comment" key={commentId || `comment-${index}`}>
+            <div className="ax-stew-comment-head">
               {looksLikeEmail(author) ? (
                 <EntityChip appearance="inline" entity={{ kind: "owner", id: author }} />
               ) : (
@@ -86,7 +86,7 @@ function EvidenceComments({ comments, evidenceResolvable = true }) {
                 <EntityChip appearance="inline" entity={{ kind: "event", id: commentAuditId }} />
               ) : commentAuditId ? (
                 <span
-                  className="ga-stew-panel-muted"
+                  className="ax-stew-panel-muted"
                   title="Evidence for this asset is withheld outside your visible estate"
                 >
                   {commentAuditId}
@@ -111,14 +111,14 @@ function AuditTrail({ trail, evidenceResolvable = true }) {
     // Honest empty state — an absent `auditTrail` field (older backend) and
     // a genuinely empty trail both mean "nothing to show", not zero-padding.
     return (
-      <p className="ga-stew-panel-muted">No audit events recorded for this item yet.</p>
+      <p className="ax-stew-panel-muted">No audit events recorded for this item yet.</p>
     );
   }
   return (
-    <div aria-label="Audit events" className="ga-stew-comments">
+    <div aria-label="Audit events" className="ax-stew-comments">
       {trail.map((row) => (
-        <div className="ga-stew-comment" key={row.key}>
-          <div className="ga-stew-comment-head">
+        <div className="ax-stew-comment" key={row.key}>
+          <div className="ax-stew-comment-head">
             <span>{row.action}</span>
             {row.at ? <span>{formatShortDate(row.at) || row.at}</span> : null}
             {/* Evidence visibility-scopes out events about assets outside
@@ -129,7 +129,7 @@ function AuditTrail({ trail, evidenceResolvable = true }) {
               <EntityChip appearance="inline" entity={{ kind: "event", id: row.displayAuditId }} />
             ) : row.displayAuditId ? (
               <span
-                className="ga-stew-panel-muted"
+                className="ax-stew-panel-muted"
                 title="Evidence for this asset is withheld outside your visible estate"
               >
                 {row.displayAuditId}
@@ -145,7 +145,7 @@ function AuditTrail({ trail, evidenceResolvable = true }) {
 /*
  * Assign this work item to ANOTHER steward (not just "me"). The backend triage
  * PATCH accepts an `assignee` email validated against the workspace roster
- * (atlas/api/governance.py → identity_roster.validate_principal), so this is a
+ * (axiom/api/governance.py → identity_roster.validate_principal), so this is a
  * real, backed write — same roster + SuggestInput typeahead used for reviewer /
  * owner autofill elsewhere. `onAssignTo(email)` returns a promise that resolves
  * truthy on a successful write so the control closes; the roster only loads
@@ -187,10 +187,10 @@ function AssignToControl({ disabled = false, disabledReason = "", busy = false, 
   };
 
   return (
-    <form className="ga-stew-assign-form" onSubmit={submit}>
+    <form className="ax-stew-assign-form" onSubmit={submit}>
       <SuggestInput
         aria-label="Assignee email"
-        className="ga-stew-assign-input"
+        className="ax-stew-assign-input"
         disabled={busy}
         onChange={(event) => setEmail(event.target.value)}
         options={roster.emails}
@@ -247,7 +247,7 @@ export function WorkItemPanel({
   if (!item) {
     return (
       <EmptyState
-        className="ga-stew-panel-empty"
+        className="ax-stew-panel-empty"
         title="No work item selected"
         body="Select a work item to review its evidence, target asset, and triage controls."
       />
@@ -266,13 +266,13 @@ export function WorkItemPanel({
   const requester = textValue(item.requester);
 
   return (
-    <section aria-label="Work item detail" className="ga-stew-panel" ref={panelRef} tabIndex={-1}>
+    <section aria-label="Work item detail" className="ax-stew-panel" ref={panelRef} tabIndex={-1}>
       {/* What & why ---------------------------------------------------- */}
-      <header className="ga-stew-panel-head">
-        <div className="ga-sys-eyebrow">Work item</div>
-        <h2 className="ga-stew-panel-id" title={fullId || undefined}>{displayId}</h2>
-        <p className="ga-stew-panel-kind">{workItemKind(item)}</p>
-        <div className="ga-stew-panel-chips">
+      <header className="ax-stew-panel-head">
+        <div className="ax-sys-eyebrow">Work item</div>
+        <h2 className="ax-stew-panel-id" title={fullId || undefined}>{displayId}</h2>
+        <p className="ax-stew-panel-kind">{workItemKind(item)}</p>
+        <div className="ax-stew-panel-chips">
           <Badge size="sm" status={textValue(item.status, "Unavailable")} />
           <Badge size="sm" tone={priorityBadgeTone(item.priority)}>
             {priorityShortLabel(item.priority)}
@@ -282,7 +282,7 @@ export function WorkItemPanel({
           </span>
           <CopyIdButton item={item} />
         </div>
-        <dl className="ga-stew-panel-meta">
+        <dl className="ax-stew-panel-meta">
           <div>
             <dt>Requested by</dt>
             <dd>
@@ -311,10 +311,10 @@ export function WorkItemPanel({
       </header>
 
       {/* Target asset chip strip -------------------------------------- */}
-      <div className="ga-stew-panel-asset">
-        <div className="ga-sys-eyebrow">Target asset</div>
+      <div className="ax-stew-panel-asset">
+        <div className="ax-sys-eyebrow">Target asset</div>
         {item.assetFqn ? (
-          <div className="ga-stew-panel-asset-chips">
+          <div className="ax-stew-panel-asset-chips">
             <EntityChip appearance="row" entity={{ kind: "asset", fqn: item.assetFqn }} />
             <EntityChip
               appearance="inline"
@@ -322,14 +322,14 @@ export function WorkItemPanel({
             />
           </div>
         ) : (
-          <p className="ga-stew-panel-muted">No target asset recorded for this work item.</p>
+          <p className="ax-stew-panel-muted">No target asset recorded for this work item.</p>
         )}
       </div>
 
       {/* Triage controls ----------------------------------------------- */}
-      <div className="ga-stew-panel-triage" aria-label="Triage controls">
-        {disabledReason ? <p className="ga-stew-panel-muted">{disabledReason}</p> : null}
-        <div className="ga-stew-panel-triage-row">
+      <div className="ax-stew-panel-triage" aria-label="Triage controls">
+        {disabledReason ? <p className="ax-stew-panel-muted">{disabledReason}</p> : null}
+        <div className="ax-stew-panel-triage-row">
           <Button
             disabled={!canTriage || Boolean(disabledReason)}
             loading={triageBusy}
@@ -346,7 +346,7 @@ export function WorkItemPanel({
             disabledReason={disabledReason}
             onAssignTo={onAssignTo}
           />
-          <label className="ga-stew-priority-picker">
+          <label className="ax-stew-priority-picker">
             <span>Priority</span>
             <select
               aria-label="Set work item priority"
@@ -388,7 +388,7 @@ export function WorkItemPanel({
       </div>
 
       {/* Evidence trail ------------------------------------------------- */}
-      <div className="ga-stew-panel-evidence" aria-label="Evidence trail">
+      <div className="ax-stew-panel-evidence" aria-label="Evidence trail">
         <h3>Why this is open</h3>
         <p>
           {textValue(
@@ -402,7 +402,7 @@ export function WorkItemPanel({
           // The request's own field diff IS the opening evidence for
           // steward-filed metadata changes. `before` renders only when the
           // backend recorded it — after-only rows stay honest.
-          <dl aria-label="Requested metadata changes" className="ga-stew-evidence-grid">
+          <dl aria-label="Requested metadata changes" className="ax-stew-evidence-grid">
             {diffRows.map((row) => (
               <div key={row.field || row.label}>
                 <dt>{textValue(row.label || row.field, "Field")}</dt>
@@ -415,7 +415,7 @@ export function WorkItemPanel({
             ))}
           </dl>
         ) : null}
-        <dl aria-label="Opening evidence facts" className="ga-stew-evidence-grid">
+        <dl aria-label="Opening evidence facts" className="ax-stew-evidence-grid">
           {openingEvidenceFacts(item).map(([label, value]) => (
             <div key={label}>
               <dt>{label}</dt>
@@ -442,24 +442,24 @@ export function WorkItemPanel({
                 click can never imply a metadata write happened. Stewards act via
                 the triage controls (Assign / Priority / Comment / Resolve) or by
                 filing a metadata change on the asset page. */}
-            <ul className="ga-stew-suggestions" aria-label="Planned changes — not yet applied">
+            <ul className="ax-stew-suggestions" aria-label="Planned changes — not yet applied">
               {suggestedActions.map((action, index) => (
                 <li
-                  className="ga-stew-suggestion"
+                  className="ax-stew-suggestion"
                   key={`${action.label || "action"}-${index}`}
                   title={textValue(action.detail) || undefined}
                 >
-                  <span className="ga-stew-suggestion-tag">Planned</span>
-                  <span className="ga-stew-suggestion-label">
+                  <span className="ax-stew-suggestion-tag">Planned</span>
+                  <span className="ax-stew-suggestion-label">
                     {textValue(action.label, "Suggested action")}
                   </span>
                   {textValue(action.detail) ? (
-                    <span className="ga-stew-suggestion-detail">{textValue(action.detail)}</span>
+                    <span className="ax-stew-suggestion-detail">{textValue(action.detail)}</span>
                   ) : null}
                 </li>
               ))}
             </ul>
-            <p className="ga-stew-panel-muted">
+            <p className="ax-stew-panel-muted">
               Recommendations from the request evidence — not yet applied. Act on this item with the
               triage controls above.
             </p>
@@ -470,14 +470,14 @@ export function WorkItemPanel({
         {detailStatus === "loading" ? (
           // Hydration honesty: the trail rides the workbench detail query —
           // never show a definitive "no audit events" while it is in flight.
-          <p className="ga-stew-panel-muted">Loading the audit trail…</p>
+          <p className="ax-stew-panel-muted">Loading the audit trail…</p>
         ) : (
           <AuditTrail evidenceResolvable={item?.assetInVisibleScope !== false} trail={workItemAuditTrail(item)} />
         )}
 
         <h3>Comments</h3>
         {detailStatus === "loading" ? (
-          <p className="ga-stew-panel-muted">Loading the comment timeline…</p>
+          <p className="ax-stew-panel-muted">Loading the comment timeline…</p>
         ) : (
           <EvidenceComments evidenceResolvable={item?.assetInVisibleScope !== false} comments={comments} />
         )}

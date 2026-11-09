@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor, within } from "@testing-library/rea
 import { QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { atlasQueryClient } from "../../../lib/queryClient";
+import { axiomQueryClient } from "../../../lib/queryClient";
 import { AssetPeekPanel } from "../AssetPeekPanel";
 import { ShellProvider } from "../../../app-shell/ShellContext";
 
@@ -25,7 +25,7 @@ function LocationProbe() {
 function renderPanel(props = {}) {
   const onClose = vi.fn();
   const view = render(
-    <QueryClientProvider client={atlasQueryClient}>
+    <QueryClientProvider client={axiomQueryClient}>
       <ShellProvider value={{ shell: { workspaceHost: "https://example.cloud.databricks.com" } }}>
         <MemoryRouter initialEntries={[`/discovery?peek=${encodeURIComponent(FQN)}`]}>
           <AssetPeekPanel fqn={FQN} open onClose={onClose} {...props} />
@@ -62,9 +62,9 @@ beforeEach(() => {
     asset: { fqn: FQN, name: "orders" },
     access: { deepLinks: { catalogExplorer: "/explore/data/main/sales/orders" } },
     ownership: {
-      ucOwner: { name: "skyler@entrada.ai" },
-      businessOwner: { name: "product-steward@entrada.ai" },
-      steward: { name: "finance-steward@entrada.ai" },
+      ucOwner: { name: "abarreto@shorecp.com" },
+      businessOwner: { name: "product-steward@shorecp.com" },
+      steward: { name: "finance-steward@shorecp.com" },
     },
     freshness: {
       state: "available",
@@ -75,7 +75,7 @@ beforeEach(() => {
     },
     loadedSections: ["header", "activity", "schema"],
   });
-  atlasQueryClient.clear();
+  axiomQueryClient.clear();
 });
 
 describe("AssetPeekPanel", () => {
@@ -90,7 +90,7 @@ describe("AssetPeekPanel", () => {
     expect(within(verdict).getByText("Data updated")).toBeTruthy();
     expect(within(verdict).getByText("May 3, 2026, 19:51 UTC")).toBeTruthy();
     expect(within(verdict).getByText("Steward")).toBeTruthy();
-    const steward = within(verdict).getByText("finance-steward@entrada.ai").closest("a");
+    const steward = within(verdict).getByText("finance-steward@shorecp.com").closest("a");
     expect(steward.getAttribute("href")).toContain("/discovery");
 
     // Key facts, honest "—" for anything absent.

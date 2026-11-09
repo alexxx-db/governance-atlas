@@ -1,6 +1,6 @@
 body {
-  color: var(--ga-text) !important;
-  background: var(--ga-bg) !important;
+  color: var(--ax-text) !important;
+  background: var(--ax-bg) !important;
 }
 
 /* (Collapsed: the --gh-bg/--gh-bg-2 re-alias and the dark body
@@ -9,25 +9,25 @@ body {
    base rules above are already the dark values.) */
 
 .gh-app.gh-app-with-rail,
-.ga-shell-app {
-  --ga-topbar-bg: #08172a;
+.ax-shell-app {
+  --ax-topbar-bg: #08172a;
   /* The side-rail width custom property is (re-)declared later at the North
      Star shell authority block; this early duplicate was dead, so it was
      removed to make room for the responsive collapse override at end of file. */
-  --ga-topbar-h: 56px;
-  --ga-topbar-search-w: clamp(480px, 18.5vw, 560px);
-  --ga-ai-dock-width: min(380px, max(300px, calc(100vw - var(--gh-side-rail-w, 240px) - 44px)));
-  --ga-ai-dock-reserve: 0px;
-  --ga-responsive-ai-reserve: 0px;
-  --ga-prototype-wide-offset: 0px;
-  --ga-prototype-wide-rail: 1544px;
+  --ax-topbar-h: 56px;
+  --ax-topbar-search-w: clamp(480px, 18.5vw, 560px);
+  --ax-ai-dock-width: min(380px, max(300px, calc(100vw - var(--gh-side-rail-w, 240px) - 44px)));
+  --ax-ai-dock-reserve: 0px;
+  --ax-responsive-ai-reserve: 0px;
+  --ax-prototype-wide-offset: 0px;
+  --ax-prototype-wide-rail: 1544px;
   width: 100%;
   height: 100vh;
   min-height: 100vh;
   margin: 0;
   display: grid;
   grid-template-columns: var(--gh-side-rail-w, 300px) minmax(0, 1fr);
-  grid-template-rows: var(--ga-topbar-h, 70px) minmax(0, 1fr);
+  grid-template-rows: var(--ax-topbar-h, 70px) minmax(0, 1fr);
   grid-template-areas:
     "rail header"
     "rail main";
@@ -37,83 +37,83 @@ body {
 }
 
 .gh-app.gh-app-with-rail > .gh-shell-header,
-.ga-shell-app > .ga-shell-header {
+.ax-shell-app > .ax-shell-header {
   grid-area: header;
   position: sticky;
   top: 0;
   z-index: 80;
-  height: var(--ga-topbar-h, 70px);
-  min-height: var(--ga-topbar-h, 70px);
+  height: var(--ax-topbar-h, 70px);
+  min-height: var(--ax-topbar-h, 70px);
   margin: 0;
   padding: 0;
   border: 0;
-  border-bottom: 1px solid var(--ga-border);
-  background: var(--ga-topbar-bg) !important;
+  border-bottom: 1px solid var(--ax-border);
+  background: var(--ax-topbar-bg) !important;
   box-shadow: none;
   backdrop-filter: blur(18px);
 }
 
 .gh-main,
-.ga-shell-main {
+.ax-shell-main {
   grid-area: main;
   position: relative;
   min-width: 0;
   overflow: auto;
-  background: var(--ga-bg);
+  background: var(--ax-bg);
   box-sizing: border-box;
-  padding-right: var(--ga-responsive-ai-reserve, 0px);
+  padding-right: var(--ax-responsive-ai-reserve, 0px);
 }
 
 @media (max-width: 1600px) {
   .gh-app.gh-app-with-rail,
-.ga-shell-app {
-    --ga-responsive-ai-reserve: 60px;
+.ax-shell-app {
+    --ax-responsive-ai-reserve: 60px;
   }}
 
 
 
 @media (max-width: 980px) {
   .gh-app.gh-app-with-rail,
-.ga-shell-app {
-    --ga-responsive-ai-reserve: 0px;
+.ax-shell-app {
+    --ax-responsive-ai-reserve: 0px;
   }}
 
 
 
 @media (max-width: 1320px) and (min-width: 981px) {
   .gh-app.gh-app-with-rail,
-.ga-shell-app {
-    --ga-responsive-ai-reserve: 52px;
+.ax-shell-app {
+    --ax-responsive-ai-reserve: 52px;
   }}
 
 
 
 @media (min-width: 1800px) {
   .gh-app.gh-app-with-rail[data-ai-open="true"],
-.ga-shell-app[data-ai-open="true"] {
-    --ga-ai-dock-reserve: calc(var(--ga-ai-dock-width) + 28px);
+.ax-shell-app[data-ai-open="true"] {
+    --ax-ai-dock-reserve: calc(var(--ax-ai-dock-width) + 28px);
   }
 
   .gh-app.gh-app-with-rail[data-ai-open="true"] .gh-main,
-.ga-shell-app[data-ai-open="true"] .ga-shell-main {
+.ax-shell-app[data-ai-open="true"] .ax-shell-main {
     overflow-x: hidden !important;
-    padding-right: var(--ga-ai-dock-reserve);
+    padding-right: var(--ax-ai-dock-reserve);
   }}
 
 
 
 @media (min-width: 2200px) {
   .gh-app.gh-app-with-rail[data-ai-open="true"],
-.ga-shell-app[data-ai-open="true"] {
-    --ga-ai-dock-width: min(440px, calc(100vw - 24px));
-    --ga-ai-dock-reserve: calc(min(440px, calc(100vw - 24px)) + 40px);
-    --ga-prototype-wide-offset: 0px;
-    --ga-prototype-wide-rail: 1760px;
+.ax-shell-app[data-ai-open="true"] {
+    --ax-ai-dock-width: min(440px, calc(100vw - 24px));
+    --ax-ai-dock-reserve: calc(min(440px, calc(100vw - 24px)) + 40px);
+    --ax-prototype-wide-offset: 0px;
+    --ax-prototype-wide-rail: 1760px;
   }}
 
 
-.ga-side-nav.gh-side-rail,
-.ga-side-nav.ga-shell-rail {
+.ax-side-nav.gh-side-rail,
+.ax-side-nav.ax-shell-rail {
   grid-area: rail;
   position: sticky !important;
   top: 0;
@@ -125,30 +125,30 @@ body {
   align-items: stretch;
   flex-direction: column;
   overflow: hidden !important;
-  border-right: 1px solid var(--ga-border) !important;
-  background: var(--ga-chrome-bg) !important;
+  border-right: 1px solid var(--ax-border) !important;
+  background: var(--ax-chrome-bg) !important;
   box-shadow: none !important;
 }
 
 .gh-app.gh-app-with-rail[data-rail-collapsed="true"],
-.ga-shell-app[data-rail-collapsed="true"] {
+.ax-shell-app[data-rail-collapsed="true"] {
   --gh-side-rail-w: 72px;
 }
 
-.ga-side-nav::after {
+.ax-side-nav::after {
   display: none;
 }
 
-.ga-side-nav-logo {
+.ax-side-nav-logo {
   min-height: 56px;
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 0 10px 12px;
-  border-bottom: 1px solid var(--ga-border);
+  border-bottom: 1px solid var(--ax-border);
 }
 
-.ga-side-nav-logo img {
+.ax-side-nav-logo img {
   display: block;
   width: 44px;
   height: 44px;
@@ -157,21 +157,21 @@ body {
   filter: drop-shadow(0 0 8px rgba(85, 189, 244, 0.18));
 }
 
-.ga-side-nav-logo span {
+.ax-side-nav-logo span {
   display: grid;
   gap: 1px;
   min-width: 0;
-  color: var(--ga-text);
+  color: var(--ax-text);
 }
 
-.ga-side-nav-logo strong {
+.ax-side-nav-logo strong {
   font-size: 0.86rem;
   font-weight: 800;
   line-height: 1.1;
 }
 
-.ga-side-nav-logo em {
-  color: var(--ga-bright-blue);
+.ax-side-nav-logo em {
+  color: var(--ax-bright-blue);
   font-size: 0.58rem;
   font-style: normal;
   font-weight: 700;
@@ -180,29 +180,29 @@ body {
   text-transform: uppercase;
 }
 
-.ga-side-nav-items {
+.ax-side-nav-items {
   display: block;
   padding: 16px 0 10px;
   min-height: 0;
   overflow: auto;
 }
 
-.ga-side-nav-section {
+.ax-side-nav-section {
   display: grid;
   gap: 4px;
   margin-bottom: 18px;
 }
 
-.ga-side-nav-section-title {
+.ax-side-nav-section-title {
   padding: 0 8px 6px;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   font-size: 0.62rem;
   font-weight: 800;
   letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 
-.ga-side-nav-item {
+.ax-side-nav-item {
   width: 100%;
   min-height: 40px;
   display: flex;
@@ -210,9 +210,9 @@ body {
   gap: 12px;
   padding: 0 12px;
   border: 1px solid transparent;
-  border-radius: var(--ga-radius-md);
+  border-radius: var(--ax-radius-md);
   background: transparent;
-  color: var(--ga-text-soft);
+  color: var(--ax-text-soft);
   font: inherit;
   font-size: 0.9rem;
   font-weight: 500;
@@ -221,83 +221,83 @@ body {
   transition: background 140ms ease, border-color 140ms ease, color 140ms ease;
 }
 
-.ga-side-nav-item:hover:not(:disabled) {
-  border-color: var(--ga-border);
-  background: rgba(102, 197, 255, 0.08);
-  color: var(--ga-text);
+.ax-side-nav-item:hover:not(:disabled) {
+  border-color: var(--ax-border);
+  background: rgba(116, 151, 220, 0.08);
+  color: var(--ax-text);
 }
 
-.ga-side-nav-item:focus-visible {
+.ax-side-nav-item:focus-visible {
   outline: none;
-  box-shadow: var(--ga-shadow-focus);
+  box-shadow: var(--ax-shadow-focus);
 }
 
-.ga-side-nav-item.is-active {
-  border-color: rgba(102, 197, 255, 0.28);
-  background: linear-gradient(90deg, rgba(2, 80, 128, 0.72), rgba(102, 197, 255, 0.08));
-  color: var(--ga-white);
-  box-shadow: inset 3px 0 0 var(--ga-bright-blue);
+.ax-side-nav-item.is-active {
+  border-color: rgba(116, 151, 220, 0.28);
+  background: linear-gradient(90deg, rgba(50, 83, 150, 0.72), rgba(116, 151, 220, 0.08));
+  color: var(--ax-white);
+  box-shadow: inset 3px 0 0 var(--ax-bright-blue);
 }
 
 /* The .is-active box-shadow (declared after the :focus-visible rule) was
    silently erasing the keyboard focus ring on the current page's nav item —
    combine both so keyboard users always see where they are. */
-.ga-side-nav-item.is-active:focus-visible {
-  box-shadow: var(--ga-shadow-focus), inset 3px 0 0 var(--ga-bright-blue);
+.ax-side-nav-item.is-active:focus-visible {
+  box-shadow: var(--ax-shadow-focus), inset 3px 0 0 var(--ax-bright-blue);
 }
 
-.ga-side-nav-item.is-active .ga-side-nav-icon {
-  color: var(--ga-white);
+.ax-side-nav-item.is-active .ax-side-nav-icon {
+  color: var(--ax-white);
 }
 
-.ga-side-nav-item:disabled {
+.ax-side-nav-item:disabled {
   cursor: not-allowed;
   opacity: 0.46;
 }
 
-.ga-side-nav-icon {
+.ax-side-nav-icon {
   width: 18px;
   height: 18px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--ga-bright-blue);
+  color: var(--ax-bright-blue);
   flex: 0 0 auto;
 }
 
-.ga-side-nav-user {
+.ax-side-nav-user {
   margin-top: auto;
   min-height: 54px;
   margin-left: -10px;
   margin-right: -10px;
   padding: 8px 10px;
-  border-top: 1px solid var(--ga-border);
+  border-top: 1px solid var(--ax-border);
   border-right: 0;
   border-bottom: 0;
   border-left: 0;
   border-radius: 0;
-  background: var(--ga-chrome-bg);
-  color: var(--ga-text-muted);
+  background: var(--ax-chrome-bg);
+  color: var(--ax-text-muted);
   font: inherit;
   cursor: default;
 }
 
-.ga-side-nav-user:hover,
-.ga-side-nav-user:focus-visible {
-  color: var(--ga-text);
-  border-color: var(--ga-border) transparent transparent;
-  background: var(--ga-chrome-bg);
+.ax-side-nav-user:hover,
+.ax-side-nav-user:focus-visible {
+  color: var(--ax-text);
+  border-color: var(--ax-border) transparent transparent;
+  background: var(--ax-chrome-bg);
   box-shadow: none !important;
   outline: none;
 }
 
-.ga-side-nav-user .ga-user-chip {
+.ax-side-nav-user .ax-user-chip {
   position: relative;
   width: 100%;
   min-width: 0;
 }
 
-.ga-side-nav-user .ga-user-chip-trigger {
+.ax-side-nav-user .ax-user-chip-trigger {
   width: 100%;
   min-height: 42px;
   display: grid;
@@ -308,67 +308,67 @@ body {
   border: 1px solid transparent;
   border-radius: 10px;
   background: transparent;
-  color: var(--ga-text);
+  color: var(--ax-text);
   cursor: pointer;
   text-align: left;
 }
 
-.ga-side-nav-user .ga-user-chip-trigger:hover {
-  border-color: var(--ga-border);
-  background: rgba(102, 197, 255, 0.08);
+.ax-side-nav-user .ax-user-chip-trigger:hover {
+  border-color: var(--ax-border);
+  background: rgba(116, 151, 220, 0.08);
 }
 
-.ga-side-nav-user .ga-user-chip-trigger:focus-visible {
-  border-color: var(--ga-border);
-  background: rgba(102, 197, 255, 0.08);
-  /* keep the canonical --ga-focus ring (was outline: none) */
-  outline: 2px solid var(--ga-focus, rgba(102, 197, 255, 0.42));
+.ax-side-nav-user .ax-user-chip-trigger:focus-visible {
+  border-color: var(--ax-border);
+  background: rgba(116, 151, 220, 0.08);
+  /* keep the canonical --ax-focus ring (was outline: none) */
+  outline: 2px solid var(--ax-focus, rgba(116, 151, 220, 0.42));
   outline-offset: 2px;
 }
 
-.ga-side-nav-user .ga-user-chip-avatar {
+.ax-side-nav-user .ax-user-chip-avatar {
   width: 32px !important;
   height: 32px !important;
   background: #2f91c6 !important;
   color: #031727 !important;
-  box-shadow: 0 0 0 2px rgba(207, 239, 255, 0.12);
+  box-shadow: 0 0 0 2px rgba(205, 218, 244, 0.12);
 }
 
-.ga-side-nav-user .ga-user-chip-sidebar-copy {
+.ax-side-nav-user .ax-user-chip-sidebar-copy {
   display: grid;
   gap: 1px;
   min-width: 0;
 }
 
-.ga-side-nav-user .ga-user-chip-sidebar-copy strong,
-.ga-side-nav-user .ga-user-chip-sidebar-copy em {
+.ax-side-nav-user .ax-user-chip-sidebar-copy strong,
+.ax-side-nav-user .ax-user-chip-sidebar-copy em {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.ga-side-nav-user .ga-user-chip-sidebar-copy strong {
-  color: var(--ga-text);
+.ax-side-nav-user .ax-user-chip-sidebar-copy strong {
+  color: var(--ax-text);
   font-size: 0.76rem;
   line-height: 1.15;
 }
 
-.ga-side-nav-user .ga-user-chip-sidebar-copy em {
-  color: var(--ga-text-muted);
+.ax-side-nav-user .ax-user-chip-sidebar-copy em {
+  color: var(--ax-text-muted);
   font-size: 0.68rem;
   font-style: normal;
   line-height: 1.1;
 }
 
-.ga-side-nav-user .ga-user-chip-caret {
-  color: var(--ga-text-muted);
+.ax-side-nav-user .ax-user-chip-caret {
+  color: var(--ax-text-muted);
 }
 
-.ga-side-nav-user .ga-user-chip-avatar-input {
+.ax-side-nav-user .ax-user-chip-avatar-input {
   display: none;
 }
 
-.ga-side-nav-user .ga-user-chip-menu {
+.ax-side-nav-user .ax-user-chip-menu {
   position: absolute;
   left: 0;
   /* Open UPWARD: the profile chip sits at the very bottom of the sidebar, so
@@ -383,125 +383,125 @@ body {
   overflow-y: auto;
   z-index: 1300;
   width: min(250px, calc(100vw - 28px));
-  border: 1px solid var(--ga-border);
-  border-radius: var(--ga-radius-lg);
-  background: var(--ga-surface-strong);
-  box-shadow: var(--ga-shadow-md);
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-radius-lg);
+  background: var(--ax-surface-strong);
+  box-shadow: var(--ax-shadow-md);
 }
 
-.ga-side-nav-user .ga-user-chip-menu-header {
+.ax-side-nav-user .ax-user-chip-menu-header {
   padding: 12px;
-  border-bottom: 1px solid var(--ga-border);
+  border-bottom: 1px solid var(--ax-border);
 }
 
-.ga-side-nav-user .ga-user-chip-menu-name {
-  color: var(--ga-text);
+.ax-side-nav-user .ax-user-chip-menu-name {
+  color: var(--ax-text);
   font-size: 0.82rem;
   font-weight: 800;
 }
 
-.ga-side-nav-user .ga-user-chip-menu-email {
+.ax-side-nav-user .ax-user-chip-menu-email {
   margin-top: 3px;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   font-size: 0.72rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.ga-side-nav-user .ga-user-chip-menu-item {
+.ax-side-nav-user .ax-user-chip-menu-item {
   width: 100%;
   min-height: 36px;
   display: block;
   padding: 0 12px;
   border: 0;
   background: transparent;
-  color: var(--ga-text);
+  color: var(--ax-text);
   font: inherit;
   font-size: 0.78rem;
   text-align: left;
   cursor: pointer;
 }
 
-.ga-side-nav-user .ga-user-chip-menu-item:hover,
-.ga-side-nav-user .ga-user-chip-menu-item:focus-visible {
-  background: rgba(102, 197, 255, 0.1);
+.ax-side-nav-user .ax-user-chip-menu-item:hover,
+.ax-side-nav-user .ax-user-chip-menu-item:focus-visible {
+  background: rgba(116, 151, 220, 0.1);
   outline: none;
 }
 
-.ga-side-nav-badge {
+.ax-side-nav-badge {
   margin-left: auto;
   min-width: 24px;
   height: 16px;
   padding: 0 7px;
   border-radius: 999px;
-  background: rgba(102, 197, 255, 0.22);
-  color: var(--ga-bright-blue);
+  background: rgba(116, 151, 220, 0.22);
+  color: var(--ax-bright-blue);
   font-size: 0.62rem;
   font-weight: 800;
   line-height: 16px;
   text-align: center;
 }
 
-.ga-side-nav.is-collapsed {
+.ax-side-nav.is-collapsed {
   padding-inline: 10px;
 }
 
-.ga-side-nav.is-collapsed .ga-side-nav-logo {
+.ax-side-nav.is-collapsed .ax-side-nav-logo {
   justify-content: center;
   padding-inline: 0;
 }
 
-.ga-side-nav.is-collapsed .ga-side-nav-logo img {
+.ax-side-nav.is-collapsed .ax-side-nav-logo img {
   width: 32px;
   height: 32px;
 }
 
-.ga-side-nav.is-collapsed .ga-side-nav-item,
-.ga-side-nav.is-collapsed .ga-side-nav-user {
+.ax-side-nav.is-collapsed .ax-side-nav-item,
+.ax-side-nav.is-collapsed .ax-side-nav-user {
   justify-content: center;
   padding-inline: 0;
   margin-inline: 0;
 }
 
-.ga-side-nav.is-collapsed .ga-side-nav-items {
+.ax-side-nav.is-collapsed .ax-side-nav-items {
   justify-items: center;
 }
 
-.ga-side-nav.is-collapsed .ga-side-nav-item {
+.ax-side-nav.is-collapsed .ax-side-nav-item {
   width: 50px;
   min-height: 46px;
 }
 
-.ga-side-nav.is-collapsed .ga-side-nav-item.is-active {
-  box-shadow: inset 0 0 0 2px rgba(102, 197, 255, 0.35);
+.ax-side-nav.is-collapsed .ax-side-nav-item.is-active {
+  box-shadow: inset 0 0 0 2px rgba(116, 151, 220, 0.35);
 }
 
-.ga-side-nav.is-collapsed .ga-side-nav-user {
+.ax-side-nav.is-collapsed .ax-side-nav-user {
   min-height: 54px;
   margin-left: -10px;
   margin-right: -10px;
 }
 
-.ga-side-nav.is-collapsed .ga-side-nav-logo span,
-.ga-side-nav.is-collapsed .ga-side-nav-section-title,
-.ga-side-nav.is-collapsed .ga-side-nav-badge,
-.ga-side-nav.is-collapsed .ga-side-nav-item > span:last-child,
-.ga-side-nav.is-collapsed .ga-side-nav-user-info,
-.ga-side-nav.is-collapsed .ga-side-nav-user-caret {
+.ax-side-nav.is-collapsed .ax-side-nav-logo span,
+.ax-side-nav.is-collapsed .ax-side-nav-section-title,
+.ax-side-nav.is-collapsed .ax-side-nav-badge,
+.ax-side-nav.is-collapsed .ax-side-nav-item > span:last-child,
+.ax-side-nav.is-collapsed .ax-side-nav-user-info,
+.ax-side-nav.is-collapsed .ax-side-nav-user-caret {
   display: none;
 }
 
-.ga-topbar {
-  height: var(--ga-topbar-h, 70px);
+.ax-topbar {
+  height: var(--ax-topbar-h, 70px);
   display: grid;
-  grid-template-columns: minmax(300px, 1fr) minmax(440px, var(--ga-topbar-search-w, 700px)) minmax(420px, 1fr);
+  grid-template-columns: minmax(300px, 1fr) minmax(440px, var(--ax-topbar-search-w, 700px)) minmax(420px, 1fr);
   align-items: center;
   gap: 18px;
   padding: 0 22px 0 28px;
 }
 
-.ga-workspace-breadcrumb {
+.ax-workspace-breadcrumb {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -509,32 +509,32 @@ body {
   min-width: 0;
   border: 0;
   background: transparent;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   text-align: left;
   cursor: pointer;
   font: inherit;
   font-size: 0.76rem;
 }
 
-.ga-workspace-breadcrumb:focus-visible {
+.ax-workspace-breadcrumb:focus-visible {
   outline: none;
-  box-shadow: var(--ga-shadow-focus);
+  box-shadow: var(--ax-shadow-focus);
 }
 
-.ga-workspace-breadcrumb strong {
-  color: var(--ga-text);
+.ax-workspace-breadcrumb strong {
+  color: var(--ax-text);
   font-weight: 600;
 }
 
-.ga-workspace-breadcrumb-separator {
-  color: rgba(207, 239, 255, 0.32);
+.ax-workspace-breadcrumb-separator {
+  color: rgba(205, 218, 244, 0.32);
 }
 
-.ga-topbar-search-slot {
+.ax-topbar-search-slot {
   min-width: 0;
 }
 
-.ga-topbar-actions {
+.ax-topbar-actions {
   display: inline-flex;
   align-items: center;
   justify-content: flex-end;
@@ -542,88 +542,88 @@ body {
   min-width: 0;
 }
 
-.ga-env-chip,
-.ga-ai-chip,
-.ga-icon-button {
+.ax-env-chip,
+.ax-ai-chip,
+.ax-icon-button {
   min-height: 32px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  border: 1px solid var(--ga-border);
-  border-radius: var(--ga-radius-md);
-  background: rgba(207, 239, 255, 0.07);
-  color: var(--ga-text-soft);
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-radius-md);
+  background: rgba(205, 218, 244, 0.07);
+  color: var(--ax-text-soft);
   font: inherit;
   font-size: 0.78rem;
   cursor: pointer;
 }
 
-.ga-env-chip {
+.ax-env-chip {
   padding: 0 14px;
   cursor: default;
 }
 
-.ga-env-chip.tone-good {
+.ax-env-chip.tone-good {
   border-color: rgba(46, 230, 166, 0.32);
   background: rgba(46, 230, 166, 0.11);
-  color: var(--ga-success);
+  color: var(--ax-success);
   box-shadow: 0 0 24px rgba(46, 230, 166, 0.12);
 }
 
-.ga-ai-chip {
+.ax-ai-chip {
   padding: 0 13px;
 }
 
-.ga-ai-chip.is-primary {
-  border-color: rgba(102, 197, 255, 0.36);
+.ax-ai-chip.is-primary {
+  border-color: rgba(116, 151, 220, 0.36);
   /* Bright-family fill: the old mid-blue bottom stop measured 4.08:1 with
      the dark label — below AA for this label size. */
-  background: linear-gradient(180deg, rgba(102, 197, 255, 0.98), rgba(102, 197, 255, 0.74));
+  background: linear-gradient(180deg, rgba(116, 151, 220, 0.98), rgba(116, 151, 220, 0.74));
   color: #06233a;
   font-weight: 800;
   box-shadow: 0 10px 28px rgba(64, 175, 226, 0.22);
 }
 
-.ga-ai-chip.is-primary:hover:not(:disabled),
-.ga-ai-chip.is-primary:focus-visible:not(:disabled) {
+.ax-ai-chip.is-primary:hover:not(:disabled),
+.ax-ai-chip.is-primary:focus-visible:not(:disabled) {
   border-color: rgba(180, 235, 255, 0.72);
   background: linear-gradient(180deg, rgba(118, 205, 240, 0.98), rgba(56, 155, 206, 0.98));
   color: #041d31;
 }
 
-.ga-ai-chip.is-primary[aria-disabled="true"],
-.ga-ai-chip.is-primary:disabled {
-  border-color: var(--ga-border);
-  background: rgba(207, 239, 255, 0.07);
-  color: var(--ga-text-muted);
+.ax-ai-chip.is-primary[aria-disabled="true"],
+.ax-ai-chip.is-primary:disabled {
+  border-color: var(--ax-border);
+  background: rgba(205, 218, 244, 0.07);
+  color: var(--ax-text-muted);
   box-shadow: none;
   opacity: 0.72;
 }
 
-.ga-ai-chip[aria-disabled="true"],
-.ga-ai-chip:disabled {
+.ax-ai-chip[aria-disabled="true"],
+.ax-ai-chip:disabled {
   opacity: 0.72;
   cursor: not-allowed;
 }
 
-.ga-icon-button {
+.ax-icon-button {
   position: relative;
   width: 40px;
   padding: 0;
 }
 
-.ga-notifications-button {
+.ax-notifications-button {
   border: 0 !important;
   background: transparent;
   box-shadow: none;
 }
 
-.ga-notifications-button.is-unavailable {
-  color: var(--ga-warning);
+.ax-notifications-button.is-unavailable {
+  color: var(--ax-warning);
 }
 
-.ga-notifications-button.is-unavailable::after {
+.ax-notifications-button.is-unavailable::after {
   content: "";
   position: absolute;
   right: 8px;
@@ -631,11 +631,11 @@ body {
   width: 6px;
   height: 6px;
   border-radius: 999px;
-  background: var(--ga-warning);
+  background: var(--ax-warning);
   box-shadow: 0 0 8px rgba(255, 181, 71, 0.7);
 }
 
-.ga-help-button {
+.ax-help-button {
   width: 34px;
   min-height: 34px;
   border: 0 !important;
@@ -643,66 +643,66 @@ body {
   box-shadow: none !important;
 }
 
-.ga-ai-chip:hover:not(:disabled),
-.ga-icon-button:hover {
-  border-color: var(--ga-border-strong);
-  background: rgba(102, 197, 255, 0.12);
-  color: var(--ga-text);
+.ax-ai-chip:hover:not(:disabled),
+.ax-icon-button:hover {
+  border-color: var(--ax-border-strong);
+  background: rgba(116, 151, 220, 0.12);
+  color: var(--ax-text);
 }
 
-.ga-ai-chip:focus-visible:not(:disabled),
-.ga-icon-button:focus-visible {
-  border-color: var(--ga-border-strong);
-  /* canonical --ga-focus ring (was outline: none, leaving keyboard
+.ax-ai-chip:focus-visible:not(:disabled),
+.ax-icon-button:focus-visible {
+  border-color: var(--ax-border-strong);
+  /* canonical --ax-focus ring (was outline: none, leaving keyboard
      focus indistinguishable from hover) */
-  outline: 2px solid var(--ga-focus, rgba(102, 197, 255, 0.42));
+  outline: 2px solid var(--ax-focus, rgba(116, 151, 220, 0.42));
   outline-offset: 2px;
 }
 
-.ga-notifications-button:hover,
-.ga-notifications-button:focus-visible,
-.ga-help-button:hover,
-.ga-help-button:focus-visible {
+.ax-notifications-button:hover,
+.ax-notifications-button:focus-visible,
+.ax-help-button:hover,
+.ax-help-button:focus-visible {
   border: 0 !important;
   /* was transparent — a completely dead hover; give the borderless
      topbar icons the same subtle tint as the other chrome controls.
-     !important because the .ga-help-button base pins its background
+     !important because the .ax-help-button base pins its background
      with !important. */
-  background: rgba(102, 197, 255, 0.12) !important;
-  color: var(--ga-text);
+  background: rgba(116, 151, 220, 0.12) !important;
+  color: var(--ax-text);
   box-shadow: none;
 }
 
-.ga-notifications-button:focus-visible,
-.ga-help-button:focus-visible {
-  outline: 2px solid rgba(102, 197, 255, 0.5);
+.ax-notifications-button:focus-visible,
+.ax-help-button:focus-visible {
+  outline: 2px solid rgba(116, 151, 220, 0.5);
   outline-offset: 2px;
 }
 
-.ga-status-dot {
+.ax-status-dot {
   width: 8px;
   height: 8px;
   border-radius: 999px;
-  background: var(--ga-text-muted);
+  background: var(--ax-text-muted);
   box-shadow: 0 0 12px rgba(143, 168, 182, 0.38);
 }
 
-.ga-env-chip.tone-good .ga-status-dot {
-  background: var(--ga-success);
+.ax-env-chip.tone-good .ax-status-dot {
+  background: var(--ax-success);
   box-shadow: 0 0 12px rgba(46, 230, 166, 0.62);
 }
 
-.ga-env-chip.tone-warn .ga-status-dot {
-  background: var(--ga-warning);
+.ax-env-chip.tone-warn .ax-status-dot {
+  background: var(--ax-warning);
   box-shadow: 0 0 12px rgba(255, 181, 71, 0.46);
 }
 
-.ga-env-chip.tone-bad .ga-status-dot {
-  background: var(--ga-danger);
+.ax-env-chip.tone-bad .ax-status-dot {
+  background: var(--ax-danger);
   box-shadow: 0 0 12px rgba(255, 92, 108, 0.46);
 }
 
-.ga-notification-count {
+.ax-notification-count {
   position: absolute;
   top: -5px;
   right: -5px;
@@ -710,8 +710,8 @@ body {
   height: 18px;
   padding: 0 5px;
   border-radius: 999px;
-  background: var(--ga-bright-blue);
-  color: var(--ga-navy-980);
+  background: var(--ax-bright-blue);
+  color: var(--ax-navy-980);
   font-size: 0.68rem;
   font-weight: 700;
   display: inline-flex;
@@ -719,103 +719,103 @@ body {
   justify-content: center;
 }
 
-.ga-topbar .ga-user-chip-trigger {
+.ax-topbar .ax-user-chip-trigger {
   min-width: auto;
   gap: 8px;
   padding: 2px 6px 2px 2px;
   border-color: transparent;
   background: transparent;
-  color: var(--ga-text);
+  color: var(--ax-text);
 }
 
-.ga-topbar .ga-user-chip-trigger:hover {
-  border-color: var(--ga-border);
-  background: rgba(102, 197, 255, 0.08);
+.ax-topbar .ax-user-chip-trigger:hover {
+  border-color: var(--ax-border);
+  background: rgba(116, 151, 220, 0.08);
 }
 
-.ga-topbar .ga-user-chip-caret {
-  color: var(--ga-text-muted);
+.ax-topbar .ax-user-chip-caret {
+  color: var(--ax-text-muted);
 }
 
-.ga-topbar .ga-user-chip-avatar {
-  box-shadow: 0 0 0 2px rgba(207, 239, 255, 0.12);
+.ax-topbar .ax-user-chip-avatar {
+  box-shadow: 0 0 0 2px rgba(205, 218, 244, 0.12);
 }
 
-.ga-topbar .ga-user-chip-menu {
-  border-color: var(--ga-border);
-  background: var(--ga-surface-strong);
-  box-shadow: var(--ga-shadow-md);
+.ax-topbar .ax-user-chip-menu {
+  border-color: var(--ax-border);
+  background: var(--ax-surface-strong);
+  box-shadow: var(--ax-shadow-md);
 }
 
-.ga-topbar .ga-user-chip-menu-header {
-  border-bottom-color: var(--ga-border);
+.ax-topbar .ax-user-chip-menu-header {
+  border-bottom-color: var(--ax-border);
 }
 
-.ga-topbar .ga-user-chip-menu-name,
-.ga-topbar .ga-user-chip-menu-item {
-  color: var(--ga-text);
+.ax-topbar .ax-user-chip-menu-name,
+.ax-topbar .ax-user-chip-menu-item {
+  color: var(--ax-text);
 }
 
-.ga-topbar .ga-user-chip-menu-email {
-  color: var(--ga-text-muted);
+.ax-topbar .ax-user-chip-menu-email {
+  color: var(--ax-text-muted);
 }
 
-.ga-topbar .ga-user-chip-menu-item:hover,
-.ga-topbar .ga-user-chip-menu-item:focus-visible {
-  background: rgba(102, 197, 255, 0.1);
+.ax-topbar .ax-user-chip-menu-item:hover,
+.ax-topbar .ax-user-chip-menu-item:focus-visible {
+  background: rgba(116, 151, 220, 0.1);
 }
 
-.ga-topbar .ga-user-chip-avatar-input {
+.ax-topbar .ax-user-chip-avatar-input {
   display: none;
 }
 
-.ga-metric-card,
-.ga-section-card,
-.ga-right-inspector,
-.ga-atlas-ai-panel {
-  border: 1px solid var(--ga-border);
-  border-radius: var(--ga-radius-lg);
-  background: var(--ga-surface);
-  box-shadow: var(--ga-glass-highlight), var(--ga-shadow-sm);
+.ax-metric-card,
+.ax-section-card,
+.ax-right-inspector,
+.ax-axiom-ai-panel {
+  border: 1px solid var(--ax-border);
+  border-radius: var(--ax-radius-lg);
+  background: var(--ax-surface);
+  box-shadow: var(--ax-glass-highlight), var(--ax-shadow-sm);
 }
 
-.ga-metric-card-head,
-.ga-metric-main,
-.ga-section-card-header,
-.ga-right-inspector-header,
-.ga-atlas-ai-panel header {
+.ax-metric-card-head,
+.ax-metric-main,
+.ax-section-card-header,
+.ax-right-inspector-header,
+.ax-axiom-ai-panel header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
 
-.ga-metric-icon,
-.ga-ai-mark,
-.ga-action-tile-icon {
-  color: var(--ga-bright-blue);
+.ax-metric-icon,
+.ax-ai-mark,
+.ax-action-tile-icon {
+  color: var(--ax-bright-blue);
 }
 
-.ga-section-card,
-.ga-right-inspector,
-.ga-atlas-ai-panel {
+.ax-section-card,
+.ax-right-inspector,
+.ax-axiom-ai-panel {
   padding: 16px;
 }
 
-.ga-ai-accuracy-notice {
+.ax-ai-accuracy-notice {
   margin: 8px 0 0;
   padding: 8px 10px;
-  border: 1px solid rgba(102, 197, 255, 0.22);
+  border: 1px solid rgba(116, 151, 220, 0.22);
   border-radius: 7px;
   background: rgba(8, 30, 50, 0.82);
-  color: var(--ga-text-soft);
+  color: var(--ax-text-soft);
   font-size: 0.72rem;
   line-height: 1.35;
 }
 
-.ga-section-card h2,
-.ga-right-inspector h2,
-.ga-atlas-ai-panel h2 {
+.ax-section-card h2,
+.ax-right-inspector h2,
+.ax-axiom-ai-panel h2 {
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
@@ -826,7 +826,7 @@ body {
     --gh-side-rail-w: 210px;
   }
 
-  .ga-topbar {
+  .ax-topbar {
     grid-template-columns: minmax(0, 1fr);
     height: auto;
     min-height: 72px;
@@ -835,11 +835,11 @@ body {
   }
 
   .gh-app.gh-app-with-rail,
-.ga-shell-app {
+.ax-shell-app {
     grid-template-rows: auto minmax(0, 1fr) 56px;
   }
 
-  .ga-topbar-actions {
+  .ax-topbar-actions {
     justify-content: flex-start;
     flex-wrap: wrap;
   }}
@@ -848,18 +848,18 @@ body {
 
 @media (max-width: 1440px) {
   .gh-app.gh-app-with-rail,
-.ga-shell-app {
+.ax-shell-app {
     --gh-side-rail-w: clamp(208px, 10.15vw, 298px);
   }
 
-  .gh-shell-topbar.ga-topbar,
-.ga-shell-topbar.ga-topbar {
+  .gh-shell-topbar.ax-topbar,
+.ax-shell-topbar.ax-topbar {
     grid-template-columns: minmax(170px, 0.8fr) minmax(300px, 1fr) minmax(300px, 0.9fr) !important;
     gap: 12px !important;
     padding: 0 16px 0 18px !important;
   }
 
-  .ga-topbar {
+  .ax-topbar {
     grid-template-columns: minmax(170px, 0.8fr) minmax(300px, 1fr) minmax(300px, 0.9fr);
     gap: 12px;
     padding: 0 16px 0 18px;
@@ -867,12 +867,12 @@ body {
 
 
 
-/* Final shell authority for the Atlas North Star visual contract.
+/* Final shell authority for the Axiom North Star visual contract.
    Older shell-rail rules still carry !important declarations from the
-   pre-Atlas layout, so this block intentionally wins the topbar and
+   pre-Axiom layout, so this block intentionally wins the topbar and
    degraded-banner geometry without changing component behavior. */
 .gh-app.gh-app-with-rail,
-.ga-shell-app {
+.ax-shell-app {
   grid-template-columns: var(--gh-side-rail-w, 240px) minmax(0, 1fr) !important;
   grid-template-rows: 72px minmax(0, 1fr) !important;
   grid-template-areas:
@@ -882,16 +882,16 @@ body {
 }
 
 .gh-app.gh-app-with-rail > .gh-shell-header,
-.ga-shell-app > .ga-shell-header {
+.ax-shell-app > .ax-shell-header {
   height: 72px !important;
   min-height: 72px !important;
   overflow: visible !important;
-  background: var(--ga-chrome-bg) !important;
-  border-bottom: 1px solid var(--ga-border) !important;
+  background: var(--ax-chrome-bg) !important;
+  border-bottom: 1px solid var(--ax-border) !important;
 }
 
-.gh-app.gh-app-with-rail > .ga-side-nav.gh-side-rail,
-.ga-shell-app > .ga-side-nav.ga-shell-rail {
+.gh-app.gh-app-with-rail > .ax-side-nav.gh-side-rail,
+.ax-shell-app > .ax-side-nav.ax-shell-rail {
   grid-area: rail !important;
   position: relative !important;
   inset: auto !important;
@@ -907,37 +907,37 @@ body {
   overflow: hidden !important;
 }
 
-.gh-shell-topbar.ga-topbar,
-.ga-shell-topbar.ga-topbar {
+.gh-shell-topbar.ax-topbar,
+.ax-shell-topbar.ax-topbar {
   height: 72px !important;
   display: grid !important;
   grid-template-columns: minmax(300px, 1fr) minmax(440px, 720px) minmax(420px, 1fr) !important;
   align-items: center !important;
   gap: 18px !important;
   padding: 0 22px 0 28px !important;
-  background: var(--ga-topbar-bg, #08172a) !important;
+  background: var(--ax-topbar-bg, #08172a) !important;
   border: 0 !important;
   box-shadow: none !important;
 }
 
-:root[data-theme="dark"] .gh-shell-topbar.ga-topbar,
-:root[data-theme="dark"] .ga-shell-topbar.ga-topbar {
-  background: var(--ga-topbar-bg, #08172a) !important;
+:root[data-theme="dark"] .gh-shell-topbar.ax-topbar,
+:root[data-theme="dark"] .ax-shell-topbar.ax-topbar {
+  background: var(--ax-topbar-bg, #08172a) !important;
 }
 
-.gh-shell-topbar.ga-topbar .ga-workspace-breadcrumb,
-.ga-shell-topbar.ga-topbar .ga-workspace-breadcrumb {
+.gh-shell-topbar.ax-topbar .ax-workspace-breadcrumb,
+.ax-shell-topbar.ax-topbar .ax-workspace-breadcrumb {
   display: inline-flex !important;
   min-width: 0 !important;
 }
 
-.gh-shell-topbar.ga-topbar .ga-topbar-search-slot,
-.ga-shell-topbar.ga-topbar .ga-topbar-search-slot {
+.gh-shell-topbar.ax-topbar .ax-topbar-search-slot,
+.ax-shell-topbar.ax-topbar .ax-topbar-search-slot {
   min-width: 320px !important;
 }
 
-.gh-shell-topbar.ga-topbar .ga-topbar-actions,
-.ga-shell-topbar.ga-topbar .ga-topbar-actions {
+.gh-shell-topbar.ax-topbar .ax-topbar-actions,
+.ax-shell-topbar.ax-topbar .ax-topbar-actions {
   display: inline-flex !important;
   flex-wrap: nowrap !important;
   justify-content: flex-end !important;
@@ -948,7 +948,7 @@ body {
    extraction so these rules intentionally override the legacy light card
    browser without disturbing the shared data hooks. */
 .gh-main,
-.ga-shell-main {
+.ax-shell-main {
   overflow: auto !important;
   /* Always reserve the scrollbar gutter so the content width never changes when
      the vertical scrollbar appears/disappears (e.g. results collapse to a
@@ -982,66 +982,66 @@ body {
 
 
 @media (max-width: 1600px) and (min-width: 1281px) {
-  .gh-shell-topbar.ga-topbar,
-.ga-shell-topbar.ga-topbar {
+  .gh-shell-topbar.ax-topbar,
+.ax-shell-topbar.ax-topbar {
     grid-template-columns: minmax(170px, 0.72fr) minmax(300px, 480px) minmax(0, max-content) !important;
     gap: 12px !important;
     padding-right: 12px !important;
   }
 
-  .gh-shell-topbar.ga-topbar .ga-topbar-search-slot,
-.ga-shell-topbar.ga-topbar .ga-topbar-search-slot {
+  .gh-shell-topbar.ax-topbar .ax-topbar-search-slot,
+.ax-shell-topbar.ax-topbar .ax-topbar-search-slot {
     min-width: 0 !important;
   }
 
-  .gh-shell-topbar.ga-topbar .ga-topbar-actions,
-.ga-shell-topbar.ga-topbar .ga-topbar-actions {
+  .gh-shell-topbar.ax-topbar .ax-topbar-actions,
+.ax-shell-topbar.ax-topbar .ax-topbar-actions {
     gap: 8px !important;
     min-width: 0 !important;
   }
 
-  .gh-shell-topbar.ga-topbar .ga-env-chip,
-.ga-shell-topbar.ga-topbar .ga-env-chip {
+  .gh-shell-topbar.ax-topbar .ax-env-chip,
+.ax-shell-topbar.ax-topbar .ax-env-chip {
     max-width: 220px !important;
     padding-inline: 10px !important;
   }
 
-  .gh-shell-topbar.ga-topbar .ga-env-chip > span:not(.ga-status-dot),
-.ga-shell-topbar.ga-topbar .ga-env-chip > span:not(.ga-status-dot) {
+  .gh-shell-topbar.ax-topbar .ax-env-chip > span:not(.ax-status-dot),
+.ax-shell-topbar.ax-topbar .ax-env-chip > span:not(.ax-status-dot) {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  .gh-shell-topbar.ga-topbar .ga-icon-button,
-.ga-shell-topbar.ga-topbar .ga-icon-button {
+  .gh-shell-topbar.ax-topbar .ax-icon-button,
+.ax-shell-topbar.ax-topbar .ax-icon-button {
     width: 36px !important;
   }}
 
 
 
 @media (max-width: 1280px) {
-  .gh-shell-topbar.ga-topbar,
-.ga-shell-topbar.ga-topbar {
+  .gh-shell-topbar.ax-topbar,
+.ax-shell-topbar.ax-topbar {
     grid-template-columns: minmax(180px, auto) minmax(240px, 1fr) auto !important;
     gap: 12px !important;
     padding: 0 18px !important;
   }
 
-  .gh-shell-topbar.ga-topbar .ga-workspace-breadcrumb,
-.ga-shell-topbar.ga-topbar .ga-workspace-breadcrumb {
+  .gh-shell-topbar.ax-topbar .ax-workspace-breadcrumb,
+.ax-shell-topbar.ax-topbar .ax-workspace-breadcrumb {
     min-width: 0 !important;
   }
 
-  .gh-shell-topbar.ga-topbar .ga-topbar-search-slot,
-.ga-shell-topbar.ga-topbar .ga-topbar-search-slot {
+  .gh-shell-topbar.ax-topbar .ax-topbar-search-slot,
+.ax-shell-topbar.ax-topbar .ax-topbar-search-slot {
     min-width: 240px !important;
   }
 
-  .gh-shell-topbar.ga-topbar .ga-env-chip,
-  .gh-shell-topbar.ga-topbar .ga-ai-chip,
-.ga-shell-topbar.ga-topbar .ga-env-chip,
-.ga-shell-topbar.ga-topbar .ga-ai-chip {
+  .gh-shell-topbar.ax-topbar .ax-env-chip,
+  .gh-shell-topbar.ax-topbar .ax-ai-chip,
+.ax-shell-topbar.ax-topbar .ax-env-chip,
+.ax-shell-topbar.ax-topbar .ax-ai-chip {
     padding-inline: 10px !important;
   }}
 
@@ -1049,66 +1049,66 @@ body {
 
 @media (max-height: 760px) and (min-width: 981px) {
   .gh-app.gh-app-with-rail,
-.ga-shell-app {
+.ax-shell-app {
     grid-template-rows: 56px minmax(0, 1fr) !important;
   }
 
   .gh-app.gh-app-with-rail > .gh-shell-header,
-.ga-shell-app > .ga-shell-header {
+.ax-shell-app > .ax-shell-header {
     height: 56px !important;
     min-height: 56px !important;
   }
 
-  .gh-shell-topbar.ga-topbar,
-.ga-shell-topbar.ga-topbar {
+  .gh-shell-topbar.ax-topbar,
+.ax-shell-topbar.ax-topbar {
     height: 56px !important;
     gap: 14px !important;
     padding: 0 20px !important;
   }
 
-  .ga-env-chip,
-  .ga-ai-chip,
-  .ga-icon-button {
+  .ax-env-chip,
+  .ax-ai-chip,
+  .ax-icon-button {
     min-height: 34px;
     font-size: 0.8rem;
   }
 
-  .ga-icon-button {
+  .ax-icon-button {
     width: 36px;
   }
 
-  .ga-topbar .ga-user-chip-avatar {
+  .ax-topbar .ax-user-chip-avatar {
     width: 36px !important;
     height: 36px !important;
     font-size: 14px !important;
   }
 
-  .ga-side-nav.gh-side-rail,
-.ga-side-nav.ga-shell-rail {
+  .ax-side-nav.gh-side-rail,
+.ax-side-nav.ax-shell-rail {
     padding: 14px 12px 0;
   }
 
-  .ga-side-nav-logo {
+  .ax-side-nav-logo {
     min-height: 36px;
     padding: 0 8px 12px;
   }
 
-  .ga-side-nav-logo img {
+  .ax-side-nav-logo img {
     width: 32px;
     height: 32px;
   }
 
-  .ga-side-nav-items {
+  .ax-side-nav-items {
     gap: 3px;
     padding: 12px 0;
   }
 
-  .ga-side-nav-item {
+  .ax-side-nav-item {
     min-height: 32px;
     font-size: 0.82rem;
   }
 
-  .ga-side-nav-user {
+  .ax-side-nav-user {
     min-height: 36px;
   }}
 
@@ -1116,12 +1116,12 @@ body {
 
 @media (max-width: 1440px) {
   .gh-app.gh-app-with-rail,
-.ga-shell-app {
+.ax-shell-app {
     --gh-side-rail-w: 240px;
   }
 
-  .gh-shell-topbar.ga-topbar,
-.ga-shell-topbar.ga-topbar {
+  .gh-shell-topbar.ax-topbar,
+.ax-shell-topbar.ax-topbar {
     grid-template-columns: minmax(140px, auto) minmax(260px, 1fr) max-content !important;
     gap: 12px !important;
     padding: 0 16px 0 18px !important;
@@ -1132,72 +1132,72 @@ body {
 /* Current North Star shell authority. Keep these variables late in the cascade
    because legacy shell rules still carry fixed header assumptions. */
 .gh-app.gh-app-with-rail,
-.ga-shell-app {
+.ax-shell-app {
   --gh-side-rail-w: clamp(208px, 7.9vw, 240px);
-  --ga-topbar-h: 56px;
-  --ga-topbar-search-w: clamp(480px, 18.5vw, 560px);
-  grid-template-rows: var(--ga-topbar-h, 70px) minmax(0, 1fr) !important;
+  --ax-topbar-h: 56px;
+  --ax-topbar-search-w: clamp(480px, 18.5vw, 560px);
+  grid-template-rows: var(--ax-topbar-h, 70px) minmax(0, 1fr) !important;
 }
 
 @media (min-width: 1800px) {
   .gh-app.gh-app-with-rail,
-.ga-shell-app {
+.ax-shell-app {
     --gh-side-rail-w: clamp(240px, 10.15vw, 298px);
-    --ga-topbar-h: clamp(56px, 2.39vw, 70px);
+    --ax-topbar-h: clamp(56px, 2.39vw, 70px);
   }}
 
 
 
 .gh-app.gh-app-with-rail > .gh-shell-header,
-.ga-shell-app > .ga-shell-header {
-  height: var(--ga-topbar-h, 70px) !important;
-  min-height: var(--ga-topbar-h, 70px) !important;
-  border-bottom: 1px solid var(--ga-border) !important;
-  background: var(--ga-topbar-bg, #08172a) !important;
+.ax-shell-app > .ax-shell-header {
+  height: var(--ax-topbar-h, 70px) !important;
+  min-height: var(--ax-topbar-h, 70px) !important;
+  border-bottom: 1px solid var(--ax-border) !important;
+  background: var(--ax-topbar-bg, #08172a) !important;
 }
 
-.gh-shell-topbar.ga-topbar,
-.ga-shell-topbar.ga-topbar {
-  height: var(--ga-topbar-h, 70px) !important;
-  grid-template-columns: minmax(300px, 1fr) minmax(440px, var(--ga-topbar-search-w, 700px)) minmax(420px, 1fr) !important;
+.gh-shell-topbar.ax-topbar,
+.ax-shell-topbar.ax-topbar {
+  height: var(--ax-topbar-h, 70px) !important;
+  grid-template-columns: minmax(300px, 1fr) minmax(440px, var(--ax-topbar-search-w, 700px)) minmax(420px, 1fr) !important;
   gap: 16px !important;
   padding: 0 20px !important;
-  background: var(--ga-topbar-bg, #08172a) !important;
+  background: var(--ax-topbar-bg, #08172a) !important;
   box-shadow: inset 0 -1px 0 #142c46 !important;
 }
 
-.ga-side-nav.gh-side-rail,
-.ga-side-nav.ga-shell-rail {
+.ax-side-nav.gh-side-rail,
+.ax-side-nav.ax-shell-rail {
   padding: 0 12px 0 !important;
 }
 
-.ga-side-nav-logo {
-  height: var(--ga-topbar-h, 70px) !important;
-  min-height: var(--ga-topbar-h, 70px) !important;
+.ax-side-nav-logo {
+  height: var(--ax-topbar-h, 70px) !important;
+  min-height: var(--ax-topbar-h, 70px) !important;
   gap: 10px !important;
   padding: 0 6px !important;
 }
 
-.ga-side-nav-logo img {
+.ax-side-nav-logo img {
   width: clamp(32px, 1.35vw, 40px) !important;
   height: clamp(32px, 1.35vw, 40px) !important;
 }
 
-.ga-side-nav-items {
+.ax-side-nav-items {
   padding-top: 18px !important;
 }
 
-.ga-notifications-button.is-unavailable {
-  color: var(--ga-text-muted) !important;
+.ax-notifications-button.is-unavailable {
+  color: var(--ax-text-muted) !important;
 }
 
-.ga-notifications-button.is-unavailable::after {
+.ax-notifications-button.is-unavailable::after {
   display: none !important;
 }
 
 @media (max-width: 1600px) and (min-width: 1281px) {
-  .gh-shell-topbar.ga-topbar,
-.ga-shell-topbar.ga-topbar {
+  .gh-shell-topbar.ax-topbar,
+.ax-shell-topbar.ax-topbar {
     grid-template-columns: minmax(170px, 0.72fr) minmax(300px, 480px) minmax(0, max-content) !important;
     gap: 12px !important;
     padding-right: 12px !important;
@@ -1206,8 +1206,8 @@ body {
 
 
 @media (max-width: 1280px) {
-  .gh-shell-topbar.ga-topbar,
-.ga-shell-topbar.ga-topbar {
+  .gh-shell-topbar.ax-topbar,
+.ax-shell-topbar.ax-topbar {
     grid-template-columns: minmax(180px, auto) minmax(240px, 1fr) auto !important;
     gap: 12px !important;
     padding: 0 16px !important;
@@ -1224,7 +1224,7 @@ body {
 
 /* ---------- Live indicator (pulsing green dot) ----------
    Used in the Command Center hero "Live · refreshed Xs ago" stamp. */
-.ga-live-dot {
+.ax-live-dot {
   position: relative;
   display: inline-block;
   width: 8px;
@@ -1234,97 +1234,97 @@ body {
   box-shadow: 0 0 8px rgba(52, 211, 153, 0.65);
   vertical-align: middle;
 }
-.ga-live-dot::after {
+.ax-live-dot::after {
   content: "";
   position: absolute;
   inset: -4px;
   border-radius: 999px;
   border: 1px solid rgba(52, 211, 153, 0.65);
-  animation: ga-live-dot-pulse 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  animation: ax-live-dot-pulse 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
   opacity: 0.7;
 }
-@keyframes ga-live-dot-pulse {
+@keyframes ax-live-dot-pulse {
   0%   { transform: scale(0.7); opacity: 0.85; }
   60%  { transform: scale(1.6); opacity: 0; }
   100% { transform: scale(1.6); opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .ga-live-dot::after { animation: none; opacity: 0.4; }}
+  .ax-live-dot::after { animation: none; opacity: 0.4; }}
 
 
 /* ---------- Brand shadows ---------- */
 :root {
-  --ga-shadow-brand: 0 12px 32px rgba(2, 80, 128, 0.28);
-  --ga-shadow-pop:   0 24px 60px rgba(0, 0, 0, 0.55), 0 1px 0 rgba(255, 255, 255, 0.04) inset;
-  --ga-shadow-card:  0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 8px 24px rgba(0, 0, 0, 0.35);
+  --ax-shadow-brand: 0 12px 32px rgba(50, 83, 150, 0.28);
+  --ax-shadow-pop:   0 24px 60px rgba(0, 0, 0, 0.55), 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  --ax-shadow-card:  0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 8px 24px rgba(0, 0, 0, 0.35);
 }
-@keyframes ga-endpoint-pulse {
+@keyframes ax-endpoint-pulse {
   0%   { r: 4; opacity: 0.85; }
   60%  { r: 14; opacity: 0; }
   100% { r: 14; opacity: 0; }
 }
 
 /* ---------- AI panel state machine ---------- */
-.ga-ai-stage {
+.ax-ai-stage {
   padding: 16px 18px;
-  border: 1px solid rgba(61, 132, 173, 0.18);
-  background: linear-gradient(180deg, rgba(61, 132, 173, 0.05), transparent);
+  border: 1px solid rgba(91, 127, 208, 0.18);
+  background: linear-gradient(180deg, rgba(91, 127, 208, 0.05), transparent);
   border-radius: 10px;
   position: relative;
 }
-.ga-ai-stage.is-thinking {
-  border-color: rgba(102, 197, 255, 0.35);
+.ax-ai-stage.is-thinking {
+  border-color: rgba(116, 151, 220, 0.35);
 }
-.ga-ai-stage-label {
+.ax-ai-stage-label {
   font-size: 10.5px;
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #66c5ff;
+  color: #7497dc;
   margin-bottom: 8px;
   display: flex;
   align-items: center;
   gap: 8px;
 }
-.ga-ai-stage-plan-line {
+.ax-ai-stage-plan-line {
   display: flex;
   align-items: flex-start;
   gap: 8px;
   font-size: 12.5px;
-  color: var(--ga-text-muted, #b2bdc2);
+  color: var(--ax-text-muted, #c8c8c8);
   margin-bottom: 6px;
   line-height: 1.5;
   opacity: 0;
-  animation: ga-ai-plan-line-in 320ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: ax-ai-plan-line-in 320ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
-@keyframes ga-ai-plan-line-in {
+@keyframes ax-ai-plan-line-in {
   from { opacity: 0; transform: translateY(4px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.ga-ai-stage-plan-mono {
+.ax-ai-stage-plan-mono {
   font-family: "JetBrains Mono", ui-monospace, monospace;
-  color: #5ce1e6;
+  color: #c8c8c8;
   font-size: 11.5px;
-  background: rgba(92, 225, 230, 0.06);
+  background: rgba(200, 200, 200, 0.06);
   padding: 1px 5px;
   border-radius: 4px;
 }
-.ga-ai-stage-caret {
+.ax-ai-stage-caret {
   display: inline-block;
   width: 7px;
   height: 12px;
-  background: #66c5ff;
+  background: #7497dc;
   vertical-align: middle;
   margin-left: 2px;
-  animation: ga-ai-caret-blink 1s steps(2, end) infinite;
+  animation: ax-ai-caret-blink 1s steps(2, end) infinite;
 }
-@keyframes ga-ai-caret-blink {
+@keyframes ax-ai-caret-blink {
   0%, 50%   { opacity: 1; }
   50.01%, 100% { opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .ga-ai-stage-plan-line { animation: none; opacity: 1; }
-  .ga-ai-stage-caret { animation: none; }}
+  .ax-ai-stage-plan-line { animation: none; opacity: 1; }
+  .ax-ai-stage-caret { animation: none; }}
 
 
 
@@ -1334,7 +1334,7 @@ body {
    The legacy `app.css` carries 30+ rules with hardcoded #fff / #fdfaf1 /
    #faf6ec / rgba(255,255,255,0.x) backgrounds inherited from the original
    light cream theme. They were never re-tokened when the app shifted to
-   the Entrada dark navy palette, which is why the Inbox panel, Sort
+   the dark navy palette, which is why the Inbox panel, Sort
    dropdown, popovers, command palette, and various surface-rail panels
    keep rendering as cream blocks against the dark shell.
    This override block targets every offender at the SELECTOR level so
@@ -1345,8 +1345,8 @@ body {
 
 /* Shell header — was hardcoded #faf6ec !important */
 .gh-shell-header,
-.ga-shell-header {
-  background: var(--ga-shell, #08172a) !important;
+.ax-shell-header {
+  background: var(--ax-shell, #08172a) !important;
   border-bottom: 1px solid rgba(20, 44, 70, 0.85) !important;
 }
 
@@ -1355,7 +1355,7 @@ body {
 .gh-shell-inbox-panel {
   background: linear-gradient(180deg, rgba(17, 44, 72, 0.92), rgba(8, 23, 42, 0.92)) !important;
   border: 1px solid rgba(20, 44, 70, 0.85) !important;
-  color: var(--ga-text, #dce6ed) !important;
+  color: var(--ax-text, #dce6ed) !important;
 }
 .gh-search-dropdown,
 .gh-filters-popover,
@@ -1376,7 +1376,7 @@ body {
 .gh-shell-nav-band,
 .gh-lineage-edge-toggle {
   background: linear-gradient(180deg, rgba(17, 44, 72, 0.92), rgba(8, 23, 42, 0.92)) !important;
-  color: var(--ga-text-strong, #ffffff) !important;
+  color: var(--ax-text-strong, #ffffff) !important;
   border-color: rgba(20, 44, 70, 0.85) !important;
 }
 
@@ -1390,9 +1390,9 @@ body {
 .gh-floating-menu,
 [role="menu"],
 [role="listbox"] {
-  background: var(--ga-shell, #0c2138) !important;
-  border: 1px solid rgba(61, 132, 173, 0.32) !important;
-  color: var(--ga-text-strong, #ffffff) !important;
+  background: var(--ax-shell, #0c2138) !important;
+  border: 1px solid rgba(91, 127, 208, 0.32) !important;
+  color: var(--ax-text-strong, #ffffff) !important;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), 0 1px 0 rgba(255, 255, 255, 0.04) inset !important;
 }
 [role="menu"] [role="menuitem"],
@@ -1401,7 +1401,7 @@ body {
 .gh-popover button,
 .gh-popover [role="option"] {
   background: transparent !important;
-  color: var(--ga-text, #dce6ed) !important;
+  color: var(--ax-text, #dce6ed) !important;
   border: 0 !important;
 }
 [role="menu"] [role="menuitem"]:hover,
@@ -1410,25 +1410,25 @@ body {
 [role="listbox"] [role="option"][aria-selected="true"],
 .gh-select-menu button:hover,
 .gh-popover button:hover {
-  background: rgba(61, 132, 173, 0.18) !important;
-  color: var(--ga-text-strong, #ffffff) !important;
+  background: rgba(91, 127, 208, 0.18) !important;
+  color: var(--ax-text-strong, #ffffff) !important;
 }
 
 /* Buttons that were on a white surface — keep brand-cyan ghost styling */
 .gh-secondary-button,
 .gh-tertiary-button {
   background: rgba(8, 23, 42, 0.78) !important;
-  color: var(--ga-text, #dce6ed) !important;
-  border-color: rgba(61, 132, 173, 0.32) !important;
+  color: var(--ax-text, #dce6ed) !important;
+  border-color: rgba(91, 127, 208, 0.32) !important;
 }
 .gh-secondary-button:hover,
 .gh-tertiary-button:hover {
-  background: rgba(61, 132, 173, 0.20) !important;
-  color: var(--ga-text-strong, #ffffff) !important;
-  border-color: rgba(102, 197, 255, 0.45) !important;
+  background: rgba(91, 127, 208, 0.20) !important;
+  color: var(--ax-text-strong, #ffffff) !important;
+  border-color: rgba(116, 151, 220, 0.45) !important;
 }
 
-@keyframes ga-kpi-hydrate-pulse {
+@keyframes ax-kpi-hydrate-pulse {
   0%, 100% { opacity: 0.45; }
   50% { opacity: 0.75; }
 }
@@ -1438,7 +1438,7 @@ body {
    --------------------------------------------------------------------------
    Desktop (>=981px) is untouched — every rule below is inside a max-width
    media query. These rules are the FINAL word for narrow viewports: the shell
-   grid/topbar/header above carry priority flags from the pre-Atlas layout, so
+   grid/topbar/header above carry priority flags from the pre-Axiom layout, so
    this block must sit at the end of the cascade to win without adding new
    overrides. Two fixes:
      1. <=980px — stack the topbar into one column and let the header row grow
@@ -1454,18 +1454,18 @@ body {
 
 @media (max-width: 980px) {
   .gh-app.gh-app-with-rail,
-  .ga-shell-app {
+  .ax-shell-app {
     grid-template-rows: auto minmax(0, 1fr) !important;
   }
 
   .gh-app.gh-app-with-rail > .gh-shell-header,
-  .ga-shell-app > .ga-shell-header {
+  .ax-shell-app > .ax-shell-header {
     height: auto !important;
     min-height: 56px !important;
   }
 
-  .gh-shell-topbar.ga-topbar,
-  .ga-shell-topbar.ga-topbar {
+  .gh-shell-topbar.ax-topbar,
+  .ax-shell-topbar.ax-topbar {
     height: auto !important;
     min-height: 56px !important;
     grid-template-columns: minmax(0, 1fr) !important;
@@ -1474,25 +1474,25 @@ body {
     padding: 12px 16px !important;
   }
 
-  .gh-shell-topbar.ga-topbar .ga-workspace-breadcrumb,
-  .gh-shell-topbar.ga-topbar .ga-topbar-search-slot,
-  .gh-shell-topbar.ga-topbar .ga-topbar-actions,
-  .ga-shell-topbar.ga-topbar .ga-workspace-breadcrumb,
-  .ga-shell-topbar.ga-topbar .ga-topbar-search-slot,
-  .ga-shell-topbar.ga-topbar .ga-topbar-actions {
+  .gh-shell-topbar.ax-topbar .ax-workspace-breadcrumb,
+  .gh-shell-topbar.ax-topbar .ax-topbar-search-slot,
+  .gh-shell-topbar.ax-topbar .ax-topbar-actions,
+  .ax-shell-topbar.ax-topbar .ax-workspace-breadcrumb,
+  .ax-shell-topbar.ax-topbar .ax-topbar-search-slot,
+  .ax-shell-topbar.ax-topbar .ax-topbar-actions {
     min-width: 0 !important;
     width: 100% !important;
   }
 
-  .gh-shell-topbar.ga-topbar .ga-topbar-actions,
-  .ga-shell-topbar.ga-topbar .ga-topbar-actions {
+  .gh-shell-topbar.ax-topbar .ax-topbar-actions,
+  .ax-shell-topbar.ax-topbar .ax-topbar-actions {
     flex-wrap: wrap !important;
     justify-content: flex-start !important;
   }
 }
 
 @media (max-width: 900px) {
-  .ga-shell-app {
+  .ax-shell-app {
     --gh-side-rail-w: 60px;
   }
 }

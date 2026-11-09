@@ -4,7 +4,7 @@
  * Replaces App.jsx's 10-22-prop drilling: route wrappers (SurfaceRoutes.jsx)
  * read bootstrap/shell/capability signals from here and pass ONLY the props
  * each legacy surface genuinely consumes. Navigation callbacks are NOT in the
- * context — they come from app-shell/legacyAdapters.js over useAtlasNavigate.
+ * context — they come from app-shell/legacyAdapters.js over useAxiomNavigate.
  */
 
 import { createContext, useContext } from "react";

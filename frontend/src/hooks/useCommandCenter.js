@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { fetchCommandCenter } from "../lib/api";
-import { pollBudgetExhausted, useAtlasQuery } from "./useAtlasQuery";
+import { pollBudgetExhausted, useAxiomQuery } from "./useAxiomQuery";
 
 // Last dashboard payload that carried real backed signal, held at MODULE level
 // so it survives navigating away from the Command Center and back — a
@@ -127,8 +127,8 @@ export function useCommandCenter(options = {}) {
   const seedData = resolvedOptions.seedData || null;
   const [pendingRefresh, setPendingRefresh] = useState(false);
 
-  const { query } = useAtlasQuery({
-    key: ["atlas", "command-center", pendingRefresh ? "force" : "cache"],
+  const { query } = useAxiomQuery({
+    key: ["axiom", "command-center", pendingRefresh ? "force" : "cache"],
     fetch: (signal) =>
       fetchCommandCenter({ signal, refresh: pendingRefresh }).finally(() => {
         if (pendingRefresh) setPendingRefresh(false);
@@ -163,7 +163,7 @@ export function useCommandCenter(options = {}) {
     if (freshBacked) lastBackedCommandCenter = query.data;
   }, [freshBacked, query.data]);
   const pollExhausted = pollBudgetExhausted(
-    ["atlas", "command-center", pendingRefresh ? "force" : "cache"],
+    ["axiom", "command-center", pendingRefresh ? "force" : "cache"],
     COMMAND_CENTER_POLL.maxAttempts,
   );
   const canRetain =

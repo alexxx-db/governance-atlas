@@ -12,7 +12,7 @@ import { LineageCanvasV2 } from "../../../components/lineage-v2/LineageCanvasV2"
 
 export function LineageTab({ fqn, graph, onFocusChange }) {
   return (
-    <div className="ga-asset-lineage-embed">
+    <div className="ax-asset-lineage-embed">
       <LineageCanvasV2
         graph={graph}
         focusId={fqn}

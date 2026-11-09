@@ -1,0 +1,599 @@
+[
+  {
+    "questions": [
+      "Which glossary terms are linked to customer assets?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 5.0
+  },
+  {
+    "questions": [
+      "Which assets have no lineage activity in the last 90 days?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 3,
+    "error": null,
+    "seconds": 14.6
+  },
+  {
+    "questions": [
+      "What is the certification rate by domain?",
+      "Which domains are furthest behind on certification?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 1,
+    "error": null,
+    "seconds": 8.0
+  },
+  {
+    "questions": [
+      "Show the latest governance audit events.",
+      "What changed in governance metadata recently?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 4.9
+  },
+  {
+    "questions": [
+      "What new tables showed up this month?",
+      "Which assets were created in the last 30 days?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 50,
+    "error": null,
+    "seconds": 4.5
+  },
+  {
+    "questions": [
+      "How many lineage events were observed per day in the last 30 days?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 5,
+    "error": null,
+    "seconds": 11.4
+  },
+  {
+    "questions": [
+      "How many assets does each owner steward?",
+      "Who owns the most assets?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 2.6
+  },
+  {
+    "questions": [
+      "Which assets are missing stewardship attention?",
+      "Which tables need stewardship follow-up?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 25,
+    "error": null,
+    "seconds": 4.9
+  },
+  {
+    "questions": [
+      "Which glossary terms are missing a definition, owner, or reviewers?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 2.0
+  },
+  {
+    "questions": [
+      "How big is the governance backlog by status?",
+      "How many governance requests are there by status and type?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 2.2
+  },
+  {
+    "questions": [
+      "Which certification labels are in use?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 1,
+    "error": null,
+    "seconds": 3.9
+  },
+  {
+    "questions": [
+      "Show orphaned tables with no steward.",
+      "Which assets have no assigned owner?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 50,
+    "error": null,
+    "seconds": 3.8
+  },
+  {
+    "questions": [
+      "List uncertified critical tables.",
+      "Which critical assets are not certified?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 4.4
+  },
+  {
+    "questions": [
+      "Which assets have not changed in over 180 days?",
+      "Which tables look stale or unmaintained?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 3.8
+  },
+  {
+    "questions": [
+      "Which glossary terms are waiting for review?",
+      "Which glossary terms still need approval?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 2.3
+  },
+  {
+    "questions": [
+      "Are there any PII or confidential tables without an owner?",
+      "Which sensitive assets have no owner?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 3.9
+  },
+  {
+    "questions": [
+      "Which assets have the most open governance work?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 1.9
+  },
+  {
+    "questions": [
+      "Give me a breakdown of tables and views per schema.",
+      "How many assets do we have by schema and type?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 5,
+    "error": null,
+    "seconds": 3.5
+  },
+  {
+    "questions": [
+      "Who has been changing metadata the most this month?",
+      "Who made the most metadata changes in the last 30 days?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 2.2
+  },
+  {
+    "questions": [
+      "Which quality checks failed in the last 7 days?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 1.7
+  },
+  {
+    "questions": [
+      "Which critical assets have no sensitivity classification?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 3.2
+  },
+  {
+    "questions": [
+      "Who submitted the most governance requests this quarter?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 1.9
+  },
+  {
+    "questions": [
+      "What is our overall metadata coverage?",
+      "What percent of our assets are documented, owned, and classified?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 1,
+    "error": null,
+    "seconds": 3.7
+  },
+  {
+    "questions": [
+      "List tables that are missing a description.",
+      "Which assets have no description?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 50,
+    "error": null,
+    "seconds": 3.8
+  },
+  {
+    "questions": [
+      "How are assets distributed across domains?",
+      "How many assets does each business domain have?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 1,
+    "error": null,
+    "seconds": 3.6
+  },
+  {
+    "questions": [
+      "Show me data quality issues impacting critical assets."
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 2.5
+  },
+  {
+    "questions": [
+      "Which requests were rejected and why?",
+      "Why were change requests rejected?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 1.9
+  },
+  {
+    "questions": [
+      "What data quality tests are failing right now?",
+      "Which quality checks are currently failing?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 2.3
+  },
+  {
+    "questions": [
+      "How many audit events happened per day by action over the last 30 days?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 2.1
+  },
+  {
+    "questions": [
+      "Which data products have the most assets?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 3.8
+  },
+  {
+    "questions": [
+      "What changed on critical assets in the last 30 days?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 1.5
+  },
+  {
+    "questions": [
+      "Show the assets with the worst metadata completeness.",
+      "Which assets have the lowest metadata coverage?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 25,
+    "error": null,
+    "seconds": 3.2
+  },
+  {
+    "questions": [
+      "Which governance changes failed or were not applied?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 1.5
+  },
+  {
+    "questions": [
+      "Which critical assets feed uncertified downstream assets?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 12.2
+  },
+  {
+    "questions": [
+      "How many glossary terms are there per domain and status?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 1.6
+  },
+  {
+    "questions": [
+      "How long do governance reviews take on average?",
+      "What is the average review turnaround time?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 2.1
+  },
+  {
+    "questions": [
+      "Which reviewers approved or rejected the most requests?",
+      "Who is reviewing the most governance requests?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 2.2
+  },
+  {
+    "questions": [
+      "Where are policy exceptions concentrated by domain?",
+      "Which domains have the highest risk of policy exceptions?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 1,
+    "error": null,
+    "seconds": 4.6
+  },
+  {
+    "questions": [
+      "Which critical assets have no data quality checks?",
+      "Which critical tables have no quality tests?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 4.5
+  },
+  {
+    "questions": [
+      "What open governance work is on critical assets?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 1.6
+  },
+  {
+    "questions": [
+      "What is the oldest open governance work?",
+      "Which governance tasks have been open the longest?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 1.7
+  },
+  {
+    "questions": [
+      "What is the quality pass rate by asset?",
+      "Which tables have the worst data quality pass rate?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 2.0
+  },
+  {
+    "questions": [
+      "Which schemas are least documented?",
+      "Which schemas have the most undocumented assets?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 3,
+    "error": null,
+    "seconds": 3.0
+  },
+  {
+    "questions": [
+      "Which business terms are unused?",
+      "Which glossary terms are not linked to any asset?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 1.6
+  },
+  {
+    "questions": [
+      "Which assets have the most downstream dependents?",
+      "Which tables would break the most things downstream if they changed?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 25,
+    "error": null,
+    "seconds": 8.6
+  },
+  {
+    "questions": [
+      "Which assets depend on the most upstream sources?",
+      "Which assets have the most upstream inputs?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 25,
+    "error": null,
+    "seconds": 9.1
+  },
+  {
+    "questions": [
+      "Where is our PII?",
+      "Which assets contain sensitive or PII data?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 3.2
+  },
+  {
+    "questions": [
+      "Which glossary terms are linked to the most assets?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 2.1
+  },
+  {
+    "questions": [
+      "List the 10 most recently changed assets."
+    ],
+    "state": "SUCCEEDED",
+    "rows": 10,
+    "error": null,
+    "seconds": 3.8
+  },
+  {
+    "questions": [
+      "Which assets had the most audit events in the last 30 days?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 1.8
+  },
+  {
+    "questions": [
+      "Which unowned assets have downstream dependents?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 24,
+    "error": null,
+    "seconds": 12.2
+  },
+  {
+    "questions": [
+      "Which open requests are older than 14 days?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 2.1
+  },
+  {
+    "questions": [
+      "How many governance requests were closed in the last 30 days?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 2.3
+  },
+  {
+    "questions": [
+      "What percentage of assets are certified?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 1,
+    "error": null,
+    "seconds": 5.3
+  },
+  {
+    "questions": [
+      "Which assets have no domain tag?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 50,
+    "error": null,
+    "seconds": 4.1
+  },
+  {
+    "questions": [
+      "How many assets are unclassified for sensitivity?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 1,
+    "error": null,
+    "seconds": 3.9
+  },
+  {
+    "questions": [
+      "How many glossary terms are approved?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 1,
+    "error": null,
+    "seconds": 1.6
+  },
+  {
+    "questions": [
+      "How many critical assets do we have?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 1,
+    "error": null,
+    "seconds": 3.3
+  },
+  {
+    "questions": [
+      "Which owner assignments changed recently?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 1.4
+  },
+  {
+    "questions": [
+      "How many distinct lineage edges were observed in the last 90 days?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 1,
+    "error": null,
+    "seconds": 10.6
+  },
+  {
+    "questions": [
+      "How many quality checks passed, failed, or errored?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 1.7
+  },
+  {
+    "questions": [
+      "Which columns have failing quality checks?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 0,
+    "error": null,
+    "seconds": 1.5
+  },
+  {
+    "questions": [
+      "How many tables versus views do we have?"
+    ],
+    "state": "SUCCEEDED",
+    "rows": 3,
+    "error": null,
+    "seconds": 3.4
+  }
+]

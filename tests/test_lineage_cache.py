@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from atlas.services import lineage as lineage_service
+from axiom.services import lineage as lineage_service
 
 
 class FakeUC:
@@ -31,7 +31,7 @@ class LineageCacheTests(unittest.TestCase):
                 "sequence": len(load_calls),
             }
 
-        with patch("atlas.services.lineage._build_lineage_payload", side_effect=fake_build):
+        with patch("axiom.services.lineage._build_lineage_payload", side_effect=fake_build):
             alice_first = lineage_service.lineage_payload(
                 uc,
                 store,
@@ -140,7 +140,7 @@ class LineageCacheTests(unittest.TestCase):
         )
         uc = RecommendationUC()
 
-        with patch("atlas.services.lineage.asset_service.visible_assets", return_value=visible):
+        with patch("axiom.services.lineage.asset_service.visible_assets", return_value=visible):
             payload = lineage_service.lineage_recommendations_payload(uc, object(), limit=2)
 
         self.assertEqual([item["fqn"] for item in payload["items"]], [
@@ -248,7 +248,7 @@ class LineageCacheTests(unittest.TestCase):
         )
         uc = DensityUC()
 
-        with patch("atlas.services.lineage.asset_service.visible_assets", return_value=visible):
+        with patch("axiom.services.lineage.asset_service.visible_assets", return_value=visible):
             payload = lineage_service.lineage_recommendations_payload(uc, object(), limit=2)
 
         self.assertEqual([item["fqn"] for item in payload["items"]], [
@@ -289,7 +289,7 @@ class LineageCacheTests(unittest.TestCase):
                 return pd.DataFrame(
                     [
                         {
-                            "asset_fqn": "main.datapact.run_history",
+                            "asset_fqn": "main.emet.run_history",
                             "upstreamCount": 3,
                             "downstreamCount": 7,
                             "edgeCount": 10,
@@ -316,8 +316,8 @@ class LineageCacheTests(unittest.TestCase):
         visible = pd.DataFrame(
             [
                 {
-                    "fqn": "datapact.visible.seed",
-                    "table_catalog": "datapact",
+                    "fqn": "emet.visible.seed",
+                    "table_catalog": "emet",
                     "table_schema": "visible",
                     "table_name": "seed",
                     "table_type": "TABLE",
@@ -327,13 +327,13 @@ class LineageCacheTests(unittest.TestCase):
         )
         uc = DensityFallbackUC()
 
-        with patch("atlas.services.lineage.asset_service.visible_assets", return_value=visible):
+        with patch("axiom.services.lineage.asset_service.visible_assets", return_value=visible):
             payload = lineage_service.lineage_recommendations_payload(uc, object(), limit=1)
 
-        self.assertEqual([item["fqn"] for item in payload["items"]], ["main.datapact.run_history"])
+        self.assertEqual([item["fqn"] for item in payload["items"]], ["main.emet.run_history"])
         self.assertEqual(payload["items"][0]["edgeCount"], 10)
         self.assertEqual(payload["meta"]["rankingSource"], "system.access.table_lineage.aggregate-fallback")
-        self.assertEqual(uc.identity_calls, ["main.datapact.run_history"])
+        self.assertEqual(uc.identity_calls, ["main.emet.run_history"])
 
     def test_invalidate_lineage_caches_clears_all_scoped_variants_for_asset(self) -> None:
         uc = FakeUC()
@@ -347,7 +347,7 @@ class LineageCacheTests(unittest.TestCase):
                 "sequence": len(load_calls),
             }
 
-        with patch("atlas.services.lineage._build_lineage_payload", side_effect=fake_build):
+        with patch("axiom.services.lineage._build_lineage_payload", side_effect=fake_build):
             lineage_service.lineage_payload(
                 uc,
                 store,
@@ -368,7 +368,7 @@ class LineageCacheTests(unittest.TestCase):
 
         self.assertEqual(lineage_service._TTL_CACHE, {})
 
-        with patch("atlas.services.lineage._build_lineage_payload", side_effect=fake_build):
+        with patch("axiom.services.lineage._build_lineage_payload", side_effect=fake_build):
             lineage_service.lineage_payload(
                 uc,
                 store,
@@ -392,7 +392,7 @@ class LineageCacheTests(unittest.TestCase):
                 "sequence": len(load_calls),
             }
 
-        with patch("atlas.services.lineage._build_lineage_payload", side_effect=fake_build):
+        with patch("axiom.services.lineage._build_lineage_payload", side_effect=fake_build):
             initial = lineage_service.lineage_payload(
                 uc,
                 store,
@@ -490,7 +490,7 @@ class LineageCacheTests(unittest.TestCase):
         def fake_build(_uc, _store, asset_fqn: str, **_kwargs):
             return {"fqn": asset_fqn}
 
-        with patch("atlas.services.lineage._build_lineage_payload", side_effect=fake_build):
+        with patch("axiom.services.lineage._build_lineage_payload", side_effect=fake_build):
             lineage_service.lineage_payload(
                 uc, store, "main.sales.ap", cache_scope="alice@example.com"
             )
@@ -561,7 +561,7 @@ class LineageCacheTests(unittest.TestCase):
         )
         visible_inventory = pd.DataFrame(columns=["fqn"])
 
-        with patch("atlas.services.lineage.asset_service.inventory_row", return_value=row):
+        with patch("axiom.services.lineage.asset_service.inventory_row", return_value=row):
             node = lineage_service.graph_node_for_asset(
                 FakeUC(),
                 object(),
@@ -632,7 +632,7 @@ class LineageCacheTests(unittest.TestCase):
                 "kind": "Table",
             }
 
-        with patch("atlas.services.lineage.graph_node_for_asset", side_effect=fake_node):
+        with patch("axiom.services.lineage.graph_node_for_asset", side_effect=fake_node):
             branch = lineage_service._recursive_branch_graph(
                 LineageUC(),
                 object(),

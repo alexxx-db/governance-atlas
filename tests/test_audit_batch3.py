@@ -8,13 +8,13 @@ from datetime import datetime, timezone
 
 import pandas as pd
 
-from atlas.services import atlas_metrics
-from atlas.services import export as export_service
+from axiom.services import axiom_metrics
+from axiom.services import export as export_service
 
 
 class CategoryTrendTests(unittest.TestCase):
     def test_snapshot_rows_from_domains_and_tiers(self):
-        rows = atlas_metrics._category_snapshot_rows(
+        rows = axiom_metrics._category_snapshot_rows(
             [{"domain": "Risk", "label": "Risk", "score": 41.0, "assetCount": 5}],
             [{"tier": "critical", "label": "Critical", "value": 75.0, "total": 8}],
         )
@@ -37,7 +37,7 @@ class CategoryTrendTests(unittest.TestCase):
                     ]
                 )
 
-        series = atlas_metrics._category_trend_series(FakeStore(), "app", "domain", "score")
+        series = axiom_metrics._category_trend_series(FakeStore(), "app", "domain", "score")
         self.assertEqual(len(series), 2)
         risk = next(s for s in series if s["key"] == "Risk")
         finance = next(s for s in series if s["key"] == "Finance")
@@ -53,7 +53,7 @@ class CategoryTrendTests(unittest.TestCase):
             def list_governance_category_snapshots(self, **_kw):
                 return pd.DataFrame()
 
-        self.assertEqual(atlas_metrics._category_trend_series(EmptyStore(), "app", "domain", "score"), [])
+        self.assertEqual(axiom_metrics._category_trend_series(EmptyStore(), "app", "domain", "score"), [])
 
 
 class EvidencePackTests(unittest.TestCase):
@@ -91,13 +91,13 @@ class BoardReportTests(unittest.TestCase):
         ins = {"certificationCoverageByTier": [{"tier": "critical", "label": "Critical", "value": 75, "certified": 6, "total": 8}], "recommendations": [{"title": "Certify 2 critical assets"}]}
         return export_service.build_board_report_html(
             command_center=cc, insights=ins, actor_email="a@b.ai",
-            generated_at=datetime.now(timezone.utc), org_name="Entrada",
+            generated_at=datetime.now(timezone.utc), org_name="Shore Capital Partners",
         )
 
     def test_report_is_self_contained_html_with_real_values(self):
         html = self._report()
         self.assertTrue(html.startswith("<!doctype html>"))
-        self.assertIn("Entrada", html)
+        self.assertIn("Shore Capital Partners", html)
         self.assertIn("Risk", html)
         self.assertIn("120", html)  # governed assets
 
@@ -126,7 +126,7 @@ class ExportRowConcurrencyTests(unittest.TestCase):
         saved = sys.modules.get("runtime_app")
         sys.modules["runtime_app"] = rt
         try:
-            from atlas.api import export as export_api
+            from axiom.api import export as export_api
 
             return [row["fqn"] for row in export_api._build_rows(fqns, request=None)]
         finally:

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Governance Atlas launcher."""
+"""Axiom launcher."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 from typing import Final
 
-from atlas.runtime_contract import validate_frontend_bundle
+from axiom.runtime_contract import validate_frontend_bundle
 
 
 APP_ENTRYPOINT: Final[str] = "runtime_app:app"
@@ -17,7 +17,7 @@ APP_MODULE: Final[str] = "runtime_app"
 ROOT: Final[Path] = Path(__file__).resolve().parent
 FRONTEND_DIST: Final[Path] = ROOT / "frontend" / "dist" / "index.html"
 FRONTEND_ASSETS: Final[Path] = ROOT / "frontend" / "dist" / "assets"
-FRONTEND_BUILD_MANIFEST: Final[Path] = ROOT / "frontend" / "dist" / "atlas-build-manifest.json"
+FRONTEND_BUILD_MANIFEST: Final[Path] = ROOT / "frontend" / "dist" / "axiom-build-manifest.json"
 
 
 def _port() -> str:
@@ -36,10 +36,10 @@ def _exec(cmd: list[str]) -> None:
 def _run_runtime() -> None:
     if importlib.util.find_spec(APP_MODULE) is None:
         raise SystemExit(
-            "Governance Atlas runtime is unavailable: backend module runtime_app.py is missing."
+            "Axiom runtime is unavailable: backend module runtime_app.py is missing."
         )
     if importlib.util.find_spec("uvicorn") is None:
-        raise SystemExit("Governance Atlas requires uvicorn to be installed.")
+        raise SystemExit("Axiom requires uvicorn to be installed.")
     try:
         validate_frontend_bundle(ROOT)
     except RuntimeError as exc:
@@ -54,6 +54,11 @@ def _run_runtime() -> None:
             "0.0.0.0",
             "--port",
             _port(),
+            # One process on purpose: extra workers would each keep their own
+            # metadata caches and multiply warehouse load. Concurrency is
+            # bounded by AXIOM_SQL_MAX_CONCURRENCY and AXIOM_THREADPOOL_SIZE.
+            "--workers",
+            "1",
         ]
     )
 

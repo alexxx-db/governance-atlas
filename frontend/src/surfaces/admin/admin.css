@@ -1,8 +1,8 @@
 /*
  * surfaces/admin/admin.css — Control Center surface styles (Wave C6).
  * Convention mirrors surfaces/stewardship/stewardship.css: AdminPage.jsx
- * imports this one file, all classes are `ga-admin-*`, all colors are
- * `--ga-*` tokens or token-derived translucents, zero hex, zero
+ * imports this one file, all classes are `ax-admin-*`, all colors are
+ * `--ax-*` tokens or token-derived translucents, zero hex, zero
  * importance overrides (check-css guardrails). Chrome (cards, tables,
  * badges, tabs, state views) comes from the system kit — this file is
  * layout + admin-specific detail only.
@@ -10,61 +10,61 @@
 
 /* ---------------------------------------------------------------- layout */
 
-.ga-admin-tab-body {
+.ax-admin-tab-body {
   display: grid;
   gap: 16px;
   align-content: start;
 }
 
-.ga-admin-page .ga-admin-card {
+.ax-admin-page .ax-admin-card {
   min-width: 0;
 }
 
-.ga-admin-access-card {
+.ax-admin-access-card {
   margin-top: 8px;
 }
 
 /* ------------------------------------------------------- summary tiles */
 
-.ga-admin-summary-grid {
+.ax-admin-summary-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 10px;
 }
 
-.ga-admin-summary-tile {
+.ax-admin-summary-tile {
   display: grid;
   gap: 2px;
   padding: 12px 14px;
-  border: 1px solid var(--ga-border-muted);
-  border-radius: var(--ga-radius-md);
-  background: var(--ga-surface-muted);
+  border: 1px solid var(--ax-border-muted);
+  border-radius: var(--ax-radius-md);
+  background: var(--ax-surface-muted);
   min-width: 0;
 }
 
-.ga-admin-summary-tile small {
+.ax-admin-summary-tile small {
   font-size: 11px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
 }
 
-.ga-admin-summary-tile strong {
+.ax-admin-summary-tile strong {
   font-size: 16px;
-  color: var(--ga-text-strong);
+  color: var(--ax-text-strong);
   overflow-wrap: anywhere;
 }
 
-.ga-admin-summary-tile span {
+.ax-admin-summary-tile span {
   font-size: 12px;
-  color: var(--ga-text-soft);
+  color: var(--ax-text-soft);
   overflow-wrap: anywhere;
 }
 
 /* Clickable summary value (warehouse → SQL warehouse, users → workspace admin).
    Flex so the external icon centers against the value instead of riding the
    text baseline. */
-.ga-admin-summary-link {
+.ax-admin-summary-link {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -72,42 +72,42 @@
   color: inherit;
 }
 
-.ga-admin-summary-link:hover strong,
-.ga-admin-summary-link:focus-visible strong {
-  color: var(--ga-bright-blue);
+.ax-admin-summary-link:hover strong,
+.ax-admin-summary-link:focus-visible strong {
+  color: var(--ax-bright-blue);
 }
 
-.ga-admin-summary-ext {
+.ax-admin-summary-ext {
   flex: none;
-  color: var(--ga-text-faint);
+  color: var(--ax-text-faint);
 }
 
-.ga-admin-summary-link:hover .ga-admin-summary-ext,
-.ga-admin-summary-link:focus-visible .ga-admin-summary-ext {
-  color: var(--ga-bright-blue);
+.ax-admin-summary-link:hover .ax-admin-summary-ext,
+.ax-admin-summary-link:focus-visible .ax-admin-summary-ext {
+  color: var(--ax-bright-blue);
 }
 
 /* ---------------------------------------------------------------- jobs */
 
-.ga-admin-job-name {
-  color: var(--ga-text-strong);
+.ax-admin-job-name {
+  color: var(--ax-text-strong);
   overflow-wrap: anywhere;
 }
 
-.ga-admin-external-link {
-  color: var(--ga-bright-blue);
+.ax-admin-external-link {
+  color: var(--ax-bright-blue);
   text-decoration: none;
   white-space: nowrap;
 }
 
-.ga-admin-external-link:hover,
-.ga-admin-external-link:focus-visible {
+.ax-admin-external-link:hover,
+.ax-admin-external-link:focus-visible {
   text-decoration: underline;
 }
 
 /* ------------------------------------------------------------ activity */
 
-.ga-admin-activity-list {
+.ax-admin-activity-list {
   display: grid;
   gap: 10px;
   list-style: none;
@@ -115,135 +115,135 @@
   padding: 0;
 }
 
-.ga-admin-activity-list li {
+.ax-admin-activity-list li {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 12px;
   padding: 10px 12px;
-  border: 1px solid var(--ga-border-muted);
-  border-radius: var(--ga-radius-md);
-  background: var(--ga-surface-muted);
+  border: 1px solid var(--ax-border-muted);
+  border-radius: var(--ax-radius-md);
+  background: var(--ax-surface-muted);
 }
 
-.ga-admin-activity-list b {
+.ax-admin-activity-list b {
   display: grid;
   place-items: center;
   width: 30px;
   height: 30px;
-  border-radius: var(--ga-radius-pill);
-  background: var(--ga-surface-raised);
-  color: var(--ga-bright-blue);
+  border-radius: var(--ax-radius-pill);
+  background: var(--ax-surface-raised);
+  color: var(--ax-bright-blue);
   font-size: 13px;
 }
 
-.ga-admin-activity-copy {
+.ax-admin-activity-copy {
   display: grid;
   gap: 2px;
   min-width: 0;
 }
 
-.ga-admin-activity-copy strong {
-  color: var(--ga-text-strong);
+.ax-admin-activity-copy strong {
+  color: var(--ax-text-strong);
   font-size: 13px;
 }
 
-.ga-admin-activity-detail {
+.ax-admin-activity-detail {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
   font-size: 12px;
-  color: var(--ga-text-soft);
+  color: var(--ax-text-soft);
 }
 
-.ga-admin-activity-list time {
+.ax-admin-activity-list time {
   font-size: 12px;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   white-space: nowrap;
 }
 
 /* -------------------------------------------------------- integrations */
 
-.ga-admin-integration-grid {
+.ax-admin-integration-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 12px;
 }
 
-.ga-admin-integration-card {
+.ax-admin-integration-card {
   display: grid;
   gap: 6px;
   align-content: start;
   padding: 14px;
-  border: 1px solid var(--ga-border-muted);
-  border-radius: var(--ga-radius-md);
-  background: var(--ga-surface-muted);
+  border: 1px solid var(--ax-border-muted);
+  border-radius: var(--ax-radius-md);
+  background: var(--ax-surface-muted);
   min-width: 0;
 }
 
-.ga-admin-integration-card header {
+.ax-admin-integration-card header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
 }
 
-.ga-admin-integration-card strong {
-  color: var(--ga-text-strong);
+.ax-admin-integration-card strong {
+  color: var(--ax-text-strong);
   font-size: 14px;
 }
 
-.ga-admin-integration-sub {
+.ax-admin-integration-sub {
   font-size: 12px;
-  color: var(--ga-text-soft);
+  color: var(--ax-text-soft);
 }
 
-.ga-admin-integration-reason {
+.ax-admin-integration-reason {
   margin: 0;
   font-size: 12px;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
 }
 
 /* -------------------------------------------------------------- policy */
 
-.ga-admin-policy-grid {
+.ax-admin-policy-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 12px;
 }
 
-.ga-admin-policy-card {
+.ax-admin-policy-card {
   display: grid;
   gap: 4px;
   padding: 14px;
-  border: 1px solid var(--ga-border-muted);
-  border-radius: var(--ga-radius-md);
-  background: var(--ga-surface-muted);
+  border: 1px solid var(--ax-border-muted);
+  border-radius: var(--ax-radius-md);
+  background: var(--ax-surface-muted);
 }
 
-.ga-admin-policy-card small {
+.ax-admin-policy-card small {
   font-size: 11px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
 }
 
-.ga-admin-policy-card strong {
+.ax-admin-policy-card strong {
   font-size: 20px;
-  color: var(--ga-text-strong);
+  color: var(--ax-text-strong);
 }
 
-.ga-admin-policy-card.is-unavailable strong {
-  color: var(--ga-text-muted);
+.ax-admin-policy-card.is-unavailable strong {
+  color: var(--ax-text-muted);
 }
 
-.ga-admin-policy-card span {
+.ax-admin-policy-card span {
   font-size: 12px;
-  color: var(--ga-text-soft);
+  color: var(--ax-text-soft);
 }
 
-.ga-admin-coverage-list {
+.ax-admin-coverage-list {
   display: grid;
   gap: 10px;
   list-style: none;
@@ -251,58 +251,58 @@
   padding: 0;
 }
 
-.ga-admin-coverage-list li {
+.ax-admin-coverage-list li {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 4px 12px;
   padding: 10px 12px;
-  border: 1px solid var(--ga-border-muted);
-  border-radius: var(--ga-radius-md);
-  background: var(--ga-surface-muted);
+  border: 1px solid var(--ax-border-muted);
+  border-radius: var(--ax-radius-md);
+  background: var(--ax-surface-muted);
 }
 
-.ga-admin-coverage-list li strong {
-  color: var(--ga-text-strong);
+.ax-admin-coverage-list li strong {
+  color: var(--ax-text-strong);
   font-size: 14px;
 }
 
-.ga-admin-coverage-list li.is-unavailable strong {
-  color: var(--ga-text-muted);
+.ax-admin-coverage-list li.is-unavailable strong {
+  color: var(--ax-text-muted);
 }
 
-.ga-admin-coverage-label {
+.ax-admin-coverage-label {
   min-width: 0;
   font-size: 13px;
-  color: var(--ga-text);
+  color: var(--ax-text);
 }
 
-.ga-admin-coverage-note {
+.ax-admin-coverage-note {
   grid-column: 1 / -1;
   font-style: normal;
   font-size: 12px;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
 }
 
-.ga-admin-coverage-bar {
+.ax-admin-coverage-bar {
   grid-column: 1 / -1;
   display: block;
   height: 4px;
-  border-radius: var(--ga-radius-pill);
-  background: var(--ga-surface-raised);
+  border-radius: var(--ax-radius-pill);
+  background: var(--ax-surface-raised);
   overflow: hidden;
 }
 
-.ga-admin-coverage-bar b {
+.ax-admin-coverage-bar b {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: var(--ga-bright-blue);
+  background: var(--ax-bright-blue);
 }
 
 /* --------------------------------------------------------- diagnostics */
 
-.ga-admin-diagnostics-toolbar {
+.ax-admin-diagnostics-toolbar {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -310,92 +310,92 @@
   flex-wrap: wrap;
 }
 
-.ga-admin-diagnostics-note {
+.ax-admin-diagnostics-note {
   margin: 0;
   max-width: 72ch;
   font-size: 12px;
-  color: var(--ga-text-soft);
+  color: var(--ax-text-soft);
 }
 
-.ga-admin-diagnostics-note code {
-  color: var(--ga-text);
+.ax-admin-diagnostics-note code {
+  color: var(--ax-text);
 }
 
-.ga-admin-kv-grid {
+.ax-admin-kv-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 10px;
 }
 
-.ga-admin-kv {
+.ax-admin-kv {
   display: grid;
   gap: 4px;
   padding: 10px 12px;
-  border: 1px solid var(--ga-border-muted);
-  border-radius: var(--ga-radius-md);
-  background: var(--ga-surface-muted);
+  border: 1px solid var(--ax-border-muted);
+  border-radius: var(--ax-radius-md);
+  background: var(--ax-surface-muted);
   min-width: 0;
 }
 
-.ga-admin-kv-label {
+.ax-admin-kv-label {
   font-size: 11px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
 }
 
-.ga-admin-kv-value {
+.ax-admin-kv-value {
   overflow-wrap: anywhere;
 }
 
-.ga-admin-kv-hint {
+.ax-admin-kv-hint {
   font-size: 12px;
-  color: var(--ga-text-soft);
+  color: var(--ax-text-soft);
 }
 
 /* ---------------------------------------------------------- truth check */
 
-.ga-admin-truth-catalog {
+.ax-admin-truth-catalog {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-.ga-admin-truth-delta {
+.ax-admin-truth-delta {
   font-variant-numeric: tabular-nums;
 }
 
-.ga-admin-truth-delta.tone-muted {
-  color: var(--ga-text-muted);
+.ax-admin-truth-delta.tone-muted {
+  color: var(--ax-text-muted);
 }
 
-.ga-admin-truth-delta.tone-warn {
-  color: var(--ga-warning);
+.ax-admin-truth-delta.tone-warn {
+  color: var(--ax-warning);
 }
 
-.ga-admin-truth-delta.tone-bad {
-  color: var(--ga-danger);
+.ax-admin-truth-delta.tone-bad {
+  color: var(--ax-danger);
 }
 
-.ga-admin-truth-meta {
+.ax-admin-truth-meta {
   margin: 0;
   font-size: 12px;
-  color: var(--ga-text-soft);
+  color: var(--ax-text-soft);
 }
 
-.ga-admin-truth-meta code {
+.ax-admin-truth-meta code {
   margin-inline: 3px;
-  color: var(--ga-text);
+  color: var(--ax-text);
 }
 
-.ga-admin-truth-queries summary {
+.ax-admin-truth-queries summary {
   cursor: pointer;
   font-size: 13px;
-  color: var(--ga-text);
+  color: var(--ax-text);
 }
 
-.ga-admin-truth-queries ul {
+.ax-admin-truth-queries ul {
   display: grid;
   gap: 10px;
   list-style: none;
@@ -403,16 +403,16 @@
   padding: 0;
 }
 
-.ga-admin-truth-queries li {
+.ax-admin-truth-queries li {
   display: grid;
   gap: 6px;
   padding: 10px 12px;
-  border: 1px solid var(--ga-border-muted);
-  border-radius: var(--ga-radius-md);
-  background: var(--ga-surface-muted);
+  border: 1px solid var(--ax-border-muted);
+  border-radius: var(--ax-radius-md);
+  background: var(--ax-surface-muted);
 }
 
-.ga-admin-truth-queries li header {
+.ax-admin-truth-queries li header {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -420,131 +420,131 @@
   flex-wrap: wrap;
 }
 
-.ga-admin-truth-queries li header span {
+.ax-admin-truth-queries li header span {
   font-size: 12px;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
 }
 
-.ga-admin-truth-queries pre {
+.ax-admin-truth-queries pre {
   margin: 0;
   padding: 8px 10px;
-  border-radius: var(--ga-radius-sm);
-  background: var(--ga-surface-raised);
-  color: var(--ga-text-soft);
+  border-radius: var(--ax-radius-sm);
+  background: var(--ax-surface-raised);
+  color: var(--ax-text-soft);
   font-size: 12px;
   overflow-x: auto;
 }
 
-.ga-admin-truth-query-error {
+.ax-admin-truth-query-error {
   margin: 0;
   font-size: 12px;
-  color: var(--ga-danger);
+  color: var(--ax-danger);
 }
 
-.ga-admin-truth-state {
+.ax-admin-truth-state {
   margin: 0;
   font-size: 12px;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
 }
 
 /* Audit G4: explicit enforcement-gap note in the Policy coverage panel. */
-.ga-admin-coverage-note {
+.ax-admin-coverage-note {
   margin: 0 0 12px;
   padding: 10px 12px;
-  border: 1px solid var(--ga-border-muted);
+  border: 1px solid var(--ax-border-muted);
   border-radius: 8px;
-  background: var(--ga-surface-muted);
-  color: var(--ga-text-muted);
+  background: var(--ax-surface-muted);
+  color: var(--ax-text-muted);
   font-size: 13px;
   line-height: 1.45;
 }
 
 /* G3 — Roles tab: assign-a-role form + roster table. */
-.ga-admin-roles-form {
+.ax-admin-roles-form {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
   gap: 14px;
 }
-.ga-admin-roles-field { display: flex; flex-direction: column; gap: 6px; min-width: 220px; }
-.ga-admin-roles-field > span { color: var(--ga-text-muted); font-size: 12px; }
-.ga-admin-roles-select {
+.ax-admin-roles-field { display: flex; flex-direction: column; gap: 6px; min-width: 220px; }
+.ax-admin-roles-field > span { color: var(--ax-text-muted); font-size: 12px; }
+.ax-admin-roles-select {
   padding: 9px 12px;
   border-radius: 10px;
-  border: 1px solid var(--ga-border);
-  background: var(--ga-surface);
-  color: var(--ga-text);
+  border: 1px solid var(--ax-border);
+  background: var(--ax-surface);
+  color: var(--ax-text);
   font: inherit;
 }
-.ga-admin-roles-select:focus { outline: none; border-color: var(--ga-bright-blue); }
-.ga-admin-roles-hint { margin: 10px 0 0; color: var(--ga-text-muted); font-size: 12px; }
-.ga-admin-form-error { margin: 10px 0 0; color: var(--ga-danger); font-size: 13px; }
-.ga-admin-roles-scroll { overflow-x: auto; width: 100%; }
-.ga-admin-roles-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-.ga-admin-roles-table thead th {
+.ax-admin-roles-select:focus { outline: none; border-color: var(--ax-bright-blue); }
+.ax-admin-roles-hint { margin: 10px 0 0; color: var(--ax-text-muted); font-size: 12px; }
+.ax-admin-form-error { margin: 10px 0 0; color: var(--ax-danger); font-size: 13px; }
+.ax-admin-roles-scroll { overflow-x: auto; width: 100%; }
+.ax-admin-roles-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.ax-admin-roles-table thead th {
   text-align: left; padding: 8px 12px;
-  color: var(--ga-text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em;
-  border-bottom: 1px solid var(--ga-border); white-space: nowrap;
+  color: var(--ax-text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--ax-border); white-space: nowrap;
 }
-.ga-admin-roles-table tbody td {
-  padding: 10px 12px; color: var(--ga-text);
-  border-bottom: 1px solid color-mix(in srgb, var(--ga-border) 60%, transparent);
+.ax-admin-roles-table tbody td {
+  padding: 10px 12px; color: var(--ax-text);
+  border-bottom: 1px solid color-mix(in srgb, var(--ax-border) 60%, transparent);
 }
 
 /* "Controls in action" — governance-decisions log (review decisions, not
    access enforcement; the caveat below the table states this honestly). */
-.ga-admin-decisions-scroll { overflow-x: auto; width: 100%; }
-.ga-admin-decisions-table {
+.ax-admin-decisions-scroll { overflow-x: auto; width: 100%; }
+.ax-admin-decisions-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
   min-width: 640px;
 }
-.ga-admin-decisions-table thead th {
+.ax-admin-decisions-table thead th {
   text-align: left;
   padding: 8px 12px;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  border-bottom: 1px solid var(--ga-border);
+  border-bottom: 1px solid var(--ax-border);
   white-space: nowrap;
 }
-.ga-admin-decisions-table tbody td {
+.ax-admin-decisions-table tbody td {
   padding: 10px 12px;
-  color: var(--ga-text);
+  color: var(--ax-text);
   vertical-align: top;
-  border-bottom: 1px solid color-mix(in srgb, var(--ga-border) 60%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--ax-border) 60%, transparent);
 }
-.ga-admin-decisions-asset {
-  font-family: var(--ga-font-mono, ui-monospace, monospace);
+.ax-admin-decisions-asset {
+  font-family: var(--ax-font-mono, ui-monospace, monospace);
   font-size: 12px;
-  color: var(--ga-text-strong);
+  color: var(--ax-text-strong);
   word-break: break-word;
 }
-.ga-admin-decisions-actor { display: block; color: var(--ga-text); }
-.ga-admin-decisions-role {
+.ax-admin-decisions-actor { display: block; color: var(--ax-text); }
+.ax-admin-decisions-role {
   display: block;
   margin-top: 2px;
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--ga-text-muted);
+  color: var(--ax-text-muted);
 }
-.ga-admin-decisions-change { color: var(--ga-text); white-space: nowrap; }
-.ga-admin-decisions-change i { color: var(--ga-text-muted); font-style: normal; }
-.ga-admin-decisions-note {
-  color: var(--ga-text-muted);
+.ax-admin-decisions-change { color: var(--ax-text); white-space: nowrap; }
+.ax-admin-decisions-change i { color: var(--ax-text-muted); font-style: normal; }
+.ax-admin-decisions-note {
+  color: var(--ax-text-muted);
   max-width: 280px;
 }
-.ga-admin-decisions-when { color: var(--ga-text-muted); white-space: nowrap; }
-.ga-admin-decisions-caveat {
+.ax-admin-decisions-when { color: var(--ax-text-muted); white-space: nowrap; }
+.ax-admin-decisions-caveat {
   margin: 12px 0 0;
   padding: 10px 12px;
-  border: 1px solid var(--ga-border-muted);
+  border: 1px solid var(--ax-border-muted);
   border-radius: 8px;
-  background: var(--ga-surface-muted);
-  color: var(--ga-text-muted);
+  background: var(--ax-surface-muted);
+  color: var(--ax-text-muted);
   font-size: 13px;
   line-height: 1.45;
 }
